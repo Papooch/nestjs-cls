@@ -4,27 +4,44 @@ import {
     Module,
     NestModule,
 } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
 
 class ClsModuleOptions {
-    http: 'express' | 'fastify' = 'express';
+    mountMiddleware? = true;
+    http?: 'express' | 'fastify' = 'express';
 }
 
 @Module({})
 export class ClsModule implements NestModule {
     private static middlewareWildcard = '*';
+    private static mountMiddleware = true;
 
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(ClsMiddleware).forRoutes(ClsModule.middlewareWildcard);
+        if (ClsModule.mountMiddleware)
+            consumer
+                .apply(ClsMiddleware)
+                .forRoutes(ClsModule.middlewareWildcard);
     }
 
     static register(options: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
-        this.middlewareWildcard = options.http == 'fastify' ? '.*' : '*';
+        this.mountMiddleware = options.mountMiddleware;
+        this.middlewareWildcard = options.http == 'fastify' ? '(.*)' : '*';
         return {
             module: ClsModule,
-            providers: [ClsService],
+            providers: [
+                {
+                    provide: ClsService,
+                    inject: [HttpAdapterHost],
+                    useFactory: (adapterHost: HttpAdapterHost) => {
+                        const adapter = adapterHost.httpAdapter;
+                        console.log('adapter name ', adapter.getInstance());
+                        return ClsService;
+                    },
+                },
+            ],
             exports: [ClsService],
         };
     }

@@ -1,5 +1,4 @@
-import { Controller, Get, Injectable, Module } from '@nestjs/common';
-import { ClsModule } from '../../src/cls.module';
+import { Controller, Get, Injectable } from '@nestjs/common';
 import { ClsService } from '../../src/cls.service';
 
 @Injectable()
@@ -11,23 +10,16 @@ export class TestHttpService {
     }
 }
 
-@Controller()
+@Controller('/')
 export class TestHttpController {
     constructor(
         private readonly service: TestHttpService,
         private readonly cls: ClsService,
     ) {}
 
-    @Get()
+    @Get('hello')
     hello() {
         this.cls.set('hello', 'Hello world');
         return this.service.hello();
     }
 }
-
-@Module({
-    imports: [ClsModule.register({ http: 'express' })],
-    providers: [TestHttpService],
-    controllers: [TestHttpController],
-})
-export class TestHttpApp {}

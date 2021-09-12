@@ -9,7 +9,7 @@ export class ClsService {
             return requestNamespace.set(key, value);
         } catch (e) {
             throw new Error(
-                'No context available, please make sure to wrap any calls that depend on context with runWithContext or register the RequestContextMiddleware for all routes that use RequestContextService',
+                'No cls context available, please make sure to wrap any calls that depend on cls with "ClsService#run" or register the ClsMiddleware for all routes that use ClsService',
             );
         }
     }

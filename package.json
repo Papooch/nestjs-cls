@@ -24,6 +24,7 @@
         "@nestjs/common": "^8.0.0",
         "@nestjs/core": "^8.0.0",
         "@nestjs/platform-express": "^8.0.0",
+        "@nestjs/platform-fastify": "^8.0.6",
         "cls-hooked": "^4.2.2",
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
