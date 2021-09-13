@@ -20,5 +20,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "tsBuildInfoFile": "tmp/.tsbuildinfo"
-  }
+  },
+  "include": ["src/**/*.ts"]
 }

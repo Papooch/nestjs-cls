@@ -17,10 +17,12 @@
         "continuation-local-storage",
         "cls-hooked"
     ],
-    "main": "dist/",
+    "main": "dist/index.ts",
+    "types": "dist/index.d.ts",
     "scripts": {
+        "prepublish": "tsc",
         "prebuild": "rimraf dist",
-        "build": "nest build",
+        "build": "tsc",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "nest start",
         "start:dev": "nest start --watch",
