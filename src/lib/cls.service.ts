@@ -1,7 +1,7 @@
 import { createNamespace } from 'cls-hooked';
 import { Injectable } from '@nestjs/common';
 
-const requestNamespace = createNamespace('request');
+const requestNamespace = createNamespace('nestjs-cls');
 @Injectable()
 export class ClsService {
     set<T = any>(key: string, value: T) {
@@ -18,7 +18,11 @@ export class ClsService {
         return requestNamespace.get(key);
     }
 
-    run<T = any>(callback: () => T) {
+    runAndReturn<T = any>(callback: () => T) {
         return requestNamespace.runAndReturn(callback);
+    }
+
+    run<T = any>(callback: () => T) {
+        return requestNamespace.run(callback);
     }
 }

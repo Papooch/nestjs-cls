@@ -1,11 +1,11 @@
 import { INestApplication, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import { ClsModule } from '../../src/cls.module';
+import { ClsModule } from '../../src';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
-    imports: [ClsModule.register({ http: 'express' })],
+    imports: [ClsModule.register()],
     providers: [TestHttpService],
     controllers: [TestHttpController],
 })
@@ -23,7 +23,7 @@ describe('Cls Module over HTTP', () => {
         await app.init();
     });
 
-    it('works', () => {
+    it('works with Express', () => {
         return request(app.getHttpServer())
             .get('/hello')
             .expect(200)

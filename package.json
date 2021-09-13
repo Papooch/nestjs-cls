@@ -2,9 +2,22 @@
     "name": "nestjs-cls",
     "version": "0.0.1",
     "description": "",
-    "author": "",
-    "private": true,
-    "license": "UNLICENSED",
+    "author": "papooch",
+    "private": false,
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Papooch/nestjs-cls.git"
+    },
+    "homepage": "https://github.com/Papooch/nestjs-cls#readme",
+    "keywords": [
+        "nest",
+        "nestjs",
+        "cls",
+        "continuation-local-storage",
+        "cls-hooked"
+    ],
+    "main": "dist/",
     "scripts": {
         "prebuild": "rimraf dist",
         "build": "nest build",
@@ -16,19 +29,17 @@
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "test": "jest",
         "test:watch": "jest --watch",
-        "test:cov": "jest --coverage",
-        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./test/jest-e2e.json"
+        "test:cov": "jest --coverage"
     },
-    "dependencies": {
-        "@nestjs/common": "^8.0.0",
-        "@nestjs/core": "^8.0.0",
-        "@nestjs/platform-express": "^8.0.0",
-        "@nestjs/platform-fastify": "^8.0.6",
-        "cls-hooked": "^4.2.2",
-        "reflect-metadata": "^0.1.13",
-        "rimraf": "^3.0.2",
-        "rxjs": "^7.2.0"
+    "peerDependencies": {
+        "@nestjs/common": "> 7.0.0 < 9",
+        "@nestjs/core": "> 7.0.0 < 9",
+        "@nestjs/platform-express": "> 7.0.0 < 9",
+        "@nestjs/platform-fastify": "> 7.0.0 < 9",
+        "cls-hooked": "> 4.2.2",
+        "reflect-metadata": "> 0.1.0",
+        "rimraf": "> 2.0.0",
+        "rxjs": "> 6.0.0 < 8"
     },
     "devDependencies": {
         "@nestjs/cli": "^8.0.0",

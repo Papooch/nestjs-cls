@@ -4,15 +4,13 @@ import {
     MiddlewareConsumer,
     Module,
     NestModule,
-    OnModuleInit,
 } from '@nestjs/common';
-import { HttpAdapterHost, ModuleRef } from '@nestjs/core';
+import { HttpAdapterHost } from '@nestjs/core';
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
 
 class ClsModuleOptions {
     mountMiddleware? = true;
-    http?: 'express' | 'fastify' = 'express';
 }
 
 @Module({})
@@ -49,7 +47,7 @@ export class ClsModule implements NestModule {
         }
     }
 
-    static register(options: ClsModuleOptions): DynamicModule {
+    static register(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
         this.mountMiddleware = options.mountMiddleware;
         return {

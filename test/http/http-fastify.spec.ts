@@ -1,15 +1,14 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsMiddleware } from '../../src/cls.middleware';
-import { ClsModule } from '../../src/cls.module';
+import { ClsModule } from '../../src';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
-    imports: [ClsModule.register({ http: 'fastify' })],
+    imports: [ClsModule.register()],
     providers: [TestHttpService],
     controllers: [TestHttpController],
 })
@@ -30,15 +29,12 @@ describe('Cls Module over HTTP', () => {
         await app.getHttpAdapter().getInstance().ready();
     });
 
-    it('works', () => {
-        return app
-            .inject({
-                method: 'GET',
-                url: '/hello',
-            })
-            .then((res) => {
-                expect(res.statusCode).toEqual(200);
-                expect(res.payload).toEqual('Hello world');
-            });
+    it('works with Fastify', async () => {
+        const res = await app.inject({
+            method: 'GET',
+            url: '/hello',
+        });
+        expect(res.statusCode).toEqual(200);
+        expect(res.payload).toEqual('Hello world');
     });
 });

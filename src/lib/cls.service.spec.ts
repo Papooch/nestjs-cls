@@ -17,16 +17,16 @@ describe('RequestContextService', () => {
     });
 
     it('should set and retrieve the context', () => {
-        service.run(() => {
+        service.runAndReturn(() => {
             service.set('key', 123);
             expect(service.get('key')).toEqual(123);
         });
     });
     it('should not retireve context in a different call', () => {
-        service.run(() => {
+        service.runAndReturn(() => {
             service.set('key', 123);
         });
-        service.run(() => {
+        service.runAndReturn(() => {
             expect(service.get('key')).not.toEqual(123);
         });
     });
