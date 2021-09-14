@@ -1,7 +1,7 @@
 {
     "name": "nestjs-cls",
     "version": "0.1.0",
-    "description": "",
+    "description": "Wrapper around cls-hooked with enhanced NestJS support",
     "author": "papooch",
     "private": false,
     "license": "MIT",
@@ -17,7 +17,7 @@
         "continuation-local-storage",
         "cls-hooked"
     ],
-    "main": "dist/index.ts",
+    "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "prepublish": "tsc",
@@ -36,8 +36,6 @@
     "peerDependencies": {
         "@nestjs/common": "> 7.0.0 < 9",
         "@nestjs/core": "> 7.0.0 < 9",
-        "@nestjs/platform-express": "> 7.0.0 < 9",
-        "@nestjs/platform-fastify": "> 7.0.0 < 9",
         "cls-hooked": "> 4.0.0"
     },
     "devDependencies": {
