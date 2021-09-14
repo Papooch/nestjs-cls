@@ -8,7 +8,7 @@ import { ClsModule } from '../../src';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
-    imports: [ClsModule.register()],
+    imports: [ClsModule.forRoot()],
     providers: [TestHttpService],
     controllers: [TestHttpController],
 })

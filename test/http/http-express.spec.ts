@@ -5,7 +5,11 @@ import { ClsModule } from '../../src';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
-    imports: [ClsModule.register()],
+    imports: [
+        ClsModule.forRoot({
+            defaultNamespace: 'cls2',
+        }),
+    ],
     providers: [TestHttpService],
     controllers: [TestHttpController],
 })

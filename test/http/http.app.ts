@@ -1,5 +1,6 @@
 import { Controller, Get, Injectable } from '@nestjs/common';
-import { ClsService } from '../../src';
+import { ClsService, CLS_DEFAULT_NAMESPACE } from '../../src';
+import { InjectCls, UseCls } from '../../src/lib/cls.decorators';
 
 @Injectable()
 export class TestHttpService {
