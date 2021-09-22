@@ -6,18 +6,10 @@ import {
     NestModule,
     Provider,
 } from '@nestjs/common';
-import { APP_INTERCEPTOR, HttpAdapterHost, ModuleRef } from '@nestjs/core';
+import { HttpAdapterHost, ModuleRef } from '@nestjs/core';
 import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
-import {
-    CLS_INTERCEPTOR_OPTIONS,
-    CLS_MIDDLEWARE_OPTIONS,
-} from './cls.constants';
-import { ClsInterceptor } from './cls.interceptor';
-import {
-    ClsInterceptorOptions,
-    ClsMiddlewareOptions,
-    ClsModuleOptions,
-} from './cls.interfaces';
+import { CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
+import { ClsMiddlewareOptions, ClsModuleOptions } from './cls.interfaces';
 
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
@@ -79,33 +71,17 @@ export class ClsModule implements NestModule {
             ...options.middleware,
             namespaceName: options.namespaceName,
         };
-        const clsInterceptorOptions = {
-            ...new ClsInterceptorOptions(),
-            ...options.interceptor,
-            namespaceName: options.namespaceName,
-        };
-        const exports: Provider[] = [
+        const providers: Provider[] = [
             ...ClsServiceManager.getClsServicesAsProviders(),
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 useValue: clsMiddlewareOptions,
             },
-            {
-                provide: CLS_INTERCEPTOR_OPTIONS,
-                useValue: clsInterceptorOptions,
-            },
         ];
-        const providers = [...exports];
-        if (clsInterceptorOptions.mount) {
-            providers.push({
-                provide: APP_INTERCEPTOR,
-                useClass: ClsInterceptor,
-            });
-        }
         return {
             module: ClsModule,
             providers,
-            exports,
+            exports: providers,
             global: options.global,
         };
     }

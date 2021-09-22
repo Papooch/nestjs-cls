@@ -9,11 +9,10 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 -   [Install](#install)
 -   [Quick Start](#quick-start)
 -   [How it works](#how-it-works)
-    -   [With HTTP](#with-http)
-    -   [Without HTTP](#without-http)
 -   [Options](#options)
 -   [API](#api)
 -   [Request ID](#request-id)
+-   [Custom CLS Middleware](#custom-cls-middleware)
 -   [Namespaces](#namespaces) (currently unsupported)
 
 # Install
@@ -112,21 +111,13 @@ Continuation-local storage provides a common space for storing and retrieving da
 
 To make CLS work, it is required to set up a cls context first. This is done by passing a function as a callback to `cls.run()` (see cls-hooked docs). Once that is set up, anything that is called from within that function has access to the same storage with `cls.set()` and `cls.get()`.
 
-As for now, there are two ways of setting up the cls context depending on if you are using HTTP (express or fastify) or non-HTTP (RPC, websockets, ...) controllers. The latter comes with a drawback, more on that later.
-
-## With HTTP
-
-Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the `next()` call is wrapped with `cls.run()`.
+Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal (and only) place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the `next()` call is wrapped with `cls.run()`.
 
 All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
 
 Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
 
-## Without HTTP
-
-With non-http controllers, the first place in which it is possible to wrap a callback call is in an _Interceptor_ ([see request lifecycle](https://docs.nestjs.com/faq/request-lifecycle#summary)), therefore, this package provides `ClsInterceptor` which has the same function as `ClsMiddleware`. Pass `interceptor: { mount: true }` to `ClsModule.register` options to automatically mount it globally.
-
-> The obvious disadvantage of the interoceptor method is that **you won't be able to access the CLS inside Guards**. (I'm still trying to figure out a way around it, but it may require some digging in Nest's internals) Other that that, this method is functionally equivalent and you can safely access the CLS in other parts of the app.
+> Note: Because we use middleware to wrap the request callback chain, it follows that this package **can only be used with HTTP** (express, fastify) with the full functionality. You can still use it with other transports, but you wouldn't be able to use CLS in enhancers (_Guards, Interceptors, Pipes, Exception Filters_), since I haven't found a way to wrap the incoming calls there. If you have any idea how that could be possible, please let me know.
 
 # API
 
@@ -178,50 +169,59 @@ The `ClsModule.register` method takes the following options:
 
 ```ts
 interface ClsModuleOptions {
-    // The name of the cls namespace. This is the namespace
-    // that will be used by the ClsService and ClsMiddleware/Interceptor
-    // (most of the time you will not need to touch this setting)
-    namespacName?: string;
+    /**
+     * The name of the cls namespace. This is the namespace
+     * that will be used by the ClsService and ClsMiddleware/Interc
+     * (most of the time you will not need to touch this setting)
+     */
+    namespaceName?: string;
 
-    // whether to make the module global, so you don't need
-    // to import `ClsModule` in other modules
-    global?: boolean; // default false
+    /**
+     * whether to make the module global, so you don't need
+     * to import `ClsModule` in other modules
+     */
+    global?: boolean;
 
-    // additional middleware options
-    // (should not be combined with interceptor)
+    /**
+     * Cls middleware options
+     */
     middleware?: ClsMiddlewareOptions;
-
-    // additional interceptor options
-    // (should not be combined with middleware)
-    interceptor?: ClsInterceptorOptions;
 }
-```
 
-```ts
-interface ClsMiddlewareOrInterceptorOptions {
-    // whether to mount the middleware/interceptor to every route
+interface ClsMiddlewareOptions {
+    /**
+     * whether to mount the middleware to every route
+     */
     mount?: boolean; // default false
 
-    // whether to automatically generate request ids
+    /**
+     * whether to automatically generate request ids
+     */
     generateId?: boolean; // default false
-}
 
-interface ClsMiddlewareOptions extends ClsMiddlewareOrInterceptorOptions {
-    // the function to generate request ids inside the middleware
+    /**
+     * the function to generate request ids inside the middleware
+     */
     idGenerator?: (req: Request) => string | Promise<string>;
-}
 
-interface ClsInterceptorOptions extends ClsMiddlewareOrInterceptorOptions {
-    // the function to generate request ids inside the interceptor
-    idGenerator?: (context: ExecutionContext) => string | Promise<string>;
-}
+    /**
+     * Whether to store the Request object to the cls
+     * It will be available under the CLS_REQ key
+     */
+    saveReq?: boolean; // default true
+
+    /**
+     * Whether to store the Response object to the cls
+     * It will be available under the CLS_RES key
+     */
+    saveRes?: boolean; // default false
 ```
 
 # Request ID
 
-Because of a shared storage, CLS is an ideal tool for tracking request (correlation) id's for the purpose of logging. This package provides an option to automatically generate request ids in the middleware (or interceptor) and also provides a way to provide a custom ID generator function.
+Because of a shared storage, CLS is an ideal tool for tracking request (correlation) ids for the purpose of logging. This package provides an option to automatically generate request ids in the middleware and also provides a way to provide a custom ID generator function.
 
-Depending on whether you chose a middleware or an interceptor, this method receives the `Request` or `ExecutionContext` as the first parameter, which can be used in the generation process.
+This function receives the `Request` as the first parameter, which can be used in the generation process.
 
 Below is an example of retrieving the request ID from the request header with a fallback to an autogenerated one.
 
@@ -263,9 +263,29 @@ class MyService {
 }
 ```
 
+# Custom CLS Middleware
+
+The default middleware provides some basic functionality, but you can replace it with a custom one if you need some custom logic handling the initialisation of the cls namespace;
+
+```ts
+@Injectable()
+export class HelloClsMiddleware implements NestMiddleware {
+    constructor(private readonly cls: ClsService) {}
+
+    use(req: Request, res: Response, next: () => NextFunction) {
+        this.cls.run(() => {
+            // any custom logic
+            next();
+        });
+    }
+}
+```
+
+> Note: Middleware options passed to `ClsModule.register` do not apply here, so you will need to implement any custom logic (like the generation of request ids) manually.
+
 # (Namespaces)
 
-> Warning: Namespace support is currently not ready, this section serves as a documentation of the future API and can change any time.
+> Warning: Namespace support is currently not ready and has no tests. This section serves as a documentation of the future API and can change any time.
 
 The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides (will provide) a way to use multiple CLS namespaces in order to be fully compatible with `cls-hooked`.
 
@@ -298,8 +318,6 @@ class HelloService {
 
 > Note: `@InjectCls('x')` is equivalent to `@Inject(getNamespaceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
 
-To set up a custom namespaced cls context while using `ClsInterceptor`, decorate the route or controller with `@ClsNamespace('hello-namespace')`, otherwise, the default namespace will be set up and you won't be able to access the custom one unless you set it up manually with `myCls.run()` (or `myCls.runAndReturn()` if you care about the return value).
-
 ```ts
 @Injectable()
 export class HelloController {
@@ -309,16 +327,7 @@ export class HelloController {
         private readonly helloService: HelloService,
     );
 
-    // set up custom cls context using an interceptor
-    @UseInterceptors(ClsInterceptor)
-    @ClsNamespace('hello-namespace')
-    @Get('/hello1')
-    hello1() {
-        this.myCls.set('hi', 'Hello');
-        return this.helloService.sayHello();
-    }
-
-    @Get('/hello2')
+    @Get('/hello')
     hello2() {
         // seting up cls context manually
         return this.myCls.runAndReturn(() => {
@@ -328,47 +337,3 @@ export class HelloController {
     }
 }
 ```
-
-## Custom CLS Middleware/Interceptor
-
-The default middleware and interceptor provide some basic functionality, but you can replace them with custom ones if you need some custom logic handling the initialisation of the cls namespace;
-
-### Custom CLS Middleware
-
-```ts
-@Injectable()
-export class HelloClsMiddleware implements NestMiddleware {
-    constructor(
-        @InjectCls('hello-namespace')
-        private readonly cls: ClsService,
-    ) {}
-
-    use(req: Request, res: Response, next: () => NextFunction) {
-        this.cls.run(() => {
-            // any custom logic
-            next();
-        });
-    }
-}
-```
-
-### Custom CLS Interceptor
-
-```ts
-@Injectable()
-export class HelloClsInterceptorInterceptor implements NestInterceptor {
-    constructor(
-        @InjectCls('hello-namespace')
-        private readonly cls: ClsService,
-    ) {}
-
-    intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        return this.cls.runAndReturn(() => {
-            // any custom logic
-            return next.handle();
-        });
-    }
-}
-```
-
-> Note: Middleware and Interceptor options passed to `ClsModule.register` do not apply here, so you will need to implement any custom logic (like the generation of request ids) manually.

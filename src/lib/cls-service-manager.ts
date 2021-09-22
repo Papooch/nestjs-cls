@@ -1,7 +1,6 @@
-import { ClassProvider, Provider, ValueProvider } from '@nestjs/common';
+import { ClassProvider, ValueProvider } from '@nestjs/common';
 import { createNamespace, Namespace } from 'cls-hooked';
 import { ClsService } from '..';
-import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 
 export const getClsServiceToken = (namespace: string) =>
     `ClsService-${namespace}`;

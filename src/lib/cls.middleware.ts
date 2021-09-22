@@ -1,4 +1,4 @@
-import { Inject, Injectable, NestMiddleware, Options } from '@nestjs/common';
+import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { getClsServiceToken } from './cls-service-manager';
 import { CLS_ID, CLS_MIDDLEWARE_OPTIONS } from './cls.constants';

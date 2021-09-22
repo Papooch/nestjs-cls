@@ -1,4 +1,3 @@
-import { ExecutionContext } from '@nestjs/common';
 import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 
 export class ClsModuleOptions {
@@ -16,19 +15,12 @@ export class ClsModuleOptions {
     global? = false;
 
     /**
-     * additional middleware options
-     * (should not be combined with interceptor)
+     * Cls middleware options
      */
     middleware?: ClsMiddlewareOptions = null;
-
-    /**
-     * additional interceptor options
-     * (should not be combined with middleware)
-     */
-    interceptor?: ClsInterceptorOptions = null;
 }
 
-class ClsMiddlewareOrInterceptorOptions {
+export class ClsMiddlewareOptions {
     /**
      * whether to mount the middleware/interceptor to every route
      */
@@ -39,10 +31,6 @@ class ClsMiddlewareOrInterceptorOptions {
      */
     generateId?: boolean; // default false
 
-    readonly namespaceName?: string;
-}
-
-export class ClsMiddlewareOptions extends ClsMiddlewareOrInterceptorOptions {
     /**
      * the function to generate request ids inside the middleware
      */
@@ -59,11 +47,6 @@ export class ClsMiddlewareOptions extends ClsMiddlewareOrInterceptorOptions {
      * It will be available under the CLS_RES key
      */
     saveRes? = false;
-}
 
-export class ClsInterceptorOptions extends ClsMiddlewareOrInterceptorOptions {
-    /**
-     * the function to generate request ids inside the interceptor
-     */
-    idGenerator?: (context: ExecutionContext) => string | Promise<string>;
+    readonly namespaceName?: string;
 }

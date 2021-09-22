@@ -40,6 +40,10 @@ describe('Http Fastify App', () => {
             url: '/hello',
         });
         expect(res.statusCode).toEqual(200);
-        expect(res.payload).toEqual('Hello world');
+        expect(JSON.parse(res.payload)).toEqual({
+            fromGuard: true,
+            fromInterceptor: true,
+            fromController: true,
+        });
     });
 });

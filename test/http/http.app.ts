@@ -6,34 +6,11 @@ import {
     Get,
     Injectable,
     NestInterceptor,
+    UseGuards,
+    UseInterceptors,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ClsService } from '../../src';
-
-@Injectable()
-export class TestHttpService {
-    constructor(private readonly cls: ClsService) {}
-
-    async hello() {
-        return this.cls.get('hello');
-    }
-}
-
-@Controller('/')
-export class TestHttpController {
-    constructor(
-        private readonly service: TestHttpService,
-        private readonly cls: ClsService,
-    ) {}
-
-    @Get('hello')
-    hello() {
-        console.log('running ', this.cls);
-
-        this.cls.set('hello', 'Hello world');
-        return this.service.hello();
-    }
-}
 
 @Injectable()
 export class TestGuard implements CanActivate {
@@ -54,5 +31,34 @@ export class TestInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         this.cls.set('FROM_INTERCEPTOR', true);
         return next.handle();
+    }
+}
+
+@Injectable()
+export class TestHttpService {
+    constructor(private readonly cls: ClsService) {}
+
+    async hello() {
+        return {
+            fromController: this.cls.get('FROM_CONTROLLER'),
+            fromInterceptor: this.cls.get('FROM_INTERCEPTOR'),
+            fromGuard: this.cls.get('FROM_GUARD'),
+        };
+    }
+}
+
+@UseGuards(TestGuard)
+@Controller('/')
+export class TestHttpController {
+    constructor(
+        private readonly service: TestHttpService,
+        private readonly cls: ClsService,
+    ) {}
+
+    @UseInterceptors(TestInterceptor)
+    @Get('hello')
+    hello() {
+        this.cls.set('FROM_CONTROLLER', true);
+        return this.service.hello();
     }
 }
