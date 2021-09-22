@@ -1,12 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { createNamespace } from 'cls-hooked';
 import { ClsService } from './cls.service';
 
-describe('RequestContextService', () => {
+describe('ClsService', () => {
     let service: ClsService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [ClsService],
+            providers: [
+                {
+                    provide: ClsService,
+                    useValue: new ClsService(createNamespace('test')),
+                },
+            ],
         }).compile();
 
         service = module.get<ClsService>(ClsService);

@@ -8,13 +8,18 @@ import { ClsModule } from '../../src';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
-    imports: [ClsModule.forRoot()],
+    imports: [
+        ClsModule.register({
+            namespaceName: 'xxx',
+            middleware: { mount: true },
+        }),
+    ],
     providers: [TestHttpService],
     controllers: [TestHttpController],
 })
 export class TestHttpApp {}
 
-describe('Cls Module over HTTP', () => {
+describe('Http Fastify App', () => {
     let app: NestFastifyApplication;
 
     beforeAll(async () => {

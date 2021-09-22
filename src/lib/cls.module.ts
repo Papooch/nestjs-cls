@@ -6,117 +6,106 @@ import {
     NestModule,
     Provider,
 } from '@nestjs/common';
-import { HttpAdapterHost, ModuleRef } from '@nestjs/core';
-import { Namespace } from 'cls-hooked';
-import { CLS_DEFAULT_NAMESPACE, CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
+import { APP_INTERCEPTOR, HttpAdapterHost, ModuleRef } from '@nestjs/core';
+import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
 import {
-    getDefaultNamespace,
-    getNamespaceToken,
-    resolveNamespace,
-    setDefaultNamespace,
-} from './cls.globals';
+    CLS_INTERCEPTOR_OPTIONS,
+    CLS_MIDDLEWARE_OPTIONS,
+} from './cls.constants';
+import { ClsInterceptor } from './cls.interceptor';
+import {
+    ClsInterceptorOptions,
+    ClsMiddlewareOptions,
+    ClsModuleOptions,
+} from './cls.interfaces';
+
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
 
-export class ClsModuleOptions {
-    mountMiddleware? = true;
-    defaultNamespace? = CLS_DEFAULT_NAMESPACE;
-    global? = false;
-}
-
-export class ClsMiddlewareOptions {
-    namespace: string = CLS_DEFAULT_NAMESPACE;
-}
-
-@Module({})
+@Module({
+    providers: [ClsService],
+    exports: [ClsService],
+})
 export class ClsModule implements NestModule {
     constructor(
         private readonly adapterHost: HttpAdapterHost,
         private readonly moduleRef: ModuleRef,
     ) {}
 
-    private static middlewareWildcard = '*';
-    private static mountMiddleware = true;
     private static logger = new Logger(ClsModule.name);
-    private static namespacedProviders: Map<any, Provider<ClsService>> =
-        new Map();
 
     configure(consumer: MiddlewareConsumer) {
+        let options: ClsMiddlewareOptions;
         try {
             // if CLS_MIDDLEWARE_OPTIONS provider is available
-            // we are running forRoot, so we mount the middleware
-            this.moduleRef.get(CLS_MIDDLEWARE_OPTIONS);
+            // we are running configure, so we mount the middleware
+            options = this.moduleRef.get(CLS_MIDDLEWARE_OPTIONS);
         } catch (e) {
-            // we are running forFeature, so do not mount it again
+            // we are running static import, so do not mount it
             return;
         }
 
         const adapter = this.adapterHost.httpAdapter;
-        switch (adapter.constructor.name) {
-            case 'FastifyAdapter':
-                ClsModule.logger.log(
-                    'Setting up ClsMiddleware for FastifyAdapter',
-                );
-                ClsModule.middlewareWildcard = '(.*)';
-                break;
-            default:
-                ClsModule.logger.log(
-                    'Setting up ClsMiddleware for ExpressAdapter',
-                );
-                ClsModule.middlewareWildcard = '*';
+        let mountPoint = '*';
+        if (adapter.constructor.name === 'FastifyAdapter') {
+            mountPoint = '(.*)';
         }
 
-        if (ClsModule.mountMiddleware) {
-            ClsModule.logger.debug(
-                'Mounting ClsMiddleware to ' + ClsModule.middlewareWildcard,
-            );
-            consumer
-                .apply(ClsMiddleware)
-                .forRoutes(ClsModule.middlewareWildcard);
+        if (options.mount) {
+            ClsModule.logger.debug('Mounting ClsMiddleware to ' + mountPoint);
+            consumer.apply(ClsMiddleware).forRoutes(mountPoint);
         }
     }
 
-    private static addNamespacedProvider(name: string) {
-        this.namespacedProviders.set(name, {
-            provide: getNamespaceToken(name),
-            useValue: new ClsService(resolveNamespace(name)),
-        });
-    }
-
-    static forFeature(name: string): DynamicModule {
-        this.addNamespacedProvider(name);
+    static forFeature(namespaceName: string): DynamicModule {
+        const providers = ClsServiceManager.getClsServicesAsProviders().filter(
+            (p) =>
+                p.provide === getClsServiceToken(namespaceName) ||
+                p.provide === ClsService,
+        );
         return {
             module: ClsModule,
-            providers: Array.from(this.namespacedProviders.values()),
-            exports: Array.from(this.namespacedProviders.values()),
+            providers,
+            exports: providers,
         };
     }
 
-    static forRoot(options?: ClsModuleOptions): DynamicModule {
+    static register(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
-        this.mountMiddleware = options.mountMiddleware;
-        if (options.defaultNamespace !== CLS_DEFAULT_NAMESPACE) {
-            setDefaultNamespace(options.defaultNamespace);
-            this.addNamespacedProvider(options.defaultNamespace);
-        }
-        this.namespacedProviders.set(ClsService, {
-            provide: ClsService,
-            useValue: new ClsService(getDefaultNamespace()),
-        });
-
-        const clsMiddlewareOptions = new ClsMiddlewareOptions();
-        clsMiddlewareOptions.namespace = options.defaultNamespace;
-        const providers = [
-            ...Array.from(this.namespacedProviders.values()),
+        ClsServiceManager.setDefaultNamespace(options.namespaceName);
+        ClsServiceManager.addClsService(options.namespaceName);
+        const clsMiddlewareOptions = {
+            ...new ClsMiddlewareOptions(),
+            ...options.middleware,
+            namespaceName: options.namespaceName,
+        };
+        const clsInterceptorOptions = {
+            ...new ClsInterceptorOptions(),
+            ...options.interceptor,
+            namespaceName: options.namespaceName,
+        };
+        const exports: Provider[] = [
+            ...ClsServiceManager.getClsServicesAsProviders(),
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 useValue: clsMiddlewareOptions,
             },
+            {
+                provide: CLS_INTERCEPTOR_OPTIONS,
+                useValue: clsInterceptorOptions,
+            },
         ];
+        const providers = [...exports];
+        if (clsInterceptorOptions.mount) {
+            providers.push({
+                provide: APP_INTERCEPTOR,
+                useClass: ClsInterceptor,
+            });
+        }
         return {
             module: ClsModule,
             providers,
-            exports: Array.from(this.namespacedProviders.values()),
+            exports,
             global: options.global,
         };
     }

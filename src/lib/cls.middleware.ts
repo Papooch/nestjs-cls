@@ -1,28 +1,30 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
+import { Inject, Injectable, NestMiddleware, Options } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
+import { getClsServiceToken } from './cls-service-manager';
+import { CLS_ID, CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
 import { CLS_REQ, CLS_RES } from './cls.constants';
-import { defaultNamespaceName, getNamespaceToken } from './cls.globals';
-import type { ClsMiddlewareOptions } from './cls.module';
+import { ClsMiddlewareOptions } from './cls.interfaces';
 import { ClsService } from './cls.service';
 
 @Injectable()
 export class ClsMiddleware implements NestMiddleware {
     private readonly cls: ClsService;
+
     constructor(
-        @Inject(CLS_MIDDLEWARE_OPTIONS) options: ClsMiddlewareOptions,
-        moduleRef: ModuleRef,
+        @Inject(CLS_MIDDLEWARE_OPTIONS)
+        private readonly options: ClsMiddlewareOptions,
+        private readonly moduleRef: ModuleRef,
     ) {
-        this.cls = moduleRef.get(
-            options.namespace === defaultNamespaceName
-                ? ClsService
-                : getNamespaceToken(options.namespace),
+        this.cls = this.moduleRef.get(
+            getClsServiceToken(options.namespaceName),
         );
     }
     use(req: any, res: any, next: () => any) {
-        this.cls.runAndReturn(() => {
-            this.cls.set(CLS_REQ, req);
-            this.cls.set(CLS_RES, res);
+        this.cls.run(() => {
+            if (this.options.generateId)
+                this.cls.set(CLS_ID, this.options.idGenerator(req));
+            if (this.options.saveReq) this.cls.set(CLS_REQ, req);
+            if (this.options.saveRes) this.cls.set(CLS_RES, res);
             next();
         });
     }

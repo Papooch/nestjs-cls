@@ -1,10 +1,10 @@
 import { Namespace } from 'cls-hooked';
-import { getDefaultNamespace } from './cls.globals';
+import { CLS_ID } from '..';
 
 export class ClsService {
     public readonly namespace: Namespace;
-    constructor(namespace?: Namespace) {
-        this.namespace = namespace ?? getDefaultNamespace();
+    constructor(namespace: Namespace) {
+        this.namespace = namespace;
     }
 
     set<T = any>(key: string, value: T) {
@@ -19,6 +19,10 @@ export class ClsService {
 
     get<T = any>(key: string): T {
         return this.namespace.get(key);
+    }
+
+    getId(): string {
+        return this.namespace.get(CLS_ID);
     }
 
     runAndReturn<T = any>(callback: () => T) {
