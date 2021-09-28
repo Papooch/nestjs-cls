@@ -13,7 +13,7 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 -   [API](#api)
 -   [Request ID](#request-id)
 -   [Custom CLS Middleware](#custom-cls-middleware)
--   [Namespaces](#namespaces) (currently unsupported)
+-   [Namespaces](#namespaces) (experimental)
 
 # Install
 
@@ -283,9 +283,9 @@ export class HelloClsMiddleware implements NestMiddleware {
 
 > Note: Middleware options passed to `ClsModule.register` do not apply here, so you will need to implement any custom logic (like the generation of request ids) manually.
 
-# (Namespaces)
+# Namespaces (experimental)
 
-> Warning: Namespace support is currently not ready and has no tests. This section serves as a documentation of the future API and can change any time.
+> Warning: Namespace support is currently experimental no tests. This section serves as a documentation of the future API and can change any time.
 
 The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides (will provide) a way to use multiple CLS namespaces in order to be fully compatible with `cls-hooked`.
 

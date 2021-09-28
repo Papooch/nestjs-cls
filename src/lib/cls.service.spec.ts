@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { createNamespace } from 'cls-hooked';
+import { ClsServiceManager, CLS_DEFAULT_NAMESPACE } from '..';
 import { ClsService } from './cls.service';
 
 describe('ClsService', () => {
@@ -10,7 +10,9 @@ describe('ClsService', () => {
             providers: [
                 {
                     provide: ClsService,
-                    useValue: new ClsService(createNamespace('test')),
+                    useValue: ClsServiceManager.addClsService(
+                        CLS_DEFAULT_NAMESPACE,
+                    ),
                 },
             ],
         }).compile();

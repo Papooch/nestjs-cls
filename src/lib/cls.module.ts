@@ -64,7 +64,6 @@ export class ClsModule implements NestModule {
 
     static register(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
-        ClsServiceManager.setDefaultNamespace(options.namespaceName);
         ClsServiceManager.addClsService(options.namespaceName);
         const clsMiddlewareOptions = {
             ...new ClsMiddlewareOptions(),
