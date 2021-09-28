@@ -34,7 +34,8 @@ export class ClsMiddlewareOptions {
     /**
      * the function to generate request ids inside the middleware
      */
-    idGenerator?: (req: Request) => string | Promise<string>;
+    idGenerator?: (req: Request) => string | Promise<string> = () =>
+        Math.random().toString(36).slice(-10);
 
     /**
      * Whether to store the Request object to the cls

@@ -219,7 +219,7 @@ interface ClsMiddlewareOptions {
 
 # Request ID
 
-Because of a shared storage, CLS is an ideal tool for tracking request (correlation) ids for the purpose of logging. This package provides an option to automatically generate request ids in the middleware and also provides a way to provide a custom ID generator function.
+Because of a shared storage, CLS is an ideal tool for tracking request (correlation) ids for the purpose of logging. This package provides an option to automatically generate request ids in the middleware, if you pass `{ generateId: true }` to the middleware options. By default, the generated is a string based on `Math.random()`, but you can provide a custom function in the `idGenerator` option.
 
 This function receives the `Request` as the first parameter, which can be used in the generation process.
 
