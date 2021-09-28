@@ -17,8 +17,8 @@
         "continuation-local-storage",
         "cls-hooked"
     ],
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
     "scripts": {
         "prepublish": "tsc",
         "prebuild": "rimraf dist",
