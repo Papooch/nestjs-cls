@@ -13,7 +13,8 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 -   [API](#api)
 -   [Request ID](#request-id)
 -   [Custom CLS Middleware](#custom-cls-middleware)
--   [Namespaces](#namespaces) (experimental)
+-   [Breaking out of DI](#breaking-out-of-di)
+-   [Namespaces](#namespaces-experimental) (experimental)
 
 # Install
 
@@ -35,22 +36,13 @@ Below is an example of storing the client's IP address in an interceptor and ret
 // app.module.ts
 @Module({
     imports: [
-        // Register the ClsModule...
-        ClsModule.register({}),
+        // Register the ClsModule and automatically mount the ClsMiddleware
+        ClsModule.register({ middleware: { mount: true } }),
     ],
     providers: [AppService],
     controllers: [AppController],
 })
-export class TestHttpApp implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        // ...and apply the ClsMiddleware to set up shared context inside
-        // all routes that should have access to it.
-        // You can also pass `{ middleware: { mount: true } }` as a paramerer
-        // to the ClsModule.register options to automatically mount the middleware
-        // for all routes.
-        apply(ClsMiddleware).forRoutes(AppController);
-    }
-}
+export class TestHttpApp {}
 
 
 /* user-ip.interceptor.ts */
@@ -104,6 +96,31 @@ export class AppService {
     }
 }
 ```
+
+## Manually mounting the middleware
+
+Sometimes, you might want to only use CLS on certain routes. In that case, you can bind the ClsMiddleware manually in the module:
+
+```ts
+export class TestHttpApp implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+        apply(ClsMiddleware).forRoutes(AppController);
+    }
+}
+```
+
+Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares if you need to. In that case, you can mount it directly in the bootstrap method:
+
+```ts
+function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    // create and mount the middleware manually here
+    app.use(new ClsMiddleware({}).use);
+    await app.listen(3000);
+}
+```
+
+> Please note: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.forRoot()`, so you will have to provide them yourself in the constructor.
 
 # How it works
 
@@ -282,6 +299,18 @@ export class HelloClsMiddleware implements NestMiddleware {
 ```
 
 > Note: Middleware options passed to `ClsModule.register` do not apply here, so you will need to implement any custom logic (like the generation of request ids) manually.
+
+# Breaking out of DI
+
+While this package aims to be compatible with NestJS's DI, it is also possible to access the CLS context outside of it. For that, it provides the static `ClsServiceManager` class that exposes the `getClsService()` method.
+
+```ts
+function helper() {
+    const cls = ClsServiceManager.getClsService();
+    // you now have access to the shared storage
+    console.log(cls.getId());
+}
+```
 
 # Namespaces (experimental)
 
