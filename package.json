@@ -36,8 +36,7 @@
     },
     "peerDependencies": {
         "@nestjs/common": "> 7.0.0 < 9",
-        "@nestjs/core": "> 7.0.0 < 9",
-        "cls-hooked": "> 4.0.0"
+        "@nestjs/core": "> 7.0.0 < 9"
     },
     "devDependencies": {
         "@nestjs/cli": "^8.0.0",
