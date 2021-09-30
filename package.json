@@ -1,6 +1,6 @@
 {
     "name": "nestjs-cls",
-    "version": "1.1.1",
+    "version": "1.2.1",
     "description": "Wrapper around cls-hooked with enhanced NestJS support",
     "author": "papooch",
     "private": false,
