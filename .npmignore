@@ -3,5 +3,5 @@ node_modules
 tmp
 test
 
-dist/test/gql
-test/gql
+dist/test
+test
