@@ -46,9 +46,9 @@ describe('Http Express App - Auto bound Middleware', () => {
 
     it('works with middleware', () => {
         return request(app.getHttpServer()).get('/hello').expect(200).expect({
-            fromGuard: true,
-            fromInterceptor: true,
-            fromController: true,
+            fromGuard: 'OK',
+            fromInterceptor: 'OK',
+            fromController: 'OK',
         });
     });
 });
@@ -63,9 +63,9 @@ describe('Http Express App - Manually bound Middleware in AppModule', () => {
 
     it('works with middleware', () => {
         return request(app.getHttpServer()).get('/hello').expect(200).expect({
-            fromGuard: true,
-            fromInterceptor: true,
-            fromController: true,
+            fromGuard: 'OK',
+            fromInterceptor: 'OK',
+            fromController: 'OK',
         });
     });
 });
@@ -81,9 +81,9 @@ describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
 
     it('works with middleware', () => {
         return request(app.getHttpServer()).get('/hello').expect(200).expect({
-            fromGuard: true,
-            fromInterceptor: true,
-            fromController: true,
+            fromGuard: 'OK',
+            fromInterceptor: 'OK',
+            fromController: 'OK',
         });
     });
 });

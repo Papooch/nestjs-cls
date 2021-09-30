@@ -15,7 +15,8 @@
         "nestjs",
         "cls",
         "continuation-local-storage",
-        "cls-hooked"
+        "als",
+        "async_hooks"
     ],
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",

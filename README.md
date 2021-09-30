@@ -2,7 +2,7 @@
 
 A continuation-local storage module compatible with [NestJS](https://nestjs.com/)'s dependency injection.
 
-> Note: This package uses [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency. For more information about how CLS works, visit their docs.
+> Note: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
 
 # Outline
 
@@ -19,9 +19,9 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 # Install
 
 ```bash
-npm install nestjs-cls cls-hooked
+npm install nestjs-cls
 # or
-yarn add nestjs-cls cls-hooked
+yarn add nestjs-cls
 ```
 
 > Note: This module requires additional peer deps, like the nestjs core and common libraries, but it is assumed those are already installed.
@@ -37,7 +37,10 @@ Below is an example of storing the client's IP address in an interceptor and ret
 @Module({
     imports: [
         // Register the ClsModule and automatically mount the ClsMiddleware
-        ClsModule.register({ middleware: { mount: true } }),
+        ClsModule.register({
+            global: true,
+            middleware: { mount: true }
+        }),
     ],
     providers: [AppService],
     controllers: [AppController],
@@ -109,7 +112,7 @@ export class TestHttpApp implements NestModule {
 }
 ```
 
-Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares if you need to. In that case, you can mount it directly in the bootstrap method:
+Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares (**as is the case of GQL resolvers**). In that case, you can mount it directly in the bootstrap method:
 
 ```ts
 function bootstrap() {
@@ -126,15 +129,15 @@ function bootstrap() {
 
 Continuation-local storage provides a common space for storing and retrieving data throughout the life of a function/callback call chain. In NestJS, this allows for sharing request data across the lifetime of a single request - without the need for request-scoped providers. It also makes it easy to track and log request ids throughout the whole application.
 
-To make CLS work, it is required to set up a cls context first. This is done by passing a function as a callback to `cls.run()` (see cls-hooked docs). Once that is set up, anything that is called from within that function has access to the same storage with `cls.set()` and `cls.get()`.
+To make CLS work, it is required to set up a cls context first. This is done by calling `cls.enter()` somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
 
-Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal (and only) place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the `next()` call is wrapped with `cls.run()`.
+Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()`
 
 All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
 
 Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
 
-> Note: Because we use middleware to wrap the request callback chain, it follows that this package **can only be used with HTTP** (express, fastify) with the full functionality. You can still use it with other transports, but you wouldn't be able to use CLS in enhancers (_Guards, Interceptors, Pipes, Exception Filters_), since I haven't found a way to wrap the incoming calls there. If you have any idea how that could be possible, please let me know.
+> Note: Because we use middleware to hook the request callback chain, it follows that this package **can only be used with HTTP** (express, fastify) with the full functionality. You can still use it with other transports, but you wouldn't be able to use CLS in enhancers (_Guards, Interceptors, Pipes, Exception Filters_), since I haven't found a way to hook the incoming calls there (yet).
 
 # API
 
@@ -159,8 +162,13 @@ interface ClsService {
     getId(): string;
 
     /**
+     * run any following code in a shared cls context
+     */
+    enter(): void;
+
+    /**
      * run the callback in a shared cls context
-     * (if run in an active context, creates a nested one
+     * (if run in an active context, creates a nested one,
      * setting values in a nested context does not
      * overwrite those in the parent context)
      */
@@ -171,12 +179,6 @@ interface ClsService {
      * and return the returned value from it
      */
     runAndReturn<T>(callback: () => T): T;
-
-    /**
-     * The underlying cls-hooked namespace object
-     * in case you need the full functionality
-     */
-    readonly namespace: Namespace;
 }
 ```
 
@@ -314,9 +316,11 @@ function helper() {
 
 # Namespaces (experimental)
 
-> Warning: Namespace support is currently experimental no tests. This section serves as a documentation of the future API and can change any time.
+> Warning: Namespace support is currently experimental and has no tests. While the API is mostly stable now, it can still change any time.
 
-The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides (will provide) a way to use multiple CLS namespaces in order to be fully compatible with `cls-hooked`.
+The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides a way to use multiple CLS namespaces in order to be fully compatible with `cls-hooked`.
+
+> Note: Since cls-hooked was ditched in version 1.2, it is no longer necessary to strive for compatibility with it. Still, the namespace support was there and there's no reason to remove it.
 
 To use custom namespace provider, use `ClsModule.forFeature('my-namespace')`.
 

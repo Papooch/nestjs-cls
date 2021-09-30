@@ -2,10 +2,6 @@
 /dist
 /node_modules
 
-# test gql
-gql
-test/gql
-
 # temporary files
 /tmp
 

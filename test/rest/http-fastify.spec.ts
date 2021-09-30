@@ -40,9 +40,9 @@ describe('Http Fastify App', () => {
         });
         expect(res.statusCode).toEqual(200);
         expect(JSON.parse(res.payload)).toEqual({
-            fromGuard: true,
-            fromInterceptor: true,
-            fromController: true,
+            fromGuard: 'OK',
+            fromInterceptor: 'OK',
+            fromController: 'OK',
         });
     });
 });

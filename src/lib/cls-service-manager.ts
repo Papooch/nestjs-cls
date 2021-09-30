@@ -2,12 +2,13 @@ import { ClassProvider, ValueProvider } from '@nestjs/common';
 import { createNamespace, Namespace } from 'cls-hooked';
 import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 import { ClsService } from './cls.service';
+import { AsyncLocalStorage } from 'async_hooks';
 
 export const getClsServiceToken = (namespace: string) =>
     `ClsService-${namespace}`;
 
 export class ClsServiceManager {
-    private static namespaces: Record<string, Namespace> = {};
+    private static namespaces: Record<string, AsyncLocalStorage<any>> = {};
 
     private static clsServices: Map<string | typeof ClsService, ClsService> =
         new Map([
@@ -19,9 +20,7 @@ export class ClsServiceManager {
 
     private static resolveNamespace(name: string) {
         if (!this.namespaces[name]) {
-            this.namespaces[name] = createNamespace(
-                name ?? CLS_DEFAULT_NAMESPACE,
-            );
+            this.namespaces[name] = new AsyncLocalStorage();
         }
         return this.namespaces[name];
     }
