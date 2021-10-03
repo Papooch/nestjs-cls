@@ -4,6 +4,8 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 
 > Note: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
 
+> Note: There has been a _breaking change_ in minor version 1.3 that only affects `GraphQL Apollo`, see [Compatibility considerations - GraphQL](#graphql)
+
 # Outline
 
 -   [Install](#install)
@@ -151,108 +153,50 @@ function bootstrap() {
 
 The injectable `ClsService` provides the following API to manipulate the cls context:
 
-```ts
-interface ClsService {
-    /**
-     * set a value on the cls context
-     */
-    set<T>(key: string, value: T): T;
-
-    /**
-     * retrieve a value from the cls context
-     */
-    get<T>(key: string): T;
-
-    /**
-     * retrieve the request id
-     * (a shorthand of cls.get(CLS_ID))
-     */
-    getId(): string;
-
-    /**
-     * run any following code in a shared cls context
-     */
-    enter(): void;
-
-    /**
-     * run the callback in a shared cls context
-     * (if run in an active context, creates a nested one,
-     * setting values in a nested context does not
-     * overwrite those in the parent context)
-     */
-    run(callback: () => void): void;
-
-    /**
-     * run the callback in a shared cls context
-     * and return the returned value from it
-     */
-    runAndReturn<T>(callback: () => T): T;
-}
-```
+-   **_`set`_**`<T>(key: string, value: T): T`  
+    Set a value on the CLS context.
+-   **_`get`_**`<T>(key: string): T`  
+    Retrieve a value from the CLS context by key.
+-   **_`getId`_**`(): string;`  
+    Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
+-   **_`getStore`_**`(): any`  
+    Retrieve the object containing all properties of the current CLS context.
+-   **_`enter`_**`(): void;`  
+    Run any following code in a shared CLS context.
+-   **_`run`_**`(callback: () => T): T;`  
+    Run the callback in a shared CLS context.
+-   **_`isActive`_**`(): boolean`  
+    Whether the current code runs within an active CLS context.
 
 # Options
 
-The `ClsModule.register` method takes the following options:
+The `ClsModule.register()` method takes the following options:
 
-```ts
-interface ClsModuleOptions {
-    /**
-     * The name of the cls namespace. This is the namespace
-     * that will be used by the ClsService and ClsMiddleware/Interc
-     * (most of the time you will not need to touch this setting)
-     */
-    namespaceName?: string;
+-   **`ClsModuleOptions`**
 
-    /**
-     * whether to make the module global, so you don't need
-     * to import `ClsModule` in other modules
-     */
-    global?: boolean;
+    -   **_`namespaceName`_: `string`**  
+        The name of the cls namespace. This is the namespace that will be used by the ClsService and ClsMiddleware (most of the time you will not need to touch this setting)
+    -   **_`global:`_ `boolean`** (default _`false`_)  
+        Whether to make the module global, so you do to import `ClsModule` in other modules.
+    -   **_`middleware:`_ `ClsMiddlewareOptions`**  
+        An object with additional middleware options, see below
 
-    /**
-     * Cls middleware options
-     */
-    middleware?: ClsMiddlewareOptions;
-}
+The `ClsMiddleware` takes the following options (either set up in `ClsModuleOptions` or directly when instantiating it manually):
 
-interface ClsMiddlewareOptions {
-    /**
-     * whether to mount the middleware to every route
-     */
-    mount?: boolean; // default false
+-   **`ClsMiddlewareOptions`**
 
-    /**
-     * whether to automatically generate request ids
-     */
-    generateId?: boolean; // default false
-
-    /**
-     * the function to generate request ids inside the middleware
-     */
-    idGenerator?: (req: Request) => string | Promise<string>;
-
-    /**
-     * Whether to store the Request object to the cls
-     * It will be available under the CLS_REQ key
-     */
-    saveReq?: boolean; // default true
-
-    /**
-     * Whether to store the Response object to the cls
-     * It will be available under the CLS_RES key
-     */
-    saveRes?: boolean; // default false
-
-    /**
-     * Set to true to set up the context using a call to
-     * `AsyncLocalStorage#enterWith` instead of wrapping the
-     * `next()` call with the safer `AsyncLocalStorage#run`
-     *
-     * Most of the time this should not be necessary, but
-     * some frameworks are known to lose the context wih `run`.
-     */
-    useEnterWith?: boolean; // default false;
-```
+    -   **_`mount`_: `boolean`** (default _`false`_)  
+        Whether to automatically mount the middleware to every route (not applicable when instantiating manually)
+    -   **_`generateId`_: `bolean`** (default _`false`_)  
+        Whether to automatically generate request IDs.
+    -   **_`idGenerator`_: `(req: Request) => string | Promise<string>`**  
+        An optional function for generating the request ID. It takes the `Request` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 10 characters.
+    -   **_`saveReq`_: `boolean`** (default _`true`_)  
+         Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
+    -   **_`saveRes`_: `boolean`** (default _`false`_)  
+        Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
+    -   **_`useEnterWith`_: `boolean`** (default _`false`_)  
+        Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
 
 # Request ID
 
@@ -345,7 +289,7 @@ This package is 100% compatible with Nest-supported REST controllers.
 
 ## GraphQL
 
-For GraphQL, the ClsMiddleware needs to be [mounted manually](#manually-mounting-the-middleware) in order to correctly set up the context for resolvers.
+For GraphQL, the ClsMiddleware needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers.
 
 -   ✔ Mercurius (Fastify)
 -   ⚠ Apollo (Express)
@@ -404,7 +348,7 @@ export class HelloController {
     @Get('/hello')
     hello2() {
         // seting up cls context manually
-        return this.myCls.runAndReturn(() => {
+        return this.myCls.run(() => {
             this.myCls.set('hi', 'Hello');
             return this.helloService.sayHello();
         });

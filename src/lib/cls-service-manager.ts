@@ -25,13 +25,6 @@ export class ClsServiceManager {
         return this.namespaces[name];
     }
 
-    // static setDefaultNamespace(name: string) {
-    //     this.clsServices.set(
-    //         ClsService,
-    //         new ClsService(this.resolveNamespace(name)),
-    //     );
-    // }
-
     static addClsService(name: string) {
         const service = new ClsService(this.resolveNamespace(name));
         this.clsServices.set(
@@ -41,6 +34,11 @@ export class ClsServiceManager {
         return service;
     }
 
+    /**
+     * Retrieve a ClsService outside of Nest's DI.
+     * @param name namespace name, omit for default
+     * @returns the ClsService with the given namespace
+     */
     static getClsService(name?: string) {
         const cls = this.clsServices.get(
             name ? getClsServiceToken(name) : ClsService,

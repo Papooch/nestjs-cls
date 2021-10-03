@@ -25,16 +25,16 @@ describe('ClsService', () => {
     });
 
     it('should set and retrieve the context', () => {
-        service.runAndReturn(() => {
+        service.run(() => {
             service.set('key', 123);
             expect(service.get('key')).toEqual(123);
         });
     });
     it('should not retireve context in a different call', () => {
-        service.runAndReturn(() => {
+        service.run(() => {
             service.set('key', 123);
         });
-        service.runAndReturn(() => {
+        service.run(() => {
             expect(service.get('key')).not.toEqual(123);
         });
     });
