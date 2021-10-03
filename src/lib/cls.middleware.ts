@@ -17,10 +17,12 @@ export class ClsMiddleware implements NestMiddleware {
     }
     use = async (req: any, res: any, next: () => any) => {
         const cls = ClsServiceManager.getClsService(this.options.namespaceName);
-        const callback = () => {
+        const callback = async () => {
             this.options.useEnterWith && cls.enter();
-            if (this.options.generateId)
-                cls.set(CLS_ID, this.options.idGenerator(req));
+            if (this.options.generateId) {
+                const id = await this.options.idGenerator(req);
+                cls.set(CLS_ID, id);
+            }
             if (this.options.saveReq) cls.set(CLS_REQ, req);
             if (this.options.saveRes) cls.set(CLS_RES, res);
             next();
