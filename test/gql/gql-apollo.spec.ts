@@ -13,7 +13,7 @@ describe('GQL Apollo App', () => {
             imports: [AppModule],
         }).compile();
         app = moduleFixture.createNestApplication();
-        app.use(new ClsMiddleware().use);
+        app.use(new ClsMiddleware({ useEnterWith: true }).use);
         await app.init();
     });
 

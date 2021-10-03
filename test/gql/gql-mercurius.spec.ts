@@ -19,7 +19,7 @@ describe('GQL Mercurius App', () => {
             new FastifyAdapter(),
             { logger: false },
         );
-        app.use(new ClsMiddleware().use);
+        app.use(new ClsMiddleware({ generateId: true }).use);
         await app.init();
         await app.getHttpAdapter().getInstance().ready();
     });

@@ -9,11 +9,15 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 -   [Install](#install)
 -   [Quick Start](#quick-start)
 -   [How it works](#how-it-works)
--   [Options](#options)
 -   [API](#api)
+-   [Options](#options)
 -   [Request ID](#request-id)
 -   [Custom CLS Middleware](#custom-cls-middleware)
 -   [Breaking out of DI](#breaking-out-of-di)
+-   [Compatibility considerations](#compatibility-considerations)
+    -   [REST](#rest)
+    -   [GraphQL](#graphql)
+    -   [Others](#others)
 -   [Namespaces](#namespaces-experimental) (experimental)
 
 # Install
@@ -100,6 +104,20 @@ export class AppService {
 }
 ```
 
+# How it works
+
+Continuation-local storage provides a common space for storing and retrieving data throughout the life of a function/callback call chain. In NestJS, this allows for sharing request data across the lifetime of a single request - without the need for request-scoped providers. It also makes it easy to track and log request ids throughout the whole application.
+
+To make CLS work, it is required to set up a cls context first. This is done by calling `cls.run()` (or `cls.enter()`) somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
+
+Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()`
+
+All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
+
+Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
+
+> Note: Because we use middleware to hook the request callback chain, it follows that this package **can only be used with HTTP** (express, fastify) with the full functionality. You can still use it with other transports, but you wouldn't be able to use CLS in enhancers (_Guards, Interceptors, Pipes, Exception Filters_), since I haven't found a way to hook the incoming calls there (yet).
+
 ## Manually mounting the middleware
 
 Sometimes, you might want to only use CLS on certain routes. In that case, you can bind the ClsMiddleware manually in the module:
@@ -118,26 +136,16 @@ Sometimes, however, that won't be enough, because the middleware could be mounte
 function bootstrap() {
     const app = await NestFactory.create(AppModule);
     // create and mount the middleware manually here
-    app.use(new ClsMiddleware({}).use);
+    app.use(
+        new ClsMiddleware({
+            /* useEnterWith: true*/
+        }).use,
+    );
     await app.listen(3000);
 }
 ```
 
 > Please note: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.forRoot()`, so you will have to provide them yourself in the constructor.
-
-# How it works
-
-Continuation-local storage provides a common space for storing and retrieving data throughout the life of a function/callback call chain. In NestJS, this allows for sharing request data across the lifetime of a single request - without the need for request-scoped providers. It also makes it easy to track and log request ids throughout the whole application.
-
-To make CLS work, it is required to set up a cls context first. This is done by calling `cls.enter()` somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
-
-Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()`
-
-All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
-
-Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
-
-> Note: Because we use middleware to hook the request callback chain, it follows that this package **can only be used with HTTP** (express, fastify) with the full functionality. You can still use it with other transports, but you wouldn't be able to use CLS in enhancers (_Guards, Interceptors, Pipes, Exception Filters_), since I haven't found a way to hook the incoming calls there (yet).
 
 # API
 
@@ -234,6 +242,16 @@ interface ClsMiddlewareOptions {
      * It will be available under the CLS_RES key
      */
     saveRes?: boolean; // default false
+
+    /**
+     * Set to true to set up the context using a call to
+     * `AsyncLocalStorage#enterWith` instead of wrapping the
+     * `next()` call with the safer `AsyncLocalStorage#run`
+     *
+     * Most of the time this should not be necessary, but
+     * some frameworks are known to lose the context wih `run`.
+     */
+    useEnterWith?: boolean; // default false;
 ```
 
 # Request ID
@@ -313,6 +331,29 @@ function helper() {
     console.log(cls.getId());
 }
 ```
+
+> Please note: Only use this feature where absolutely necessary. Using this technique instead of dependency injection will make it difficult to mock the ClsService and your code will become harder to test.
+
+# Compatibility considerations
+
+## REST
+
+This package is 100% compatible with Nest-supported REST controllers.
+
+-   ✔ Express
+-   ✔ Fastify
+
+## GraphQL
+
+For GraphQL, the ClsMiddleware needs to be [mounted manually](#manually-mounting-the-middleware) in order to correctly set up the context for resolvers.
+
+-   ✔ Mercurius (Fastify)
+-   ⚠ Apollo (Express)
+    -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` optons.
+
+## Others
+
+There's no support for non-http transports yet 🙁, but stay tuned.
 
 # Namespaces (experimental)
 

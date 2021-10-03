@@ -49,5 +49,15 @@ export class ClsMiddlewareOptions {
      */
     saveRes? = false;
 
+    /**
+     * Set to true to set up the context using a call to
+     * `AsyncLocalStorage#enterWith` instead of wrapping the
+     * `next()` call with the safer `AsyncLocalStorage#run`
+     *
+     * Most of the time this should not be necessary, but
+     * some frameworks are known to lose the context wih `run`.
+     */
+    useEnterWith? = false;
+
     readonly namespaceName?: string;
 }

@@ -15,13 +15,19 @@ export class ClsMiddleware implements NestMiddleware {
     ) {
         this.options = { ...new ClsMiddlewareOptions(), ...options };
     }
-    use = (req: any, res: any, next: () => any) => {
+    use = async (req: any, res: any, next: () => any) => {
         const cls = ClsServiceManager.getClsService(this.options.namespaceName);
-        cls.enter();
-        if (this.options.generateId)
-            cls.set(CLS_ID, this.options.idGenerator(req));
-        if (this.options.saveReq) cls.set(CLS_REQ, req);
-        if (this.options.saveRes) cls.set(CLS_RES, res);
-        next();
+        const callback = () => {
+            this.options.useEnterWith && cls.enter();
+            if (this.options.generateId)
+                cls.set(CLS_ID, this.options.idGenerator(req));
+            if (this.options.saveReq) cls.set(CLS_REQ, req);
+            if (this.options.saveRes) cls.set(CLS_RES, res);
+            next();
+        };
+        const runner = this.options.useEnterWith
+            ? setImmediate
+            : cls.run.bind(cls);
+        runner(callback);
     };
 }
