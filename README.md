@@ -190,7 +190,7 @@ The `ClsMiddleware` takes the following options (either set up in `ClsModuleOpti
     -   **_`generateId`_: `bolean`** (default _`false`_)  
         Whether to automatically generate request IDs.
     -   **_`idGenerator`_: `(req: Request) => string | Promise<string>`**  
-        An optional function for generating the request ID. It takes the `Request` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 10 characters.
+        An optional function for generating the request ID. It takes the `Request` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
     -   **_`saveReq`_: `boolean`** (default _`true`_)  
          Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
     -   **_`saveRes`_: `boolean`** (default _`false`_)  
@@ -293,7 +293,7 @@ For GraphQL, the ClsMiddleware needs to be [mounted manually](#manually-mounting
 
 -   ✔ Mercurius (Fastify)
 -   ⚠ Apollo (Express)
-    -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` optons.
+    -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` options.
 
 ## Others
 

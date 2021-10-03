@@ -28,7 +28,7 @@ export class ClsMiddleware implements NestMiddleware {
             next();
         };
         const runner = this.options.useEnterWith
-            ? setImmediate
+            ? cls.exit.bind(cls)
             : cls.run.bind(cls);
         runner(callback);
     };

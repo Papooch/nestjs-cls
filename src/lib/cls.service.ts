@@ -52,7 +52,7 @@ export class ClsService<S = Record<string, any>> {
     /**
      * Run the callback in a shared CLS context.
      * @param callback function to run
-     * @returns the return value from the callback
+     * @returns whatever the callback returns
      */
     run<T = any>(callback: () => T) {
         return this.namespace.run({}, callback);
@@ -63,6 +63,15 @@ export class ClsService<S = Record<string, any>> {
      */
     enter() {
         return this.namespace.enterWith({});
+    }
+
+    /**
+     * Run the callback outside of a shared CLS context
+     * @param callback function to run
+     * @returns whatever the callback returns
+     */
+    exit<T = any>(callback: () => T): T {
+        return this.namespace.exit(callback);
     }
 
     /**

@@ -1,5 +1,4 @@
 import { ClassProvider, ValueProvider } from '@nestjs/common';
-import { createNamespace, Namespace } from 'cls-hooked';
 import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 import { ClsService } from './cls.service';
 import { AsyncLocalStorage } from 'async_hooks';

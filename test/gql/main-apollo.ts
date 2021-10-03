@@ -9,7 +9,7 @@ async function bootstrap() {
             useEnterWith: true,
             generateId: true,
             idGenerator: () => {
-                return Math.random().toString(36).slice(-10);
+                return Math.random().toString(36).slice(-8);
             },
         }).use,
     );
