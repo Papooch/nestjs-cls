@@ -1,7 +1,4 @@
-import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-
-import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from './gql-mercurius.app';
 import { ClsMiddleware } from '../../src';
 import {
@@ -19,16 +16,15 @@ describe('GQL Mercurius App', () => {
             new FastifyAdapter(),
             { logger: false },
         );
-        app.use(new ClsMiddleware({ generateId: true }).use);
+        app.use(new ClsMiddleware({ generateId: true, useEnterWith: true }).use);
         await app.init();
         await app.getHttpAdapter().getInstance().ready();
     });
 
     it('works with Mercurius', async () => {
-        const res = await app.inject({
-            method: 'POST',
-            url: '/graphql',
-            payload: {
+        const res = await request(app.getHttpServer())
+            .post('/graphql')
+            .send({
                 query: `query {
                 recipes {
                     id
@@ -36,11 +32,10 @@ describe('GQL Mercurius App', () => {
                     description
                 }
             }`,
-            },
-        });
-        const body = JSON.parse(res.body);
-        expect(body.data).toHaveProperty('recipes');
-        expect(body.data.recipes[0]).toEqual({
+            })
+        const data = res.body.data
+        expect(data).toHaveProperty('recipes');
+        expect(data.recipes[0]).toEqual({
             id: 'OK',
             title: 'OK',
             description: 'OK',
