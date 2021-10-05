@@ -291,7 +291,8 @@ This package is 100% compatible with Nest-supported REST controllers.
 
 For GraphQL, the ClsMiddleware needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers.
 
--   ✔ Mercurius (Fastify)
+-   ⚠ Mercurius (Fastify)
+    -   There's an [issue with CLS and Fastify](https://github.com/Papooch/nestjs-cls/issues/1), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` options.
 -   ⚠ Apollo (Express)
     -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` options.
 
