@@ -1,7 +1,7 @@
 {
     "name": "nestjs-cls",
     "version": "1.3.1",
-    "description": "Wrapper around cls-hooked with enhanced NestJS support",
+    "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
     "author": "papooch",
     "private": false,
     "license": "MIT",
@@ -16,7 +16,8 @@
         "cls",
         "continuation-local-storage",
         "als",
-        "async_hooks"
+        "async_hooks",
+        "request context"
     ],
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",

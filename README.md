@@ -4,18 +4,19 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 
 > Note: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
 
-> Note: There has been a _breaking change_ in minor version 1.3 that only affects `GraphQL Apollo`, see [Compatibility considerations - GraphQL](#graphql)
-
 # Outline
 
 -   [Install](#install)
 -   [Quick Start](#quick-start)
 -   [How it works](#how-it-works)
+    -   [HTTP](#http)
+    -   [Non-HTTP](#non-http)
 -   [API](#api)
 -   [Options](#options)
 -   [Request ID](#request-id)
--   [Custom CLS Middleware](#custom-cls-middleware)
+-   [Additional CLS Setup](#additional-cls-setup)
 -   [Breaking out of DI](#breaking-out-of-di)
+-   [Security considerations](#security-considerations)
 -   [Compatibility considerations](#compatibility-considerations)
     -   [REST](#rest)
     -   [GraphQL](#graphql)
@@ -36,7 +37,7 @@ yarn add nestjs-cls
 
 Below is an example of storing the client's IP address in an interceptor and retrieving it in a service without explicitly passing it along.
 
-> Note: This example assumes you are using HTTP and therefore can use middleware. For usage with non-HTTP controllers, keep reading.
+> Note: This example assumes you are using HTTP and therefore can use middleware. For usage with non-HTTP transports, keep reading.
 
 ```ts
 // app.module.ts
@@ -112,13 +113,13 @@ Continuation-local storage provides a common space for storing and retrieving da
 
 To make CLS work, it is required to set up a cls context first. This is done by calling `cls.run()` (or `cls.enter()`) somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
 
-Since in NestJS, HTTP middleware is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()`
+## HTTP
+
+Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()`
 
 All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
 
 Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
-
-> Note: Because we use middleware to hook the request callback chain, it follows that this package **can only be used with HTTP** (express, fastify) with the full functionality. You can still use it with other transports, but you wouldn't be able to use CLS in enhancers (_Guards, Interceptors, Pipes, Exception Filters_), since I haven't found a way to hook the incoming calls there (yet).
 
 ## Manually mounting the middleware
 
@@ -148,6 +149,18 @@ function bootstrap() {
 ```
 
 > Please note: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.forRoot()`, so you will have to provide them yourself in the constructor.
+
+## Non-HTTP
+
+For all other transports that don't use middleware, this package provides a `ClsGuard` to set up the CLS context. To use it, pass its configuration to the `guard` property to the `ClsModule.register` options:
+
+```ts
+ClsModule.register({
+    guard: { generateId: true, mount: true }
+}),
+```
+
+> Please note: using the ClsGuard comes with some [security considerations](#security-considerations)!
 
 # API
 
@@ -180,6 +193,8 @@ The `ClsModule.register()` method takes the following options:
         Whether to make the module global, so you do to import `ClsModule` in other modules.
     -   **_`middleware:`_ `ClsMiddlewareOptions`**  
         An object with additional middleware options, see below
+    -   **_`guard:`_ `ClsGuardOptions`**  
+        An object with additional guard options, see below
 
 The `ClsMiddleware` takes the following options (either set up in `ClsModuleOptions` or directly when instantiating it manually):
 
@@ -198,11 +213,20 @@ The `ClsMiddleware` takes the following options (either set up in `ClsModuleOpti
     -   **_`useEnterWith`_: `boolean`** (default _`false`_)  
         Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
 
+-   **`ClsGuardOptions`**
+
+    -   **_`mount`_: `boolean`** (default _`false`_)  
+        Whether to automatically mount the guard as APP_GUARD
+    -   **_`generateId`_: `bolean`** (default _`false`_)  
+        Whether to automatically generate request IDs.
+    -   **_`idGenerator`_: `(context: ExecutionContext) => string | Promise<string>`**  
+        An optional function for generating the request ID. It takes the `ExecutionContext` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
+
 # Request ID
 
-Because of a shared storage, CLS is an ideal tool for tracking request (correlation) ids for the purpose of logging. This package provides an option to automatically generate request ids in the middleware, if you pass `{ generateId: true }` to the middleware options. By default, the generated is a string based on `Math.random()`, but you can provide a custom function in the `idGenerator` option.
+Because of a shared storage, CLS is an ideal tool for tracking request (correlation) ids for the purpose of logging. This package provides an option to automatically generate request ids in the middleware/guard, if you pass `{ generateId: true }` to the middleware/guard options. By default, the generated ID is a string based on `Math.random()`, but you can provide a custom function in the `idGenerator` option.
 
-This function receives the `Request` as the first parameter, which can be used in the generation process.
+This function receives the `Request` (or `ExecutionContext` in case a `ClsGuard` is used) as the first parameter, which can be used in the generation process and should return a string id that will be stored in the CLS for later use.
 
 Below is an example of retrieving the request ID from the request header with a fallback to an autogenerated one.
 
@@ -239,30 +263,28 @@ class MyService {
 
     hello() {
         this.logger.log('Hello');
-        // -> logs for ex.: "<7tuihq103e> Hello"
+        // -> logs for ex.: "<44c2d8ff-49a6-4244-869f-75a2df11517a> Hello"
     }
 }
 ```
 
-# Custom CLS Middleware
+# Additional CLS Setup
 
-The default middleware provides some basic functionality, but you can replace it with a custom one if you need some custom logic handling the initialisation of the cls namespace;
+The CLS middleware/guard provide some default functionality, but sometimes you might want to store more thing in the context by default. This can be of course done in a custom enhancer bound after, but for this scenario the `ClsMiddleware/ClsGuard` options expose the `setup` function, which will be executed in the middleware/guard after the CLS context is set up.
+
+The function receives the `ClsService` and the `Request` (or `ExecutionContext`) object, and can be asynchronous.
 
 ```ts
-@Injectable()
-export class HelloClsMiddleware implements NestMiddleware {
-    constructor(private readonly cls: ClsService) {}
-
-    use(req: Request, res: Response, next: () => NextFunction) {
-        this.cls.run(() => {
-            // any custom logic
-            next();
-        });
-    }
-}
+ClsModule.register({
+    middleware: {
+        mount: true,
+        setup: (cls, req) => {
+            // put some additional default info in the CLS
+            cls.set('AUTH', { authenticated: false });
+        },
+    },
+});
 ```
-
-> Note: Middleware options passed to `ClsModule.register` do not apply here, so you will need to implement any custom logic (like the generation of request ids) manually.
 
 # Breaking out of DI
 
@@ -278,27 +300,41 @@ function helper() {
 
 > Please note: Only use this feature where absolutely necessary. Using this technique instead of dependency injection will make it difficult to mock the ClsService and your code will become harder to test.
 
+# Security considerations
+
+It is often discussed whether [`AsyncLocalStorage`](https://nodejs.org/api/async_context.html) is safe to use for _concurrent requests_ (because of a possible context leak) and whether the context could be _lost_ throughout the life duration of a request.
+
+The `ClsMiddleware` by default uses the safe `run()` method, so it should be possible to leak context, however, that only works for REST `Controllers`.
+
+GraphQL `Resolvers`, cause the context to be lost and therefore require using the less safe `enterWith()` method. The same applies to using `ClsGuard` to set up the context, since there's no callback to wrap with the `run()` call (so the context would be not available outside of the guard otherwise).
+
+**This has one consequence that should be taken into account:**
+
+> When the `enterWith` method is used, any consequent requests _get access_ to the context of the previous one _until the request hits the `enterWith` call_.
+
+That means, when using `ClsMiddleware` with the `useEnterWith` option, or `ClsGuard` to set up context, be sure to mount them as early in the request lifetime as possible and do not use any other enhancers that rely on `ClsService` before them. For `ClsGuard`, that means you should probably manually mount it in `AppModule` if you require any other guard to run _after_ it.
+
 # Compatibility considerations
 
 ## REST
 
-This package is 100% compatible with Nest-supported REST controllers.
+This package is 100% compatible with Nest-supported REST controllers when you use the `ClsMiddleware` with the `mount` option.
 
 -   ✔ Express
 -   ✔ Fastify
 
 ## GraphQL
 
-For GraphQL, the ClsMiddleware needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers.
+For GraphQL, the `ClsMiddleware` needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers. Additionally, you have to pass `useEnterWith: true` to the `ClsMiddleware` options, because the context gets lost otherwise.
 
--   ⚠ Mercurius (Fastify)
-    -   There's an [issue with CLS and Mercurius](https://github.com/Papooch/nestjs-cls/issues/1), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` options.
 -   ⚠ Apollo (Express)
-    -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042), so in order to work around it, you have to pass `useEnterWith: true` to the `ClsMiddleware` options.
+    -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042) talking about the context loss.
+-   ⚠ Mercurius (Fastify)
+    -   The [same problem](https://github.com/Papooch/nestjs-cls/issues/1) applies here.
 
 ## Others
 
-There's no support for non-http transports yet 🙁, but stay tuned.
+Use the `ClsGuard` to set up context with any other platform. This is still **experimental**, as there are no test and I can't guarantee it will work with your platform of choice.
 
 # Namespaces (experimental)
 
