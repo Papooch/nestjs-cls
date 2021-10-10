@@ -1,10 +1,23 @@
+import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { ClsMiddleware } from '../../src';
-import { AppModule } from './gql-mercurius.app';
+import { MercuriusModule } from 'nestjs-mercurius';
+import { ClsMiddleware, ClsModule } from '../../src';
+import { ItemModule } from './item/item.module';
+
+@Module({
+    imports: [
+        ClsModule.register({ global: true }),
+        ItemModule,
+        MercuriusModule.forRoot({
+            autoSchemaFile: __dirname + 'schema.gql',
+        }),
+    ],
+})
+export class AppModule {}
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(

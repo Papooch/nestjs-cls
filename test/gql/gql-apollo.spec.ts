@@ -1,13 +1,22 @@
-import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-
+import { INestApplication, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from './gql-apollo.app';
-import { ClsMiddleware } from '../../src';
+import { ClsMiddleware, ClsModule } from '../../src';
 import { expectIdsGql } from './expect-ids-gql';
+import { ItemModule } from './item/item.module';
+import { GraphQLModule } from '@nestjs/graphql';
 
-describe('GQL Apollo App', () => {
-    let app: INestApplication;
+let app: INestApplication;
+describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
+    @Module({
+        imports: [
+            ClsModule.register({ global: true }),
+            ItemModule,
+            GraphQLModule.forRoot({
+                autoSchemaFile: __dirname + 'schema.gql',
+            }),
+        ],
+    })
+    class AppModule {}
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -20,7 +29,45 @@ describe('GQL Apollo App', () => {
         await app.init();
     });
 
-    it('works wit Apollo', () => {
+    it('works with middleware', () => {
+        return expectIdsGql(app);
+    });
+
+    it('does not leak context', () => {
+        return Promise.all([
+            expectIdsGql(app),
+            expectIdsGql(app),
+            expectIdsGql(app),
+            expectIdsGql(app),
+            expectIdsGql(app),
+        ]);
+    });
+});
+
+describe('GQL Apollo App - Auto bound Guard', () => {
+    @Module({
+        imports: [
+            ClsModule.register({
+                global: true,
+                guard: { mount: true, generateId: true },
+            }),
+            ItemModule,
+            GraphQLModule.forRoot({
+                autoSchemaFile: __dirname + 'schema.gql',
+            }),
+        ],
+    })
+    class AppModule {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [AppModule],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
+
+    it('works with guard', () => {
         return expectIdsGql(app);
     });
 

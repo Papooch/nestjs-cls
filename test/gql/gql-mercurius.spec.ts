@@ -1,15 +1,26 @@
-import request from 'supertest';
-import { AppModule } from './gql-mercurius.app';
-import { ClsMiddleware } from '../../src';
+import { ClsMiddleware, ClsModule } from '../../src';
 import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { NestFactory } from '@nestjs/core';
 import { expectIdsGql } from './expect-ids-gql';
+import { Module } from '@nestjs/common';
+import { ItemModule } from './item/item.module';
+import { MercuriusModule } from 'nestjs-mercurius';
 
-describe('GQL Mercurius App', () => {
-    let app: NestFastifyApplication;
+let app: NestFastifyApplication;
+describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
+    @Module({
+        imports: [
+            ClsModule.register({ global: true }),
+            ItemModule,
+            MercuriusModule.forRoot({
+                autoSchemaFile: __dirname + 'schema.gql',
+            }),
+        ],
+    })
+    class AppModule {}
 
     beforeAll(async () => {
         app = await NestFactory.create<NestFastifyApplication>(
@@ -24,7 +35,7 @@ describe('GQL Mercurius App', () => {
         await app.getHttpAdapter().getInstance().ready();
     });
 
-    it('works with Mercurius', async () => {
+    it('works with middleware', async () => {
         return expectIdsGql(app);
     });
 

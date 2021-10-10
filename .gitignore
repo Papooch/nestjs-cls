@@ -4,7 +4,7 @@
 
 # temporary files
 /tmp
-gqlschema
+gqlschema.gql
 
 # Logs
 logs
