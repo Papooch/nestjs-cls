@@ -1,3 +1,4 @@
+import { ExecutionContext } from '@nestjs/common';
 import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 
 export class ClsModuleOptions {
@@ -18,11 +19,16 @@ export class ClsModuleOptions {
      * Cls middleware options
      */
     middleware?: ClsMiddlewareOptions = null;
+
+    /**
+     * Cls guard options
+     */
+    guard?: ClsGuardOptions = null;
 }
 
 export class ClsMiddlewareOptions {
     /**
-     * whether to mount the middleware/interceptor to every route
+     * whether to mount the middleware to every route
      */
     mount?: boolean; // default false
 
@@ -58,6 +64,26 @@ export class ClsMiddlewareOptions {
      * some frameworks are known to lose the context wih `run`.
      */
     useEnterWith? = false;
+
+    readonly namespaceName?: string;
+}
+
+export class ClsGuardOptions {
+    /**
+     * whether to mount the guard globally
+     */
+    mount?: boolean; // default false
+
+    /**
+     * whether to automatically generate request ids
+     */
+    generateId?: boolean; // default false
+
+    /**
+     * the function to generate request ids inside the guard
+     */
+    idGenerator?: (context: ExecutionContext) => string | Promise<string> =
+        () => Math.random().toString(36).slice(-8);
 
     readonly namespaceName?: string;
 }

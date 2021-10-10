@@ -6,10 +6,15 @@ import {
     NestModule,
     Provider,
 } from '@nestjs/common';
-import { HttpAdapterHost, ModuleRef } from '@nestjs/core';
+import { APP_GUARD, HttpAdapterHost, ModuleRef } from '@nestjs/core';
 import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
-import { CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
-import { ClsMiddlewareOptions, ClsModuleOptions } from './cls.interfaces';
+import { CLS_GUARD_OPTIONS, CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
+import { ClsGuard } from './cls.guard';
+import {
+    ClsGuardOptions,
+    ClsMiddlewareOptions,
+    ClsModuleOptions,
+} from './cls.interfaces';
 
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
@@ -70,16 +75,33 @@ export class ClsModule implements NestModule {
             ...options.middleware,
             namespaceName: options.namespaceName,
         };
+        const clsGuardOptions = {
+            ...new ClsGuardOptions(),
+            ...options.guard,
+            namespaceName: options.namespaceName,
+        };
         const providers: Provider[] = [
             ...ClsServiceManager.getClsServicesAsProviders(),
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 useValue: clsMiddlewareOptions,
             },
+            {
+                provide: CLS_GUARD_OPTIONS,
+                useValue: clsGuardOptions,
+            },
         ];
+        const guardArr = [];
+        if (clsGuardOptions.mount) {
+            guardArr.push({
+                provide: APP_GUARD,
+                useClass: ClsGuard,
+            });
+        }
+
         return {
             module: ClsModule,
-            providers,
+            providers: providers.concat(...guardArr),
             exports: providers,
             global: options.global,
         };
