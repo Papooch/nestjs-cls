@@ -20,8 +20,8 @@ import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
 
 @Module({
-    providers: [ClsService],
-    exports: [ClsService],
+    providers: [...ClsServiceManager.getClsServicesAsProviders()],
+    exports: [...ClsServiceManager.getClsServicesAsProviders()],
 })
 export class ClsModule implements NestModule {
     constructor(
@@ -54,7 +54,7 @@ export class ClsModule implements NestModule {
         }
     }
 
-    static forFeature(namespaceName: string): DynamicModule {
+    static forFeature(namespaceName?: string): DynamicModule {
         const providers = ClsServiceManager.getClsServicesAsProviders().filter(
             (p) =>
                 p.provide === getClsServiceToken(namespaceName) ||

@@ -25,6 +25,9 @@ export class ClsGuard implements CanActivate {
                 const id = await this.options.idGenerator(context);
                 cls.set(CLS_ID, id);
             }
+            if (this.options.setup) {
+                await this.options.setup(cls, context);
+            }
             return true;
         });
     }
