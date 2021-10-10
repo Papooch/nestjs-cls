@@ -2,6 +2,8 @@
 
 A continuation-local storage module compatible with [NestJS](https://nestjs.com/)'s dependency injection.
 
+_Continuous-local storage allows to store state and propagate it throughout callbacks and promise chains. It allows storing data throughout the lifetime of a web request or any other asynchronous duration. It is similar to thread-local storage in other languages._
+
 > Note: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
 
 # Outline
@@ -111,7 +113,7 @@ export class AppService {
 
 Continuation-local storage provides a common space for storing and retrieving data throughout the life of a function/callback call chain. In NestJS, this allows for sharing request data across the lifetime of a single request - without the need for request-scoped providers. It also makes it easy to track and log request ids throughout the whole application.
 
-To make CLS work, it is required to set up a cls context first. This is done by calling `cls.run()` (or `cls.enter()`) somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
+To make CLS work, it is required to set up the CLS context first. This is done by calling `cls.run()` (or `cls.enter()`) somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
 
 ## HTTP
 
@@ -126,7 +128,7 @@ Once that is set up, the `ClsService` will have access to a common storage in al
 Sometimes, you might want to only use CLS on certain routes. In that case, you can bind the ClsMiddleware manually in the module:
 
 ```ts
-export class TestHttpApp implements NestModule {
+export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         apply(ClsMiddleware).forRoutes(AppController);
     }
@@ -141,7 +143,7 @@ function bootstrap() {
     // create and mount the middleware manually here
     app.use(
         new ClsMiddleware({
-            /* useEnterWith: true*/
+            /* useEnterWith: true */
         }).use,
     );
     await app.listen(3000);
@@ -152,7 +154,9 @@ function bootstrap() {
 
 ## Non-HTTP
 
-For all other transports that don't use middleware, this package provides a `ClsGuard` to set up the CLS context. To use it, pass its configuration to the `guard` property to the `ClsModule.register` options:
+For all other transports that don't use middleware, this package provides a `ClsGuard` to set up the CLS context. While it is not a "guard" per-se, it's the second best place to set up the CLS context, since it would be too late to do it in an interceptor.
+
+To use it, pass its configuration to the `guard` property to the `ClsModule.register` options:
 
 ```ts
 ClsModule.register({
@@ -160,7 +164,24 @@ ClsModule.register({
 }),
 ```
 
-> Please note: using the ClsGuard comes with some [security considerations](#security-considerations)!
+If you need any other guards to use the `ClsService`, it's preferable mount `ClsGuard` manually as the first guard in the root module:
+
+```ts
+@Module({
+    //...
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ClsGuard,
+        },
+    ],
+})
+export class AppModule {}
+```
+
+> Please note: using the `ClsGuard` comes with some [security considerations](#security-considerations)!
+
+> Note: A guard might not be the best place to initiate the CLS context for all transports. I'm looking into providing alternative options for specific platforms.
 
 # API
 
@@ -206,6 +227,8 @@ The `ClsMiddleware` takes the following options (either set up in `ClsModuleOpti
         Whether to automatically generate request IDs.
     -   **_`idGenerator`_: `(req: Request) => string | Promise<string>`**  
         An optional function for generating the request ID. It takes the `Request` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
+    -   **_`setup`_: `(cls: ClsService, req: Request) => void | Promise<void>;`**  
+        Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
     -   **_`saveReq`_: `boolean`** (default _`true`_)  
          Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
     -   **_`saveRes`_: `boolean`** (default _`false`_)  
@@ -221,10 +244,12 @@ The `ClsMiddleware` takes the following options (either set up in `ClsModuleOpti
         Whether to automatically generate request IDs.
     -   **_`idGenerator`_: `(context: ExecutionContext) => string | Promise<string>`**  
         An optional function for generating the request ID. It takes the `ExecutionContext` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
+    -   **_`setup`_: `(cls: ClsService, context: ExecutionContext) => void | Promise<void>;`**  
+         Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
 
 # Request ID
 
-Because of a shared storage, CLS is an ideal tool for tracking request (correlation) ids for the purpose of logging. This package provides an option to automatically generate request ids in the middleware/guard, if you pass `{ generateId: true }` to the middleware/guard options. By default, the generated ID is a string based on `Math.random()`, but you can provide a custom function in the `idGenerator` option.
+Because of a shared storage, CLS is an ideal tool for tracking request (correlation) IDs for the purpose of logging. This package provides an option to automatically generate request IDs in the middleware/guard, if you pass `{ generateId: true }` to the middleware/guard options. By default, the generated ID is a string based on `Math.random()`, but you can provide a custom function in the `idGenerator` option.
 
 This function receives the `Request` (or `ExecutionContext` in case a `ClsGuard` is used) as the first parameter, which can be used in the generation process and should return a string id that will be stored in the CLS for later use.
 
@@ -236,7 +261,7 @@ ClsModule.register({
         mount: true,
         generateId: true
         idGenerator: (req: Request) =>
-            req.headers['X-Correlation-Id'] ?? uuid();
+            req.headers['X-Request-Id'] ?? uuid();
     }
 })
 ```
@@ -302,9 +327,9 @@ function helper() {
 
 # Security considerations
 
-It is often discussed whether [`AsyncLocalStorage`](https://nodejs.org/api/async_context.html) is safe to use for _concurrent requests_ (because of a possible context leak) and whether the context could be _lost_ throughout the life duration of a request.
+It is often discussed whether [`AsyncLocalStorage`](https://nodejs.org/api/async_context.html) is safe to use for _concurrent requests_ (because of a possible context leak) and whether the context could be _lost_ throughout the duration of a request.
 
-The `ClsMiddleware` by default uses the safe `run()` method, so it should be possible to leak context, however, that only works for REST `Controllers`.
+The `ClsMiddleware` by default uses the safe `run()` method, so it should not leak context, however, that only works for REST `Controllers`.
 
 GraphQL `Resolvers`, cause the context to be lost and therefore require using the less safe `enterWith()` method. The same applies to using `ClsGuard` to set up the context, since there's no callback to wrap with the `run()` call (so the context would be not available outside of the guard otherwise).
 
