@@ -9,7 +9,7 @@ export class TestGuard implements CanActivate {
     canActivate(
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
-        this.cls.set('FROM_GUARD', 'OK');
+        this.cls.set('FROM_GUARD', this.cls.getId());
         return this.cls.isActive();
     }
 }

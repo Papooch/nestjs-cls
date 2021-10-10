@@ -5,7 +5,8 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ClsService } from '../../src';
+import { identity } from 'rxjs';
+import { ClsService, CLS_ID } from '../../src';
 import { TestGuard } from '../common/test.guard';
 import { TestInterceptor } from '../common/test.interceptor';
 
@@ -15,9 +16,11 @@ export class TestHttpService {
 
     async hello() {
         return {
-            fromController: this.cls.get('FROM_CONTROLLER'),
-            fromInterceptor: this.cls.get('FROM_INTERCEPTOR'),
             fromGuard: this.cls.get('FROM_GUARD'),
+            fromInterceptor: this.cls.get('FROM_INTERCEPTOR'),
+            fromInterceptorAfter: this.cls.get('FROM_INTERCEPTOR'),
+            fromController: this.cls.get('FROM_CONTROLLER'),
+            fromService: this.cls.getId(),
         };
     }
 }
@@ -33,7 +36,7 @@ export class TestHttpController {
     @UseInterceptors(TestInterceptor)
     @Get('hello')
     hello() {
-        this.cls.set('FROM_CONTROLLER', 'OK');
+        this.cls.set('FROM_CONTROLLER', this.cls.getId());
         return this.service.hello();
     }
 }

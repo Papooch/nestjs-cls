@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ClsModule } from '../../src';
-import { RecipesModule } from './recipes/recipes.module';
+import { ItemModule } from './item/item.module';
 
 @Module({
     imports: [
         ClsModule.register({ global: true }),
-        RecipesModule,
+        ItemModule,
         GraphQLModule.forRoot({
             autoSchemaFile: __dirname + 'schema.gql',
         }),

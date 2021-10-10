@@ -5,37 +5,23 @@ import {
     NestModule,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
 import { ClsMiddleware, ClsModule } from '../../src';
+import { expectIdsRest } from './expect-ids-rest';
 import { TestHttpController, TestHttpService } from './http.app';
-
-@Module({
-    imports: [ClsModule.register({ middleware: { mount: true } })],
-    providers: [TestHttpService],
-    controllers: [TestHttpController],
-})
-export class TestAppWithAutoBoundMiddleware {}
-
-@Module({
-    imports: [ClsModule.register()],
-    providers: [TestHttpService],
-    controllers: [TestHttpController],
-})
-export class TestAppWithManuallyBoundMiddleware implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(ClsMiddleware).forRoutes('*');
-    }
-}
-
-@Module({
-    imports: [ClsModule.register()],
-    providers: [TestHttpService],
-    controllers: [TestHttpController],
-})
-export class TestAppWithoutMiddleware {}
 
 let app: INestApplication;
 describe('Http Express App - Auto bound Middleware', () => {
+    @Module({
+        imports: [
+            ClsModule.register({
+                middleware: { mount: true, generateId: true },
+            }),
+        ],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithAutoBoundMiddleware {}
+
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [TestAppWithAutoBoundMiddleware],
@@ -45,14 +31,22 @@ describe('Http Express App - Auto bound Middleware', () => {
     });
 
     it('works with middleware', () => {
-        return request(app.getHttpServer()).get('/hello').expect(200).expect({
-            fromGuard: 'OK',
-            fromInterceptor: 'OK',
-            fromController: 'OK',
-        });
+        return expectIdsRest(app);
     });
 });
+
 describe('Http Express App - Manually bound Middleware in AppModule', () => {
+    @Module({
+        imports: [ClsModule.register({ middleware: { generateId: true } })],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithManuallyBoundMiddleware implements NestModule {
+        configure(consumer: MiddlewareConsumer) {
+            consumer.apply(ClsMiddleware).forRoutes('*');
+        }
+    }
+
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [TestAppWithManuallyBoundMiddleware],
@@ -62,28 +56,62 @@ describe('Http Express App - Manually bound Middleware in AppModule', () => {
     });
 
     it('works with middleware', () => {
-        return request(app.getHttpServer()).get('/hello').expect(200).expect({
-            fromGuard: 'OK',
-            fromInterceptor: 'OK',
-            fromController: 'OK',
-        });
+        return expectIdsRest(app);
     });
 });
 describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
+    @Module({
+        imports: [ClsModule.register()],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithoutMiddleware {}
+
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [TestAppWithManuallyBoundMiddleware],
+            imports: [TestAppWithoutMiddleware],
         }).compile();
         app = moduleFixture.createNestApplication();
-        app.use(new ClsMiddleware().use);
+        app.use(new ClsMiddleware({ generateId: true }).use);
         await app.init();
     });
 
     it('works with middleware', () => {
-        return request(app.getHttpServer()).get('/hello').expect(200).expect({
-            fromGuard: 'OK',
-            fromInterceptor: 'OK',
-            fromController: 'OK',
-        });
+        return expectIdsRest(app);
+    });
+});
+
+describe('Http Express App - Auto bound Guard', () => {
+    @Module({
+        imports: [
+            ClsModule.register({
+                guard: { mount: true, generateId: true },
+            }),
+        ],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithAutoBoundGuard {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithAutoBoundGuard],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
+
+    it('works with guard', () => {
+        return expectIdsRest(app);
+    });
+
+    it('does not leak context', () => {
+        return Promise.all([
+            expectIdsRest(app),
+            expectIdsRest(app),
+            expectIdsRest(app),
+            expectIdsRest(app),
+            expectIdsRest(app),
+        ]);
     });
 });

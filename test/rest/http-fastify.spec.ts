@@ -5,6 +5,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from '../../src';
+import { expectIdsRest } from './expect-ids-rest';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
@@ -34,15 +35,6 @@ describe('Http Fastify App', () => {
     });
 
     it('works with Fastify', async () => {
-        const res = await app.inject({
-            method: 'GET',
-            url: '/hello',
-        });
-        expect(res.statusCode).toEqual(200);
-        expect(JSON.parse(res.payload)).toEqual({
-            fromGuard: 'OK',
-            fromInterceptor: 'OK',
-            fromController: 'OK',
-        });
+        return expectIdsRest(app);
     });
 });

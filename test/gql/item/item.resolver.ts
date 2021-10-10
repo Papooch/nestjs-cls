@@ -3,23 +3,22 @@ import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { ClsService } from '../../../src';
 import { TestGuard } from '../../common/test.guard';
 import { TestInterceptor } from '../../common/test.interceptor';
-import { NewRecipeInput } from './dto/new-recipe.input';
 import { RecipesArgs } from './dto/recipes.args';
-import { Recipe } from './recipe.model';
-import { RecipesService } from './recipes.service';
+import { Item } from './item.model';
+import { ItemService } from './item.service';
 
 @UseGuards(TestGuard)
-@Resolver((of) => Recipe)
-export class RecipesResolver {
+@Resolver((of) => Item)
+export class ItemResolver {
     constructor(
-        private readonly recipesService: RecipesService,
+        private readonly recipesService: ItemService,
         private readonly cls: ClsService,
     ) {}
 
     @UseInterceptors(TestInterceptor)
-    @Query(() => [Recipe])
-    recipes(@Args() recipesArgs: RecipesArgs): Promise<Recipe[]> {
-        this.cls.set('FROM_RESOLVER', 'OK');
+    @Query(() => [Item])
+    items(@Args() recipesArgs: RecipesArgs): Promise<Item[]> {
+        this.cls.set('FROM_RESOLVER', this.cls.getId());
         return this.recipesService.findAll(recipesArgs);
     }
 }
