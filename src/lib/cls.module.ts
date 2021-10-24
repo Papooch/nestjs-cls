@@ -6,12 +6,23 @@ import {
     NestModule,
     Provider,
 } from '@nestjs/common';
-import { APP_GUARD, HttpAdapterHost, ModuleRef } from '@nestjs/core';
+import {
+    APP_GUARD,
+    APP_INTERCEPTOR,
+    HttpAdapterHost,
+    ModuleRef,
+} from '@nestjs/core';
+import { ClsInterceptor } from '..';
 import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
-import { CLS_GUARD_OPTIONS, CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
+import {
+    CLS_GUARD_OPTIONS,
+    CLS_INTERCEPTOR_OPTIONS,
+    CLS_MIDDLEWARE_OPTIONS,
+} from './cls.constants';
 import { ClsGuard } from './cls.guard';
 import {
     ClsGuardOptions,
+    ClsInterceptorOptions,
     ClsMiddlewareOptions,
     ClsModuleOptions,
 } from './cls.interfaces';
@@ -80,6 +91,11 @@ export class ClsModule implements NestModule {
             ...options.guard,
             namespaceName: options.namespaceName,
         };
+        const clsInterceptorOptions = {
+            ...new ClsInterceptorOptions(),
+            ...options.interceptor,
+            namespaceName: options.namespaceName,
+        };
         const providers: Provider[] = [
             ...ClsServiceManager.getClsServicesAsProviders(),
             {
@@ -90,18 +106,28 @@ export class ClsModule implements NestModule {
                 provide: CLS_GUARD_OPTIONS,
                 useValue: clsGuardOptions,
             },
+            {
+                provide: CLS_INTERCEPTOR_OPTIONS,
+                useValue: clsInterceptorOptions,
+            },
         ];
-        const guardArr = [];
+        const enhancerArr = [];
         if (clsGuardOptions.mount) {
-            guardArr.push({
+            enhancerArr.push({
                 provide: APP_GUARD,
                 useClass: ClsGuard,
+            });
+        }
+        if (clsInterceptorOptions.mount) {
+            enhancerArr.push({
+                provide: APP_INTERCEPTOR,
+                useClass: ClsInterceptor,
             });
         }
 
         return {
             module: ClsModule,
-            providers: providers.concat(...guardArr),
+            providers: providers.concat(...enhancerArr),
             exports: providers,
             global: options.global,
         };

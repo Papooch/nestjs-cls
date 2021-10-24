@@ -5,7 +5,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from '../../src';
-import { expectIdsRest } from './expect-ids-rest';
+import { expectOkIdsRest } from './expect-ids-rest';
 import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
@@ -35,6 +35,6 @@ describe('Http Fastify App', () => {
     });
 
     it('works with Fastify', async () => {
-        return expectIdsRest(app);
+        return expectOkIdsRest(app);
     });
 });

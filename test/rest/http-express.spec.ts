@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsMiddleware, ClsModule } from '../../src';
-import { expectIdsRest } from './expect-ids-rest';
+import { expectErrorIdsRest, expectOkIdsRest } from './expect-ids-rest';
 import { TestHttpController, TestHttpService } from './http.app';
 
 let app: INestApplication;
@@ -30,8 +30,11 @@ describe('Http Express App - Auto bound Middleware', () => {
         await app.init();
     });
 
-    it('works with middleware', () => {
-        return expectIdsRest(app);
+    it.each([
+        ['OK', expectOkIdsRest],
+        ['ERROR', expectErrorIdsRest],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
     });
 });
 
@@ -55,8 +58,11 @@ describe('Http Express App - Manually bound Middleware in AppModule', () => {
         await app.init();
     });
 
-    it('works with middleware', () => {
-        return expectIdsRest(app);
+    it.each([
+        ['OK', expectOkIdsRest],
+        ['ERROR', expectErrorIdsRest],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
     });
 });
 describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
@@ -76,8 +82,11 @@ describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
         await app.init();
     });
 
-    it('works with middleware', () => {
-        return expectIdsRest(app);
+    it.each([
+        ['OK', expectOkIdsRest],
+        ['ERROR', expectErrorIdsRest],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
     });
 });
 
@@ -101,17 +110,45 @@ describe('Http Express App - Auto bound Guard', () => {
         await app.init();
     });
 
-    it('works with guard', () => {
-        return expectIdsRest(app);
+    it.each([
+        ['OK', expectOkIdsRest],
+        ['ERROR', expectErrorIdsRest],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
+    });
+
+    it.each([
+        ['OK', expectOkIdsRest],
+        ['ERROR', expectErrorIdsRest],
+    ])('does not leak context with %s response', (_, func: any) => {
+        return Promise.all(Array(10).fill(app).map(func));
+    });
+});
+describe('Http Express App - Auto bound Interceptor', () => {
+    @Module({
+        imports: [
+            ClsModule.register({
+                interceptor: { mount: true, generateId: true },
+            }),
+        ],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithAutoBoundInterceptor {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithAutoBoundInterceptor],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
+
+    it('works with OK response', () => {
+        return expectOkIdsRest(app);
     });
 
     it('does not leak context', () => {
-        return Promise.all([
-            expectIdsRest(app),
-            expectIdsRest(app),
-            expectIdsRest(app),
-            expectIdsRest(app),
-            expectIdsRest(app),
-        ]);
+        return Promise.all(Array(10).fill(app).map(expectOkIdsRest));
     });
 });

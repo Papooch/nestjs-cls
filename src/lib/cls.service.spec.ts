@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsServiceManager, CLS_DEFAULT_NAMESPACE } from '..';
+import { ClsServiceManager } from './cls-service-manager';
+import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 import { ClsService } from './cls.service';
 
 describe('ClsService', () => {

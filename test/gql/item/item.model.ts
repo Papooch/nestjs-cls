@@ -2,21 +2,21 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'item ' })
 export class Item {
-    @Field((type) => ID)
+    @Field(() => ID)
     id: string;
 
-    @Field()
+    @Field({ nullable: true })
     fromGuard?: string;
 
-    @Field()
+    @Field({ nullable: true })
     fromInterceptor?: string;
 
-    @Field()
+    @Field({ nullable: true })
     fromInterceptorAfter?: string;
 
-    @Field()
+    @Field({ nullable: true })
     fromResolver?: string;
 
-    @Field()
+    @Field({ nullable: true })
     fromService?: string;
 }

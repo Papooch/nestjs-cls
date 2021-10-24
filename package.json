@@ -16,6 +16,7 @@
         "cls",
         "continuation-local-storage",
         "als",
+        "AsyncLocalStorage",
         "async_hooks",
         "request context"
     ],
