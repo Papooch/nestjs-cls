@@ -6,9 +6,8 @@ import {
     NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { CLS_ID } from '..';
 import { ClsServiceManager } from './cls-service-manager';
-import { CLS_INTERCEPTOR_OPTIONS } from './cls.constants';
+import { CLS_ID, CLS_INTERCEPTOR_OPTIONS } from './cls.constants';
 import { ClsInterceptorOptions } from './cls.interfaces';
 
 @Injectable()

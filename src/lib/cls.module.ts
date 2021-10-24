@@ -12,7 +12,6 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { ClsInterceptor } from '..';
 import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
@@ -20,6 +19,7 @@ import {
     CLS_MIDDLEWARE_OPTIONS,
 } from './cls.constants';
 import { ClsGuard } from './cls.guard';
+import { ClsInterceptor } from './cls.interceptor';
 import {
     ClsGuardOptions,
     ClsInterceptorOptions,
