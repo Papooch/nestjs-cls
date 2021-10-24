@@ -34,13 +34,11 @@ describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
     });
 
     it('does not leak context', () => {
-        return Promise.all([
-            expectIdsGql(app),
-            expectIdsGql(app),
-            expectIdsGql(app),
-            expectIdsGql(app),
-            expectIdsGql(app),
-        ]);
+        return Promise.all(
+            Array(10)
+                .fill(0)
+                .map(() => expectIdsGql(app)),
+        );
     });
 });
 
@@ -72,12 +70,46 @@ describe('GQL Apollo App - Auto bound Guard', () => {
     });
 
     it('does not leak context', () => {
-        return Promise.all([
-            expectIdsGql(app),
-            expectIdsGql(app),
-            expectIdsGql(app),
-            expectIdsGql(app),
-            expectIdsGql(app),
-        ]);
+        return Promise.all(
+            Array(10)
+                .fill(0)
+                .map(() => expectIdsGql(app)),
+        );
+    });
+});
+
+describe('GQL Apollo App - Auto bound Interceptor', () => {
+    @Module({
+        imports: [
+            ClsModule.register({
+                global: true,
+                interceptor: { mount: true, generateId: true },
+            }),
+            ItemModule,
+            GraphQLModule.forRoot({
+                autoSchemaFile: __dirname + 'schema.gql',
+            }),
+        ],
+    })
+    class AppModule {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [AppModule],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
+
+    it('works with interceptor', () => {
+        return expectIdsGql(app, { skipGuard: true });
+    });
+
+    it('does not leak context', () => {
+        return Promise.all(
+            Array(10)
+                .fill(0)
+                .map(() => expectIdsGql(app, { skipGuard: true })),
+        );
     });
 });

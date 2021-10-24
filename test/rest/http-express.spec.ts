@@ -106,12 +106,34 @@ describe('Http Express App - Auto bound Guard', () => {
     });
 
     it('does not leak context', () => {
-        return Promise.all([
-            expectIdsRest(app),
-            expectIdsRest(app),
-            expectIdsRest(app),
-            expectIdsRest(app),
-            expectIdsRest(app),
-        ]);
+        return Promise.all(Array(10).fill(app).map(expectIdsRest));
+    });
+});
+describe('Http Express App - Auto bound Interceptor', () => {
+    @Module({
+        imports: [
+            ClsModule.register({
+                interceptor: { mount: true, generateId: true },
+            }),
+        ],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithAutoBoundInterceptor {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithAutoBoundInterceptor],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        await app.init();
+    });
+
+    it('works with interceptor', () => {
+        return expectIdsRest(app);
+    });
+
+    it('does not leak context', () => {
+        return Promise.all(Array(10).fill(app).map(expectIdsRest));
     });
 });

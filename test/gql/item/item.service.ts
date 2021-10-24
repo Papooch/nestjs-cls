@@ -8,7 +8,7 @@ export class ItemService {
     constructor(private readonly cls: ClsService) {}
 
     async findAll(recipesArgs: RecipesArgs): Promise<Item[]> {
-        return [
+        const payload = [
             {
                 id: this.cls.getId(),
                 fromGuard: this.cls.get('FROM_GUARD'),
@@ -18,5 +18,6 @@ export class ItemService {
                 fromService: this.cls.getId(),
             },
         ];
+        return payload;
     }
 }

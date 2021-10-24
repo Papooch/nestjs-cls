@@ -1,5 +1,5 @@
-import { NotFoundException, UseGuards, UseInterceptors } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { UseGuards, UseInterceptors } from '@nestjs/common';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 import { ClsService } from '../../../src';
 import { TestGuard } from '../../common/test.guard';
 import { TestInterceptor } from '../../common/test.interceptor';
@@ -8,7 +8,7 @@ import { Item } from './item.model';
 import { ItemService } from './item.service';
 
 @UseGuards(TestGuard)
-@Resolver((of) => Item)
+@Resolver(() => Item)
 export class ItemResolver {
     constructor(
         private readonly recipesService: ItemService,
