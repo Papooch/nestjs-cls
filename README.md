@@ -4,15 +4,25 @@ A continuation-local storage module compatible with [NestJS](https://nestjs.com/
 
 _Continuous-local storage allows to store state and propagate it throughout callbacks and promise chains. It allows storing data throughout the lifetime of a web request or any other asynchronous duration. It is similar to thread-local storage in other languages._
 
-> Note: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
+Some common use cases for CLS include:
+
+-   Request ID tracing for logging purposes
+-   Making the Tenant ID available everywhere in multi-tenant apps
+-   Globally setting the authentication level for the request
+
+Most of these are theoretically solvable using _request-scoped_ providers, but the solutions are clunky and come with a whole lot of other issues. Thus this package was born.
+
+> **Note**: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
 
 # Outline
 
 -   [Install](#install)
 -   [Quick Start](#quick-start)
 -   [How it works](#how-it-works)
-    -   [HTTP](#http)
-    -   [Non-HTTP](#non-http)
+-   [Setting up the CLS context](#setting-up-the-cls-context)
+    -   [Using a Middleware (HTTP Only)](#using-a-middleware-http-only)
+    -   [Using a Guard](#using-a-guard)
+    -   [Using an Interceptor](#using-an-interceptor)
 -   [API](#api)
 -   [Options](#options)
 -   [Request ID](#request-id)
@@ -33,13 +43,13 @@ npm install nestjs-cls
 yarn add nestjs-cls
 ```
 
-> Note: This module requires additional peer deps, like the nestjs core and common libraries, but it is assumed those are already installed.
+> **Note**: This module requires additional peer deps, like the nestjs core and common libraries, but it is assumed those are already installed.
 
 # Quick Start
 
 Below is an example of storing the client's IP address in an interceptor and retrieving it in a service without explicitly passing it along.
 
-> Note: This example assumes you are using HTTP and therefore can use middleware. For usage with non-HTTP transports, keep reading.
+> **Note**: This example assumes you are using HTTP and therefore can use middleware. For usage with non-HTTP transports, keep reading.
 
 ```ts
 // app.module.ts
@@ -113,9 +123,15 @@ export class AppService {
 
 Continuation-local storage provides a common space for storing and retrieving data throughout the life of a function/callback call chain. In NestJS, this allows for sharing request data across the lifetime of a single request - without the need for request-scoped providers. It also makes it easy to track and log request ids throughout the whole application.
 
-To make CLS work, it is required to set up the CLS context first. This is done by calling `cls.run()` (or `cls.enter()`) somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
+To make CLS work, it is required to set up the CLS context first. This is done by calling `cls.run()` (or `cls.enter()`, see [Security considerations](#security-considerations) for more info) somewhere in the app. Once that is set up, anything that is called within the same callback chain has access to the same storage with `cls.set()` and `cls.get()`.
 
-## HTTP
+# Setting up the CLS context
+
+This package provides **three** methods of setting up the CLS context for incoming requests. This is mainly due to the fact that different underlying platforms are compatible with some of these methods - see [Compatibility considerations](#compatibility-considerations).
+
+For HTTP transports, the context can be preferably set up in a `ClsMiddleware`. For all other platforms, or cases where the `ClsMiddleware` is not applicable, this package also provides a `ClsGuard` and `ClsInterceptor`. While both of these also work with HTTP, they come with some caveats, see below.
+
+## Using a Middleware (HTTP Only)
 
 Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()` call.
 
@@ -150,11 +166,11 @@ function bootstrap() {
 }
 ```
 
-> Please note: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.forRoot()`, so you will have to provide them yourself in the constructor.
+> **Please note**: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.register()`, so you will have to provide them yourself in the constructor.
 
-## Non-HTTP
+## Using a Guard
 
-For all other transports that don't use middleware, this package provides a `ClsGuard` to set up the CLS context. While it is not a "guard" per-se, it's the second best place to set up the CLS context, since it would be too late to do it in an interceptor.
+The `ClsGuard` can be also used set up the CLS context. While it is not a "guard" per-se, it's the second best place to set up the CLS context, since after a middleware, it is the first piece of code that the request hits.
 
 To use it, pass its configuration to the `guard` property to the `ClsModule.register` options:
 
@@ -179,9 +195,23 @@ If you need any other guards to use the `ClsService`, it's preferable mount `Cls
 export class AppModule {}
 ```
 
-> Please note: using the `ClsGuard` comes with some [security considerations](#security-considerations)!
+> **Please note**: since the `ClsGuard` uses the `AsyncLocalStorage#enterWith` method, using the `ClsGuard` comes with some [security considerations](#security-considerations)!
 
-> Note: A guard might not be the best place to initiate the CLS context for all transports. I'm looking into providing alternative options for specific platforms.
+## Using an Interceptor
+
+Another place to initiate the CLS context is an `ClsInterceptor`, which, unlike the `ClsGuard` uses `AsyncLocalStorage#run` method to wrap the following code, which is considered safer than `enterWith`.
+
+To use it, pass its configuration to the `interceptor` property to the `ClsModule.register` options:
+
+```ts
+ClsModule.register({
+    interceptor: { generateId: true, mount: true }
+}),
+```
+
+Or mount it manually as `APP_INTERCEPTOR`, should you need it.
+
+> **Please note**: Since Nest's _Interceptors_ run after _Guards_, that means using this method makes CLS **unavailable in Guards** (and in case of REST Controllers, also in **Exception Filters**).
 
 # API
 
@@ -197,57 +227,51 @@ The injectable `ClsService` provides the following API to manipulate the cls con
     Retrieve the object containing all properties of the current CLS context.
 -   **_`enter`_**`(): void;`  
     Run any following code in a shared CLS context.
+-   **_`enterWith`_**`(store: any): void;`  
+    Run any following code in a shared CLS context (while supplying the default contents).
 -   **_`run`_**`(callback: () => T): T;`  
     Run the callback in a shared CLS context.
+-   **_`runWith`_**`(store: any, callback: () => T): T;`  
+    Run the callback in a shared CLS context (while supplying the default contents).
 -   **_`isActive`_**`(): boolean`  
     Whether the current code runs within an active CLS context.
 
 # Options
 
-The `ClsModule.register()` method takes the following options:
+The `ClsModule.register()` method takes the following `ClsModuleOptions`:
 
--   **`ClsModuleOptions`**
+-   **_`namespaceName`_: `string`**  
+    The name of the cls namespace. This is the namespace that will be used by the ClsService and ClsMiddleware (most of the time you will not need to touch this setting)
+-   **_`global:`_ `boolean`** (default _`false`_)  
+    Whether to make the module global, so you do not have to import `ClsModule.forFeature()` in other modules.
+-   **_`middleware:`_ `ClsMiddlewareOptions`**  
+    An object with additional options for the ClsMiddleware, see below
+-   **_`guard:`_ `ClsGuardOptions`**  
+    An object with additional options for the ClsGuard, see below
+-   **_`interceptor:`_ `ClsInterceptorOptions`**  
+    An object with additional options for the ClsInterceptor, see below
 
-    -   **_`namespaceName`_: `string`**  
-        The name of the cls namespace. This is the namespace that will be used by the ClsService and ClsMiddleware (most of the time you will not need to touch this setting)
-    -   **_`global:`_ `boolean`** (default _`false`_)  
-        Whether to make the module global, so you do not have to import `ClsModule.forFeature()` in other modules.
-    -   **_`middleware:`_ `ClsMiddlewareOptions`**  
-        An object with additional ClsMiddleware options, see below
-    -   **_`guard:`_ `ClsGuardOptions`**  
-        An object with additional ClsGuard options, see below (do not use together with ClsMiddleware)
+> Important: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will get overridden with the one that runs after.
 
-The `ClsMiddleware` takes the following options (either set up in `ClsModuleOptions` or directly when instantiating it manually):
+All of the `Cls{Middleware,Guard,Interceptor}Options` take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
 
--   **`ClsMiddlewareOptions`**
+-   **_`mount`_: `boolean`** (default _`false`_)  
+    Whether to automatically mount the middleware/guard/interceptor to every route (not applicable when instantiating manually)
+-   **_`generateId`_: `bolean`** (default _`false`_)  
+    Whether to automatically generate request IDs.
+-   **_`idGenerator`_: `(req: Request | ExecutionContext) => string | Promise<string>`**
+    An optional function for generating the request ID. It takes the `Request` object (or the `ExecutionContext` in case of a Guard or Interceptor) as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
+-   **_`setup`_: `(cls: ClsService, req: Request) => void | Promise<void>;`**
+    Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
 
-    -   **_`mount`_: `boolean`** (default _`false`_)  
-        Whether to automatically mount the middleware to every route (not applicable when instantiating manually)
-    -   **_`generateId`_: `bolean`** (default _`false`_)  
-        Whether to automatically generate request IDs.
-    -   **_`idGenerator`_: `(req: Request) => string | Promise<string>`**  
-        An optional function for generating the request ID. It takes the `Request` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
-    -   **_`setup`_: `(cls: ClsService, req: Request) => void | Promise<void>;`**  
-        Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
-    -   **_`saveReq`_: `boolean`** (default _`true`_)  
-         Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
-    -   **_`saveRes`_: `boolean`** (default _`false`_)  
-        Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
-    -   **_`useEnterWith`_: `boolean`** (default _`false`_)  
-        Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
+The `ClsMiddlewareOptions` additionally takes the following parameters:
 
-The `ClsGuard` takes the following options:
-
--   **`ClsGuardOptions`**
-
-    -   **_`mount`_: `boolean`** (default _`false`_)  
-        Whether to automatically mount the guard as APP_GUARD
-    -   **_`generateId`_: `bolean`** (default _`false`_)  
-        Whether to automatically generate request IDs.
-    -   **_`idGenerator`_: `(context: ExecutionContext) => string | Promise<string>`**  
-        An optional function for generating the request ID. It takes the `ExecutionContext` object as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
-    -   **_`setup`_: `(cls: ClsService, context: ExecutionContext) => void | Promise<void>;`**  
-         Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
+-   **_`saveReq`_: `boolean`** (default _`true`_)  
+     Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
+-   **_`saveRes`_: `boolean`** (default _`false`_)  
+    Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
+-   **_`useEnterWith`_: `boolean`** (default _`false`_)  
+    Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
 
 # Request ID
 
@@ -325,7 +349,7 @@ function helper() {
 }
 ```
 
-> Please note: Only use this feature where absolutely necessary. Using this technique instead of dependency injection will make it difficult to mock the ClsService and your code will become harder to test.
+> **Please note**: Only use this feature where absolutely necessary. Using this technique instead of dependency injection will make it difficult to mock the ClsService and your code will become harder to test.
 
 # Security considerations
 
@@ -333,7 +357,7 @@ It is often discussed whether [`AsyncLocalStorage`](https://nodejs.org/api/async
 
 The `ClsMiddleware` by default uses the safe `run()` method, so it should not leak context, however, that only works for REST `Controllers`.
 
-GraphQL `Resolvers`, cause the context to be lost and therefore require using the less safe `enterWith()` method. The same applies to using `ClsGuard` to set up the context, since there's no callback to wrap with the `run()` call (so the context would be not available outside of the guard otherwise).
+GraphQL `Resolvers`, cause the context to be lost and therefore require using the less safe `enterWith()` method. The same applies to using `ClsGuard` to set up the context, since there's no callback to wrap with the `run()` call, the only way to set up context in a guard is to use `enterWith()` (the context would be not available outside of the guard otherwise).
 
 **This has one consequence that should be taken into account:**
 
@@ -341,27 +365,43 @@ GraphQL `Resolvers`, cause the context to be lost and therefore require using th
 
 That means, when using `ClsMiddleware` with the `useEnterWith` option, or `ClsGuard` to set up context, be sure to mount them as early in the request lifetime as possible and do not use any other enhancers that rely on `ClsService` before them. For `ClsGuard`, that means you should probably manually mount it in `AppModule` if you require any other guard to run _after_ it.
 
+The `ClsInterceptor` only uses the safe `run()` method.
+
 # Compatibility considerations
+
+The table below outlines the compatibility with some platforms:
+
+|                                                              |                        REST                         |                            GQL                             | Others |
+| :----------------------------------------------------------: | :-------------------------------------------------: | :--------------------------------------------------------: | :----: |
+|                      **ClsMiddleware**                       |                          ✔                          | must be _mounted manually_<br>and use `useEnterWith: true` |   ✖    |
+|             **ClsGuard** <br>(uses `enterWith`)              |                          ✔                          |                             ✔                              |   ?    |
+| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | context also inaccessible<br>in _Exception Filters_ |                             ✔                              |   ?    |
 
 ## REST
 
-This package is 100% compatible with Nest-supported REST controllers when you use the `ClsMiddleware` with the `mount` option.
+This package is 100% compatible with Nest-supported REST controllers and the preferred way is to use the `ClsMiddleware` with the `mount` option.
+
+Tested with:
 
 -   ✔ Express
 -   ✔ Fastify
 
 ## GraphQL
 
-For GraphQL, the `ClsMiddleware` needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers. Additionally, you have to pass `useEnterWith: true` to the `ClsMiddleware` options, because the context gets lost otherwise.
+For GraphQL, the `ClsMiddleware` needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers. Additionally, you have to pass `useEnterWith: true` to the `ClsMiddleware` options, because the context gets lost otherwise due to [an issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042) (sadly, the same is true for [Mercurius](https://github.com/Papooch/nestjs-cls/issues/1)). This method is functionally identical to just using the `ClsGuard`.
 
--   ⚠ Apollo (Express)
-    -   There's an [issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042) talking about the context loss.
--   ⚠ Mercurius (Fastify)
-    -   The [same problem](https://github.com/Papooch/nestjs-cls/issues/1) applies here.
+Alternatively, you can use the `ClsInterceptor`, which uses the safer `AsyncLocalStorage#run` (thanks to [andreialecu](https://github.com/Papooch/nestjs-cls/issues/5)), but remember that using it makes CLS unavailable in _Guards_
+
+Tested with:
+
+-   ✔ Apollo (Express)
+-   ✔ Mercurius (Fastify)
 
 ## Others
 
-Use the `ClsGuard` to set up context with any other platform. This is still **experimental**, as there are no test and I can't guarantee it will work with your platform of choice.
+Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform. This is still **experimental**, as there are no test and I can't guarantee it will work with your platform of choice.
+
+> If you decide to try this package with a platform that is not listed here, **please let me know** so I can add the compatibility notice.
 
 # Namespaces (experimental)
 
@@ -369,7 +409,7 @@ Use the `ClsGuard` to set up context with any other platform. This is still **ex
 
 The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides a way to use multiple CLS namespaces in order to be fully compatible with `cls-hooked`.
 
-> Note: Since cls-hooked was ditched in version 1.2, it is no longer necessary to strive for compatibility with it. Still, the namespace support was there and there's no reason to remove it.
+> **Note**: Since cls-hooked was ditched in version 1.2, it is no longer necessary to strive for compatibility with it. Still, the namespace support was there and there's no reason to remove it.
 
 To use custom namespace provider, use `ClsModule.forFeature('my-namespace')`.
 
@@ -398,7 +438,7 @@ class HelloService {
 }
 ```
 
-> Note: `@InjectCls('x')` is equivalent to `@Inject(getNamespaceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
+> **Note**: `@InjectCls('x')` is equivalent to `@Inject(getNamespaceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
 
 ```ts
 @Injectable()
