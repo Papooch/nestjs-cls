@@ -2,11 +2,13 @@ import {
     Controller,
     Get,
     Injectable,
+    UseFilters,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { identity } from 'rxjs';
 import { ClsService, CLS_ID } from '../../src';
+import { TestException } from '../common/test.exception';
+import { TestRestExceptionFilter } from './test-rest.filter';
 import { TestGuard } from '../common/test.guard';
 import { TestInterceptor } from '../common/test.interceptor';
 
@@ -26,6 +28,7 @@ export class TestHttpService {
 }
 
 @UseGuards(TestGuard)
+@UseFilters(TestRestExceptionFilter)
 @Controller('/')
 export class TestHttpController {
     constructor(
@@ -38,5 +41,13 @@ export class TestHttpController {
     hello() {
         this.cls.set('FROM_CONTROLLER', this.cls.getId());
         return this.service.hello();
+    }
+
+    @UseInterceptors(TestInterceptor)
+    @Get('error')
+    async error() {
+        this.cls.set('FROM_CONTROLLER', this.cls.getId());
+        const response = await this.service.hello();
+        throw new TestException(response);
     }
 }

@@ -1,7 +1,7 @@
 import { INestApplication, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsMiddleware, ClsModule } from '../../src';
-import { expectIdsGql } from './expect-ids-gql';
+import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
 import { ItemModule } from './item/item.module';
 import { GraphQLModule } from '@nestjs/graphql';
 
@@ -29,16 +29,17 @@ describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
         await app.init();
     });
 
-    it('works with middleware', () => {
-        return expectIdsGql(app);
+    it.each([
+        ['OK', expectOkIdsGql],
+        ['ERROR', expectErrorIdsGql],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
     });
-
-    it('does not leak context', () => {
-        return Promise.all(
-            Array(10)
-                .fill(0)
-                .map(() => expectIdsGql(app)),
-        );
+    it.each([
+        ['OK', expectOkIdsGql],
+        ['ERROR', expectErrorIdsGql],
+    ])('does not leak context with %s response', (_, func: any) => {
+        return Promise.all(Array(10).fill(app).map(func));
     });
 });
 
@@ -65,16 +66,18 @@ describe('GQL Apollo App - Auto bound Guard', () => {
         await app.init();
     });
 
-    it('works with guard', () => {
-        return expectIdsGql(app);
+    it.each([
+        ['OK', expectOkIdsGql],
+        ['ERROR', expectErrorIdsGql],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
     });
 
-    it('does not leak context', () => {
-        return Promise.all(
-            Array(10)
-                .fill(0)
-                .map(() => expectIdsGql(app)),
-        );
+    it.each([
+        ['OK', expectOkIdsGql],
+        ['ERROR', expectErrorIdsGql],
+    ])('does not leak context with %s response', (_, func: any) => {
+        return Promise.all(Array(10).fill(app).map(func));
     });
 });
 
@@ -101,15 +104,21 @@ describe('GQL Apollo App - Auto bound Interceptor', () => {
         await app.init();
     });
 
-    it('works with interceptor', () => {
-        return expectIdsGql(app, { skipGuard: true });
+    it.each([
+        ['OK', expectOkIdsGql],
+        ['ERROR', expectErrorIdsGql],
+    ])('works with %s response', (_, func: any) => {
+        return func(app, { skipGuard: true });
     });
 
-    it('does not leak context', () => {
+    it.each([
+        ['OK', expectOkIdsGql],
+        ['ERROR', expectErrorIdsGql],
+    ])('does not leak context with % response', (_, func: any) => {
         return Promise.all(
             Array(10)
                 .fill(0)
-                .map(() => expectIdsGql(app, { skipGuard: true })),
+                .map(() => func(app, { skipGuard: true })),
         );
     });
 });

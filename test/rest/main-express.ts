@@ -6,7 +6,7 @@ import { TestHttpController, TestHttpService } from './http.app';
 @Module({
     imports: [
         ClsModule.register({
-            interceptor: { mount: true, generateId: true },
+            middleware: { mount: true, generateId: true },
         }),
     ],
     providers: [TestHttpService],
