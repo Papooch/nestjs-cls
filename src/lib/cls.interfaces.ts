@@ -1,4 +1,4 @@
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, ModuleMetadata } from '@nestjs/common';
 import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 import { ClsService } from './cls.service';
 
@@ -30,6 +30,13 @@ export class ClsModuleOptions {
      * Cls interceptor options
      */
     interceptor?: ClsInterceptorOptions = null;
+}
+
+export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+    inject?: any[];
+    useFactory?: (
+        ...args: any[]
+    ) => Promise<ClsModuleOptions> | ClsModuleOptions;
 }
 
 export class ClsMiddlewareOptions {
