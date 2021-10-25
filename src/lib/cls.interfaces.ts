@@ -1,35 +1,57 @@
-import { ExecutionContext } from '@nestjs/common';
+import { ExecutionContext, ModuleMetadata } from '@nestjs/common';
 import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 import { ClsService } from './cls.service';
 
 export class ClsModuleOptions {
     /**
-     * The name of the cls namespace. This is the namespace
-     * that will be used by the ClsService and ClsMiddleware/Interc
-     * (most of the time you will not need to touch this setting)
-     */
-    namespaceName? = CLS_DEFAULT_NAMESPACE;
-
-    /**
      * whether to make the module global, so you don't need
-     * to import `ClsModule` in other modules
+     * to import ClsModule.forFeature()` in other modules
      */
     global? = false;
 
     /**
-     * Cls middleware options
+     * An object with additional options for the `ClsMiddleware`
      */
     middleware?: ClsMiddlewareOptions = null;
 
     /**
-     * Cls guard options
+     * An object with additional options for the `ClsGuard`
      */
     guard?: ClsGuardOptions = null;
 
     /**
-     * Cls interceptor options
+     * An object with additional options for the `ClsInterceptor`
      */
     interceptor?: ClsInterceptorOptions = null;
+
+    /**
+     * The namespace that will be set up. When used, `ClsService`
+     * must be injected using the `@InjectCls('name')` decorator.
+     * (most of the time you will not need to touch this setting)
+     */
+    namespaceName? = CLS_DEFAULT_NAMESPACE;
+}
+
+export type ClsModuleFactoryOptions = Omit<
+    ClsModuleOptions,
+    'global' | 'namespaceName'
+>;
+export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
+    inject?: any[];
+    useFactory?: (
+        ...args: any[]
+    ) => Promise<ClsModuleFactoryOptions> | ClsModuleFactoryOptions;
+    /**
+     * whether to make the module global, so you don't need
+     * to import `ClsModule.forFeature()` in other modules
+     */
+    global?: boolean;
+    /**
+     * The namespace that will be set up. When used, `ClsService`
+     * must be injected using the `@InjectCls('name')` decorator.
+     * (most of the time you will not need to touch this setting)
+     */
+    namespaceName?: string;
 }
 
 export class ClsMiddlewareOptions {

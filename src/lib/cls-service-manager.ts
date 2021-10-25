@@ -7,7 +7,10 @@ export const getClsServiceToken = (namespace: string) =>
     `ClsService-${namespace}`;
 
 export class ClsServiceManager {
-    private static namespaces: Record<string, AsyncLocalStorage<any>> = {};
+    private static namespaces: Record<
+        string,
+        AsyncLocalStorage<any> & { name?: string }
+    > = {};
 
     private static clsServices: Map<string | typeof ClsService, ClsService> =
         new Map([
@@ -20,11 +23,12 @@ export class ClsServiceManager {
     private static resolveNamespace(name: string) {
         if (!this.namespaces[name]) {
             this.namespaces[name] = new AsyncLocalStorage();
+            this.namespaces[name].name = name;
         }
         return this.namespaces[name];
     }
 
-    static addClsService(name: string) {
+    static addClsService(name: string = CLS_DEFAULT_NAMESPACE) {
         const service = new ClsService(this.resolveNamespace(name));
         this.clsServices.set(
             getClsServiceToken(name),
