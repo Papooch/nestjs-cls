@@ -115,10 +115,6 @@ export class ClsModule implements NestModule {
         return clsInterceptorOptions;
     }
 
-    private static clsServiceFactory(options: ClsModuleOptions): ClsService {
-        return ClsServiceManager.addClsService(options.namespaceName);
-    }
-
     private static clsGuardFactory(options: ClsGuardOptions): CanActivate {
         if (options.mount) {
             ClsModule.logger.debug('ClsGuard will be automatically mounted');
@@ -143,14 +139,10 @@ export class ClsModule implements NestModule {
         };
     }
 
-    private static getProviders() {
+    private static getProviders(options: { namespaceName?: string }) {
+        ClsServiceManager.addClsService(options.namespaceName);
         const providers: Provider[] = [
             ...ClsServiceManager.getClsServicesAsProviders(),
-            {
-                provide: ClsService,
-                inject: [CLS_MODULE_OPTIONS],
-                useFactory: this.clsServiceFactory,
-            },
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 inject: [CLS_MODULE_OPTIONS],
@@ -188,7 +180,7 @@ export class ClsModule implements NestModule {
 
     static register(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
-        const { providers, exports } = this.getProviders();
+        const { providers, exports } = this.getProviders(options);
 
         return {
             module: ClsModule,
@@ -204,9 +196,22 @@ export class ClsModule implements NestModule {
         };
     }
 
-    // static registerAsync(asyncOptions: ClsModuleAsyncOptions) {
-    //     return {
+    static registerAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
+        const { providers, exports } = this.getProviders(asyncOptions);
 
-    //     }
-    // }
+        return {
+            module: ClsModule,
+            imports: asyncOptions.imports,
+            providers: [
+                {
+                    provide: CLS_MODULE_OPTIONS,
+                    inject: asyncOptions.inject,
+                    useFactory: asyncOptions.useFactory,
+                },
+                ...providers,
+            ],
+            exports,
+            global: asyncOptions.global,
+        };
+    }
 }

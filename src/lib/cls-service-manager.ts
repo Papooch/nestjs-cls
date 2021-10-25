@@ -28,7 +28,7 @@ export class ClsServiceManager {
         return this.namespaces[name];
     }
 
-    static addClsService(name: string) {
+    static addClsService(name: string = CLS_DEFAULT_NAMESPACE) {
         const service = new ClsService(this.resolveNamespace(name));
         this.clsServices.set(
             getClsServiceToken(name),

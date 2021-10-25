@@ -5,6 +5,11 @@ import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
     imports: [
+        // ClsModule.registerAsync({
+        //     useFactory: () => ({
+        //         middleware: { mount: true, generateId: true },
+        //     }),
+        // }),
         ClsModule.register({
             middleware: { mount: true, generateId: true },
         }),

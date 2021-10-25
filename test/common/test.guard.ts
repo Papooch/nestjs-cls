@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { ClsService } from '../../src';
+import { ClsService, CLS_DEFAULT_NAMESPACE, InjectCls } from '../../src';
 
 @Injectable()
 export class TestGuard implements CanActivate {

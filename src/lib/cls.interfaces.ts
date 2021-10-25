@@ -4,13 +4,6 @@ import { ClsService } from './cls.service';
 
 export class ClsModuleOptions {
     /**
-     * The name of the cls namespace. This is the namespace
-     * that will be used by the ClsService and ClsMiddleware/Interc
-     * (most of the time you will not need to touch this setting)
-     */
-    namespaceName? = CLS_DEFAULT_NAMESPACE;
-
-    /**
      * whether to make the module global, so you don't need
      * to import `ClsModule` in other modules
      */
@@ -30,13 +23,35 @@ export class ClsModuleOptions {
      * Cls interceptor options
      */
     interceptor?: ClsInterceptorOptions = null;
+
+    /**
+     * The name of the cls namespace. This is the namespace
+     * that will be used by the ClsService and ClsMiddleware/Interc
+     * (most of the time you will not need to touch this setting)
+     */
+    namespaceName? = CLS_DEFAULT_NAMESPACE;
 }
 
+export type ClsModuleFactoryOptions = Omit<
+    ClsModuleOptions,
+    'global' | 'namespaceName'
+>;
 export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: any[];
     useFactory?: (
         ...args: any[]
-    ) => Promise<ClsModuleOptions> | ClsModuleOptions;
+    ) => Promise<ClsModuleFactoryOptions> | ClsModuleFactoryOptions;
+    /**
+     * whether to make the module global, so you don't need
+     * to import `ClsModule` in other modules
+     */
+    global?: boolean;
+    /**
+     * The name of the cls namespace. This is the namespace
+     * that will be used by the ClsService and ClsMiddleware/Interc
+     * (most of the time you will not need to touch this setting)
+     */
+    namespaceName?: string;
 }
 
 export class ClsMiddlewareOptions {
