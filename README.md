@@ -240,18 +240,20 @@ The injectable `ClsService` provides the following API to manipulate the cls con
 
 The `ClsModule.register()` method takes the following `ClsModuleOptions`:
 
--   **_`namespaceName`_: `string`**  
-    The name of the cls namespace. This is the namespace that will be used by the ClsService and ClsMiddleware (most of the time you will not need to touch this setting)
+-   **_`middleware:`_ `ClsMiddlewareOptions`**  
+    An object with additional options for the `ClsMiddleware`, see below
+-   **_`guard:`_ `ClsGuardOptions`**  
+    An object with additional options for the `ClsGuard`, see below
+-   **_`interceptor:`_ `ClsInterceptorOptions`**  
+    An object with additional options for the `ClsInterceptor`, see below
 -   **_`global:`_ `boolean`** (default _`false`_)  
     Whether to make the module global, so you do not have to import `ClsModule.forFeature()` in other modules.
--   **_`middleware:`_ `ClsMiddlewareOptions`**  
-    An object with additional options for the ClsMiddleware, see below
--   **_`guard:`_ `ClsGuardOptions`**  
-    An object with additional options for the ClsGuard, see below
--   **_`interceptor:`_ `ClsInterceptorOptions`**  
-    An object with additional options for the ClsInterceptor, see below
+-   **_`namespaceName`_: `string`** (default _unset_)  
+    This is the namespace that will be set up. When used, `ClsService` must be injected using the `@InjectCls('name')` decorator. (most of the time you will not need to touch this setting)
 
-> Important: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will get overridden with the one that runs after.
+> **Please note**: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will get overridden with the one that runs after.
+
+`ClsModule.registerAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters.
 
 All of the `Cls{Middleware,Guard,Interceptor}Options` take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
 
@@ -408,9 +410,7 @@ Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform
 
 > Warning: Namespace support is currently experimental and has no tests. While the API is mostly stable now, it can still change any time.
 
-The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides a way to use multiple CLS namespaces in order to be fully compatible with `cls-hooked`.
-
-> **Note**: Since cls-hooked was ditched in version 1.2, it is no longer necessary to strive for compatibility with it. Still, the namespace support was there and there's no reason to remove it.
+The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides a way to use multiple CLS namespaces simultaneously.
 
 To use custom namespace provider, use `ClsModule.forFeature('my-namespace')`.
 
@@ -426,6 +426,8 @@ export class HelloModule {}
 This creates a namespaces `ClsService` provider that you can inject using `@InjectCls`
 
 ```ts
+// hello.service.ts
+
 @Injectable()
 class HelloService {
     constructor(
@@ -434,14 +436,11 @@ class HelloService {
     ) {}
 
     sayHello() {
-        return this.myCls.get('hi');
+        return this.myCls.run('hi');
     }
 }
-```
 
-> **Note**: `@InjectCls('x')` is equivalent to `@Inject(getNamespaceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
-
-```ts
+// hello.controller.ts
 @Injectable()
 export class HelloController {
     constructor(
@@ -452,7 +451,7 @@ export class HelloController {
 
     @Get('/hello')
     hello2() {
-        // seting up cls context manually
+        // setting up cls context manually
         return this.myCls.run(() => {
             this.myCls.set('hi', 'Hello');
             return this.helloService.sayHello();
@@ -460,3 +459,5 @@ export class HelloController {
     }
 }
 ```
+
+> **Note**: `@InjectCls('x')` is equivalent to `@Inject(getNamespaceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
