@@ -5,28 +5,28 @@ import { ClsService } from './cls.service';
 export class ClsModuleOptions {
     /**
      * whether to make the module global, so you don't need
-     * to import `ClsModule` in other modules
+     * to import ClsModule.forFeature()` in other modules
      */
     global? = false;
 
     /**
-     * Cls middleware options
+     * An object with additional options for the `ClsMiddleware`
      */
     middleware?: ClsMiddlewareOptions = null;
 
     /**
-     * Cls guard options
+     * An object with additional options for the `ClsGuard`
      */
     guard?: ClsGuardOptions = null;
 
     /**
-     * Cls interceptor options
+     * An object with additional options for the `ClsInterceptor`
      */
     interceptor?: ClsInterceptorOptions = null;
 
     /**
-     * The name of the cls namespace. This is the namespace
-     * that will be used by the ClsService and ClsMiddleware/Interc
+     * The namespace that will be set up. When used, `ClsService`
+     * must be injected using the `@InjectCls('name')` decorator.
      * (most of the time you will not need to touch this setting)
      */
     namespaceName? = CLS_DEFAULT_NAMESPACE;
@@ -43,12 +43,12 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     ) => Promise<ClsModuleFactoryOptions> | ClsModuleFactoryOptions;
     /**
      * whether to make the module global, so you don't need
-     * to import `ClsModule` in other modules
+     * to import `ClsModule.forFeature()` in other modules
      */
     global?: boolean;
     /**
-     * The name of the cls namespace. This is the namespace
-     * that will be used by the ClsService and ClsMiddleware/Interc
+     * The namespace that will be set up. When used, `ClsService`
+     * must be injected using the `@InjectCls('name')` decorator.
      * (most of the time you will not need to touch this setting)
      */
     namespaceName?: string;

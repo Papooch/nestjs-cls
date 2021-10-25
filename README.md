@@ -249,7 +249,7 @@ The `ClsModule.register()` method takes the following `ClsModuleOptions`:
 -   **_`global:`_ `boolean`** (default _`false`_)  
     Whether to make the module global, so you do not have to import `ClsModule.forFeature()` in other modules.
 -   **_`namespaceName`_: `string`** (default _unset_)  
-    This is the namespace that will be set up. When used, `ClsService` must be injected using the `@InjectCls('name')` decorator. (most of the time you will not need to touch this setting)
+    The namespace that will be set up. When used, `ClsService` must be injected using the `@InjectCls('name')` decorator. (most of the time you will not need to touch this setting)
 
 > **Please note**: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will get overridden with the one that runs after.
 
