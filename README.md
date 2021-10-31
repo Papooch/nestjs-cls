@@ -194,6 +194,10 @@ If you need any other guards to use the `ClsService`, it's preferable mount `Cls
 })
 export class AppModule {}
 ```
+or mount it directly on the Controller/Resolver with
+```ts
+@UseGuards(ClsGuard);
+```
 
 > **Please note**: since the `ClsGuard` uses the `AsyncLocalStorage#enterWith` method, using the `ClsGuard` comes with some [security considerations](#security-considerations)!
 
@@ -209,9 +213,14 @@ ClsModule.register({
 }),
 ```
 
-Or mount it manually as `APP_INTERCEPTOR`, should you need it.
+Or mount it manually as `APP_INTERCEPTOR`, or directly on the Controller/Resolver with:
+```ts
+@UseInterceptors(ClsInterceptor);
+```
 
 > **Please note**: Since Nest's _Interceptors_ run after _Guards_, that means using this method makes CLS **unavailable in Guards** (and in case of REST Controllers, also in **Exception Filters**).
+
+
 
 # API
 
@@ -274,6 +283,7 @@ The `ClsMiddlewareOptions` additionally takes the following parameters:
     Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
 -   **_`useEnterWith`_: `boolean`** (default _`false`_)  
     Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
+
 
 # Request ID
 
@@ -374,11 +384,11 @@ The `ClsInterceptor` only uses the safe `run()` method.
 
 The table below outlines the compatibility with some platforms:
 
-|                                                              |                        REST                         |                            GQL                             | Others |
-| :----------------------------------------------------------: | :-------------------------------------------------: | :--------------------------------------------------------: | :----: |
-|                      **ClsMiddleware**                       |                          ✔                          | must be _mounted manually_<br>and use `useEnterWith: true` |   ✖    |
-|             **ClsGuard** <br>(uses `enterWith`)              |                          ✔                          |                             ✔                              |   ?    |
-| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | context also inaccessible<br>in _Exception Filters_ |                             ✔                              |   ?    |
+|                                                              |                        REST                         |                            GQL                             | WS |Others |
+| :----------------------------------------------------------: | :-------------------------------------------------: | :--------------------------------------------------------: |:--:|:----: |
+|                      **ClsMiddleware**                       |                          ✔                          | ✔<br>must be _mounted manually_<br>and use `useEnterWith: true` | ✖ | ✖    |
+|             **ClsGuard** <br>(uses `enterWith`)              |                          ✔                          |                             ✔                              | ✔[*](#websockets)  | ?    |
+| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |                             ✔                              |  ✔[*](#websockets) |?    |
 
 ## REST
 
@@ -405,6 +415,11 @@ Tested with:
 Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform. This is still **experimental**, as there are no test and I can't guarantee it will work with your platform of choice.
 
 > If you decide to try this package with a platform that is not listed here, **please let me know** so I can add the compatibility notice.
+
+Below are listed platforms with which it is confirmed to work.
+
+### Websockets
+*Websocket Gateways* don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsIntercetor` manually on the `WebscocketGateway`. (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
 
 # Namespaces (experimental)
 
