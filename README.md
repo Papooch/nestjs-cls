@@ -79,7 +79,7 @@ export class UserIpInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         // Extract the client's ip address from the request...
         const request = context.switchToHttp().getRequest();
-        cosnt userIp = req.connection.remoteAddress;
+        const userIp = req.connection.remoteAddress;
         // ...and store it to the cls context.
         this.cls.set('ip', userIp);
         return next.handle();
@@ -107,7 +107,7 @@ export class AppController {
 @Injectable()
 export class AppService {
     constructor(
-        // Inject ClsService to be able to retireve data from the cls context.
+        // Inject ClsService to be able to retrieve data from the cls context.
         private readonly cls: ClsService
     ) {}
 
@@ -180,7 +180,7 @@ ClsModule.register({
 }),
 ```
 
-If you need any other guards to use the `ClsService`, it's preferable mount `ClsGuard` manually as the first guard in the root module:
+If you need any other guards to use the `ClsService`, it's preferable to mount `ClsGuard` manually as the first guard in the root module:
 
 ```ts
 @Module({
@@ -260,7 +260,7 @@ The `ClsModule.register()` method takes the following `ClsModuleOptions`:
 -   **_`namespaceName`_: `string`** (default _unset_)  
     The namespace that will be set up. When used, `ClsService` must be injected using the `@InjectCls('name')` decorator. (most of the time you will not need to touch this setting)
 
-> **Please note**: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will get overridden with the one that runs after.
+> **Please note**: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will be overwritten by the one that runs after.
 
 `ClsModule.registerAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters.
 
@@ -297,7 +297,7 @@ Below is an example of retrieving the request ID from the request header with a 
 ClsModule.register({
     middleware: {
         mount: true,
-        generateId: true
+        generateId: true,
         idGenerator: (req: Request) =>
             req.headers['X-Request-Id'] ?? uuid();
     }
