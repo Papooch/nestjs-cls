@@ -268,7 +268,7 @@ All of the `Cls{Middleware,Guard,Interceptor}Options` take the following paramet
 
 -   **_`mount`_: `boolean`** (default _`false`_)  
     Whether to automatically mount the middleware/guard/interceptor to every route (not applicable when instantiating manually)
--   **_`generateId`_: `bolean`** (default _`false`_)  
+-   **_`generateId`_: `boolean`** (default _`false`_)  
     Whether to automatically generate request IDs.
 -   **_`idGenerator`_: `(req: Request | ExecutionContext) => string | Promise<string>`**
     An optional function for generating the request ID. It takes the `Request` object (or the `ExecutionContext` in case of a Guard or Interceptor) as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
