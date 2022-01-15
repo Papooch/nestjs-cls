@@ -133,7 +133,7 @@ For HTTP transports, the context can be preferably set up in a `ClsMiddleware`. 
 
 ## Using a Middleware (HTTP Only)
 
-Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMidmidleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()` call.
+Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMiddleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()` call.
 
 All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
 
@@ -268,7 +268,7 @@ All of the `Cls{Middleware,Guard,Interceptor}Options` take the following paramet
 
 -   **_`mount`_: `boolean`** (default _`false`_)  
     Whether to automatically mount the middleware/guard/interceptor to every route (not applicable when instantiating manually)
--   **_`generateId`_: `bolean`** (default _`false`_)  
+-   **_`generateId`_: `boolean`** (default _`false`_)  
     Whether to automatically generate request IDs.
 -   **_`idGenerator`_: `(req: Request | ExecutionContext) => string | Promise<string>`**
     An optional function for generating the request ID. It takes the `Request` object (or the `ExecutionContext` in case of a Guard or Interceptor) as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
