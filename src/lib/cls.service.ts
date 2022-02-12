@@ -8,27 +8,9 @@ import {
     StringIfNever,
     TypeIfUndefined,
 } from '../types/type-if-type.type';
-import { valueFromPath } from '../utils/value-from-path';
+import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
-
-/*
-let a: ClsService; //<{ a: { v: string } }>;
-let b: ClsService<{ a: { v: string } }>;
-
-a.set('x', 7);
-const p = a.get('x');
-const x = a.get('x');
-const u = a.get(CLS_REQ);
-
-b.set('u', 4);
-const e = b.get();
-const y = b.get('a');
-const v = b.get('a.v');
-const z = b.get(CLS_REQ);
-
-type A = TypeIfType<typeof CLS_REQ, symbol, string, number>;
-*/
 
 export class ClsService<S extends ClsStore = ClsStore> {
     private readonly namespace: AsyncLocalStorage<any>;
@@ -41,14 +23,27 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @param key the key
      * @param value the value to set
      */
-    set<T = any>(key: string, value: T) {
+    set<
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        R = undefined,
+        T extends RecursiveKeyOf<S> = any,
+        P extends DeepPropertyType<S, T> = any,
+    >(key: StringIfNever<T> | keyof ClsStore, value: AnyIfNever<P>): void {
         const store = this.namespace.getStore();
         if (!store) {
             throw new Error(
-                `Cannot se the key "${key}". No cls context available in namespace "${this.namespace['name']}", please make sure that a ClsMiddleware/Guard/Interceptor has set up the context, or wrap any calls that depend on cls with "ClsService#run"`,
+                `Cannot se the key "${String(
+                    key,
+                )}". No cls context available in namespace "${
+                    this.namespace['name']
+                }", please make sure that a ClsMiddleware/Guard/Interceptor has set up the context, or wrap any calls that depend on cls with "ClsService#run"`,
             );
         }
-        store[key] = value;
+        if (typeof key === 'symbol') {
+            store[key] = value;
+        } else {
+            setValueFromPath(store as S, key as any, value as P);
+        }
     }
 
     /**
@@ -59,7 +54,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
     get(): AnyIfNever<S>;
     /**
      * Retrieve a value from the CLS context by key.
-     * @param key the key from which to retrieve the value
+     * @param key the key from which to retrieve the value, returns the whole context if ommited
      * @returns the value stored under the key or undefined
      */
     get<
@@ -72,7 +67,10 @@ export class ClsService<S extends ClsStore = ClsStore> {
     get(key?: string | symbol): any {
         const store = this.namespace.getStore();
         if (!key) return store;
-        return valueFromPath(store as S, key as any) as any;
+        if (typeof key === 'symbol') {
+            return store[key];
+        }
+        return getValueFromPath(store as S, key as any) as any;
     }
 
     /**

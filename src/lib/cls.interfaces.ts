@@ -68,14 +68,14 @@ export class ClsMiddlewareOptions {
     /**
      * the function to generate request ids inside the middleware
      */
-    idGenerator?: (req: Request) => string | Promise<string> = () =>
+    idGenerator?: (req: any) => string | Promise<string> = () =>
         Math.random().toString(36).slice(-8);
 
     /**
      * Function that executes after the CLS context has been initialised.
      * It can be used to put additional variables in the CLS context.
      */
-    setup?: (cls: ClsService, req: Request) => void | Promise<void>;
+    setup?: (cls: ClsService, req: any) => void | Promise<void>;
 
     /**
      * Whether to store the Request object to the CLS

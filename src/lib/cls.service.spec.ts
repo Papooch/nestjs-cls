@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsServiceManager } from './cls-service-manager';
-import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
+import { CLS_DEFAULT_NAMESPACE, CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
 import { ClsService } from './cls.service';
 
@@ -62,6 +62,36 @@ describe('ClsService', () => {
         });
     });
 
+    describe('store access', () => {
+        it('retrieves the whole store', () => {
+            service.run(() => {
+                service.set('a', 1);
+                service.set('b', 2);
+                service.set('c', 3);
+
+                expect(service.get()).toEqual({
+                    a: 1,
+                    b: 2,
+                    c: 3,
+                });
+            });
+        });
+
+        it('sets and retrieves symbol key from context', () => {
+            const sym = Symbol('sym');
+            service.run(() => {
+                service.set(sym, 123);
+                expect(service.get(sym)).toEqual(123);
+            });
+        });
+        it('sets CLS_ID and retrieves it with getId', () => {
+            service.run(() => {
+                service.set(CLS_ID, 123);
+                expect(service.getId()).toEqual(123);
+            });
+        });
+    });
+
     describe('edge cases', () => {
         it('returns undefined on nonexistent key', () => {
             service.run(() => {
@@ -115,12 +145,16 @@ describe('ClsService', () => {
         });
 
         it('enforces types', () => {
-            typedService.get('a');
-            typedService.get('b.c');
-            typedService.get('b.d');
-            typedService.get('b.d.e');
+            typedService.run(() => {
+                typedService.set('a', '1');
+                typedService.set('b.c', 1);
+                typedService.set('b.d.e', false);
 
-            //typedService.set()
+                typedService.get('a');
+                typedService.get('b.c');
+                typedService.get('b.d');
+                typedService.get('b.d.e');
+            });
         });
     });
 });
