@@ -1,5 +1,7 @@
 # NestJS CLS
 
+> **New**: Release `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference)
+
 A continuation-local storage module compatible with [NestJS](https://nestjs.com/)'s dependency injection.
 
 _Continuous-local storage allows to store state and propagate it throughout callbacks and promise chains. It allows storing data throughout the lifetime of a web request or any other asynchronous duration. It is similar to thread-local storage in other languages._
@@ -12,7 +14,7 @@ Some common use cases for CLS include:
 
 Most of these are theoretically solvable using _request-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues. Thus this package was born.
 
-> **Note**: For versions < 1.2, this package used [cls-hooked](https://www.npmjs.com/package/cls-hooked) as a peer dependency, now it uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` directly. The API stays the same for now but I'll consider making it more friendly for version 2.
+> **Note**: This package uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` API. It is already mostly stable, but see [Security considerations](#security-considerations) for more details.
 
 # Outline
 
@@ -28,6 +30,7 @@ Most of these are theoretically solvable using _request-scoped_ providers or pas
 -   [Request ID](#request-id)
 -   [Additional CLS Setup](#additional-cls-setup)
 -   [Breaking out of DI](#breaking-out-of-di)
+-   [Type safety and type inference](#type-safety-and-type-inference)
 -   [Security considerations](#security-considerations)
 -   [Compatibility considerations](#compatibility-considerations)
     -   [REST](#rest)
@@ -224,9 +227,9 @@ Or mount it manually as `APP_INTERCEPTOR`, or directly on the Controller/Resolve
 
 The injectable `ClsService` provides the following API to manipulate the cls context:
 
--   **_`set`_**`<T>(key: string, value: T): T`  
+-   **_`set`_**`(key: string, value: any): void`  
     Set a value on the CLS context.
--   **_`get`_**`<T>(key: string): T`  
+-   **_`get`_**`(key: string): any`  
     Retrieve a value from the CLS context by key.
 -   **_`getId`_**`(): string;`  
     Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
@@ -358,6 +361,12 @@ function helper() {
 ```
 
 > **Please note**: Only use this feature where absolutely necessary. Using this technique instead of dependency injection will make it difficult to mock the ClsService and your code will become harder to test.
+
+# Type safety and type inference
+
+By default the CLS storage is untyped and allows setting and retrieving any `string` or `symbol` key to the context. Some safety can be enforced by using `CONSTANTS` instead of magic strings, but that might not be enough.
+
+// TODO: Document Typing
 
 # Security considerations
 
