@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ClsService } from '../../../src';
-import { RecipesArgs } from './dto/recipes.args';
 import { Item } from './item.model';
 
 @Injectable()
 export class ItemService {
     constructor(private readonly cls: ClsService) {}
 
-    async findAll(recipesArgs: RecipesArgs): Promise<Item[]> {
+    async findAll(): Promise<Item[]> {
         const payload = [
             {
                 id: this.cls.getId(),

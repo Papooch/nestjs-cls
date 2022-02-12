@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ClsService } from '../../src';
 
@@ -6,9 +6,7 @@ import { ClsService } from '../../src';
 export class TestGuard implements CanActivate {
     constructor(private readonly cls: ClsService) {}
 
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    canActivate(): boolean | Promise<boolean> | Observable<boolean> {
         if (this.cls.isActive()) this.cls.set('FROM_GUARD', this.cls.getId());
         return true;
     }

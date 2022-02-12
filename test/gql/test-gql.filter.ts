@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { Catch, ExceptionFilter } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import mercurius from 'mercurius';
 import { ClsService } from '../../src';
@@ -11,7 +11,7 @@ export class TestGqlExceptionFilter implements ExceptionFilter {
         private readonly cls: ClsService,
     ) {}
 
-    catch(exception: TestException, host: ArgumentsHost) {
+    catch(exception: TestException) {
         const adapter = this.adapterHost.httpAdapter;
 
         exception.response.fromFilter = this.cls.getId();
