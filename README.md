@@ -58,7 +58,7 @@ Below is an example of storing the client's IP address in an interceptor and ret
         // Register the ClsModule and automatically mount the ClsMiddleware
         ClsModule.register({
             global: true,
-            middleware: { mount: true }
+            middleware: { mount: true },
         }),
     ],
     providers: [AppService],
@@ -66,15 +66,14 @@ Below is an example of storing the client's IP address in an interceptor and ret
 })
 export class TestHttpApp {}
 
-
 /* user-ip.interceptor.ts */
 @Injectable()
 export class UserIpInterceptor implements NestInterceptor {
     constructor(
         // Inject the ClsService into the interceptor to get
         // access to the current shared cls context.
-        private readonly cls: ClsService
-    )
+        private readonly cls: ClsService,
+    );
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         // Extract the client's ip address from the request...
@@ -85,7 +84,6 @@ export class UserIpInterceptor implements NestInterceptor {
         return next.handle();
     }
 }
-
 
 /* app.controller.ts */
 
@@ -102,13 +100,12 @@ export class AppController {
     }
 }
 
-
 /* app.service.ts */
 @Injectable()
 export class AppService {
     constructor(
         // Inject ClsService to be able to retrieve data from the cls context.
-        private readonly cls: ClsService
+        private readonly cls: ClsService,
     ) {}
 
     sayHello() {
@@ -194,7 +191,9 @@ If you need any other guards to use the `ClsService`, it's preferable to mount `
 })
 export class AppModule {}
 ```
+
 or mount it directly on the Controller/Resolver with
+
 ```ts
 @UseGuards(ClsGuard);
 ```
@@ -214,13 +213,12 @@ ClsModule.register({
 ```
 
 Or mount it manually as `APP_INTERCEPTOR`, or directly on the Controller/Resolver with:
+
 ```ts
 @UseInterceptors(ClsInterceptor);
 ```
 
 > **Please note**: Since Nest's _Interceptors_ run after _Guards_, that means using this method makes CLS **unavailable in Guards** (and in case of REST Controllers, also in **Exception Filters**).
-
-
 
 # API
 
@@ -232,8 +230,6 @@ The injectable `ClsService` provides the following API to manipulate the cls con
     Retrieve a value from the CLS context by key.
 -   **_`getId`_**`(): string;`  
     Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
--   **_`getStore`_**`(): any`  
-    Retrieve the object containing all properties of the current CLS context.
 -   **_`enter`_**`(): void;`  
     Run any following code in a shared CLS context.
 -   **_`enterWith`_**`(store: any): void;`  
@@ -283,7 +279,6 @@ The `ClsMiddlewareOptions` additionally takes the following parameters:
     Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
 -   **_`useEnterWith`_: `boolean`** (default _`false`_)  
     Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
-
 
 # Request ID
 
@@ -341,7 +336,7 @@ The function receives the `ClsService` instance and the `Request` (or `Execution
 ClsModule.register({
     middleware: {
         mount: true,
-        setup: (cls, req) => {
+        setup: (cls, req: Request) => {
             // put some additional default info in the CLS
             cls.set('TENANT_ID', req.params('tenant_id'));
             cls.set('AUTH', { authenticated: false });
@@ -384,11 +379,11 @@ The `ClsInterceptor` only uses the safe `run()` method.
 
 The table below outlines the compatibility with some platforms:
 
-|                                                              |                        REST                         |                            GQL                             | WS |Others |
-| :----------------------------------------------------------: | :-------------------------------------------------: | :--------------------------------------------------------: |:--:|:----: |
-|                      **ClsMiddleware**                       |                          ✔                          | ✔<br>must be _mounted manually_<br>and use `useEnterWith: true` | ✖ | ✖    |
-|             **ClsGuard** <br>(uses `enterWith`)              |                          ✔                          |                             ✔                              | ✔[*](#websockets)  | ?    |
-| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |                             ✔                              |  ✔[*](#websockets) |?    |
+|                                                              |                           REST                           |                               GQL                               |         WS         | Others |
+| :----------------------------------------------------------: | :------------------------------------------------------: | :-------------------------------------------------------------: | :----------------: | :----: |
+|                      **ClsMiddleware**                       |                            ✔                             | ✔<br>must be _mounted manually_<br>and use `useEnterWith: true` |         ✖          |   ✖    |
+|             **ClsGuard** <br>(uses `enterWith`)              |                            ✔                             |                                ✔                                | ✔[\*](#websockets) |   ?    |
+| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |                                ✔                                | ✔[\*](#websockets) |   ?    |
 
 ## REST
 
@@ -419,7 +414,8 @@ Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform
 Below are listed platforms with which it is confirmed to work.
 
 ### Websockets
-*Websocket Gateways* don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsIntercetor` manually on the `WebscocketGateway`. (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
+
+_Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsIntercetor` manually on the `WebscocketGateway`. (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
 
 # Namespaces (experimental)
 
