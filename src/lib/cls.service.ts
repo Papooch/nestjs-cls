@@ -1,7 +1,18 @@
 import { AsyncLocalStorage } from 'async_hooks';
+import {
+    DeepPropertyType,
+    RecursiveKeyOf,
+} from '../types/recursive-key-of.type';
+import {
+    AnyIfNever,
+    StringIfNever,
+    TypeIfUndefined,
+} from '../types/type-if-type.type';
+import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
+import { ClsStore } from './cls.interfaces';
 
-export class ClsService<S = Record<string, any>> {
+export class ClsService<S extends ClsStore = ClsStore> {
     private readonly namespace: AsyncLocalStorage<any>;
     constructor(namespace: AsyncLocalStorage<any>) {
         this.namespace = namespace;
@@ -12,24 +23,54 @@ export class ClsService<S = Record<string, any>> {
      * @param key the key
      * @param value the value to set
      */
-    set<T = any>(key: string, value: T) {
+    set<
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        R = undefined,
+        T extends RecursiveKeyOf<S> = any,
+        P extends DeepPropertyType<S, T> = any,
+    >(key: StringIfNever<T> | keyof ClsStore, value: AnyIfNever<P>): void {
         const store = this.namespace.getStore();
         if (!store) {
             throw new Error(
-                `Cannot se the key "${key}". No cls context available in namespace "${this.namespace['name']}", please make sure to wrap any calls that depend on cls with "ClsService#run" or register the ClsMiddleware for all routes that use ClsService`,
+                `Cannot se the key "${String(
+                    key,
+                )}". No cls context available in namespace "${
+                    this.namespace['name']
+                }", please make sure that a ClsMiddleware/Guard/Interceptor has set up the context, or wrap any calls that depend on cls with "ClsService#run"`,
             );
         }
-        store[key] = value;
+        if (typeof key === 'symbol') {
+            store[key] = value;
+        } else {
+            setValueFromPath(store as S, key as any, value as P);
+        }
     }
 
     /**
      * Retrieve a value from the CLS context by key.
-     * @param key the key from which to retrieve the value
+     * @param key the key from which to retrieve the value, returns the whole context if ommited
      * @returns the value stored under the key or undefined
      */
-    get<T = any>(key: string): T {
+    get(): AnyIfNever<S>;
+    /**
+     * Retrieve a value from the CLS context by key.
+     * @param key the key from which to retrieve the value, returns the whole context if ommited
+     * @returns the value stored under the key or undefined
+     */
+    get<
+        R = undefined,
+        T extends RecursiveKeyOf<S> = any,
+        P = DeepPropertyType<S, T>,
+    >(
+        key?: StringIfNever<T> | keyof ClsStore,
+    ): TypeIfUndefined<R, TypeIfUndefined<typeof key, S, AnyIfNever<P>>, R>;
+    get(key?: string | symbol): any {
         const store = this.namespace.getStore();
-        return store?.[key];
+        if (!key) return store;
+        if (typeof key === 'symbol') {
+            return store[key];
+        }
+        return getValueFromPath(store as S, key as any) as any;
     }
 
     /**
@@ -39,14 +80,6 @@ export class ClsService<S = Record<string, any>> {
     getId(): string {
         const store = this.namespace.getStore();
         return store?.[CLS_ID];
-    }
-
-    /**
-     * Retrieve the object containing all properties of the current CLS context.
-     * @returns the store
-     */
-    getStore(): S {
-        return this.namespace.getStore();
     }
 
     /**
@@ -64,7 +97,7 @@ export class ClsService<S = Record<string, any>> {
      * @param callback function to run
      * @returns whatever the callback returns
      */
-    runWith<T = any>(store: any, callback: () => T) {
+    runWith<T = any>(store: S, callback: () => T) {
         return this.namespace.run(store ?? {}, callback);
     }
 
@@ -79,8 +112,8 @@ export class ClsService<S = Record<string, any>> {
      * Run any following code with a shared ClS context
      * @param store the default context contents
      */
-    enterWith(store: any = {}) {
-        return this.namespace.enterWith(store);
+    enterWith(store?: S) {
+        return this.namespace.enterWith(store ?? {});
     }
 
     /**

@@ -6,11 +6,11 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ClsService, CLS_ID } from '../../src';
+import { ClsService } from '../../src';
 import { TestException } from '../common/test.exception';
-import { TestRestExceptionFilter } from './test-rest.filter';
 import { TestGuard } from '../common/test.guard';
 import { TestInterceptor } from '../common/test.interceptor';
+import { TestRestExceptionFilter } from './test-rest.filter';
 
 @Injectable()
 export class TestHttpService {

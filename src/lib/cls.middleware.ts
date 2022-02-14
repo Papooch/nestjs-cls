@@ -21,10 +21,10 @@ export class ClsMiddleware implements NestMiddleware {
             this.options.useEnterWith && cls.enter();
             if (this.options.generateId) {
                 const id = await this.options.idGenerator(req);
-                cls.set(CLS_ID, id);
+                cls.set<any>(CLS_ID, id);
             }
-            if (this.options.saveReq) cls.set(CLS_REQ, req);
-            if (this.options.saveRes) cls.set(CLS_RES, res);
+            if (this.options.saveReq) cls.set<any>(CLS_REQ, req);
+            if (this.options.saveRes) cls.set<any>(CLS_RES, res);
             if (this.options.setup) {
                 await this.options.setup(cls, req);
             }

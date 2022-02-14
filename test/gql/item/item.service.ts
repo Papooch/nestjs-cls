@@ -8,6 +8,7 @@ export class ItemService {
     constructor(private readonly cls: ClsService) {}
 
     async findAll(recipesArgs: RecipesArgs): Promise<Item[]> {
+        recipesArgs;
         const payload = [
             {
                 id: this.cls.getId(),
