@@ -150,6 +150,10 @@ describe('ClsService', () => {
                 typedService.set('b.c', 1);
                 typedService.set('b.d.e', false);
 
+                const { a, b } = typedService.get();
+                a;
+                b;
+
                 typedService.get('a');
                 typedService.get('b.c');
                 typedService.get('b.d');

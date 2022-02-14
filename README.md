@@ -1,6 +1,6 @@
 # NestJS CLS
 
-> **New**: Release `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference)
+> **New**: Release `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference), check below for more info.
 
 A continuation-local storage module compatible with [NestJS](https://nestjs.com/)'s dependency injection.
 
@@ -8,13 +8,13 @@ _Continuous-local storage allows to store state and propagate it throughout call
 
 Some common use cases for CLS include:
 
--   Request ID tracing for logging purposes
+-   Tracing the Request ID and other metadata for logging purposes
 -   Making the Tenant ID available everywhere in multi-tenant apps
--   Globally setting the authentication level for the request
+-   Globally setting an authentication level for the request
 
-Most of these are theoretically solvable using _request-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues. Thus this package was born.
+Most of these are to some extent solvable using _request-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
 
-> **Note**: This package uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` API. It is already mostly stable, but see [Security considerations](#security-considerations) for more details.
+> **Note**: This package uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` API. Most parts of it are marked as _stable_ now, see [Security considerations](#security-considerations) for more details.
 
 # Outline
 
@@ -229,8 +229,8 @@ The injectable `ClsService` provides the following API to manipulate the cls con
 
 -   **_`set`_**`(key: string, value: any): void`  
     Set a value on the CLS context.
--   **_`get`_**`(key: string): any`  
-    Retrieve a value from the CLS context by key.
+-   **_`get`_**`(key?: string): any`  
+    Retrieve a value from the CLS context by key. Get the whole store if key is omitted.
 -   **_`getId`_**`(): string;`  
     Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
 -   **_`enter`_**`(): void;`  
@@ -364,9 +364,68 @@ function helper() {
 
 # Type safety and type inference
 
-By default the CLS storage is untyped and allows setting and retrieving any `string` or `symbol` key to the context. Some safety can be enforced by using `CONSTANTS` instead of magic strings, but that might not be enough.
+By default the CLS context is untyped and allows setting and retrieving any `string` or `symbol` key from the context. Some safety can be enforced by using `CONSTANTS` instead of magic strings, but that might not be enough.
 
-// TODO: Document Typing
+Therefore, it is possible to specify a custom interface for the `ClsService` and get proper typing and automatic type inference when retrieving or setting values. This works even for _nested objects_ using a dot notation.
+
+To create a typed CLS Store, start by creating an interface that extends `ClsStore`.
+
+```ts
+export interface MyClsStore extends ClsStore {
+    tenantId: string;
+    user: {
+        id: number;
+        authorized: boolean;
+    };
+}
+```
+
+Then you can inject the `ClsService` with a type parameter `ClsService<MyClsStore>` and
+
+```ts
+export class MyService {
+    constructor(private readonly cls: ClsService<ClsStore>) {}
+
+    doTheThing() {
+        // a boolean type will be enforced here
+        this.cls.set('user.authorized', true);
+
+        // tenantId will be inferred as a stirng
+        const tenantId = this.cls.get('tenantId');
+
+        // userId will be inferred as a number
+        const userId = this.cls.get('user.id');
+
+        // user will be inferred as { id: number, authorized: boolean }
+        const user = this.cls.get('user');
+
+        // you'll even get intellisense for the keys, because the type
+        // will be inferred as:
+        // symbol | 'tenantId˙ | 'user' | 'user.id' | 'user.authorized'
+
+        // alternatively, since the `get` method returns the whole store
+        // when called without arguments, you can use object destructuring
+        const { tenantId, user } = this.cls.get();
+
+        // accessing a nonexistent property will result in a type error
+        const notExist = this.cls.get('user.name');
+    }
+}
+```
+
+Alternatively, if you feel like using `ClsService<MyClsStore>` everywhere is tedious, you can instead globally [augment the `ClsStore interface`](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) and have strict typing of `ClsService` anywhere without the type parameter:
+
+```ts
+declare module 'nestjs-cls' {
+    interface ClsStore {
+        tenantId: string;
+        user: {
+            id: number;
+            authorized: boolean;
+        };
+    }
+}
+```
 
 # Security considerations
 
