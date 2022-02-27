@@ -160,6 +160,4 @@ export class ClsInterceptorOptions {
     readonly namespaceName?: string;
 }
 
-export interface ClsStore {
-    [key: symbol]: any;
-}
+export type ClsStore = Record<symbol, any>;
