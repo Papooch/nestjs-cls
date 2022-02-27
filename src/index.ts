@@ -6,3 +6,4 @@ export * from './lib/cls.guard';
 export * from './lib/cls.module';
 export * from './lib/cls.service';
 export * from './lib/cls.decorators';
+export * from './lib/cls.interfaces';
