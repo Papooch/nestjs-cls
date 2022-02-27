@@ -25,12 +25,15 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [Using a Middleware](#using-a-middleware-http-only)
     -   [Using a Guard](#using-a-guard)
     -   [Using an Interceptor](#using-an-interceptor)
+-   [Other features](#other-features)
+    -   [Request ID](#request-id)
+    -   [Additional CLS Setup](#additional-cls-setup)
+    -   [Breaking out of DI](#breaking-out-of-di)
+    -   [Usage outside of web request](#usage-outside-of-web-request)
+    -   [Type safety and type inference](#type-safety-and-type-inference)
 -   [API](#api)
--   [Options](#options)
--   [Request ID](#request-id)
--   [Additional CLS Setup](#additional-cls-setup)
--   [Breaking out of DI](#breaking-out-of-di)
--   [Type safety and type inference](#type-safety-and-type-inference)
+    -   [Service Interface](#service-interface)
+    -   [Module Options](#module-options)
 -   [Security considerations](#security-considerations)
 -   [Compatibility considerations](#compatibility-considerations)
     -   [REST](#rest)
@@ -114,7 +117,7 @@ export class AppService {
     sayHello() {
         // Here we can extract the value of 'ip' that was
         // put into the cls context in the interceptor.
-        return 'Hello ' + this.cls.get<string>('ip') + '!';
+        return 'Hello ' + this.cls.get('ip') + '!';
     }
 }
 ```
@@ -130,6 +133,8 @@ To make CLS work, it is required to set up the CLS context first. This is done b
 This package provides **three** methods of setting up the CLS context for incoming requests. This is mainly due to the fact that different underlying platforms are compatible with some of these methods - see [Compatibility considerations](#compatibility-considerations).
 
 For HTTP transports, the context can be preferably set up in a `ClsMiddleware`. For all other platforms, or cases where the `ClsMiddleware` is not applicable, this package also provides a `ClsGuard` and `ClsInterceptor`. While both of these also work with HTTP, they come with some caveats, see below.
+
+---
 
 ## Using a Middleware (HTTP Only)
 
@@ -168,6 +173,8 @@ function bootstrap() {
 
 > **Please note**: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.register()`, so you will have to provide them yourself in the constructor.
 
+---
+
 ## Using a Guard
 
 The `ClsGuard` can be also used set up the CLS context. While it is not a "guard" per-se, it's the second best place to set up the CLS context, since after a middleware, it is the first piece of code that the request hits.
@@ -203,6 +210,8 @@ or mount it directly on the Controller/Resolver with
 
 > **Please note**: since the `ClsGuard` uses the `AsyncLocalStorage#enterWith` method, using the `ClsGuard` comes with some [security considerations](#security-considerations)!
 
+---
+
 ## Using an Interceptor
 
 Another place to initiate the CLS context is an `ClsInterceptor`, which, unlike the `ClsGuard` uses `AsyncLocalStorage#run` method to wrap the following code, which is considered safer than `enterWith`.
@@ -223,67 +232,11 @@ Or mount it manually as `APP_INTERCEPTOR`, or directly on the Controller/Resolve
 
 > **Please note**: Since Nest's _Interceptors_ run after _Guards_, that means using this method makes CLS **unavailable in Guards** (and in case of REST Controllers, also in **Exception Filters**).
 
-# API
+# Other features
 
-The injectable `ClsService` provides the following API to manipulate the cls context:
+In addition to the basic functionality described in the [Quick start](#quick-start) chapter, this module provides several other features.
 
--   **_`set`_**`(key: string, value: any): void`  
-    Set a value on the CLS context.
--   **_`get`_**`(key?: string): any`  
-    Retrieve a value from the CLS context by key. Get the whole store if key is omitted.
--   **_`getId`_**`(): string;`  
-    Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
--   **_`enter`_**`(): void;`  
-    Run any following code in a shared CLS context.
--   **_`enterWith`_**`(store: any): void;`  
-    Run any following code in a shared CLS context (while supplying the default contents).
--   **_`run`_**`(callback: () => T): T;`  
-    Run the callback in a shared CLS context.
--   **_`runWith`_**`(store: any, callback: () => T): T;`  
-    Run the callback in a shared CLS context (while supplying the default contents).
--   **_`isActive`_**`(): boolean`  
-    Whether the current code runs within an active CLS context.
-
-# Options
-
-The `ClsModule.register()` method takes the following `ClsModuleOptions`:
-
--   **_`middleware:`_ `ClsMiddlewareOptions`**  
-    An object with additional options for the `ClsMiddleware`, see below
--   **_`guard:`_ `ClsGuardOptions`**  
-    An object with additional options for the `ClsGuard`, see below
--   **_`interceptor:`_ `ClsInterceptorOptions`**  
-    An object with additional options for the `ClsInterceptor`, see below
--   **_`global:`_ `boolean`** (default _`false`_)  
-    Whether to make the module global, so you do not have to import `ClsModule.forFeature()` in other modules.
--   **_`namespaceName`_: `string`** (default _unset_)  
-    The namespace that will be set up. When used, `ClsService` must be injected using the `@InjectCls('name')` decorator. (most of the time you will not need to touch this setting)
-
-> **Please note**: the `middleware`, `guard` and `interceptor` options are _mutually exclusive_ - do not use more than one of them, otherwise the context will be overwritten by the one that runs after.
-
-`ClsModule.registerAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters.
-
-All of the `Cls{Middleware,Guard,Interceptor}Options` take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
-
--   **_`mount`_: `boolean`** (default _`false`_)  
-    Whether to automatically mount the middleware/guard/interceptor to every route (not applicable when instantiating manually)
--   **_`generateId`_: `boolean`** (default _`false`_)  
-    Whether to automatically generate request IDs.
--   **_`idGenerator`_: `(req: Request | ExecutionContext) => string | Promise<string>`**
-    An optional function for generating the request ID. It takes the `Request` object (or the `ExecutionContext` in case of a Guard or Interceptor) as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
--   **_`setup`_: `(cls: ClsService, req: Request) => void | Promise<void>;`**
-    Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
-
-The `ClsMiddlewareOptions` additionally takes the following parameters:
-
--   **_`saveReq`_: `boolean`** (default _`true`_)  
-     Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
--   **_`saveRes`_: `boolean`** (default _`false`_)  
-    Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
--   **_`useEnterWith`_: `boolean`** (default _`false`_)  
-    Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
-
-# Request ID
+## Request ID
 
 Because of a shared storage, CLS is an ideal tool for tracking request (correlation) IDs for the purpose of logging. This package provides an option to automatically generate request IDs in the middleware/guard/interceptor, if you pass `{ generateId: true }` to its options. By default, the generated ID is a string based on `Math.random()`, but you can provide a custom function in the `idGenerator` option.
 
@@ -329,9 +282,11 @@ class MyService {
 }
 ```
 
-# Additional CLS Setup
+---
 
-The CLS middleware/guard/interceptor provide some default functionality, but sometimes you might want to store more things in the context by default. This can be of course done in a custom enhancer bound after, but for this scenario the options expose the `setup` function, which will be executed in the middleware/guard after the CLS context is set up.
+## Additional CLS Setup
+
+The CLS middleware/guard/interceptor provide some default functionality, but sometimes you might want to store more things about the request in the context. This can be of course done in a custom enhancer bound after, but for this scenario the options expose the `setup` function, which will be executed in the enhancer right after the CLS context is set up.
 
 The function receives the `ClsService` instance and the `Request` (or `ExecutionContext`) object, and can be asynchronous.
 
@@ -348,7 +303,52 @@ ClsModule.register({
 });
 ```
 
-# Breaking out of DI
+---
+
+## Usage outside of web request
+
+Sometimes, a part of the app that relies on the CLS storage might need to be called outside of the context of a web request - for example, in a Cron job or during the application bootstrap. In such cases, there are no enhancers that can be bound to the handler to set up the context.
+
+Therefore, you as the the developer are responsible for wrapping the execution with `ClsService#run` and set up the appropriate context variables.
+
+```ts
+@Injectable()
+export class CronController {
+    constructor(
+        private readonly someService: SomeService,
+        private readonly cls: ClsService,
+    );
+
+    @Cron('45 * * * * *')
+    handleCronExample1() {
+        this.clsService.run(() => {
+            // either set up all context variables inside the wrapped `run` call
+            this.cls.set(CLS_ID, uuid());
+            this.cls.set('mode', 'cron');
+            this.someService.doTheThing();
+        });
+    }
+
+    @Cron('90 * * * * *')
+    handleCronExample2() {
+        // or create the context object beforehand...
+        const context = {
+            [CLS_ID]: uuid(),
+            mode: 'cron',
+        };
+        // ...and pass it to the `runWith` call
+        this.clsService.runWith(context, () => {
+            this.someService.doTheThing();
+        });
+    }
+}
+```
+
+If you find that using `ClsService#run` causes the context to be lost, you can resort to the less safe `ClsService#enter`.
+
+---
+
+## Breaking out of DI
 
 While this package aims to be compatible with NestJS's DI, it is also possible to access the CLS context outside of it. For that, it provides the static `ClsServiceManager` class that exposes the `getClsService()` method.
 
@@ -362,7 +362,11 @@ function helper() {
 
 > **Please note**: Only use this feature where absolutely necessary. Using this technique instead of dependency injection will make it difficult to mock the ClsService and your code will become harder to test.
 
-# Type safety and type inference
+---
+
+## Type safety and type inference
+
+> Since `v2.0`
 
 By default the CLS context is untyped and allows setting and retrieving any `string` or `symbol` key from the context. Some safety can be enforced by using `CONSTANTS` instead of magic strings, but that might not be enough.
 
@@ -380,7 +384,7 @@ export interface MyClsStore extends ClsStore {
 }
 ```
 
-Then you can inject the `ClsService` with a type parameter `ClsService<MyClsStore>` and
+Then you can inject the `ClsService` with a type parameter `ClsService<MyClsStore>` to make use of the safe typing.
 
 ```ts
 export class MyService {
@@ -426,6 +430,70 @@ declare module 'nestjs-cls' {
     }
 }
 ```
+
+# API
+
+## Service interface
+
+The injectable `ClsService` provides the following API to manipulate the cls context:
+
+-   **_`set`_**`(key: string, value: any): void`  
+    Set a value on the CLS context.
+-   **_`get`_**`(key?: string): any`  
+    Retrieve a value from the CLS context by key. Get the whole store if key is omitted.
+-   **_`getId`_**`(): string;`  
+    Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
+-   **_`enter`_**`(): void;`  
+    Run any following code in a shared CLS context.
+-   **_`enterWith`_**`(store: any): void;`  
+    Run any following code in a shared CLS context (while supplying the default contents).
+-   **_`run`_**`(callback: () => T): T;`  
+    Run the callback in a shared CLS context.
+-   **_`runWith`_**`(store: any, callback: () => T): T;`  
+    Run the callback in a shared CLS context (while supplying the default contents).
+-   **_`isActive`_**`(): boolean`  
+    Whether the current code runs within an active CLS context.
+
+---
+
+## Module Options
+
+The `ClsModule.register()` method takes the following `ClsModuleOptions`:
+
+-   **_`middleware:`_ `ClsMiddlewareOptions`**  
+    An object with additional options for the `ClsMiddleware`, see below
+-   **_`guard:`_ `ClsGuardOptions`**  
+    An object with additional options for the `ClsGuard`, see below
+-   **_`interceptor:`_ `ClsInterceptorOptions`**  
+    An object with additional options for the `ClsInterceptor`, see below
+-   **_`global:`_ `boolean`** (default _`false`_)  
+    Whether to make the module global, so you do not have to import `ClsModule.forFeature()` in other modules.
+-   **_`namespaceName`_: `string`** (default _unset_)  
+    The namespace that will be set up. When used, `ClsService` must be injected using the `@InjectCls('name')` decorator. (most of the time you will not need to touch this setting)
+
+> **Please note**: the `middleware`, `guard` and `interceptor` options should be _mutually exclusive_ - do not use more than one of them, otherwise the context will be overwritten by the one that runs after.
+
+`ClsModule.registerAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters.
+
+All of the `Cls{Middleware,Guard,Interceptor}Options` take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
+
+-   **_`mount`_: `boolean`** (default _`false`_)  
+    Whether to automatically mount the middleware/guard/interceptor to every route (not applicable when instantiating manually)
+-   **_`generateId`_: `boolean`** (default _`false`_)  
+    Whether to automatically generate request IDs.
+-   **_`idGenerator`_: `(req: Request | ExecutionContext) => string | Promise<string>`**
+    An optional function for generating the request ID. It takes the `Request` object (or the `ExecutionContext` in case of a Guard or Interceptor) as an argument and (synchronously or asynchronously) returns a string. The default implementation uses `Math.random()` to generate a string of 8 characters.
+-   **_`setup`_: `(cls: ClsService, req: Request) => void | Promise<void>;`**
+    Function that executes after the CLS context has been initialised. It can be used to put additional variables in the CLS context.
+
+The `ClsMiddlewareOptions` additionally takes the following parameters:
+
+-   **_`saveReq`_: `boolean`** (default _`true`_)  
+     Whether to store the _Request_ object to the context. It will be available under the `CLS_REQ` key.
+-   **_`saveRes`_: `boolean`** (default _`false`_)  
+    Whether to store the _Response_ object to the context. It will be available under the `CLS_RES` key
+-   **_`useEnterWith`_: `boolean`** (default _`false`_)  
+    Set to `true` to set up the context using a call to [`AsyncLocalStorage#enterWith`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_enterwith_store) instead of wrapping the `next()` call with the safer [`AsyncLocalStorage#run`](https://nodejs.org/api/async_context.html#async_context_asynclocalstorage_run_store_callback_args). Most of the time this should not be necessary, but [some frameworks](#graphql) are known to lose the context with `run`.
 
 # Security considerations
 
