@@ -1,6 +1,6 @@
 # NestJS CLS
 
-> **New**: Release `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference), check below for more info.
+> **New**: Version `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
 
 A continuation-local storage module compatible with [NestJS](https://nestjs.com/)'s dependency injection.
 
