@@ -134,7 +134,9 @@ describe('ClsService', () => {
                 c: number;
                 d: {
                     e: boolean;
+                    f: Array<string>;
                 };
+                g: Map<string, number>;
             };
         }
 
@@ -149,6 +151,8 @@ describe('ClsService', () => {
                 typedService.set('a', '1');
                 typedService.set('b.c', 1);
                 typedService.set('b.d.e', false);
+                typedService.set('b.d.f', ['x']);
+                typedService.set('b.g', new Map());
 
                 const { a, b } = typedService.get();
                 a;
@@ -158,6 +162,8 @@ describe('ClsService', () => {
                 typedService.get('b.c');
                 typedService.get('b.d');
                 typedService.get('b.d.e');
+                typedService.get('b.d.f')[0];
+                typedService.get('b.g').get('x');
             });
         });
     });
