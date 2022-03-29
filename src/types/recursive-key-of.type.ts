@@ -5,6 +5,9 @@ type Terminal =
     | boolean
     | null
     | undefined
+    | any[]
+    | Map<any, any>
+    | Set<any>
     | Date
     | RegExp
     | ((...args: any) => any);
