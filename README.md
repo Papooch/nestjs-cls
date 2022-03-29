@@ -431,6 +431,20 @@ declare module 'nestjs-cls' {
 }
 ```
 
+It can happen, that the object you want to store in the context is too complex, or contains cyclic references. In that case, typescript might complain that _type instantiation is too deep, possibly infinite_. That is due to the fact that it tries to generate all possible paths inside the store. If that's the case, you can use the `Terminal` type to stop generating the paths for a certain subtree:
+
+```ts
+interface ClsStore {
+    tenantId: string;
+    user: Terminal<{
+        id: number;
+        authorized: boolean;
+    }>;
+}
+```
+
+This will only generate the paths `tenantId | user` and won't allow directly accessing nested keys (like `cls.get('user.id')`, but you'll still get fully typing for things like `const { id } = cls.get('user')`). See issue #22 for more details.
+
 # API
 
 ## Service interface
