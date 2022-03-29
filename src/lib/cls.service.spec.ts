@@ -158,6 +158,7 @@ describe('ClsService', () => {
                 typedService.set('b.d.e', false);
                 typedService.set('b.d.f', ['x']);
                 typedService.set('b.g', new Map());
+                typedService.set('b.h', { i: 'i', j: 1 });
 
                 const { a, b } = typedService.get();
                 a;
