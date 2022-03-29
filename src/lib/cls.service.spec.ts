@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Terminal } from '../types/recursive-key-of.type';
 import { ClsServiceManager } from './cls-service-manager';
 import { CLS_DEFAULT_NAMESPACE, CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
@@ -137,6 +138,10 @@ describe('ClsService', () => {
                     f: Array<string>;
                 };
                 g: Map<string, number>;
+                h: Terminal<{
+                    i: string;
+                    j: number;
+                }>;
             };
         }
 
@@ -164,6 +169,9 @@ describe('ClsService', () => {
                 typedService.get('b.d.e');
                 typedService.get('b.d.f')[0];
                 typedService.get('b.g').get('x');
+                const { i, j } = typedService.get('b.h');
+                i;
+                j;
             });
         });
     });

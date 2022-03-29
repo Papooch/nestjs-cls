@@ -1,4 +1,4 @@
-type Terminal =
+type TerminalType =
     | string
     | number
     | bigint
@@ -10,7 +10,14 @@ type Terminal =
     | Set<any>
     | Date
     | RegExp
+    | BrandedTerminal
     | ((...args: any) => any);
+
+const TERMINAL_BRAND = Symbol();
+class BrandedTerminal {
+    private [TERMINAL_BRAND]?: void;
+}
+export type Terminal<T> = T & BrandedTerminal;
 
 /**
  * Deep nested keys of an interface with dot syntax
@@ -21,7 +28,7 @@ type Terminal =
 export type RecursiveKeyOf<
     T,
     Prefix extends string = never,
-> = T extends Terminal
+> = T extends TerminalType
     ? never
     : {
           [K in keyof T & string]: [Prefix] extends [never]
