@@ -151,7 +151,7 @@ Sometimes, you might want to only use CLS on certain routes. In that case, you c
 ```ts
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        apply(ClsMiddleware).forRoutes(AppController);
+        consumer.apply(ClsMiddleware).forRoutes(AppController);
     }
 }
 ```
