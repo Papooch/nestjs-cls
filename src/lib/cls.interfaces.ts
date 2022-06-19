@@ -28,6 +28,7 @@ export class ClsModuleOptions {
      * The namespace that will be set up. When used, `ClsService`
      * must be injected using the `@InjectCls('name')` decorator.
      * (most of the time you will not need to touch this setting)
+     * @deprecated Namespace support will be removed in v3.0
      */
     namespaceName? = CLS_DEFAULT_NAMESPACE;
 }
@@ -50,6 +51,7 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
      * The namespace that will be set up. When used, `ClsService`
      * must be injected using the `@InjectCls('name')` decorator.
      * (most of the time you will not need to touch this setting)
+     * @deprecated Namespace support will be removed in v3.0
      */
     namespaceName?: string;
 }
@@ -99,6 +101,9 @@ export class ClsMiddlewareOptions {
      */
     useEnterWith? = false;
 
+    /**
+     * @deprecated Namespace support will be removed in v3.0
+     */
     readonly namespaceName?: string;
 }
 
@@ -128,6 +133,9 @@ export class ClsGuardOptions {
         context: ExecutionContext,
     ) => void | Promise<void>;
 
+    /**
+     * @deprecated Namespace support will be removed in v3.0
+     */
     readonly namespaceName?: string;
 }
 
@@ -157,6 +165,9 @@ export class ClsInterceptorOptions {
         context: ExecutionContext,
     ) => void | Promise<void>;
 
+    /**
+     * @deprecated Namespace support will be removed in v3.0
+     */
     readonly namespaceName?: string;
 }
 

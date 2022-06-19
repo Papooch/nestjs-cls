@@ -39,7 +39,9 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [REST](#rest)
     -   [GraphQL](#graphql)
     -   [Others](#others)
--   [Namespaces](#namespaces-experimental) (experimental)
+-   [~~Namespaces~~](#namespaces-deprecated) (deprecated)
+
+> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the begining, and I havent seen any justifiable use case to keep it around.
 
 # Install
 
@@ -79,7 +81,7 @@ export class UserIpInterceptor implements NestInterceptor {
         // Inject the ClsService into the interceptor to get
         // access to the current shared cls context.
         private readonly cls: ClsService,
-    ) {};
+    ) {}
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
         // Extract the client's ip address from the request...
@@ -443,7 +445,7 @@ interface ClsStore {
 }
 ```
 
-This will only generate the paths `tenantId | user` and won't allow directly accessing nested keys (like `cls.get('user.id')`, but you'll still get fully typing for things like `const { id } = cls.get('user')`). See issue #22 for more details.
+This will only generate the paths `tenantId | user` and won't allow directly accessing nested keys (like `cls.get('user.id')`, but you'll still get fully typing for things like `const { id } = cls.get('user')`). See issue [#22](https://github.com/Papooch/nestjs-cls/issues/22) for more details.
 
 # API
 
@@ -567,9 +569,9 @@ Below are listed platforms with which it is confirmed to work.
 
 _Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsIntercetor` manually on the `WebscocketGateway`. (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
 
-# Namespaces (experimental)
+# ~~Namespaces~~ (deprecated)
 
-> Warning: Namespace support is currently experimental and has no tests. While the API is mostly stable now, it can still change any time.
+> **Warning**: Namespace support will be dropped in v3.0
 
 The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides a way to use multiple CLS namespaces simultaneously.
 
@@ -584,7 +586,7 @@ To use custom namespace provider, use `ClsModule.forFeature('my-namespace')`.
 export class HelloModule {}
 ```
 
-This creates a namespaces `ClsService` provider that you can inject using `@InjectCls`
+This creates a namespaced `ClsService` provider that you can inject using `@InjectCls`
 
 ```ts
 // hello.service.ts
@@ -621,4 +623,4 @@ export class HelloController {
 }
 ```
 
-> **Note**: `@InjectCls('x')` is equivalent to `@Inject(getNamespaceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
+> **Note**: `@InjectCls('x')` is equivalent to `@Inject(getClsServiceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
