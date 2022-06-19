@@ -3,8 +3,19 @@ import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
 import { ClsService } from './cls.service';
 import { AsyncLocalStorage } from 'async_hooks';
 
-export const getClsServiceToken = (namespace: string) =>
-    `ClsService-${namespace}`;
+/**
+ * Get ClsService injection token (as a string)
+ */
+export function getClsServiceToken(): string;
+/**
+ * Get namespaced ClsService injection token (as a string)
+ * @param namespace name of the namespace
+ * @deprecated Namespace support will be removed in v3.0 
+ */
+export function getClsServiceToken(namespace: string): string;
+export function getClsServiceToken(namespace = CLS_DEFAULT_NAMESPACE) {
+    return `ClsService-${namespace}`;
+}
 
 export class ClsServiceManager {
     private static namespaces: Record<

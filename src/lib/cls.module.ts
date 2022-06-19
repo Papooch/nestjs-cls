@@ -14,12 +14,12 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { CLS_MODULE_OPTIONS } from '..';
 import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
     CLS_MIDDLEWARE_OPTIONS,
+    CLS_MODULE_OPTIONS,
 } from './cls.constants';
 import { ClsGuard } from './cls.guard';
 import { ClsInterceptor } from './cls.interceptor';
@@ -69,6 +69,17 @@ export class ClsModule implements NestModule {
         }
     }
 
+    /**
+     * Registers the `ClsService` provider in the module
+     */
+    static forFeature(): DynamicModule;
+    /**
+     * @param namespaceName
+     * @deprecated usage with namespaceName is deprecated and will be
+     * removed with namespace support in v3.0
+     * @returns 
+     */
+    static forFeature(namespaceName: string): DynamicModule;
     static forFeature(namespaceName?: string): DynamicModule {
         const providers = ClsServiceManager.getClsServicesAsProviders().filter(
             (p) =>
