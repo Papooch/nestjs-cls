@@ -41,6 +41,8 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [Others](#others)
 -   [~~Namespaces~~](#namespaces-deprecated) (deprecated)
 
+> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the begining, and I havent seen any justifiable use case to keep it around.
+
 # Install
 
 ```bash
@@ -443,7 +445,7 @@ interface ClsStore {
 }
 ```
 
-This will only generate the paths `tenantId | user` and won't allow directly accessing nested keys (like `cls.get('user.id')`, but you'll still get fully typing for things like `const { id } = cls.get('user')`). See issue #22 for more details.
+This will only generate the paths `tenantId | user` and won't allow directly accessing nested keys (like `cls.get('user.id')`, but you'll still get fully typing for things like `const { id } = cls.get('user')`). See issue [#22](https://github.com/Papooch/nestjs-cls/issues/22) for more details.
 
 # API
 
