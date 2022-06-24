@@ -47,8 +47,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
     }
 
     /**
-     * Retrieve a value from the CLS context by key.
-     * @param key the key from which to retrieve the value, returns the whole context if ommited
+     * Retrieve the whole CLS context
      * @returns the value stored under the key or undefined
      */
     get(): AnyIfNever<S>;

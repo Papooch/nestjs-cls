@@ -3,16 +3,16 @@ import {
     DeepPropertyType,
 } from '../types/recursive-key-of.type';
 
-export function getValueFromPath<
-    T extends any,
-    TP extends RecursiveKeyOf<T> & string,
->(obj: T, path?: TP): DeepPropertyType<T, TP> {
+export function getValueFromPath<T, TP extends RecursiveKeyOf<T> & string>(
+    obj: T,
+    path?: TP,
+): DeepPropertyType<T, TP> {
     const pathSegments = path.split('.');
     return pathSegments.reduce((acc, curr) => acc?.[curr], obj);
 }
 
 export function setValueFromPath<
-    T extends any,
+    T,
     TP extends RecursiveKeyOf<T> & string,
     V extends DeepPropertyType<T, TP>,
 >(obj: T, path: TP, value: V) {
