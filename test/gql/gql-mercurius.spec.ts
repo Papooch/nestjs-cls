@@ -7,7 +7,8 @@ import { NestFactory } from '@nestjs/core';
 import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
 import { Module } from '@nestjs/common';
 import { ItemModule } from './item/item.module';
-import { MercuriusModule } from 'nestjs-mercurius';
+import { GraphQLModule } from '@nestjs/graphql';
+import { MercuriusDriver } from '@nestjs/mercurius';
 
 let app: NestFastifyApplication;
 describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
@@ -15,7 +16,8 @@ describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
         imports: [
             ClsModule.register({ global: true }),
             ItemModule,
-            MercuriusModule.forRoot({
+            GraphQLModule.forRoot({
+                driver: MercuriusDriver,
                 autoSchemaFile: __dirname + 'schema.gql',
             }),
         ],
@@ -57,7 +59,8 @@ describe('GQL Mercurius App - Auto bound Guard', () => {
                 guard: { mount: true, generateId: true },
             }),
             ItemModule,
-            MercuriusModule.forRoot({
+            GraphQLModule.forRoot({
+                driver: MercuriusDriver,
                 autoSchemaFile: __dirname + 'schema.gql',
             }),
         ],
@@ -97,7 +100,8 @@ describe('GQL Mercurius App - Auto bound Interceptor', () => {
                 interceptor: { mount: true, generateId: true },
             }),
             ItemModule,
-            MercuriusModule.forRoot({
+            GraphQLModule.forRoot({
+                driver: MercuriusDriver,
                 autoSchemaFile: __dirname + 'schema.gql',
             }),
         ],

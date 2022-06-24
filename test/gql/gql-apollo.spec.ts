@@ -4,6 +4,7 @@ import { ClsMiddleware, ClsModule } from '../../src';
 import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
 import { ItemModule } from './item/item.module';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver } from '@nestjs/apollo';
 
 let app: INestApplication;
 describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
@@ -12,6 +13,7 @@ describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
             ClsModule.register({ global: true }),
             ItemModule,
             GraphQLModule.forRoot({
+                driver: ApolloDriver,
                 autoSchemaFile: __dirname + 'schema.gql',
             }),
         ],
@@ -52,6 +54,7 @@ describe('GQL Apollo App - Auto bound Guard', () => {
             }),
             ItemModule,
             GraphQLModule.forRoot({
+                driver: ApolloDriver,
                 autoSchemaFile: __dirname + 'schema.gql',
             }),
         ],
@@ -90,6 +93,7 @@ describe('GQL Apollo App - Auto bound Interceptor', () => {
             }),
             ItemModule,
             GraphQLModule.forRoot({
+                driver: ApolloDriver,
                 autoSchemaFile: __dirname + 'schema.gql',
             }),
         ],

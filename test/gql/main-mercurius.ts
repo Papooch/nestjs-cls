@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { GraphQLModule } from '@nestjs/graphql';
 import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { MercuriusModule } from 'nestjs-mercurius';
 import { ClsMiddleware, ClsModule } from '../../src';
 import { ItemModule } from './item/item.module';
-
+import { MercuriusDriver } from '@nestjs/mercurius'
 @Module({
     imports: [
         ClsModule.register({ global: true }),
         ItemModule,
-        MercuriusModule.forRoot({
+        GraphQLModule.forRoot({
+            driver: MercuriusDriver,
             autoSchemaFile: __dirname + 'schema.gql',
         }),
     ],
