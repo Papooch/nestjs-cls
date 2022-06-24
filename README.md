@@ -624,3 +624,7 @@ export class HelloController {
 ```
 
 > **Note**: `@InjectCls('x')` is equivalent to `@Inject(getClsServiceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
+
+# Contributing
+
+Contributing to a community project is always welcome, please see the [Contributing guide](./CONTRIBUTING.md) :)
