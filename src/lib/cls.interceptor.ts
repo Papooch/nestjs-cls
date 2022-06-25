@@ -20,7 +20,7 @@ export class ClsInterceptor implements NestInterceptor {
     }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        const cls = ClsServiceManager.getClsService(this.options.namespaceName);
+        const cls = ClsServiceManager.getClsService();
         return new Observable((subscriber) => {
             cls.run(async () => {
                 if (this.options.generateId) {

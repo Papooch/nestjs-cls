@@ -16,7 +16,7 @@ export class ClsMiddleware implements NestMiddleware {
         this.options = { ...new ClsMiddlewareOptions(), ...options };
     }
     use = async (req: any, res: any, next: () => any) => {
-        const cls = ClsServiceManager.getClsService(this.options.namespaceName);
+        const cls = ClsServiceManager.getClsService();
         const callback = async () => {
             this.options.useEnterWith && cls.enter();
             if (this.options.generateId) {
