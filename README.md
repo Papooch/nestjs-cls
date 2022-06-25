@@ -39,9 +39,8 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [REST](#rest)
     -   [GraphQL](#graphql)
     -   [Others](#others)
--   [~~Namespaces~~](#namespaces-deprecated) (deprecated)
 
-> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the begining, and I havent seen any justifiable use case to keep it around.
+> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the beginning, and I haven't seen any justifiable use case to keep it around.
 
 # Install
 
@@ -568,62 +567,6 @@ Below are listed platforms with which it is confirmed to work.
 ### Websockets
 
 _Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsIntercetor` manually on the `WebscocketGateway`. (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
-
-# ~~Namespaces~~ (deprecated)
-
-> **Warning**: Namespace support will be dropped in v3.0
-
-The default CLS namespace that the `ClsService` provides should be enough for most application, but should you need it, this package provides a way to use multiple CLS namespaces simultaneously.
-
-To use custom namespace provider, use `ClsModule.forFeature('my-namespace')`.
-
-```ts
-@Module({
-    imports: [ClsModule.forFeature('hello-namespace')],
-    providers: [HelloService],
-    controllers: [HelloController],
-})
-export class HelloModule {}
-```
-
-This creates a namespaced `ClsService` provider that you can inject using `@InjectCls`
-
-```ts
-// hello.service.ts
-
-@Injectable()
-class HelloService {
-    constructor(
-        @InjectCls('hello-namespace')
-        private readonly myCls: ClsService,
-    ) {}
-
-    sayHello() {
-        return this.myCls.run('hi');
-    }
-}
-
-// hello.controller.ts
-@Injectable()
-export class HelloController {
-    constructor(
-        @InjectCls('hello-namespace')
-        private readonly myCls: ClsService,
-        private readonly helloService: HelloService,
-    );
-
-    @Get('/hello')
-    hello2() {
-        // setting up cls context manually
-        return this.myCls.run(() => {
-            this.myCls.set('hi', 'Hello');
-            return this.helloService.sayHello();
-        });
-    }
-}
-```
-
-> **Note**: `@InjectCls('x')` is equivalent to `@Inject(getClsServiceToken('x'))`. If you don't pass an argument to `@InjectCls()`, the default ClsService will be injected and is equivalent to omitting the decorator altogether.
 
 # Contributing
 
