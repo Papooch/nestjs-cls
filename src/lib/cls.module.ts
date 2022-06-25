@@ -7,6 +7,7 @@ import {
     NestInterceptor,
     NestModule,
     Provider,
+    ValueProvider,
 } from '@nestjs/common';
 import {
     APP_GUARD,
@@ -14,7 +15,7 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
+import { ClsServiceManager } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
@@ -30,13 +31,17 @@ import {
     ClsModuleAsyncOptions,
     ClsModuleOptions,
 } from './cls.interfaces';
-
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
 
+const clsServiceProvider: ValueProvider<ClsService> = {
+    provide: ClsService,
+    useValue: ClsServiceManager.getClsService(),
+};
+
 @Module({
-    providers: [...ClsServiceManager.getClsServicesAsProviders()],
-    exports: [...ClsServiceManager.getClsServicesAsProviders()],
+    providers: [clsServiceProvider],
+    exports: [clsServiceProvider],
 })
 export class ClsModule implements NestModule {
     constructor(
@@ -72,20 +77,8 @@ export class ClsModule implements NestModule {
     /**
      * Registers the `ClsService` provider in the module
      */
-    static forFeature(): DynamicModule;
-    /**
-     * @param namespaceName
-     * @deprecated usage with namespaceName is deprecated and will be
-     * removed with namespace support in v3.0
-     * @returns 
-     */
-    static forFeature(namespaceName: string): DynamicModule;
-    static forFeature(namespaceName?: string): DynamicModule {
-        const providers = ClsServiceManager.getClsServicesAsProviders().filter(
-            (p) =>
-                p.provide === getClsServiceToken(namespaceName) ||
-                p.provide === ClsService,
-        );
+    static forFeature(): DynamicModule {
+        const providers = [clsServiceProvider];
         return {
             module: ClsModule,
             providers,
@@ -99,7 +92,6 @@ export class ClsModule implements NestModule {
         const clsMiddlewareOptions = {
             ...new ClsMiddlewareOptions(),
             ...options.middleware,
-            namespaceName: options.namespaceName,
         };
         return clsMiddlewareOptions;
     }
@@ -110,7 +102,6 @@ export class ClsModule implements NestModule {
         const clsGuardOptions = {
             ...new ClsGuardOptions(),
             ...options.guard,
-            namespaceName: options.namespaceName,
         };
         return clsGuardOptions;
     }
@@ -121,7 +112,6 @@ export class ClsModule implements NestModule {
         const clsInterceptorOptions = {
             ...new ClsInterceptorOptions(),
             ...options.interceptor,
-            namespaceName: options.namespaceName,
         };
         return clsInterceptorOptions;
     }
@@ -150,10 +140,9 @@ export class ClsModule implements NestModule {
         };
     }
 
-    private static getProviders(options: { namespaceName?: string }) {
-        ClsServiceManager.addClsService(options.namespaceName);
+    private static getProviders() {
         const providers: Provider[] = [
-            ...ClsServiceManager.getClsServicesAsProviders(),
+            clsServiceProvider,
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 inject: [CLS_MODULE_OPTIONS],
@@ -191,7 +180,7 @@ export class ClsModule implements NestModule {
 
     static register(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
-        const { providers, exports } = this.getProviders(options);
+        const { providers, exports } = this.getProviders();
 
         return {
             module: ClsModule,
@@ -208,7 +197,7 @@ export class ClsModule implements NestModule {
     }
 
     static registerAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
-        const { providers, exports } = this.getProviders(asyncOptions);
+        const { providers, exports } = this.getProviders();
 
         return {
             module: ClsModule,
