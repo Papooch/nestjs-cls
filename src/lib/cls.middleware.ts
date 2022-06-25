@@ -1,7 +1,11 @@
 import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
 import { ClsServiceManager } from './cls-service-manager';
-import { CLS_ID, CLS_MIDDLEWARE_OPTIONS } from './cls.constants';
-import { CLS_REQ, CLS_RES } from './cls.constants';
+import {
+    CLS_ID,
+    CLS_MIDDLEWARE_OPTIONS,
+    CLS_REQ,
+    CLS_RES,
+} from './cls.constants';
 import { ClsMiddlewareOptions } from './cls.interfaces';
 import { ClsService } from './cls.service';
 
@@ -28,6 +32,7 @@ export class ClsMiddleware implements NestMiddleware {
             if (this.options.setup) {
                 await this.options.setup(cls, req);
             }
+            await ClsServiceManager.resolveProxyProviders();
             next();
         };
         const runner = this.options.useEnterWith

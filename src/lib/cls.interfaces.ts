@@ -1,4 +1,4 @@
-import { ExecutionContext, ModuleMetadata } from '@nestjs/common';
+import { ExecutionContext, ModuleMetadata, Type } from '@nestjs/common';
 import { ClsService } from './cls.service';
 
 export class ClsModuleOptions {
@@ -22,9 +22,17 @@ export class ClsModuleOptions {
      * An object with additional options for the `ClsInterceptor`
      */
     interceptor?: ClsInterceptorOptions = null;
+
+    /**
+     *
+     */
+    proxyProviders?: Type[];
 }
 
-export type ClsModuleFactoryOptions = Omit<ClsModuleOptions, 'global'>;
+export type ClsModuleFactoryOptions = Omit<
+    ClsModuleOptions,
+    'global' | 'providers'
+>;
 export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: any[];
     useFactory?: (
@@ -35,6 +43,11 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
      * to import `ClsModule.forFeature()` in other modules
      */
     global?: boolean;
+
+    /**
+     *
+     */
+    providers?: Type[];
 }
 
 export class ClsMiddlewareOptions {

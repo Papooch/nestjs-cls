@@ -7,6 +7,7 @@ import {
     NestInterceptor,
     NestModule,
     Provider,
+    Type,
     ValueProvider,
 } from '@nestjs/common';
 import {
@@ -15,7 +16,7 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { ClsServiceManager } from './cls-service-manager';
+import { ClsServiceManager, createProxyProvider } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
@@ -181,6 +182,8 @@ export class ClsModule implements NestModule {
     static register(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
         const { providers, exports } = this.getProviders();
+        const proxyProviders =
+            options.proxyProviders?.map(createProxyProvider) ?? [];
 
         return {
             module: ClsModule,
@@ -190,8 +193,9 @@ export class ClsModule implements NestModule {
                     useValue: options,
                 },
                 ...providers,
+                ...proxyProviders,
             ],
-            exports,
+            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
             global: options.global,
         };
     }
