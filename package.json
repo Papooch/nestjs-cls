@@ -1,6 +1,6 @@
 {
     "name": "nestjs-cls",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
     "author": "papooch",
     "private": false,
