@@ -5,6 +5,9 @@
     "author": "papooch",
     "private": false,
     "license": "MIT",
+    "engines": {
+      "node": ">=12.17.0"
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Papooch/nestjs-cls.git"
