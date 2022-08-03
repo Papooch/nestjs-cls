@@ -93,6 +93,33 @@ describe('ClsService', () => {
         });
     });
 
+    describe('key presence', () => {
+        it('checks key presence (string key)', () => {
+            service.run(() => {
+                service.set('a', 1);
+                expect(service.has('a')).toEqual(true);
+            });
+        });
+        it('checks key absence (string key)', () => {
+            service.run(() => {
+                expect(service.has('b')).toEqual(false);
+            });
+        });
+        it('checks key presence (symbol key)', () => {
+            const sym = Symbol('sym');
+            service.run(() => {
+                service.set(sym, 123);
+                expect(service.has(sym)).toEqual(true);
+            });
+        });
+        it('checks key absence (symbol key)', () => {
+            const sym = Symbol('sym');
+            service.run(() => {
+                expect(service.has(sym)).toEqual(false);
+            });
+        });
+    });
+
     describe('edge cases', () => {
         it('returns undefined on nonexistent key', () => {
             service.run(() => {

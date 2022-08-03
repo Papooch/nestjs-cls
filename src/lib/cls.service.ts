@@ -131,4 +131,17 @@ export class ClsService<S extends ClsStore = ClsStore> {
     isActive() {
         return !!this.namespace.getStore();
     }
+
+    /**
+     * Check if a key is in the CLS context
+     * @param key the key to check
+     * @returns true if the key is in the CLS context
+     */
+    has(key: string | symbol): boolean {
+        const store = this.namespace.getStore();
+        if (typeof key === 'symbol') {
+            return !!store[key];
+        }
+        return !!getValueFromPath(store as S, key as any);
+    }
 }
