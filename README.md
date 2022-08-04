@@ -457,6 +457,8 @@ The injectable `ClsService` provides the following API to manipulate the cls con
     Set a value on the CLS context.
 -   **_`get`_**`(key?: string): any`  
     Retrieve a value from the CLS context by key. Get the whole store if key is omitted.
+-   **_`has`_**`(key: string): boolean`  
+    Check if a key is in the CLS context.
 -   **_`getId`_**`(): string;`  
     Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
 -   **_`enter`_**`(): void;`  
