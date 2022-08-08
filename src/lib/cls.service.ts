@@ -73,6 +73,22 @@ export class ClsService<S extends ClsStore = ClsStore> {
     }
 
     /**
+     * Check if a key is in the CLS context
+     * @param key the key to check
+     * @returns true if the key is in the CLS context
+     */
+    has<T extends RecursiveKeyOf<S> = any>(
+        key: StringIfNever<T> | keyof ClsStore,
+    ): boolean;
+    has(key: string | symbol): boolean {
+        const store = this.namespace.getStore();
+        if (typeof key === 'symbol') {
+            return !!store[key];
+        }
+        return !!getValueFromPath(store as S, key as any);
+    }
+
+    /**
      * Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
      * @returns the request ID or undefined
      */
