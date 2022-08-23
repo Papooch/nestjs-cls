@@ -10,7 +10,7 @@ import { TestHttpController, TestHttpService } from './http.app';
 
 @Module({
     imports: [
-        ClsModule.register({
+        ClsModule.forRoot({
             middleware: { mount: true },
         }),
     ],

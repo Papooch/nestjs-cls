@@ -19,7 +19,7 @@ export class ClsMiddleware implements NestMiddleware {
     ) {
         this.options = { ...new ClsMiddlewareOptions(), ...options };
     }
-    use = async (req: any, res: any, next: () => any) => {
+    use = async (req: any, res: any, next: (err?: any) => any) => {
         const cls = ClsServiceManager.getClsService();
         const callback = async () => {
             this.options.useEnterWith && cls.enter();
@@ -32,8 +32,12 @@ export class ClsMiddleware implements NestMiddleware {
             if (this.options.setup) {
                 await this.options.setup(cls, req);
             }
-            await ClsServiceManager.resolveProxyProviders();
-            next();
+            try {
+                await ClsServiceManager.resolveProxyProviders();
+                next();
+            } catch (e) {
+                next(e);
+            }
         };
         const runner = this.options.useEnterWith
             ? cls.exit.bind(cls)

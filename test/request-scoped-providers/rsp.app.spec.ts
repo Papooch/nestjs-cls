@@ -1,23 +1,36 @@
 import {
     Controller,
     Get,
+    Global,
     INestApplication,
     Inject,
+    Injectable,
     Module,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsModule, ClsService } from '../../src';
 import request from 'supertest';
+import {
+    ClsModule,
+    ClsService,
+    InjectableProxy,
+    InjectedProvider,
+} from '../../src';
 
+@InjectableProxy()
 class RequestScopedProvider {
     id: string;
 
-    constructor(private readonly cls: ClsService) {
+    constructor(
+        private readonly cls: ClsService,
+        private readonly injected: InjectedProvider,
+    ) {
         console.log('in rsp constructor');
         this.id = this.cls.getId();
+        console.log('injected property', this.injected.property);
     }
 }
 
+@InjectableProxy()
 class RSP {
     what = 'false';
 }
@@ -26,14 +39,16 @@ class RSP {
 class TestRSPAppController {
     constructor(
         private readonly rsp: RequestScopedProvider,
-        private readonly rsp2: RSP,
+        //private readonly rsp2: RSP,
+        @Inject('WHAT') private readonly what: any,
     ) {}
 
     @Get('/hello')
     getHello() {
-        const x = Object.assign({}, this.rsp2);
+        const x = Object.assign({}, this.rsp);
 
-        console.log('x is', x);
+        console.log('what is', { ...this.what() });
+        //console.log('x is', x);
         return {
             id: this.rsp.id,
             rsp2: x,
@@ -41,11 +56,32 @@ class TestRSPAppController {
     }
 }
 
+@Global()
+@Module({
+    providers: [InjectedProvider],
+    exports: [InjectedProvider],
+})
+class GlobalModule {}
+
 @Module({
     imports: [
-        ClsModule.register({
+        GlobalModule,
+        ClsModule.forRoot({
             middleware: { mount: true, generateId: true },
-            proxyProviders: [RequestScopedProvider, RSP],
+        }),
+        ClsModule.forFeature(RSP),
+        ClsModule.forFeatureAsync({
+            imports: [GlobalModule],
+            useClass: RequestScopedProvider,
+        }),
+        ClsModule.forFeatureAsync({
+            provide: 'WHAT',
+            imports: [GlobalModule],
+            inject: ['XYZ'],
+            useFactory: (m: InjectedProvider) => {
+                console.log('mr is', m);
+                return () => ({ factory: true });
+            },
         }),
     ],
     controllers: [TestRSPAppController],

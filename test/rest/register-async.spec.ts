@@ -26,7 +26,7 @@ describe('Http Express App - Async Configuration', () => {
         async (what) => {
             @Module({
                 imports: [
-                    ClsModule.registerAsync({
+                    ClsModule.forRootAsync({
                         imports: [OptionsModule],
                         inject: ['OPTIONS'],
                         useFactory: (opts) => ({

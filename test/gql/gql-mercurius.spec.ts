@@ -14,7 +14,7 @@ let app: NestFastifyApplication;
 describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
     @Module({
         imports: [
-            ClsModule.register({ global: true }),
+            ClsModule.forRoot({ global: true }),
             ItemModule,
             GraphQLModule.forRoot({
                 driver: MercuriusDriver,
@@ -54,7 +54,7 @@ describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
 describe('GQL Mercurius App - Auto bound Guard', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 global: true,
                 guard: { mount: true, generateId: true },
             }),
@@ -95,7 +95,7 @@ describe('GQL Mercurius App - Auto bound Guard', () => {
 describe('GQL Mercurius App - Auto bound Interceptor', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 global: true,
                 interceptor: { mount: true, generateId: true },
             }),
