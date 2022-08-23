@@ -1,10 +1,8 @@
 import {
     Controller,
     Get,
-    Global,
     INestApplication,
     Inject,
-    Injectable,
     Module,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -22,6 +20,7 @@ class RequestScopedProvider {
 
     constructor(
         private readonly cls: ClsService,
+        @Inject(InjectedProvider)
         private readonly injected: InjectedProvider,
     ) {
         console.log('in rsp constructor');
@@ -56,7 +55,6 @@ class TestRSPAppController {
     }
 }
 
-@Global()
 @Module({
     providers: [InjectedProvider],
     exports: [InjectedProvider],
@@ -77,7 +75,7 @@ class GlobalModule {}
         ClsModule.forFeatureAsync({
             provide: 'WHAT',
             imports: [GlobalModule],
-            inject: ['XYZ'],
+            inject: [InjectedProvider],
             useFactory: (m: InjectedProvider) => {
                 console.log('mr is', m);
                 return () => ({ factory: true });

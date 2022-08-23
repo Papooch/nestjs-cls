@@ -46,8 +46,7 @@ interface ProxyClassProvider {
 
 interface ProxyFactoryProvider {
     token: any;
-    moduleRef: ModuleRef;
-    inject: any[];
+    injected: any[];
     useFactory: (...args: any[]) => any | Promise<any>;
 }
 
@@ -65,7 +64,7 @@ export const InjectableProxy = () => (target: any) =>
 const proxyProviderMap = new Map<symbol, ProxyProvider>();
 
 function extractParams(error: UnknownDependenciesException) {
-    return error.message.match(/\w+ \((.*)\)./)[1].split(', ');
+    return error.message.match(/\w+ \((.*?)\)./)[1].split(', ');
 }
 
 export class ClsServiceManager {
@@ -109,7 +108,16 @@ export class ClsServiceManager {
             );
             const foundParams = extractParams(e);
             const notFoundIndex = foundParams.findIndex((it) => it == '?');
-            const notFoundParamName = expectedParams[notFoundIndex].name;
+            console.log(foundParams);
+            let notFoundParamName = expectedParams[notFoundIndex]?.name;
+            if (!notFoundParamName) {
+                notFoundParamName = Reflect.getMetadata(
+                    'self:paramtypes',
+                    Provider,
+                )
+                    ?.find((param) => param.index == notFoundIndex)
+                    .param.toString();
+            }
             throw new Error(`Cannot create Proxy provider ${
                 Provider.name
             } (${foundParams.join(
@@ -126,11 +134,8 @@ export class ClsServiceManager {
         providerSymbol: symbol,
         provider: ProxyFactoryProvider,
     ) {
-        const moduleRef = provider.moduleRef;
-        const injects = provider.inject?.map((it) =>
-            moduleRef.get(it, { strict: false }),
-        );
-        const proxyProvider = await provider.useFactory.apply(null, injects);
+        const injected = provider.injected;
+        const proxyProvider = await provider.useFactory.apply(null, injected);
         console.log('FACTORX', proxyProvider);
         this.clsService.set(providerSymbol, proxyProvider);
     }
@@ -190,14 +195,16 @@ export function createProxyProvider(options: ClsModuleProxyProviderOptions) {
         provide:
             options.provide ??
             (options as ClsModuleProxyClassProviderOptions).useClass,
-        inject: [ModuleRef],
-        useFactory: (moduleRef: ModuleRef) => {
+        inject: [
+            ModuleRef,
+            ...((options as ClsModuleProxyFactoryProviderOptions).inject ?? []),
+        ],
+        useFactory: (moduleRef: ModuleRef, ...injected: any[]) => {
             let providerOptions: ProxyProvider;
             if (isFactoryProviderOptions(options)) {
                 providerOptions = {
-                    moduleRef,
+                    injected,
                     token: options.provide,
-                    inject: options.inject,
                     useFactory: options.useFactory,
                 };
             } else {
