@@ -1,12 +1,12 @@
 {
     "name": "nestjs-cls",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
     "author": "papooch",
     "private": false,
     "license": "MIT",
     "engines": {
-      "node": ">=12.17.0"
+        "node": ">=12.17.0"
     },
     "repository": {
         "type": "git",
