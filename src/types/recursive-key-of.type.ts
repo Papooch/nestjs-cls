@@ -1,3 +1,5 @@
+import { BrandedTerminal } from './terminal.type';
+
 type TerminalType =
     | string
     | number
@@ -12,12 +14,6 @@ type TerminalType =
     | RegExp
     | BrandedTerminal
     | ((...args: any) => any);
-
-const TERMINAL_BRAND = Symbol();
-class BrandedTerminal {
-    private [TERMINAL_BRAND]?: void;
-}
-export type Terminal<T> = T & BrandedTerminal;
 
 /**
  * Deep nested keys of an interface with dot syntax
