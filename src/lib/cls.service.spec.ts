@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Terminal } from '../types/recursive-key-of.type';
+import { Terminal } from '../types/terminal.type';
 import { ClsServiceManager } from './cls-service-manager';
 import { CLS_DEFAULT_NAMESPACE, CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
