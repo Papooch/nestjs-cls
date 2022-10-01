@@ -16,5 +16,8 @@ export const isProxyFactoryProvider = (
     provider: ProxyProvider,
 ): provider is ProxyFactoryProvider => Reflect.has(provider, 'useFactory');
 
+/**
+ * Mark a Proxy provider with this decorator to distinguis it from regular NestJS singleton providers
+ */
 export const InjectableProxy = () => (target: any) =>
     Injectable()(SetMetadata(CLS_PROXY_METADATA_KEY, true)(target));
