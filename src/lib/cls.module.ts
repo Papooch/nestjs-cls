@@ -16,11 +16,7 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import {
-    ClsModuleProxyProviderOptions,
-    ClsServiceManager,
-    createProxyProvider,
-} from './cls-service-manager';
+import { ClsServiceManager } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
@@ -38,6 +34,8 @@ import {
 } from './cls.interfaces';
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
+import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
+import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';
 
 const clsServiceProvider: ValueProvider<ClsService> = {
     provide: ClsService,
@@ -79,6 +77,50 @@ export class ClsModule implements NestModule {
         }
     }
 
+    static forRoot(options?: ClsModuleOptions): DynamicModule {
+        options = { ...new ClsModuleOptions(), ...options };
+        const { providers, exports } = this.getProviders();
+        const proxyProviders =
+            options.proxyProviders?.map((providerClass) =>
+                ProxyProviderManager.createProxyProvider({
+                    useClass: providerClass,
+                }),
+            ) ?? [];
+
+        return {
+            module: ClsModule,
+            providers: [
+                {
+                    provide: CLS_MODULE_OPTIONS,
+                    useValue: options,
+                },
+                ...providers,
+                ...proxyProviders,
+            ],
+            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
+            global: options.global,
+        };
+    }
+
+    static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
+        const { providers, exports } = this.getProviders();
+
+        return {
+            module: ClsModule,
+            imports: asyncOptions.imports,
+            providers: [
+                {
+                    provide: CLS_MODULE_OPTIONS,
+                    inject: asyncOptions.inject,
+                    useFactory: asyncOptions.useFactory,
+                },
+                ...providers,
+            ],
+            exports,
+            global: asyncOptions.global,
+        };
+    }
+
     /**
      * Registers the `ClsService` provider in the module
      */
@@ -87,7 +129,7 @@ export class ClsModule implements NestModule {
     static forFeature(...requestScopedProviders: Array<Type>): DynamicModule {
         const proxyProviders =
             requestScopedProviders.map((providerClass) =>
-                createProxyProvider({
+                ProxyProviderManager.createProxyProvider({
                     useClass: providerClass,
                 }),
             ) ?? [];
@@ -102,7 +144,7 @@ export class ClsModule implements NestModule {
     static forFeatureAsync(
         options: ClsModuleProxyProviderOptions,
     ): DynamicModule {
-        const proxyProvider = createProxyProvider(options);
+        const proxyProvider = ProxyProviderManager.createProxyProvider(options);
         const providers = [
             clsServiceProvider,
             ...(options.extraProviders ?? []),
@@ -112,6 +154,44 @@ export class ClsModule implements NestModule {
             imports: options.imports ?? [],
             providers: [...providers, proxyProvider],
             exports: [clsServiceProvider, proxyProvider.provide],
+        };
+    }
+
+    private static getProviders() {
+        const providers: Provider[] = [
+            clsServiceProvider,
+            {
+                provide: CLS_MIDDLEWARE_OPTIONS,
+                inject: [CLS_MODULE_OPTIONS],
+                useFactory: this.clsMiddlewareOptionsFactory,
+            },
+            {
+                provide: CLS_GUARD_OPTIONS,
+                inject: [CLS_MODULE_OPTIONS],
+                useFactory: this.clsGuardOptionsFactory,
+            },
+            {
+                provide: CLS_INTERCEPTOR_OPTIONS,
+                inject: [CLS_MODULE_OPTIONS],
+                useFactory: this.clsInterceptorOptionsFactory,
+            },
+        ];
+        const enhancerArr: Provider[] = [
+            {
+                provide: APP_GUARD,
+                inject: [CLS_GUARD_OPTIONS],
+                useFactory: this.clsGuardFactory,
+            },
+            {
+                provide: APP_INTERCEPTOR,
+                inject: [CLS_INTERCEPTOR_OPTIONS],
+                useFactory: this.clsInterceptorFactory,
+            },
+        ];
+
+        return {
+            providers: providers.concat(...enhancerArr),
+            exports: providers,
         };
     }
 
@@ -166,88 +246,6 @@ export class ClsModule implements NestModule {
         }
         return {
             intercept: (_, next) => next.handle(),
-        };
-    }
-
-    private static getProviders() {
-        const providers: Provider[] = [
-            clsServiceProvider,
-            {
-                provide: CLS_MIDDLEWARE_OPTIONS,
-                inject: [CLS_MODULE_OPTIONS],
-                useFactory: this.clsMiddlewareOptionsFactory,
-            },
-            {
-                provide: CLS_GUARD_OPTIONS,
-                inject: [CLS_MODULE_OPTIONS],
-                useFactory: this.clsGuardOptionsFactory,
-            },
-            {
-                provide: CLS_INTERCEPTOR_OPTIONS,
-                inject: [CLS_MODULE_OPTIONS],
-                useFactory: this.clsInterceptorOptionsFactory,
-            },
-        ];
-        const enhancerArr: Provider[] = [
-            {
-                provide: APP_GUARD,
-                inject: [CLS_GUARD_OPTIONS],
-                useFactory: this.clsGuardFactory,
-            },
-            {
-                provide: APP_INTERCEPTOR,
-                inject: [CLS_INTERCEPTOR_OPTIONS],
-                useFactory: this.clsInterceptorFactory,
-            },
-        ];
-
-        return {
-            providers: providers.concat(...enhancerArr),
-            exports: providers,
-        };
-    }
-
-    static forRoot(options?: ClsModuleOptions): DynamicModule {
-        options = { ...new ClsModuleOptions(), ...options };
-        const { providers, exports } = this.getProviders();
-        const proxyProviders =
-            options.proxyProviders?.map((providerClass) =>
-                createProxyProvider({
-                    useClass: providerClass,
-                }),
-            ) ?? [];
-
-        return {
-            module: ClsModule,
-            providers: [
-                {
-                    provide: CLS_MODULE_OPTIONS,
-                    useValue: options,
-                },
-                ...providers,
-                ...proxyProviders,
-            ],
-            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
-            global: options.global,
-        };
-    }
-
-    static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
-        const { providers, exports } = this.getProviders();
-
-        return {
-            module: ClsModule,
-            imports: asyncOptions.imports,
-            providers: [
-                {
-                    provide: CLS_MODULE_OPTIONS,
-                    inject: asyncOptions.inject,
-                    useFactory: asyncOptions.useFactory,
-                },
-                ...providers,
-            ],
-            exports,
-            global: asyncOptions.global,
         };
     }
 }

@@ -3,16 +3,17 @@ import {
     Get,
     INestApplication,
     Inject,
+    Injectable,
     Module,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
-import {
-    ClsModule,
-    ClsService,
-    InjectableProxy,
-    InjectedProvider,
-} from '../../src';
+import { ClsModule, ClsService, InjectableProxy } from '../../src';
+
+@Injectable()
+class InjectedProvider {
+    property = 'value';
+}
 
 @InjectableProxy()
 class RequestScopedProvider {
@@ -20,7 +21,6 @@ class RequestScopedProvider {
 
     constructor(
         private readonly cls: ClsService,
-        @Inject(InjectedProvider)
         private readonly injected: InjectedProvider,
     ) {
         console.log('in rsp constructor');
