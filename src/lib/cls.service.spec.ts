@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Terminal } from '../types/recursive-key-of.type';
+import { Terminal } from '../types/terminal.type';
 import { ClsServiceManager } from './cls-service-manager';
 import { CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
@@ -87,6 +87,33 @@ describe('ClsService', () => {
             service.run(() => {
                 service.set(CLS_ID, 123);
                 expect(service.getId()).toEqual(123);
+            });
+        });
+    });
+
+    describe('key presence', () => {
+        it('checks key presence (string key)', () => {
+            service.run(() => {
+                service.set('a', 1);
+                expect(service.has('a')).toEqual(true);
+            });
+        });
+        it('checks key absence (string key)', () => {
+            service.run(() => {
+                expect(service.has('b')).toEqual(false);
+            });
+        });
+        it('checks key presence (symbol key)', () => {
+            const sym = Symbol('sym');
+            service.run(() => {
+                service.set(sym, 123);
+                expect(service.has(sym)).toEqual(true);
+            });
+        });
+        it('checks key absence (symbol key)', () => {
+            const sym = Symbol('sym');
+            service.run(() => {
+                expect(service.has(sym)).toEqual(false);
             });
         });
     });

@@ -39,8 +39,9 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [REST](#rest)
     -   [GraphQL](#graphql)
     -   [Others](#others)
+-   [~~Namespaces~~](#namespaces-deprecated) (deprecated)
 
-> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the beginning, and I haven't seen any justifiable use case to keep it around.
+> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the begining, and I havent seen any justifiable use case to keep it around.
 
 # Install
 
@@ -456,6 +457,8 @@ The injectable `ClsService` provides the following API to manipulate the cls con
     Set a value on the CLS context.
 -   **_`get`_**`(key?: string): any`  
     Retrieve a value from the CLS context by key. Get the whole store if key is omitted.
+-   **_`has`_**`(key: string): boolean`  
+    Check if a key is in the CLS context.
 -   **_`getId`_**`(): string;`  
     Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
 -   **_`enter`_**`(): void;`  
