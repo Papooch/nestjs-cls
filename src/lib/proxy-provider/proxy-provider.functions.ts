@@ -1,20 +1,15 @@
-import { Injectable, SetMetadata } from '@nestjs/common';
-import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
-    ClsModuleProxyFactoryProviderOptions,
+    ClsModuleProxyClassProviderOptions,
     ClsModuleProxyProviderOptions,
-    ProxyFactoryProvider,
+    ProxyClassProvider,
     ProxyProvider,
 } from './proxy-provider.interfaces';
 
-export const isProxyFactoryProviderOptions = (
+export const isProxyClassProviderOptions = (
     provider: ClsModuleProxyProviderOptions,
-): provider is ClsModuleProxyFactoryProviderOptions =>
-    Reflect.has(provider, 'useFactory');
+): provider is ClsModuleProxyClassProviderOptions =>
+    Reflect.has(provider, 'useClass');
 
-export const isProxyFactoryProvider = (
+export const isProxyClassProvider = (
     provider: ProxyProvider,
-): provider is ProxyFactoryProvider => Reflect.has(provider, 'useFactory');
-
-export const InjectableProxy = () => (target: any) =>
-    Injectable()(SetMetadata(CLS_PROXY_METADATA_KEY, true)(target));
+): provider is ProxyClassProvider => Reflect.has(provider, 'useClass');

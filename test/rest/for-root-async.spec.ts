@@ -11,6 +11,7 @@ const optionsProvider = {
     useValue: {
         mount: true,
         generateId: true,
+        setup: () => ({}),
         idGenerator: async () => Math.random(),
     },
 };

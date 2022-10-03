@@ -22,6 +22,8 @@ import {
     CLS_INTERCEPTOR_OPTIONS,
     CLS_MIDDLEWARE_OPTIONS,
     CLS_MODULE_OPTIONS,
+    CLS_REQ,
+    CLS_RES,
 } from './cls.constants';
 import { ClsGuard } from './cls.guard';
 import { ClsInterceptor } from './cls.interceptor';
@@ -175,6 +177,8 @@ export class ClsModule implements NestModule {
                 inject: [CLS_MODULE_OPTIONS],
                 useFactory: this.clsInterceptorOptionsFactory,
             },
+            ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ),
+            ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES),
         ];
         const enhancerArr: Provider[] = [
             {
