@@ -9,6 +9,8 @@ import {
     ClsModule,
     ClsService,
     ClsServiceManager,
+    CLS_REQ,
+    CLS_RES,
     InjectableProxy,
 } from '../../src';
 import { ProxyProviderNotDecoratedException } from '../../src/lib/proxy-provider/proxy-provider.exceptions';
@@ -30,6 +32,12 @@ describe('ClsModule', () => {
     let app: INestApplication;
 
     describe('forFeature', () => {
+        it('provides a CLS_REQ and CLS_RES providers', async () => {
+            app = await createAndInitTestingApp([ClsModule.forFeature()]);
+            expect(() => app.get(CLS_REQ)).not.toThrow();
+            expect(() => app.get(CLS_RES)).not.toThrow();
+        });
+
         it('provides a plain class proxy', async () => {
             @InjectableProxy()
             class ProxyClass {}

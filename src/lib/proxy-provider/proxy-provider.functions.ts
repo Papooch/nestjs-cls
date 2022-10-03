@@ -1,15 +1,15 @@
 import {
-    ClsModuleProxyFactoryProviderOptions,
+    ClsModuleProxyClassProviderOptions,
     ClsModuleProxyProviderOptions,
-    ProxyFactoryProvider,
+    ProxyClassProvider,
     ProxyProvider,
 } from './proxy-provider.interfaces';
 
-export const isProxyFactoryProviderOptions = (
+export const isProxyClassProviderOptions = (
     provider: ClsModuleProxyProviderOptions,
-): provider is ClsModuleProxyFactoryProviderOptions =>
-    Reflect.has(provider, 'useFactory');
+): provider is ClsModuleProxyClassProviderOptions =>
+    Reflect.has(provider, 'useClass');
 
-export const isProxyFactoryProvider = (
+export const isProxyClassProvider = (
     provider: ProxyProvider,
-): provider is ProxyFactoryProvider => Reflect.has(provider, 'useFactory');
+): provider is ProxyClassProvider => Reflect.has(provider, 'useClass');

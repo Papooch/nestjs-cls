@@ -1,4 +1,4 @@
-import { FactoryProvider, Type } from '@nestjs/common';
+import { FactoryProvider, Type, ValueProvider } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
 import { globalClsSevice } from '../cls-service.globals';
@@ -8,8 +8,8 @@ import {
     UnknownProxyDependenciesException,
 } from './proxy-provider.exceptions';
 import {
-    isProxyFactoryProvider,
-    isProxyFactoryProviderOptions,
+    isProxyClassProvider,
+    isProxyClassProviderOptions,
 } from './proxy-provider.functions';
 import {
     ClsModuleProxyClassProviderOptions,
@@ -36,18 +36,18 @@ export class ProxyProviderManager {
             ],
             useFactory: (moduleRef: ModuleRef, ...injected: any[]) => {
                 let providerOptions: ProxyProvider;
-                if (isProxyFactoryProviderOptions(options)) {
-                    providerOptions = {
-                        injected,
-                        token: options.provide,
-                        useFactory: options.useFactory,
-                    };
-                } else {
+                if (isProxyClassProviderOptions(options)) {
                     this.throwIfClassHasNoProxyMetadata(options.useClass);
                     providerOptions = {
                         moduleRef,
                         token: options.provide,
                         useClass: options.useClass,
+                    };
+                } else {
+                    providerOptions = {
+                        injected,
+                        token: options.provide,
+                        useFactory: options.useFactory,
                     };
                 }
                 this.proxyProviderMap.set(providerSymbol, providerOptions);
@@ -57,12 +57,27 @@ export class ProxyProviderManager {
         return proxyProvider;
     }
 
+    static createProxyProviderFromExistingKey(providerKey: symbol | string) {
+        const proxy = this.createProxy(providerKey);
+        const proxyProvider: ValueProvider = {
+            provide: providerKey,
+            useValue: proxy,
+        };
+        return proxyProvider;
+    }
+
     private static getProxyProviderSymbol(
         options: ClsModuleProxyProviderOptions,
     ) {
-        return Symbol.for(
-            options.provide?.toString() ??
-                (options as ClsModuleProxyClassProviderOptions).useClass.name,
+        const maybeExistingSymbol =
+            typeof options.provide == 'symbol' ? options.provide : undefined;
+        return (
+            maybeExistingSymbol ??
+            Symbol.for(
+                options.provide?.toString() ??
+                    (options as ClsModuleProxyClassProviderOptions).useClass
+                        .name,
+            )
         );
     }
 
@@ -75,8 +90,8 @@ export class ProxyProviderManager {
         );
     }
 
-    private static createProxy(providerSymbol: symbol): any {
-        const getProvider = () => this.clsService.get()?.[providerSymbol] ?? {};
+    private static createProxy(providerKey: symbol | string): any {
+        const getProvider = () => this.clsService.get()?.[providerKey] ?? {};
         return new Proxy(() => null, {
             apply(_, thisArg, argArray) {
                 return getProvider().apply(thisArg, argArray);
@@ -111,10 +126,10 @@ export class ProxyProviderManager {
 
     private static async resolveProxyProvider(providerSymbol: symbol) {
         const provider = this.proxyProviderMap.get(providerSymbol);
-        if (isProxyFactoryProvider(provider)) {
-            await this.resolveProxyFactoryProvider(providerSymbol, provider);
-        } else {
+        if (isProxyClassProvider(provider)) {
             await this.resolveProxyClassProvider(providerSymbol, provider);
+        } else {
+            await this.resolveProxyFactoryProvider(providerSymbol, provider);
         }
     }
 
