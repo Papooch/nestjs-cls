@@ -12,5 +12,7 @@ export function InjectCls() {
 /**
  * Mark a Proxy provider with this decorator to distinguis it from regular NestJS singleton providers
  */
-export const InjectableProxy = () => (target: any) =>
-    Injectable()(SetMetadata(CLS_PROXY_METADATA_KEY, true)(target));
+export function InjectableProxy() {
+    return (target: any) =>
+        Injectable()(SetMetadata(CLS_PROXY_METADATA_KEY, true)(target));
+}
