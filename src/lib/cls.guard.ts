@@ -18,7 +18,7 @@ export class ClsGuard implements CanActivate {
     }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const cls = ClsServiceManager.getClsService(this.options.namespaceName);
+        const cls = ClsServiceManager.getClsService();
         return cls.exit(async () => {
             cls.enter();
             if (this.options.generateId) {
@@ -28,6 +28,7 @@ export class ClsGuard implements CanActivate {
             if (this.options.setup) {
                 await this.options.setup(cls, context);
             }
+            await ClsServiceManager.resolveProxyProviders();
             return true;
         });
     }

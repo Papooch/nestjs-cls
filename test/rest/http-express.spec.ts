@@ -13,7 +13,7 @@ let app: INestApplication;
 describe('Http Express App - Auto bound Middleware', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 middleware: { mount: true, generateId: true },
             }),
         ],
@@ -40,7 +40,7 @@ describe('Http Express App - Auto bound Middleware', () => {
 
 describe('Http Express App - Manually bound Middleware in AppModule', () => {
     @Module({
-        imports: [ClsModule.register({ middleware: { generateId: true } })],
+        imports: [ClsModule.forRoot({ middleware: { generateId: true } })],
         providers: [TestHttpService],
         controllers: [TestHttpController],
     })
@@ -67,7 +67,7 @@ describe('Http Express App - Manually bound Middleware in AppModule', () => {
 });
 describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
     @Module({
-        imports: [ClsModule.register()],
+        imports: [ClsModule.forRoot()],
         providers: [TestHttpService],
         controllers: [TestHttpController],
     })
@@ -93,7 +93,7 @@ describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
 describe('Http Express App - Auto bound Guard', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 guard: { mount: true, generateId: true },
             }),
         ],
@@ -127,7 +127,7 @@ describe('Http Express App - Auto bound Guard', () => {
 describe('Http Express App - Auto bound Interceptor', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 interceptor: { mount: true, generateId: true },
             }),
         ],

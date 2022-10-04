@@ -7,6 +7,8 @@ import {
     NestInterceptor,
     NestModule,
     Provider,
+    Type,
+    ValueProvider,
 } from '@nestjs/common';
 import {
     APP_GUARD,
@@ -14,12 +16,14 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { ClsServiceManager, getClsServiceToken } from './cls-service-manager';
+import { ClsServiceManager } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
     CLS_MIDDLEWARE_OPTIONS,
     CLS_MODULE_OPTIONS,
+    CLS_REQ,
+    CLS_RES,
 } from './cls.constants';
 import { ClsGuard } from './cls.guard';
 import { ClsInterceptor } from './cls.interceptor';
@@ -30,13 +34,25 @@ import {
     ClsModuleAsyncOptions,
     ClsModuleOptions,
 } from './cls.interfaces';
-
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
+import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
+import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';
+
+const clsServiceProvider: ValueProvider<ClsService> = {
+    provide: ClsService,
+    useValue: ClsServiceManager.getClsService(),
+};
+
+const commonProviders = [
+    clsServiceProvider,
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ),
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES),
+];
 
 @Module({
-    providers: [...ClsServiceManager.getClsServicesAsProviders()],
-    exports: [...ClsServiceManager.getClsServicesAsProviders()],
+    providers: [...commonProviders],
+    exports: [...commonProviders],
 })
 export class ClsModule implements NestModule {
     constructor(
@@ -69,91 +85,89 @@ export class ClsModule implements NestModule {
         }
     }
 
+    static forRoot(options?: ClsModuleOptions): DynamicModule {
+        options = { ...new ClsModuleOptions(), ...options };
+        const { providers, exports } = this.getProviders();
+        const proxyProviders =
+            options.proxyProviders?.map((providerClass) =>
+                ProxyProviderManager.createProxyProvider({
+                    useClass: providerClass,
+                }),
+            ) ?? [];
+
+        return {
+            module: ClsModule,
+            providers: [
+                {
+                    provide: CLS_MODULE_OPTIONS,
+                    useValue: options,
+                },
+                ...providers,
+                ...proxyProviders,
+            ],
+            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
+            global: options.global,
+        };
+    }
+
+    static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
+        const { providers, exports } = this.getProviders();
+
+        return {
+            module: ClsModule,
+            imports: asyncOptions.imports,
+            providers: [
+                {
+                    provide: CLS_MODULE_OPTIONS,
+                    inject: asyncOptions.inject,
+                    useFactory: asyncOptions.useFactory,
+                },
+                ...providers,
+            ],
+            exports,
+            global: asyncOptions.global,
+        };
+    }
+
     /**
      * Registers the `ClsService` provider in the module
      */
     static forFeature(): DynamicModule;
-    /**
-     * @param namespaceName
-     * @deprecated usage with namespaceName is deprecated and will be
-     * removed with namespace support in v3.0
-     * @returns 
-     */
-    static forFeature(namespaceName: string): DynamicModule;
-    static forFeature(namespaceName?: string): DynamicModule {
-        const providers = ClsServiceManager.getClsServicesAsProviders().filter(
-            (p) =>
-                p.provide === getClsServiceToken(namespaceName) ||
-                p.provide === ClsService,
-        );
+    static forFeature(...requestScopedProviders: Array<Type>): DynamicModule;
+    static forFeature(...requestScopedProviders: Array<Type>): DynamicModule {
+        const proxyProviders =
+            requestScopedProviders.map((providerClass) =>
+                ProxyProviderManager.createProxyProvider({
+                    useClass: providerClass,
+                }),
+            ) ?? [];
+        const providers = [...commonProviders];
         return {
             module: ClsModule,
-            providers,
-            exports: providers,
+            providers: [...providers, ...proxyProviders],
+            exports: [...providers, ...proxyProviders.map((p) => p.provide)],
         };
     }
 
-    private static clsMiddlewareOptionsFactory(
-        options: ClsModuleOptions,
-    ): ClsMiddlewareOptions {
-        const clsMiddlewareOptions = {
-            ...new ClsMiddlewareOptions(),
-            ...options.middleware,
-            namespaceName: options.namespaceName,
-        };
-        return clsMiddlewareOptions;
-    }
-
-    private static clsGuardOptionsFactory(
-        options: ClsModuleOptions,
-    ): ClsGuardOptions {
-        const clsGuardOptions = {
-            ...new ClsGuardOptions(),
-            ...options.guard,
-            namespaceName: options.namespaceName,
-        };
-        return clsGuardOptions;
-    }
-
-    private static clsInterceptorOptionsFactory(
-        options: ClsModuleOptions,
-    ): ClsInterceptorOptions {
-        const clsInterceptorOptions = {
-            ...new ClsInterceptorOptions(),
-            ...options.interceptor,
-            namespaceName: options.namespaceName,
-        };
-        return clsInterceptorOptions;
-    }
-
-    private static clsGuardFactory(options: ClsGuardOptions): CanActivate {
-        if (options.mount) {
-            ClsModule.logger.debug('ClsGuard will be automatically mounted');
-            return new ClsGuard(options);
-        }
+    static forFeatureAsync(
+        options: ClsModuleProxyProviderOptions,
+    ): DynamicModule {
+        const proxyProvider = ProxyProviderManager.createProxyProvider(options);
+        const providers = [
+            ...commonProviders,
+            ...(options.extraProviders ?? []),
+        ];
         return {
-            canActivate: () => true,
+            module: ClsModule,
+            imports: options.imports ?? [],
+            providers: [...providers, proxyProvider],
+            exports: [...commonProviders, proxyProvider.provide],
         };
     }
 
-    private static clsInterceptorFactory(
-        options: ClsInterceptorOptions,
-    ): NestInterceptor {
-        if (options.mount) {
-            ClsModule.logger.debug(
-                'ClsInterceptor will be automatically mounted',
-            );
-            return new ClsInterceptor(options);
-        }
-        return {
-            intercept: (_, next) => next.handle(),
-        };
-    }
-
-    private static getProviders(options: { namespaceName?: string }) {
-        ClsServiceManager.addClsService(options.namespaceName);
+    private static getProviders() {
         const providers: Provider[] = [
-            ...ClsServiceManager.getClsServicesAsProviders(),
+            ...commonProviders,
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 inject: [CLS_MODULE_OPTIONS],
@@ -189,40 +203,57 @@ export class ClsModule implements NestModule {
         };
     }
 
-    static register(options?: ClsModuleOptions): DynamicModule {
-        options = { ...new ClsModuleOptions(), ...options };
-        const { providers, exports } = this.getProviders(options);
+    private static clsMiddlewareOptionsFactory(
+        options: ClsModuleOptions,
+    ): ClsMiddlewareOptions {
+        const clsMiddlewareOptions = {
+            ...new ClsMiddlewareOptions(),
+            ...options.middleware,
+        };
+        return clsMiddlewareOptions;
+    }
 
+    private static clsGuardOptionsFactory(
+        options: ClsModuleOptions,
+    ): ClsGuardOptions {
+        const clsGuardOptions = {
+            ...new ClsGuardOptions(),
+            ...options.guard,
+        };
+        return clsGuardOptions;
+    }
+
+    private static clsInterceptorOptionsFactory(
+        options: ClsModuleOptions,
+    ): ClsInterceptorOptions {
+        const clsInterceptorOptions = {
+            ...new ClsInterceptorOptions(),
+            ...options.interceptor,
+        };
+        return clsInterceptorOptions;
+    }
+
+    private static clsGuardFactory(options: ClsGuardOptions): CanActivate {
+        if (options.mount) {
+            ClsModule.logger.debug('ClsGuard will be automatically mounted');
+            return new ClsGuard(options);
+        }
         return {
-            module: ClsModule,
-            providers: [
-                {
-                    provide: CLS_MODULE_OPTIONS,
-                    useValue: options,
-                },
-                ...providers,
-            ],
-            exports,
-            global: options.global,
+            canActivate: () => true,
         };
     }
 
-    static registerAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
-        const { providers, exports } = this.getProviders(asyncOptions);
-
+    private static clsInterceptorFactory(
+        options: ClsInterceptorOptions,
+    ): NestInterceptor {
+        if (options.mount) {
+            ClsModule.logger.debug(
+                'ClsInterceptor will be automatically mounted',
+            );
+            return new ClsInterceptor(options);
+        }
         return {
-            module: ClsModule,
-            imports: asyncOptions.imports,
-            providers: [
-                {
-                    provide: CLS_MODULE_OPTIONS,
-                    inject: asyncOptions.inject,
-                    useFactory: asyncOptions.useFactory,
-                },
-                ...providers,
-            ],
-            exports,
-            global: asyncOptions.global,
+            intercept: (_, next) => next.handle(),
         };
     }
 }

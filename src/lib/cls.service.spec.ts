@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Terminal } from '../types/terminal.type';
 import { ClsServiceManager } from './cls-service-manager';
-import { CLS_DEFAULT_NAMESPACE, CLS_ID } from './cls.constants';
+import { CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
 import { ClsService } from './cls.service';
 
@@ -14,9 +14,7 @@ describe('ClsService', () => {
             providers: [
                 {
                     provide: ClsService,
-                    useValue: ClsServiceManager.addClsService(
-                        CLS_DEFAULT_NAMESPACE,
-                    ),
+                    useValue: ClsServiceManager.getClsService(),
                 },
             ],
         }).compile();

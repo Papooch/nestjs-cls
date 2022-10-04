@@ -3,11 +3,11 @@ import { NestFactory } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ClsMiddleware, ClsModule } from '../../src';
 import { ItemModule } from './item/item.module';
-import { ApolloDriver } from '@nestjs/apollo'
+import { ApolloDriver } from '@nestjs/apollo';
 
 @Module({
     imports: [
-        ClsModule.register({ global: true }),
+        ClsModule.forRoot({ global: true }),
         ItemModule,
         GraphQLModule.forRoot({
             driver: ApolloDriver,

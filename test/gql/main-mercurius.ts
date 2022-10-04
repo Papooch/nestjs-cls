@@ -7,10 +7,10 @@ import {
 } from '@nestjs/platform-fastify';
 import { ClsMiddleware, ClsModule } from '../../src';
 import { ItemModule } from './item/item.module';
-import { MercuriusDriver } from '@nestjs/mercurius'
+import { MercuriusDriver } from '@nestjs/mercurius';
 @Module({
     imports: [
-        ClsModule.register({ global: true }),
+        ClsModule.forRoot({ global: true }),
         ItemModule,
         GraphQLModule.forRoot({
             driver: MercuriusDriver,

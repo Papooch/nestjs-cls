@@ -20,7 +20,7 @@ export class ClsInterceptor implements NestInterceptor {
     }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        const cls = ClsServiceManager.getClsService(this.options.namespaceName);
+        const cls = ClsServiceManager.getClsService();
         return new Observable((subscriber) => {
             cls.run(async () => {
                 if (this.options.generateId) {
@@ -30,13 +30,18 @@ export class ClsInterceptor implements NestInterceptor {
                 if (this.options.setup) {
                     await this.options.setup(cls, context);
                 }
-                next.handle()
-                    .pipe()
-                    .subscribe({
-                        next: (res) => subscriber.next(res),
-                        error: (err) => subscriber.error(err),
-                        complete: () => subscriber.complete(),
-                    });
+                try {
+                    await ClsServiceManager.resolveProxyProviders();
+                    next.handle()
+                        .pipe()
+                        .subscribe({
+                            next: (res) => subscriber.next(res),
+                            error: (err) => subscriber.error(err),
+                            complete: () => subscriber.complete(),
+                        });
+                } catch (e) {
+                    subscriber.error(e);
+                }
             });
         });
     }

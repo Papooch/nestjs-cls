@@ -10,7 +10,7 @@ let app: INestApplication;
 describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
     @Module({
         imports: [
-            ClsModule.register({ global: true }),
+            ClsModule.forRoot({ global: true }),
             ItemModule,
             GraphQLModule.forRoot({
                 driver: ApolloDriver,
@@ -48,7 +48,7 @@ describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
 describe('GQL Apollo App - Auto bound Guard', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 global: true,
                 guard: { mount: true, generateId: true },
             }),
@@ -87,7 +87,7 @@ describe('GQL Apollo App - Auto bound Guard', () => {
 describe('GQL Apollo App - Auto bound Interceptor', () => {
     @Module({
         imports: [
-            ClsModule.register({
+            ClsModule.forRoot({
                 global: true,
                 interceptor: { mount: true, generateId: true },
             }),

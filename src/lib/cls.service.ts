@@ -13,10 +13,7 @@ import { CLS_ID } from './cls.constants';
 import { ClsStore } from './cls.interfaces';
 
 export class ClsService<S extends ClsStore = ClsStore> {
-    private readonly namespace: AsyncLocalStorage<any>;
-    constructor(namespace: AsyncLocalStorage<any>) {
-        this.namespace = namespace;
-    }
+    constructor(private readonly als: AsyncLocalStorage<any>) {}
 
     /**
      * Set a value on the CLS context.
@@ -29,14 +26,12 @@ export class ClsService<S extends ClsStore = ClsStore> {
         T extends RecursiveKeyOf<S> = any,
         P extends DeepPropertyType<S, T> = any,
     >(key: StringIfNever<T> | keyof ClsStore, value: AnyIfNever<P>): void {
-        const store = this.namespace.getStore();
+        const store = this.als.getStore();
         if (!store) {
             throw new Error(
                 `Cannot se the key "${String(
                     key,
-                )}". No cls context available in namespace "${
-                    this.namespace['name']
-                }", please make sure that a ClsMiddleware/Guard/Interceptor has set up the context, or wrap any calls that depend on cls with "ClsService#run"`,
+                )}". No CLS context available, please make sure that a ClsMiddleware/Guard/Interceptor has set up the context, or wrap any calls that depend on CLS with "ClsService#run"`,
             );
         }
         if (typeof key === 'symbol') {
@@ -64,7 +59,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
         key?: StringIfNever<T> | keyof ClsStore,
     ): TypeIfUndefined<R, TypeIfUndefined<typeof key, S, AnyIfNever<P>>, R>;
     get(key?: string | symbol): any {
-        const store = this.namespace.getStore();
+        const store = this.als.getStore();
         if (!key) return store;
         if (typeof key === 'symbol') {
             return store[key];
@@ -81,7 +76,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
         key: StringIfNever<T> | keyof ClsStore,
     ): boolean;
     has(key: string | symbol): boolean {
-        const store = this.namespace.getStore();
+        const store = this.als.getStore();
         if (typeof key === 'symbol') {
             return !!store[key];
         }
@@ -93,7 +88,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @returns the request ID or undefined
      */
     getId(): string {
-        const store = this.namespace.getStore();
+        const store = this.als.getStore();
         return store?.[CLS_ID];
     }
 
@@ -103,7 +98,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @returns whatever the callback returns
      */
     run<T = any>(callback: () => T) {
-        return this.namespace.run({}, callback);
+        return this.als.run({}, callback);
     }
 
     /**
@@ -113,14 +108,14 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @returns whatever the callback returns
      */
     runWith<T = any>(store: S, callback: () => T) {
-        return this.namespace.run(store ?? {}, callback);
+        return this.als.run(store ?? {}, callback);
     }
 
     /**
      * Run any following code with a shared CLS context.
      */
     enter() {
-        return this.namespace.enterWith({});
+        return this.als.enterWith({});
     }
 
     /**
@@ -128,7 +123,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @param store the default context contents
      */
     enterWith(store?: S) {
-        return this.namespace.enterWith(store ?? {});
+        return this.als.enterWith(store ?? {});
     }
 
     /**
@@ -137,7 +132,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @returns whatever the callback returns
      */
     exit<T = any>(callback: () => T): T {
-        return this.namespace.exit(callback);
+        return this.als.exit(callback);
     }
 
     /**
@@ -145,6 +140,6 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @returns true if a CLS context is active
      */
     isActive() {
-        return !!this.namespace.getStore();
+        return !!this.als.getStore();
     }
 }

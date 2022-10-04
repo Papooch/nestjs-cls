@@ -1,5 +1,4 @@
-import { ExecutionContext, ModuleMetadata } from '@nestjs/common';
-import { CLS_DEFAULT_NAMESPACE } from './cls.constants';
+import { ExecutionContext, ModuleMetadata, Type } from '@nestjs/common';
 import { ClsService } from './cls.service';
 
 export class ClsModuleOptions {
@@ -25,17 +24,14 @@ export class ClsModuleOptions {
     interceptor?: ClsInterceptorOptions = null;
 
     /**
-     * The namespace that will be set up. When used, `ClsService`
-     * must be injected using the `@InjectCls('name')` decorator.
-     * (most of the time you will not need to touch this setting)
-     * @deprecated Namespace support will be removed in v3.0
+     *
      */
-    namespaceName? = CLS_DEFAULT_NAMESPACE;
+    proxyProviders?: Type[];
 }
 
 export type ClsModuleFactoryOptions = Omit<
     ClsModuleOptions,
-    'global' | 'namespaceName'
+    'global' | 'providers'
 >;
 export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: any[];
@@ -47,13 +43,11 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
      * to import `ClsModule.forFeature()` in other modules
      */
     global?: boolean;
+
     /**
-     * The namespace that will be set up. When used, `ClsService`
-     * must be injected using the `@InjectCls('name')` decorator.
-     * (most of the time you will not need to touch this setting)
-     * @deprecated Namespace support will be removed in v3.0
+     *
      */
-    namespaceName?: string;
+    providers?: Type[];
 }
 
 export class ClsMiddlewareOptions {
@@ -100,11 +94,6 @@ export class ClsMiddlewareOptions {
      * some frameworks are known to lose the context wih `run`.
      */
     useEnterWith? = false;
-
-    /**
-     * @deprecated Namespace support will be removed in v3.0
-     */
-    readonly namespaceName?: string;
 }
 
 export class ClsGuardOptions {
@@ -132,11 +121,6 @@ export class ClsGuardOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
-
-    /**
-     * @deprecated Namespace support will be removed in v3.0
-     */
-    readonly namespaceName?: string;
 }
 
 export class ClsInterceptorOptions {
@@ -164,11 +148,6 @@ export class ClsInterceptorOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
-
-    /**
-     * @deprecated Namespace support will be removed in v3.0
-     */
-    readonly namespaceName?: string;
 }
 
 export interface ClsStore {
