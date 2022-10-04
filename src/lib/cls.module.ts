@@ -44,9 +44,15 @@ const clsServiceProvider: ValueProvider<ClsService> = {
     useValue: ClsServiceManager.getClsService(),
 };
 
+const commonProviders = [
+    clsServiceProvider,
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ),
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES),
+];
+
 @Module({
-    providers: [clsServiceProvider],
-    exports: [clsServiceProvider],
+    providers: [...commonProviders],
+    exports: [...commonProviders],
 })
 export class ClsModule implements NestModule {
     constructor(
@@ -135,7 +141,7 @@ export class ClsModule implements NestModule {
                     useClass: providerClass,
                 }),
             ) ?? [];
-        const providers = [clsServiceProvider];
+        const providers = [...commonProviders];
         return {
             module: ClsModule,
             providers: [...providers, ...proxyProviders],
@@ -148,20 +154,20 @@ export class ClsModule implements NestModule {
     ): DynamicModule {
         const proxyProvider = ProxyProviderManager.createProxyProvider(options);
         const providers = [
-            clsServiceProvider,
+            ...commonProviders,
             ...(options.extraProviders ?? []),
         ];
         return {
             module: ClsModule,
             imports: options.imports ?? [],
             providers: [...providers, proxyProvider],
-            exports: [clsServiceProvider, proxyProvider.provide],
+            exports: [...commonProviders, proxyProvider.provide],
         };
     }
 
     private static getProviders() {
         const providers: Provider[] = [
-            clsServiceProvider,
+            ...commonProviders,
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 inject: [CLS_MODULE_OPTIONS],
@@ -177,8 +183,6 @@ export class ClsModule implements NestModule {
                 inject: [CLS_MODULE_OPTIONS],
                 useFactory: this.clsInterceptorOptionsFactory,
             },
-            ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ),
-            ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES),
         ];
         const enhancerArr: Provider[] = [
             {

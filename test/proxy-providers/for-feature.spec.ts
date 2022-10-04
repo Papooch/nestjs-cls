@@ -1,5 +1,6 @@
 import {
     INestApplication,
+    Inject,
     Injectable,
     Module,
     ModuleMetadata,
@@ -52,6 +53,24 @@ describe('ClsModule', () => {
             @InjectableProxy()
             class ProxyClass {
                 constructor(private cls: ClsService) {}
+            }
+
+            app = await createAndInitTestingApp([
+                ClsModule.forFeature(ProxyClass),
+            ]);
+            expect(() => app.get(ProxyClass)).not.toThrow();
+            await cls.run(async () => {
+                await ClsServiceManager.resolveProxyProviders();
+            });
+        });
+
+        it('provides a class proxy that injects CLS_REQ and CLS_RES', async () => {
+            @InjectableProxy()
+            class ProxyClass {
+                constructor(
+                    @Inject(CLS_REQ) private req: any,
+                    @Inject(CLS_RES) private res: any,
+                ) {}
             }
 
             app = await createAndInitTestingApp([
@@ -171,6 +190,36 @@ describe('ClsModule', () => {
                 ClsModule.forFeatureAsync({
                     provide: TOKEN,
                     useFactory: () => ({
+                        some: true,
+                    }),
+                }),
+            ]);
+            expect(() => app.get(TOKEN)).not.toThrow();
+        });
+
+        it('provides a factory proxy that injects ClsService', async () => {
+            const TOKEN = 'PROXY';
+            app = await createAndInitTestingApp([
+                ClsModule.forFeatureAsync({
+                    provide: TOKEN,
+                    inject: [ClsService],
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    useFactory: (cls: ClsService) => ({
+                        some: true,
+                    }),
+                }),
+            ]);
+            expect(() => app.get(TOKEN)).not.toThrow();
+        });
+
+        it('provides a factory proxy that injects CLS_REQ and CLS_RES', async () => {
+            const TOKEN = 'PROXY';
+            app = await createAndInitTestingApp([
+                ClsModule.forFeatureAsync({
+                    provide: TOKEN,
+                    inject: [CLS_REQ, CLS_RES],
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    useFactory: (req: any, res: any) => ({
                         some: true,
                     }),
                 }),
