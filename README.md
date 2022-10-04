@@ -1,20 +1,37 @@
 # NestJS CLS
 
-> **New**: Version `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
+A continuous-local\* storage module compatible with [NestJS](https://nestjs.com/)' dependency injection based on [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage).
 
-A continuation-local storage module compatible with [NestJS](https://nestjs.com/)'s dependency injection.
+> **New**: Version `3.0` introduces [_Proxy Providers_](#proxy-providers) as an alternative to the imperative API. (Minor breaking changes were introduced, see [Migration guide](#migration-guide)).
+
+> Version `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
 
 _Continuous-local storage allows to store state and propagate it throughout callbacks and promise chains. It allows storing data throughout the lifetime of a web request or any other asynchronous duration. It is similar to thread-local storage in other languages._
 
-Some common use cases for CLS include:
+Some common use cases that this library enables include:
 
--   Tracing the Request ID and other metadata for logging purposes
--   Making the Tenant ID available everywhere in multi-tenant apps
--   Globally setting an authentication level for the request
+-   Tracking the Request ID and other metadata for logging purposes
+-   Keeping track of the user throughout the whole request
+-   Making the dynamic Tenant database connection available everywhere in multi-tenant apps
+-   Propagating the authentication level or role to restrict access to resources
+-   Seamlessly propagating the `transaction` object of your favourite ORM across services without breaking encapsulation and isolation by explicitly passing it around.
+-   Using "request" context in cases where actual REQUEST-scoped providers are not supported (passport strategies, cron controllers, websocket gateways, ...)
 
-Most of these are to some extent solvable using _request-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
+Most of these are to some extent solvable using _REQUEST-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
 
-> **Note**: This package uses [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage) from Node's `async_hooks` API. Most parts of it are marked as _stable_ now, see [Security considerations](#security-considerations) for more details.
+## The author's take:
+
+_NestJS is an amazing framework, but in the plethora of awesome built-in features, I still missed one_.
+
+_I created this library to solve a specific use case, which was limiting access to only to records which had the same TenantId as the request's user in a central manner. The repository code automatically added a `WHERE` clause to each query, which made sure that other developers couldn't accidentally mix tenant data (all tenants' data were held in the same database) without extra effort._
+
+_`AsyncLocalStorage` is still fairly new and not many people know of its existence and benefits. I've invested a great deal of my personal time in making the use of it as pleasant as possible._
+
+_While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want fast, use a compiled language._
+
+_Also if you use some tracing library, chances are it already makes use of `async_hooks` under the hood, so you might as well use it to your advantage._
+
+> (\*) The name comes from the original implementation based on `cls-hooked`, which was since replaced by the native `AsyncLocalStorage`.
 
 # Outline
 
@@ -25,12 +42,15 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [Using a Middleware](#using-a-middleware-http-only)
     -   [Using a Guard](#using-a-guard)
     -   [Using an Interceptor](#using-an-interceptor)
--   [Other features](#other-features)
+-   [Features and use cases](#features-and-use-cases)
     -   [Request ID](#request-id)
     -   [Additional CLS Setup](#additional-cls-setup)
     -   [Breaking out of DI](#breaking-out-of-di)
     -   [Usage outside of web request](#usage-outside-of-web-request)
     -   [Type safety and type inference](#type-safety-and-type-inference)
+    -   [Proxy Providers](#proxy-providers)
+        -   [Classes](#class-proxy-providers)
+        -   [Factories](#factory-proxy-providers)
 -   [API](#api)
     -   [Service Interface](#service-interface)
     -   [Module Options](#module-options)
@@ -39,9 +59,8 @@ Most of these are to some extent solvable using _request-scoped_ providers or pa
     -   [REST](#rest)
     -   [GraphQL](#graphql)
     -   [Others](#others)
--   [~~Namespaces~~](#namespaces-deprecated) (deprecated)
-
-> **Notice**: I have deprecated [Namespaces](#namespaces-deprecated) since version `2.1.1` and will be removing them in `3.0` to make room for new features ([#31](https://github.com/Papooch/nestjs-cls/issues/31)). Namespace support was experimental from the begining, and I havent seen any justifiable use case to keep it around.
+-   [Contributing](#contributing)
+-   [Migration guide](#migration-guide)
 
 # Install
 
@@ -64,7 +83,7 @@ Below is an example of storing the client's IP address in an interceptor and ret
 @Module({
     imports: [
         // Register the ClsModule and automatically mount the ClsMiddleware
-        ClsModule.register({
+        ClsModule.forRoot({
             global: true,
             middleware: { mount: true },
         }),
@@ -142,7 +161,7 @@ For HTTP transports, the context can be preferably set up in a `ClsMiddleware`. 
 
 Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMiddleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()` call.
 
-All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.register` options which automatically mounts it to all routes.
+All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.forRoot()` options which automatically mounts it to all routes.
 
 Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
 
@@ -173,7 +192,7 @@ function bootstrap() {
 }
 ```
 
-> **Please note**: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.register()`, so you will have to provide them yourself in the constructor.
+> **Please note**: If you bind the middleware using `app.use()`, it will not respect middleware settings passed to `ClsModule.forRoot()`, so you will have to provide them yourself in the constructor.
 
 ---
 
@@ -181,10 +200,10 @@ function bootstrap() {
 
 The `ClsGuard` can be also used set up the CLS context. While it is not a "guard" per-se, it's the second best place to set up the CLS context, since after a middleware, it is the first piece of code that the request hits.
 
-To use it, pass its configuration to the `guard` property to the `ClsModule.register` options:
+To use it, pass its configuration to the `guard` property to the `ClsModule.rotRoot()` options:
 
 ```ts
-ClsModule.register({
+ClsModule.forRoot({
     guard: { generateId: true, mount: true }
 }),
 ```
@@ -218,10 +237,10 @@ or mount it directly on the Controller/Resolver with
 
 Another place to initiate the CLS context is an `ClsInterceptor`, which, unlike the `ClsGuard` uses `AsyncLocalStorage#run` method to wrap the following code, which is considered safer than `enterWith`.
 
-To use it, pass its configuration to the `interceptor` property to the `ClsModule.register` options:
+To use it, pass its configuration to the `interceptor` property to the `ClsModule.forRoot()` options:
 
 ```ts
-ClsModule.register({
+ClsModule.forRoot({
     interceptor: { generateId: true, mount: true }
 }),
 ```
@@ -234,7 +253,7 @@ Or mount it manually as `APP_INTERCEPTOR`, or directly on the Controller/Resolve
 
 > **Please note**: Since Nest's _Interceptors_ run after _Guards_, that means using this method makes CLS **unavailable in Guards** (and in case of REST Controllers, also in **Exception Filters**).
 
-# Other features
+# Features and use cases
 
 In addition to the basic functionality described in the [Quick start](#quick-start) chapter, this module provides several other features.
 
@@ -247,7 +266,7 @@ This function receives the `Request` (or `ExecutionContext` in case a `ClsGuard`
 Below is an example of retrieving the request ID from the request header with a fallback to an autogenerated one.
 
 ```ts
-ClsModule.register({
+ClsModule.forRoot({
     middleware: {
         mount: true,
         generateId: true,
@@ -293,7 +312,7 @@ The CLS middleware/guard/interceptor provide some default functionality, but som
 The function receives the `ClsService` instance and the `Request` (or `ExecutionContext`) object, and can be asynchronous.
 
 ```ts
-ClsModule.register({
+ClsModule.forRoot({
     middleware: {
         mount: true,
         setup: (cls, req: Request) => {
@@ -309,7 +328,7 @@ ClsModule.register({
 
 ## Usage outside of web request
 
-Sometimes, a part of the app that relies on the CLS storage might need to be called outside of the context of a web request - for example, in a Cron job or during the application bootstrap. In such cases, there are no enhancers that can be bound to the handler to set up the context.
+Sometimes, a part of the app that relies on the CLS storage might need to be called outside of the context of a web request - for example, in a Cron job, while consuming a Queue or during the application bootstrap. In such cases, there are no enhancers that can be bound to the handler to set up the context.
 
 Therefore, you as the the developer are responsible for wrapping the execution with `ClsService#run` and set up the appropriate context variables.
 
@@ -372,7 +391,9 @@ function helper() {
 
 By default the CLS context is untyped and allows setting and retrieving any `string` or `symbol` key from the context. Some safety can be enforced by using `CONSTANTS` instead of magic strings, but that might not be enough.
 
-Therefore, it is possible to specify a custom interface for the `ClsService` and get proper typing and automatic type inference when retrieving or setting values. This works even for _nested objects_ using a dot notation.
+### Type-safe ClsService
+
+It is possible to specify a custom interface for the `ClsService` and get proper typing and automatic type inference when retrieving or setting values. This works even for _nested objects_ using a dot notation.
 
 To create a typed CLS Store, start by creating an interface that extends `ClsStore`.
 
@@ -390,13 +411,13 @@ Then you can inject the `ClsService` with a type parameter `ClsService<MyClsStor
 
 ```ts
 export class MyService {
-    constructor(private readonly cls: ClsService<ClsStore>) {}
+    constructor(private readonly cls: ClsService<MyClsStore>) {}
 
     doTheThing() {
         // a boolean type will be enforced here
         this.cls.set('user.authorized', true);
 
-        // tenantId will be inferred as a stirng
+        // tenantId will be inferred as a string
         const tenantId = this.cls.get('tenantId');
 
         // userId will be inferred as a number
@@ -433,7 +454,25 @@ declare module 'nestjs-cls' {
 }
 ```
 
-It can happen, that the object you want to store in the context is too complex, or contains cyclic references. In that case, typescript might complain that _type instantiation is too deep, possibly infinite_. That is due to the fact that it tries to generate all possible paths inside the store. If that's the case, you can use the `Terminal` type to stop generating the paths for a certain subtree:
+For even more transparent approach without augmenting the declaration, you can create a typed `ClsService` by extending it and creating a custom provider out of it:
+
+```ts
+export class MyClsService extends ClsService<MyClsStore>
+
+@Module({
+    imports: [ClsModule.forFeature()]
+    providers: [{
+        provide: MyClsService,
+        useExisting: ClsService
+    }],
+    exports: [MyClsService]
+})
+class MyClsModule
+```
+
+### Terminal Type
+
+It can happen, that the object you want to store in the context is too complex, or contains cyclic references. In that case, typescript might complain that _type instantiation is too deep, possibly infinite_. That is due to the fact that it tries to generate all possible paths inside the ClsStore. If that's the case, you can use the `Terminal` type to stop generating the paths for a certain subtree:
 
 ```ts
 interface ClsStore {
@@ -446,6 +485,134 @@ interface ClsStore {
 ```
 
 This will only generate the paths `tenantId | user` and won't allow directly accessing nested keys (like `cls.get('user.id')`, but you'll still get fully typing for things like `const { id } = cls.get('user')`). See issue [#22](https://github.com/Papooch/nestjs-cls/issues/22) for more details.
+
+---
+
+## Proxy Providers
+
+> Since `v3.0`
+
+This feature was inspired by how REQUEST-scoped providers (_"beans"_) work in the Spring framework for Java/Kotlin.
+
+Using this technique, NestJS does not need to re-create a whole DI-subtree on each request (which has [certain implications which disallows the use of REQUEST-scoped providers in certain situations](https://docs.nestjs.com/fundamentals/injection-scopes#scope-hierarchy)), but it rather injects a _SINGLETON_ [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) instance, which delegates access and calls to the actual instance, which is created for each request when the CLS context is set up.
+
+There are two kinds of Proxy providers - _Class_ and _Factory_.
+
+### Class Proxy Providers
+
+These providers look like your regular class providers, with the exception that is the `@InjectableProxy()` decorator to make them easily distinguishable.
+
+```ts
+@InjectableProxy()
+export class User {
+    id: number;
+    role: string;
+}
+```
+
+To register the proxy provider, use the `ClsModule.forFeature()` registration
+
+```ts
+ClsModule.forFeature(User);
+```
+
+It can be then injected using the class name. However, what will be actually injected _is not_ the instance of the class, but rather the Proxy which redirects all access to an unique instance in the CLS context.
+
+```ts
+@Injectable()
+export class UserInterceptor implements NestInterceptor {
+    // we can inject the proxy here
+    constructor(private readonly user: User) {}
+
+    intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+        const request = context.switchToHttp().getRequest();
+
+        // and assign or change values as it was a normal object
+        this.user.id = request.user.id;
+        this.user.role = 'admin';
+
+        return next.handle();
+    }
+}
+```
+
+It is also possible to inject other providers into the Proxy Provider.
+
+For the convenience, the `CLS_REQ` and `CLS_RES` were also made into Proxy Providers and are exported from the `ClsModule`.
+
+```ts
+@InjectableProxy()
+export class AutoBootstrappingUser {
+    id: number;
+    role: string;
+
+    constructor(@Inject(CLS_REQ) request: Request) {
+        this.id = request.user.id;
+        this.role = 'admin';
+    }
+}
+```
+
+If you need to inject a provider from an external module, use the `ClsService.forFeatureAsync()` registration to import it first.
+
+```ts
+ClsModule.forFeatureAsync({
+    // say the DogsModule provides the DogsService
+    import: [DogsModule],
+    // now you can inject DogsService in the DogContext Proxy Provider
+    useClass: DogContext,
+});
+```
+
+### Factory Proxy Providers
+
+Like your normal factory providers, Proxy factory providers look familiar.
+
+Here's an example of a hypothetical factory provider that dynamically resolves to a specific tenant database connection:
+
+```ts
+ClsModule.forFeature({
+    provide: TENANT_CONNECTION,
+    import: [DatabaseConnectionModule],
+    inject: [CLS_REQ, DatabaseConnectionService],
+    useFactory: async (req: Request, dbService: DatabaseConnectionService) => {
+        const tenantId = req.params['tenantId'];
+        const connection = await dbService.getTenantConnection(tenantId);
+        return connection;
+    },
+});
+```
+
+Again, the factory will be called on each request and the result will be stored in the CLS context. The `TENANT_CONNECTION` provider, however, will still be a singleton and will not affect the scope of whatever it is injected into.
+
+In the service, it can be injected using the `provide` token as usual:
+
+```ts
+@Injectable()
+class DogsService {
+    constructor(
+        @Inject(TENANT_CONNECTION)
+        private readonly connection: TenantConnection,
+    ) {}
+
+    getAll() {
+        //
+        return this.connection.dogs.getAll();
+    }
+}
+```
+
+> **Please note**: Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory provides a function).
+
+### Proxy Providers outside of web request context
+
+For the time being ([until the this feature is implemented](https://github.com/Papooch/nestjs-cls/issues/19)), if you want to access Proxy Providers [outside the context of web request](#usage-outside-of-web-request), you need to make sure you call
+
+```ts
+await ClsServiceManager.resolveProxyProviders();
+```
+
+once you set up the context with `cls.run()`, to actually _instantiate_ the Proxy Providers and store them in the CLS context. Otherwise all access to an injected Proxy Providers will return `undefined`.
 
 # API
 
@@ -476,7 +643,7 @@ The injectable `ClsService` provides the following API to manipulate the cls con
 
 ## Module Options
 
-The `ClsModule.register()` method takes the following `ClsModuleOptions`:
+The `ClsModule.forRoot()` method takes the following `ClsModuleOptions`:
 
 -   **_`middleware:`_ `ClsMiddlewareOptions`**  
     An object with additional options for the `ClsMiddleware`, see below
@@ -491,7 +658,7 @@ The `ClsModule.register()` method takes the following `ClsModuleOptions`:
 
 > **Please note**: the `middleware`, `guard` and `interceptor` options should be _mutually exclusive_ - do not use more than one of them, otherwise the context will be overwritten by the one that runs after.
 
-`ClsModule.registerAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters.
+`ClsModule.forRootAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters.
 
 All of the `Cls{Middleware,Guard,Interceptor}Options` take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
 
@@ -533,11 +700,11 @@ The `ClsInterceptor` only uses the safe `run()` method.
 
 The table below outlines the compatibility with some platforms:
 
-|                                                              |                           REST                           |                               GQL                               |         WS         | Others |
-| :----------------------------------------------------------: | :------------------------------------------------------: | :-------------------------------------------------------------: | :----------------: | :----: |
-|                      **ClsMiddleware**                       |                            ✔                             | ✔<br>must be _mounted manually_<br>and use `useEnterWith: true` |         ✖          |   ✖    |
-|             **ClsGuard** <br>(uses `enterWith`)              |                            ✔                             |                                ✔                                | ✔[\*](#websockets) |   ?    |
-| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |                                ✔                                | ✔[\*](#websockets) |   ?    |
+|                                                              |                           REST                           |                               GQL                               |         WS         | Microservices |
+| :----------------------------------------------------------: | :------------------------------------------------------: | :-------------------------------------------------------------: | :----------------: | :-----------: |
+|                      **ClsMiddleware**                       |                            ✔                             | ✔<br>must be _mounted manually_<br>and use `useEnterWith: true` |         ✖          |       ✖       |
+|             **ClsGuard** <br>(uses `enterWith`)              |                            ✔                             |                                ✔                                | ✔[\*](#websockets) |       ✔       |
+| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |                                ✔                                | ✔[\*](#websockets) |       ✔       |
 
 ## REST
 
@@ -569,8 +736,20 @@ Below are listed platforms with which it is confirmed to work.
 
 ### Websockets
 
-_Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsIntercetor` manually on the `WebscocketGateway`. (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
+_Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsInterceptor` manually on the `WebsocketGateway`. Special care is also needed for the `handleConnection` method (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
 
 # Contributing
 
 Contributing to a community project is always welcome, please see the [Contributing guide](./CONTRIBUTING.md) :)
+
+# Migration Guide
+
+## `v2.x` ➡️ `v3.x`
+
+-   The root registration method was _renamed_ from `register` (resp. `registerAsync`) to `forRoot` (resp. `forRootAsync`) to align with the convention.
+-   Namespace injection support was dropped entirely, if you still have use case for it, you can still create a namespaced `ClsService` using
+    ```ts
+    const als = new AsyncLocalStorage();
+    const namespacedClsService = new ClsService(als);
+    ```
+    and use a custom provider to inject it.

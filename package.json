@@ -21,7 +21,8 @@
         "als",
         "AsyncLocalStorage",
         "async_hooks",
-        "request context"
+        "request context",
+        "async context"
     ],
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
