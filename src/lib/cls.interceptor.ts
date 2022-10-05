@@ -12,9 +12,11 @@ import { ClsInterceptorOptions } from './cls.interfaces';
 
 @Injectable()
 export class ClsInterceptor implements NestInterceptor {
+    private readonly options: Omit<ClsInterceptorOptions, 'mount'>;
+
     constructor(
         @Inject(CLS_INTERCEPTOR_OPTIONS)
-        private readonly options?: Omit<ClsInterceptorOptions, 'mount'>,
+        options?: Omit<ClsInterceptorOptions, 'mount'>,
     ) {
         this.options = { ...new ClsInterceptorOptions(), ...options };
     }
@@ -24,7 +26,7 @@ export class ClsInterceptor implements NestInterceptor {
         return new Observable((subscriber) => {
             cls.run(async () => {
                 if (this.options.generateId) {
-                    const id = await this.options.idGenerator(context);
+                    const id = await this.options.idGenerator?.(context);
                     cls.set<any>(CLS_ID, id);
                 }
                 if (this.options.setup) {

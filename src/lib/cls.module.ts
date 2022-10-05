@@ -88,12 +88,9 @@ export class ClsModule implements NestModule {
     static forRoot(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
         const { providers, exports } = this.getProviders();
-        const proxyProviders =
-            options.proxyProviders?.map((providerClass) =>
-                ProxyProviderManager.createProxyProvider({
-                    useClass: providerClass,
-                }),
-            ) ?? [];
+        const proxyProviders = this.createProxyClassProviders(
+            options.proxyProviders,
+        );
 
         return {
             module: ClsModule,
@@ -112,6 +109,9 @@ export class ClsModule implements NestModule {
 
     static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
         const { providers, exports } = this.getProviders();
+        const proxyProviders = this.createProxyClassProviders(
+            asyncOptions.proxyProviders,
+        );
 
         return {
             module: ClsModule,
@@ -123,8 +123,9 @@ export class ClsModule implements NestModule {
                     useFactory: asyncOptions.useFactory,
                 },
                 ...providers,
+                ...proxyProviders,
             ],
-            exports,
+            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
             global: asyncOptions.global,
         };
     }
@@ -133,14 +134,10 @@ export class ClsModule implements NestModule {
      * Registers the `ClsService` provider in the module
      */
     static forFeature(): DynamicModule;
-    static forFeature(...requestScopedProviders: Array<Type>): DynamicModule;
-    static forFeature(...requestScopedProviders: Array<Type>): DynamicModule {
+    static forFeature(...proxyProviderClasses: Array<Type>): DynamicModule;
+    static forFeature(...proxyProviderClasses: Array<Type>): DynamicModule {
         const proxyProviders =
-            requestScopedProviders.map((providerClass) =>
-                ProxyProviderManager.createProxyProvider({
-                    useClass: providerClass,
-                }),
-            ) ?? [];
+            this.createProxyClassProviders(proxyProviderClasses);
         const providers = [...commonProviders];
         return {
             module: ClsModule,
@@ -163,6 +160,18 @@ export class ClsModule implements NestModule {
             providers: [...providers, proxyProvider],
             exports: [...commonProviders, proxyProvider.provide],
         };
+    }
+
+    private static createProxyClassProviders(
+        proxyProviderClasses?: Array<Type>,
+    ) {
+        return (
+            proxyProviderClasses?.map((providerClass) =>
+                ProxyProviderManager.createProxyProvider({
+                    useClass: providerClass,
+                }),
+            ) ?? []
+        );
     }
 
     private static getProviders() {

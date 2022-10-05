@@ -10,9 +10,11 @@ import { ClsGuardOptions } from './cls.interfaces';
 
 @Injectable()
 export class ClsGuard implements CanActivate {
+    private readonly options: Omit<ClsGuardOptions, 'mount'>;
+
     constructor(
         @Inject(CLS_GUARD_OPTIONS)
-        private readonly options?: ClsGuardOptions,
+        options: Omit<ClsGuardOptions, 'mount'>,
     ) {
         this.options = { ...new ClsGuardOptions(), ...options };
     }
@@ -22,7 +24,7 @@ export class ClsGuard implements CanActivate {
         return cls.exit(async () => {
             cls.enter();
             if (this.options.generateId) {
-                const id = await this.options.idGenerator(context);
+                const id = await this.options.idGenerator?.(context);
                 cls.set<any>(CLS_ID, id);
             }
             if (this.options.setup) {

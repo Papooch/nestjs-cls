@@ -5,7 +5,7 @@ import {
 
 export function getValueFromPath<T, TP extends RecursiveKeyOf<T> & string>(
     obj: T,
-    path?: TP,
+    path: TP,
 ): DeepPropertyType<T, TP> {
     const pathSegments = path.split('.');
     return pathSegments.reduce((acc, curr) => acc?.[curr], obj);

@@ -11,20 +11,20 @@ export class ClsModuleOptions {
     /**
      * An object with additional options for the `ClsMiddleware`
      */
-    middleware?: ClsMiddlewareOptions = null;
+    middleware?: ClsMiddlewareOptions;
 
     /**
      * An object with additional options for the `ClsGuard`
      */
-    guard?: ClsGuardOptions = null;
+    guard?: ClsGuardOptions;
 
     /**
      * An object with additional options for the `ClsInterceptor`
      */
-    interceptor?: ClsInterceptorOptions = null;
+    interceptor?: ClsInterceptorOptions;
 
     /**
-     *
+     * Array of Proxy Provider classes to register
      */
     proxyProviders?: Type[];
 }
@@ -35,7 +35,7 @@ export type ClsModuleFactoryOptions = Omit<
 >;
 export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: any[];
-    useFactory?: (
+    useFactory: (
         ...args: any[]
     ) => Promise<ClsModuleFactoryOptions> | ClsModuleFactoryOptions;
     /**
@@ -45,9 +45,9 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     global?: boolean;
 
     /**
-     *
+     * Array of Proxy Provider classes to register
      */
-    providers?: Type[];
+    proxyProviders?: Type[];
 }
 
 export class ClsMiddlewareOptions {

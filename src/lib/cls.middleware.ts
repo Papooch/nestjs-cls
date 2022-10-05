@@ -12,10 +12,11 @@ import { ClsService } from './cls.service';
 @Injectable()
 export class ClsMiddleware implements NestMiddleware {
     private readonly cls: ClsService;
+    private readonly options: Omit<ClsMiddlewareOptions, 'mount'>;
 
     constructor(
         @Inject(CLS_MIDDLEWARE_OPTIONS)
-        private readonly options?: Omit<ClsMiddlewareOptions, 'mount'>,
+        options?: Omit<ClsMiddlewareOptions, 'mount'>,
     ) {
         this.options = { ...new ClsMiddlewareOptions(), ...options };
     }
@@ -24,7 +25,7 @@ export class ClsMiddleware implements NestMiddleware {
         const callback = async () => {
             this.options.useEnterWith && cls.enter();
             if (this.options.generateId) {
-                const id = await this.options.idGenerator(req);
+                const id = await this.options.idGenerator?.(req);
                 cls.set<any>(CLS_ID, id);
             }
             if (this.options.saveReq) cls.set<any>(CLS_REQ, req);

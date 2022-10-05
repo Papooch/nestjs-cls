@@ -32,7 +32,7 @@ export class UnknownProxyDependenciesException extends Error {
         // matches the parameters from NestJS's error message:
         // e.g: "Nest can't resolve dependencies of the Something (Cats, ?). [...]"
         // returns ['Cats', '?']
-        return error.message.match(/\w+ \((.*?)\)./)[1].split(', ');
+        return error.message.match(/\w+ \((.*?)\)./)?.[1].split(', ') ?? [];
     }
 
     private static composeMessage(

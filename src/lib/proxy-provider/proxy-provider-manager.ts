@@ -125,7 +125,9 @@ export class ProxyProviderManager {
     }
 
     private static async resolveProxyProvider(providerSymbol: symbol) {
-        const provider = this.proxyProviderMap.get(providerSymbol);
+        const provider = this.proxyProviderMap.get(
+            providerSymbol,
+        ) as ProxyProvider;
         if (isProxyClassProvider(provider)) {
             await this.resolveProxyClassProvider(providerSymbol, provider);
         } else {

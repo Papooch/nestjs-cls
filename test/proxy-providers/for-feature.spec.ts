@@ -20,7 +20,7 @@ async function createAndInitTestingApp(imports: ModuleMetadata['imports']) {
     const moduleFixture: TestingModule = await Test.createTestingModule({
         imports: [
             ClsModule.forRoot({ middleware: { mount: true } }),
-            ...imports,
+            ...(imports ?? []),
         ],
     }).compile();
     const app = moduleFixture.createNestApplication();
