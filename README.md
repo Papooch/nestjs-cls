@@ -1,12 +1,12 @@
-# NestJS CLS
+# NestJS CLS (Async Context)
 
-A continuous-local\* storage module compatible with [NestJS](https://nestjs.com/)' dependency injection based on [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage).
+A continuation-local\* storage module compatible with [NestJS](https://nestjs.com/)' dependency injection based on [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage).
 
 > **New**: Version `3.0` introduces [_Proxy Providers_](#proxy-providers) as an alternative to the imperative API. (Minor breaking changes were introduced, see [Migration guide](#migration-guide)).
 
 > Version `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
 
-_Continuous-local storage allows to store state and propagate it throughout callbacks and promise chains. It allows storing data throughout the lifetime of a web request or any other asynchronous duration. It is similar to thread-local storage in other languages._
+_Continuation-local storage allows to store state and propagate it throughout callbacks and promise chains. It allows storing data throughout the lifetime of a web request or any other asynchronous duration. It is similar to thread-local storage in other languages._
 
 Some common use cases that this library enables include:
 
@@ -25,7 +25,7 @@ _NestJS is an amazing framework, but in the plethora of awesome built-in feature
 
 _I created this library to solve a specific use case, which was limiting access to only to records which had the same TenantId as the request's user in a central manner. The repository code automatically added a `WHERE` clause to each query, which made sure that other developers couldn't accidentally mix tenant data (all tenants' data were held in the same database) without extra effort._
 
-_`AsyncLocalStorage` is still fairly new and not many people know of its existence and benefits. I've invested a great deal of my personal time in making the use of it as pleasant as possible._
+_`AsyncLocalStorage` is still fairly new and not many people know of its existence and benefits. Here's a nice [talk from NodeConf](https://youtu.be/R2RMGQhWyCk?t=9742) about the history. I've invested a great deal of my personal time in making the use of it as pleasant as possible._
 
 _While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want fast, use a compiled language._
 
@@ -728,7 +728,7 @@ Tested with:
 
 ## Others
 
-Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform. This is still **experimental**, as there are no test and I can't guarantee it will work with your platform of choice.
+Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform. This is still _experimental_, as there are no test and I can't guarantee it will work with your platform of choice, but there's nothing that would indicate otherwise.
 
 > If you decide to try this package with a platform that is not listed here, **please let me know** so I can add the compatibility notice.
 
@@ -747,9 +747,27 @@ Contributing to a community project is always welcome, please see the [Contribut
 ## `v2.x` ➡️ `v3.x`
 
 -   The root registration method was _renamed_ from `register` (resp. `registerAsync`) to `forRoot` (resp. `forRootAsync`) to align with the convention.
--   Namespace injection support was dropped entirely, if you still have use case for it, you can still create a namespaced `ClsService` using
-    ```ts
-    const als = new AsyncLocalStorage();
-    const namespacedClsService = new ClsService(als);
+
+    ```diff
+    - ClsModule.register({
+    + ClsModule.forRoot({
+          middleware: { mount: true },
+      }),
     ```
-    and use a custom provider to inject it.
+
+-   Namespace injection support was dropped entirely, if you still have use case for it, you can still create a namespaced `ClsService` and use a custom provider to inject it.
+
+    ```ts
+    // for example:
+
+    class MyContextService extends ClsService<MyStore> {}
+    const myContextService = new MyContextService(new AsyncLocalStorage());
+
+    // [...]
+    providers: [
+        {
+            provide: MyContextService,
+            useValue: myContextService,
+        },
+    ];
+    ```
