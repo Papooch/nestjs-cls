@@ -5,3 +5,9 @@ tmp
 test
 dist/test
 gqlschema.gql
+tsconfig.tsbuildinfo
+**/*.spec.ts
+**/*.js.map
+.eslinrc.js
+.prettierrc
+nest-cli.json
