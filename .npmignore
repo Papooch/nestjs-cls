@@ -3,7 +3,7 @@
 node_modules
 tmp
 test
-./src
+src
 dist/test
 gqlschema.gql
 tsconfig.tsbuildinfo
