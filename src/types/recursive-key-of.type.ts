@@ -16,6 +16,16 @@ type TerminalType =
     | ((...args: any) => any);
 
 /**
+ * Evaluates to `true` if `T` is `any`. `false` otherwise.
+ * (c) https://stackoverflow.com/a/68633327/5290447
+ */
+type IsAny<T> = unknown extends T
+    ? [keyof T] extends [never]
+        ? false
+        : true
+    : false;
+
+/**
  * Deep nested keys of an interface with dot syntax
  *
  * @example
@@ -25,6 +35,8 @@ export type RecursiveKeyOf<
     T,
     Prefix extends string = never,
 > = T extends TerminalType
+    ? never
+    : IsAny<T> extends true
     ? never
     : {
           [K in keyof T & string]: [Prefix] extends [never]
