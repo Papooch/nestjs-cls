@@ -55,12 +55,13 @@ export type RecursiveKeyOf<
 export type DeepPropertyType<
     T,
     P extends RecursiveKeyOf<T>,
+    TT = Exclude<T, undefined>,
 > = P extends `${infer Prefix}.${infer Rest}`
-    ? Prefix extends keyof T
-        ? Rest extends RecursiveKeyOf<T[Prefix]>
-            ? DeepPropertyType<T[Prefix], Rest>
+    ? Prefix extends keyof TT
+        ? Rest extends RecursiveKeyOf<TT[Prefix]>
+            ? DeepPropertyType<TT[Prefix], Rest>
             : never
         : never
-    : P extends keyof T
-    ? T[P]
+    : P extends keyof TT
+    ? TT[P]
     : never;
