@@ -12,6 +12,7 @@ type TerminalType =
     | Set<any>
     | Date
     | RegExp
+    | AbortController
     | BrandedTerminal
     | ((...args: any) => any);
 
