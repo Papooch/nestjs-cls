@@ -29,7 +29,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
         const store = this.als.getStore();
         if (!store) {
             throw new Error(
-                `Cannot se the key "${String(
+                `Cannot set the key "${String(
                     key,
                 )}". No CLS context available, please make sure that a ClsMiddleware/Guard/Interceptor has set up the context, or wrap any calls that depend on CLS with "ClsService#run"`,
             );

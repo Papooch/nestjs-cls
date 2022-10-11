@@ -12,8 +12,19 @@ type TerminalType =
     | Set<any>
     | Date
     | RegExp
+    | AbortController
     | BrandedTerminal
     | ((...args: any) => any);
+
+/**
+ * Evaluates to `true` if `T` is `any`. `false` otherwise.
+ * (c) https://stackoverflow.com/a/68633327/5290447
+ */
+type IsAny<T> = unknown extends T
+    ? [keyof T] extends [never]
+        ? false
+        : true
+    : false;
 
 /**
  * Deep nested keys of an interface with dot syntax
@@ -25,6 +36,8 @@ export type RecursiveKeyOf<
     T,
     Prefix extends string = never,
 > = T extends TerminalType
+    ? never
+    : IsAny<T> extends true
     ? never
     : {
           [K in keyof T & string]: [Prefix] extends [never]
@@ -43,12 +56,13 @@ export type RecursiveKeyOf<
 export type DeepPropertyType<
     T,
     P extends RecursiveKeyOf<T>,
+    TT = Exclude<T, undefined>,
 > = P extends `${infer Prefix}.${infer Rest}`
-    ? Prefix extends keyof T
-        ? Rest extends RecursiveKeyOf<T[Prefix]>
-            ? DeepPropertyType<T[Prefix], Rest>
+    ? Prefix extends keyof TT
+        ? Rest extends RecursiveKeyOf<TT[Prefix]>
+            ? DeepPropertyType<TT[Prefix], Rest>
             : never
         : never
-    : P extends keyof T
-    ? T[P]
+    : P extends keyof TT
+    ? TT[P]
     : never;
