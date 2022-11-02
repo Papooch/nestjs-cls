@@ -35,7 +35,8 @@
         "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
         "test": "jest",
         "test:watch": "jest --watch",
-        "test:cov": "jest --coverage"
+        "test:cov": "jest --coverage",
+        "depcruise": "npx depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg > dependency-graph.svg"
     },
     "peerDependencies": {
         "@nestjs/common": "> 7.0.0 < 10",
@@ -59,6 +60,7 @@
         "@typescript-eslint/eslint-plugin": "^5.28.0",
         "@typescript-eslint/parser": "^5.28.0",
         "apollo-server-express": "^3.9.0",
+        "dependency-cruiser": "^11.18.0",
         "eslint": "^8.18.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.0.0",
