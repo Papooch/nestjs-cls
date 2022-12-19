@@ -8,6 +8,7 @@ dist/test
 gqlschema.gql
 tsconfig.tsbuildinfo
 **/*.spec.ts
+**/*.spec.js
 **/*.js.map
 .eslinrc.js
 .prettierrc
