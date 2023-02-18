@@ -169,7 +169,7 @@ export class AppModule implements NestModule {
 }
 ```
 
-Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares (**as is the case of GQL resolvers**). In that case, you can mount it directly in the bootstrap method:
+Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares that need to run prior to that. In that case, you can mount it directly in the bootstrap method:
 
 ```ts
 function bootstrap() {
@@ -750,11 +750,11 @@ The `ClsInterceptor` only uses the safe `run()` method.
 
 The table below outlines the compatibility with some platforms:
 
-|                                                              |                           REST                           |                               GQL                               |         WS         | Microservices |
-| :----------------------------------------------------------: | :------------------------------------------------------: | :-------------------------------------------------------------: | :----------------: | :-----------: |
-|                      **ClsMiddleware**                       |                            ✔                             | ✔<br>must be _mounted manually_<br>and use `useEnterWith: true` |         ✖          |       ✖       |
-|             **ClsGuard** <br>(uses `enterWith`)              |                            ✔                             |                                ✔                                | ✔[\*](#websockets) |       ✔       |
-| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |                                ✔                                | ✔[\*](#websockets) |       ✔       |
+|                                                              |                           REST                           | GQL |         WS         | Microservices |
+| :----------------------------------------------------------: | :------------------------------------------------------: | :-: | :----------------: | :-----------: |
+|                      **ClsMiddleware**                       |                            ✔                             |  ✔  |         ✖          |       ✖       |
+|             **ClsGuard** <br>(uses `enterWith`)              |                            ✔                             |  ✔  | ✔[\*](#websockets) |       ✔       |
+| **ClsInterceptor** <br>(context inaccessible<br>in _Guards_) | ✔<br>context also inaccessible<br>in _Exception Filters_ |  ✔  | ✔[\*](#websockets) |       ✔       |
 
 ## REST
 
@@ -767,7 +767,15 @@ Tested with:
 
 ## GraphQL
 
-For GraphQL, the `ClsMiddleware` needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers. Additionally, you have to pass `useEnterWith: true` to the `ClsMiddleware` options, because the context gets lost otherwise due to [an issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042) (sadly, the same is true for [Mercurius](https://github.com/Papooch/nestjs-cls/issues/1)). This method is functionally identical to just using the `ClsGuard`.
+### `@nestjs/graphql >= 10`,
+
+Since v10, this package is 100% compatible with GraphQL resolvers and the preferred way is to use the `ClsMiddleware` with the `mount` option.
+
+Using an interceptor or a guard may result in that enhancer triggering multiple times in case of nested resolvers, which may mess with ID generation.
+
+### `@nestjs/graphql < 10`
+
+For older versions of graphql, the `ClsMiddleware` needs to be [mounted manually](#manually-mounting-the-middleware) with `app.use(...)` in order to correctly set up the context for resolvers. Additionally, you have to pass `useEnterWith: true` to the `ClsMiddleware` options, because the context gets lost otherwise due to [an issue with CLS and Apollo](https://github.com/apollographql/apollo-server/issues/2042) (sadly, the same is true for [Mercurius](https://github.com/Papooch/nestjs-cls/issues/1)). This method is functionally identical to just using the `ClsGuard`.
 
 Alternatively, you can use the `ClsInterceptor`, which uses the safer `AsyncLocalStorage#run` (thanks to [andreialecu](https://github.com/Papooch/nestjs-cls/issues/5)), but remember that using it makes CLS unavailable in _Guards_.
 
@@ -778,11 +786,11 @@ Tested with:
 
 ## Others
 
-Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform. This is still _experimental_, as there are no test and I can't guarantee it will work with your platform of choice, but there's nothing that would indicate otherwise.
+Use the `ClsGuard` or `ClsInterceptor` to set up context with any other platform.There are no explicit test for other transports, so I can't guarantee it will work with your platform of choice, but there's nothing that would indicate otherwise.
 
 > If you decide to try this package with a platform that is not listed here, **please let me know** so I can add the compatibility notice.
 
-Below are listed platforms with which it is confirmed to work.
+Below are listed platforms with which it is confirmed to work:
 
 ### Websockets
 

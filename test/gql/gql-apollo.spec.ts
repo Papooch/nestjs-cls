@@ -7,10 +7,13 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 
 let app: INestApplication;
-describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
+describe('GQL Apollo App - Auto bound Middleware', () => {
     @Module({
         imports: [
-            ClsModule.forRoot({ global: true }),
+            ClsModule.forRoot({
+                global: true,
+                middleware: { mount: true, generateId: true },
+            }),
             ItemModule,
             GraphQLModule.forRoot({
                 driver: ApolloDriver,
@@ -25,9 +28,6 @@ describe('GQL Apollo App - Manually bound Middleware in Bootstrap', () => {
             imports: [AppModule],
         }).compile();
         app = moduleFixture.createNestApplication();
-        app.use(
-            new ClsMiddleware({ useEnterWith: true, generateId: true }).use,
-        );
         await app.init();
     });
 

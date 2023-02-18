@@ -11,10 +11,13 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver } from '@nestjs/mercurius';
 
 let app: NestFastifyApplication;
-describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
+describe('GQL Mercurius App - Auto bound Middleware', () => {
     @Module({
         imports: [
-            ClsModule.forRoot({ global: true }),
+            ClsModule.forRoot({
+                global: true,
+                middleware: { mount: true, generateId: true },
+            }),
             ItemModule,
             GraphQLModule.forRoot({
                 driver: MercuriusDriver,
@@ -29,9 +32,6 @@ describe('GQL Mercurius App - Manually bound Middleware in Bootstrap', () => {
             AppModule,
             new FastifyAdapter(),
             { logger: false },
-        );
-        app.use(
-            new ClsMiddleware({ generateId: true, useEnterWith: true }).use,
         );
         await app.init();
         await app.getHttpAdapter().getInstance().ready();
