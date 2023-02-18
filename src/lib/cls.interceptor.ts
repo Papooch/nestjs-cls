@@ -8,7 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { ClsServiceManager } from './cls-service-manager';
 import { CLS_ID, CLS_INTERCEPTOR_OPTIONS } from './cls.constants';
-import { ClsInterceptorOptions } from './cls.interfaces';
+import { ClsInterceptorOptions } from './cls.options';
 
 @Injectable()
 export class ClsInterceptor implements NestInterceptor {
@@ -33,7 +33,8 @@ export class ClsInterceptor implements NestInterceptor {
                     await this.options.setup(cls, context);
                 }
                 try {
-                    await ClsServiceManager.resolveProxyProviders();
+                    if (this.options.resolveProxyProviders)
+                        await cls.resolveProxyProviders();
                     next.handle()
                         .pipe()
                         .subscribe({

@@ -33,7 +33,7 @@ import {
     ClsMiddlewareOptions,
     ClsModuleAsyncOptions,
     ClsModuleOptions,
-} from './cls.interfaces';
+} from './cls.options';
 import { ClsMiddleware } from './cls.middleware';
 import { ClsService } from './cls.service';
 import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';

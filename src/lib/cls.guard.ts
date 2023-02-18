@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ClsServiceManager } from './cls-service-manager';
 import { CLS_GUARD_OPTIONS, CLS_ID } from './cls.constants';
-import { ClsGuardOptions } from './cls.interfaces';
+import { ClsGuardOptions } from './cls.options';
 
 @Injectable()
 export class ClsGuard implements CanActivate {
@@ -30,7 +30,8 @@ export class ClsGuard implements CanActivate {
             if (this.options.setup) {
                 await this.options.setup(cls, context);
             }
-            await ClsServiceManager.resolveProxyProviders();
+            if (this.options.resolveProxyProviders)
+                await cls.resolveProxyProviders();
             return true;
         });
     }

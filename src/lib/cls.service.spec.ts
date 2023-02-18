@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Terminal } from '../types/terminal.type';
 import { ClsServiceManager } from './cls-service-manager';
 import { CLS_ID } from './cls.constants';
-import { ClsStore } from './cls.interfaces';
+import { ClsStore } from './cls.options';
 import { ClsService } from './cls.service';
 
 describe('ClsService', () => {

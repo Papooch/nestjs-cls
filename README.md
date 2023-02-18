@@ -19,17 +19,7 @@ Some common use cases that this library enables include:
 
 Most of these are to some extent solvable using _REQUEST-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
 
-## The author's take:
-
-_NestJS is an amazing framework, but in the plethora of awesome built-in features, I still missed one_.
-
-_I created this library to solve a specific use case, which was limiting access to only to records which had the same TenantId as the request's user in a central manner. The repository code automatically added a `WHERE` clause to each query, which made sure that other developers couldn't accidentally mix tenant data (all tenants' data were held in the same database) without extra effort._
-
-_`AsyncLocalStorage` is still fairly new and not many people know of its existence and benefits. Here's a nice [talk from NodeConf](https://youtu.be/R2RMGQhWyCk?t=9742) about the history. I've invested a great deal of my personal time in making the use of it as pleasant as possible._
-
-_While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want fast, use a compiled language._
-
-_Also if you use some tracing library, chances are it already makes use of `async_hooks` under the hood, so you might as well use it to your advantage._
+You might also be interested in [The Author's Take](#the-authors-take) on the topic.
 
 > (\*) The name comes from the original implementation based on `cls-hooked`, which was since replaced by the native `AsyncLocalStorage`.
 
@@ -59,6 +49,7 @@ _Also if you use some tracing library, chances are it already makes use of `asyn
     -   [REST](#rest)
     -   [GraphQL](#graphql)
     -   [Others](#others)
+-   [The Author's Take](#the-authors-take)
 -   [Contributing](#contributing)
 -   [Migration guide](#migration-guide)
 
@@ -365,8 +356,6 @@ export class CronController {
 }
 ```
 
-If you find that using `ClsService#run` causes the context to be lost, you can resort to the less safe `ClsService#enter`.
-
 ---
 
 ## Breaking out of DI
@@ -604,15 +593,13 @@ class DogsService {
 
 > **Please note**: Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory provides a function).
 
-### Proxy Providers outside of web request context
+### Delayed resolution of Proxy Providers
 
-For the time being ([until the this feature is implemented](https://github.com/Papooch/nestjs-cls/issues/19)), if you want to access Proxy Providers [outside the context of web request](#usage-outside-of-web-request), you need to make sure you call
+By default, proxy providers are resolved as soon as the `setup` function in an enhancer (middleware/guard/interceptor) finishes. For some use cases, it might be required that the resolution is delayed until some later point in the request lifecycle once more information is present in the CLS .
 
-```ts
-await ClsServiceManager.resolveProxyProviders();
-```
+To achieve that, set `resolveProxyProviders` to `false` in the enhancer options and call `ClsService#resolveProxyProviders()` manually at any time.
 
-once you set up the context with `cls.run()`, to actually _instantiate_ the Proxy Providers and store them in the CLS context. Otherwise all access to an injected Proxy Providers will return `undefined`.
+This is also necessary if you want to access Proxy Providers [outside the context of web request](#usage-outside-of-web-request) once you set up the context with `cls.run()`, to actually _instantiate_ the Proxy Providers and store them in the CLS context. Otherwise all access to an injected Proxy Provider will return `undefined`.
 
 # API
 
@@ -643,8 +630,12 @@ The injectable `ClsService` provides the following API to manipulate the cls con
 
 -   **_`runWith`_**`(store: any, callback: () => T): T;`  
     Run the callback in a shared CLS context (while supplying the default contents).
+
 -   **_`isActive`_**`(): boolean`  
     Whether the current code runs within an active CLS context.
+
+-   **_`resolveProxyProviders`_**`(): Promise<boolean>`  
+     Manually trigger resolution of Proxy Providers
 
 ---
 
@@ -719,6 +710,9 @@ All of the **`Cls{Middleware,Guard,Interceptor}Options`** take the following par
     **_`setup?:`_ `(cls: ClsService, ctx: ExecutionContext) => void | Promise<void>;`**  
     Function that executes after the CLS context had been initialised. It can be used to put additional variables in the CLS context.
 
+-   **_`resolveProxyProviders?:`_ `boolean`** (default _`true`_)  
+    Whether to automatically resolve Proxy Providers in the enhancer (if any are registered).
+
 The `ClsMiddlewareOptions` additionally takes the following parameters:
 
 -   **_`saveReq?:`_ `boolean`** (default _`true`_)  
@@ -787,6 +781,18 @@ Below are listed platforms with which it is confirmed to work.
 ### Websockets
 
 _Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsInterceptor` manually on the `WebsocketGateway`. Special care is also needed for the `handleConnection` method (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
+
+# The author's take:
+
+_NestJS is an amazing framework, but in the plethora of awesome built-in features, I still missed one_.
+
+_I created this library to solve a specific use case, which was limiting access to only those records which had the same TenantId as the request's user in a central manner. The repository code automatically added a `WHERE` clause to each query, which made sure that other developers couldn't accidentally mix tenant data (all tenants' data were held in the same database) without extra effort._
+
+_`AsyncLocalStorage` is still fairly new and not many people know of its existence and benefits. Here's a nice [talk from NodeConf](https://youtu.be/R2RMGQhWyCk?t=9742) about the history. I've invested a great deal of my personal time in making the use of it as pleasant as possible._
+
+_While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want fast, use a compiled language._
+
+_Also, if you use some tracing library (like `otel`), it most likely already uses `async_hooks` under the hood, so you might as well use it to your advantage._
 
 # Contributing
 

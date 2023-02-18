@@ -1,7 +1,7 @@
 import { FactoryProvider, Type, ValueProvider } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
-import { globalClsSevice } from '../cls-service.globals';
+import { globalClsService } from '../cls-service.globals';
 import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
     ProxyProviderNotDecoratedException,
@@ -21,7 +21,7 @@ import {
 } from './proxy-provider.interfaces';
 
 export class ProxyProviderManager {
-    private static clsService = globalClsSevice;
+    private static clsService = globalClsService;
     private static proxyProviderMap = new Map<symbol, ProxyProvider>();
 
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
@@ -121,10 +121,14 @@ export class ProxyProviderManager {
         const promises = [...this.proxyProviderMap.keys()].map(
             (providerSymbol) => this.resolveProxyProvider(providerSymbol),
         );
-        return await Promise.all(promises);
+        await Promise.all(promises);
     }
 
     private static async resolveProxyProvider(providerSymbol: symbol) {
+        if (this.clsService.get(providerSymbol)) {
+            // skip resolution if the provider already exists in the CLS
+            return;
+        }
         const provider = this.proxyProviderMap.get(
             providerSymbol,
         ) as ProxyProvider;

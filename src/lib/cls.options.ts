@@ -1,5 +1,7 @@
 import { ExecutionContext, ModuleMetadata, Type } from '@nestjs/common';
-import { ClsService } from './cls.service';
+import type { ClsService } from './cls.service';
+
+const getRandomString = () => Math.random().toString(36).slice(-8);
 
 export class ClsModuleOptions {
     /**
@@ -64,14 +66,21 @@ export class ClsMiddlewareOptions {
     /**
      * the function to generate request ids inside the middleware
      */
-    idGenerator?: (req: any) => string | Promise<string> = () =>
-        Math.random().toString(36).slice(-8);
+    idGenerator?: (req: any) => string | Promise<string> = getRandomString;
 
     /**
      * Function that executes after the CLS context has been initialised.
      * It can be used to put additional variables in the CLS context.
      */
     setup?: (cls: ClsService, req: any) => void | Promise<void>;
+
+    /**
+     * Whether to resolve proxy providers as a part
+     * of the CLS context registration
+     *
+     * Default: `true`
+     */
+    resolveProxyProviders? = true;
 
     /**
      * Whether to store the Request object to the CLS
@@ -111,7 +120,7 @@ export class ClsGuardOptions {
      * the function to generate request ids inside the guard
      */
     idGenerator?: (context: ExecutionContext) => string | Promise<string> =
-        () => Math.random().toString(36).slice(-8);
+        getRandomString;
 
     /**
      * Function that executes after the CLS context has been initialised.
@@ -121,6 +130,14 @@ export class ClsGuardOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
+
+    /**
+     * Whether to resolve proxy providers as a part
+     * of the CLS context registration
+     *
+     * Default: `true`
+     */
+    resolveProxyProviders? = true;
 }
 
 export class ClsInterceptorOptions {
@@ -138,7 +155,7 @@ export class ClsInterceptorOptions {
      * the function to generate request ids inside the interceptor
      */
     idGenerator?: (context: ExecutionContext) => string | Promise<string> =
-        () => Math.random().toString(36).slice(-8);
+        getRandomString;
 
     /**
      * Function that executes after the CLS context has been initialised.
@@ -148,6 +165,28 @@ export class ClsInterceptorOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
+
+    /**
+     * Whether to resolve proxy providers as a part
+     * of the CLS context registration
+     *
+     * Default: `true`
+     */
+    resolveProxyProviders? = true;
+}
+
+export class ClsDecoratorOptions<T extends any[]> {
+    generateId?: boolean; // default false
+    idGenerator?: (...args: T) => string | Promise<string> = getRandomString;
+    setup?: (cls: ClsService, ...args: T) => void | Promise<void>;
+
+    /**
+     * Whether to resolve proxy providers as a part
+     * of the CLS context registration
+     *
+     * Default: `false`
+     */
+    resolveProxyProviders? = false;
 }
 
 export interface ClsStore {

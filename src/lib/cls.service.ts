@@ -10,7 +10,7 @@ import {
 } from '../types/type-if-type.type';
 import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
-import { ClsStore } from './cls.interfaces';
+import type { ClsStore } from './cls.options';
 
 export class ClsService<S extends ClsStore = ClsStore> {
     constructor(private readonly als: AsyncLocalStorage<any>) {}
@@ -141,5 +141,18 @@ export class ClsService<S extends ClsStore = ClsStore> {
      */
     isActive() {
         return !!this.als.getStore();
+    }
+
+    /**
+     * Use to manually trigger resolution of Proxy Providers
+     * in case `resolveProxyProviders` is not enabled in the enhancer.
+     */
+    async resolveProxyProviders() {
+        // Workaround for a circular dep
+        // TODO: This should be untangled and cleaned up
+        const { ProxyProviderManager } = await import(
+            './proxy-provider/proxy-provider-manager'
+        );
+        await ProxyProviderManager.resolveProxyProviders();
     }
 }

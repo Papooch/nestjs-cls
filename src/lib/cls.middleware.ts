@@ -6,7 +6,7 @@ import {
     CLS_REQ,
     CLS_RES,
 } from './cls.constants';
-import { ClsMiddlewareOptions } from './cls.interfaces';
+import { ClsMiddlewareOptions } from './cls.options';
 import { ClsService } from './cls.service';
 
 @Injectable()
@@ -23,18 +23,19 @@ export class ClsMiddleware implements NestMiddleware {
     use = async (req: any, res: any, next: (err?: any) => any) => {
         const cls = ClsServiceManager.getClsService();
         const callback = async () => {
-            this.options.useEnterWith && cls.enter();
-            if (this.options.generateId) {
-                const id = await this.options.idGenerator?.(req);
-                cls.set<any>(CLS_ID, id);
-            }
-            if (this.options.saveReq) cls.set<any>(CLS_REQ, req);
-            if (this.options.saveRes) cls.set<any>(CLS_RES, res);
-            if (this.options.setup) {
-                await this.options.setup(cls, req);
-            }
             try {
-                await ClsServiceManager.resolveProxyProviders();
+                this.options.useEnterWith && cls.enter();
+                if (this.options.generateId) {
+                    const id = await this.options.idGenerator?.(req);
+                    cls.set<any>(CLS_ID, id);
+                }
+                if (this.options.saveReq) cls.set<any>(CLS_REQ, req);
+                if (this.options.saveRes) cls.set<any>(CLS_RES, res);
+                if (this.options.setup) {
+                    await this.options.setup(cls, req);
+                }
+                if (this.options.resolveProxyProviders)
+                    await cls.resolveProxyProviders();
                 next();
             } catch (e) {
                 next(e);

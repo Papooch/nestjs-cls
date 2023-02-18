@@ -1,10 +1,10 @@
-import { globalClsSevice } from './cls-service.globals';
-import { ClsStore } from './cls.interfaces';
+import { globalClsService } from './cls-service.globals';
+import { ClsStore } from './cls.options';
 import { ClsService } from './cls.service';
 import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
 
 export class ClsServiceManager {
-    private static clsService = globalClsSevice;
+    private static clsService = globalClsService;
 
     /**
      * Retrieve a ClsService outside of Nest's DI.
@@ -15,6 +15,9 @@ export class ClsServiceManager {
         return cls;
     }
 
+    /**
+     * @deprecated use `resolveProxyProviders` on the `ClsService` instance
+     */
     static async resolveProxyProviders() {
         return await ProxyProviderManager.resolveProxyProviders();
     }
