@@ -169,6 +169,48 @@ describe('ClsService', () => {
         });
     });
 
+    describe('nested contexts', () => {
+        it('creates empty context with the "override" option', () => {
+            service.run(() => {
+                service.set('key', 'value');
+                service.run({ nested: 'override' }, () => {
+                    expect(service.get('key')).toEqual(undefined);
+                });
+                expect(service.get('key')).toEqual('value');
+            });
+        });
+
+        it('creates inherits a copy of context with the "inherit" option', () => {
+            service.run(() => {
+                service.set('key', 'value');
+                service.run({ nested: 'inherit' }, () => {
+                    expect(service.get('key')).toEqual('value');
+                    service.set('key', 'value2');
+                });
+                expect(service.get('key')).toEqual('value');
+            });
+        });
+
+        it('reuses existing context with the "reuse" option', () => {
+            service.run(() => {
+                service.set('key', 'value');
+                service.run({ nested: 'reuse' }, () => {
+                    expect(service.get('key')).toEqual('value');
+                    service.set('key', 'value2');
+                });
+                expect(service.get('key')).toEqual('value2');
+            });
+        });
+
+        it('has no effect if no parent context exists', () => {
+            service.run({ nested: 'reuse' }, () => {
+                service.set('key', 'value');
+                expect(service.get('key')).toEqual('value');
+            });
+            expect(service.get('key')).toEqual(undefined);
+        });
+    });
+
     describe('typing', () => {
         interface IStore extends ClsStore {
             a: string;

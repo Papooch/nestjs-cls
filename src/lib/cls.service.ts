@@ -12,11 +12,26 @@ import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
 import type { ClsStore } from './cls.options';
 
+export class ClsRunOptions {
+    /**
+     * Sets the behavior of nested CLS context creation. Has no effect if no parent context exists.
+     *
+     * `override` (default) - Run the callback with an new empty context.
+     * No values from the parent context will be accessible.
+     *
+     * `inherit` - Run the callback with a shallow copy of the parent context.
+     * Assignments to top-level properties will not be reflected in the parent context.
+     *
+     * `reuse` - Reuse existing context without creating a new one.
+     */
+    nested?: 'override' | 'inherit' | 'reuse' = 'override';
+}
+
 export class ClsService<S extends ClsStore = ClsStore> {
     constructor(private readonly als: AsyncLocalStorage<any>) {}
 
     /**
-     * Set a value on the CLS context.
+     * Set (or overrides) a value on the CLS context.
      * @param key the key
      * @param value the value to set
      */
@@ -94,15 +109,34 @@ export class ClsService<S extends ClsStore = ClsStore> {
 
     /**
      * Run the callback with a shared CLS context.
-     * @param callback function to run
      * @returns whatever the callback returns
      */
-    run<T = any>(callback: () => T) {
-        return this.als.run({}, callback);
+    run<T = any>(callback: () => T): T;
+    run<T = any>(options: ClsRunOptions, callback: () => T): T;
+    run(optionsOrCallback: any, maybeCallback?: any) {
+        let options: ClsRunOptions;
+        let callback: () => any;
+        if (typeof optionsOrCallback === 'object') {
+            options = optionsOrCallback;
+            callback = maybeCallback;
+        } else {
+            options = { ...new ClsRunOptions(), ...optionsOrCallback };
+            callback = optionsOrCallback;
+        }
+        if (!this.isActive()) return this.runWith({} as S, callback);
+        switch (options.nested) {
+            case 'override':
+                return this.runWith({} as S, callback);
+            case 'inherit':
+                return this.runWith({ ...this.get() }, callback);
+            case 'reuse':
+                return callback();
+        }
     }
 
     /**
-     * Run the callbacks with a shared CLS context.
+     * Run the callbacks with a new CLS context.
+     *
      * @param store the default context contents
      * @param callback function to run
      * @returns whatever the callback returns
