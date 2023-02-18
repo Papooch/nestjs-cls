@@ -78,9 +78,9 @@ export class ClsService<S extends ClsStore = ClsStore> {
     has(key: string | symbol): boolean {
         const store = this.als.getStore();
         if (typeof key === 'symbol') {
-            return !!store[key];
+            return store[key] !== undefined;
         }
-        return !!getValueFromPath(store as S, key as any);
+        return getValueFromPath(store as S, key as any) !== undefined;
     }
 
     /**
