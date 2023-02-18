@@ -103,6 +103,14 @@ describe('ClsService', () => {
                 expect(service.has('b')).toEqual(false);
             });
         });
+
+        it('checks key presence if falsy (string key)', () => {
+            service.run(() => {
+                service.set('c', false);
+                expect(service.has('c')).toEqual(true);
+            });
+        });
+
         it('checks key presence (symbol key)', () => {
             const sym = Symbol('sym');
             service.run(() => {
@@ -114,6 +122,14 @@ describe('ClsService', () => {
             const sym = Symbol('sym');
             service.run(() => {
                 expect(service.has(sym)).toEqual(false);
+            });
+        });
+
+        it('checks key presence if falsy (symbol key)', () => {
+            const sym = Symbol('sym');
+            service.run(() => {
+                service.set(sym, '');
+                expect(service.has(sym)).toEqual(true);
             });
         });
     });
