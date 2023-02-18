@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { ClsServiceManager } from './cls-service-manager';
-import { CLS_ID } from './cls.constants';
-import { ClsDecoratorOptions } from './cls.options';
+import { ClsServiceManager } from '../cls-service-manager';
+import { CLS_ID } from '../cls.constants';
+import { ClsDecoratorOptions } from '../cls.options';
 
 /**
  * Wraps the decorated method in a CLS context.

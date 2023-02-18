@@ -36,7 +36,7 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
-        "depcruise": "npx depcruise src --include-only \"^src\" --config --output-type dot | dot -T svg | npx depcruise-wrap-stream-in-html > dependency-graph.html"
+        "depcruise": "npx depcruise src --include-only \"^src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | npx depcruise-wrap-stream-in-html > dependency-graph.html"
     },
     "peerDependencies": {
         "@nestjs/common": "> 7.0.0 < 10",

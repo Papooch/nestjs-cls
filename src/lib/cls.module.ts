@@ -25,8 +25,8 @@ import {
     CLS_REQ,
     CLS_RES,
 } from './cls.constants';
-import { ClsGuard } from './cls.guard';
-import { ClsInterceptor } from './cls.interceptor';
+import { ClsGuard } from './cls-initializers/cls.guard';
+import { ClsInterceptor } from './cls-initializers/cls.interceptor';
 import {
     ClsGuardOptions,
     ClsInterceptorOptions,
@@ -34,7 +34,7 @@ import {
     ClsModuleAsyncOptions,
     ClsModuleOptions,
 } from './cls.options';
-import { ClsMiddleware } from './cls.middleware';
+import { ClsMiddleware } from './cls-initializers/cls.middleware';
 import { ClsService } from './cls.service';
 import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
 import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';

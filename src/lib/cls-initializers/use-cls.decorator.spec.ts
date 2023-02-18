@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { CLS_ID } from './cls.constants';
-import { ClsModule } from './cls.module';
-import { ClsService } from './cls.service';
+import { CLS_ID } from '../cls.constants';
+import { ClsModule } from '../cls.module';
+import { ClsService } from '../cls.service';
 import { UseCls } from './use-cls.decorator';
 
 @Injectable()

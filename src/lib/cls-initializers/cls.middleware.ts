@@ -1,13 +1,13 @@
 import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
-import { ClsServiceManager } from './cls-service-manager';
+import { ClsServiceManager } from '../cls-service-manager';
 import {
     CLS_ID,
     CLS_MIDDLEWARE_OPTIONS,
     CLS_REQ,
     CLS_RES,
-} from './cls.constants';
-import { ClsMiddlewareOptions } from './cls.options';
-import { ClsService } from './cls.service';
+} from '../cls.constants';
+import { ClsMiddlewareOptions } from '../cls.options';
+import { ClsService } from '../cls.service';
 
 @Injectable()
 export class ClsMiddleware implements NestMiddleware {
