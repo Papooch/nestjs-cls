@@ -7,4 +7,5 @@ export * from './lib/cls.module';
 export * from './lib/cls.service';
 export * from './lib/cls.decorators';
 export * from './lib/cls.options';
+export * from './lib/use-cls.decorator';
 export { Terminal } from './types/terminal.type';
