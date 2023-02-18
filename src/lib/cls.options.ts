@@ -176,8 +176,28 @@ export class ClsInterceptorOptions {
 }
 
 export class ClsDecoratorOptions<T extends any[]> {
+    /**
+     * Whether to automatically generate request ids
+     */
     generateId?: boolean; // default false
+
+    /**
+     * The function to generate request ids inside the interceptor.
+     *
+     * Takes the same parameters in the same order as the decorated function.
+     *
+     * Note: To avoid type errors, you must list all parameters, even if they're not used,
+     * or type the decorator as `@UseCls<[arg1: Type1, arg2: Type2]>()`
+     */
     idGenerator?: (...args: T) => string | Promise<string> = getRandomString;
+
+    /**
+     * Function that executes after the CLS context has been initialised.
+     * Takes ClsService as the first parameter and then the same parameters in the same order as the decorated function.
+     *
+     * Note: To avoid type errors, you must list all parameters, even if they're not used,
+     * or type the decorator as `@UseCls<[arg1: Type1, arg2: Type2]>()`
+     */
     setup?: (cls: ClsService, ...args: T) => void | Promise<void>;
 
     /**

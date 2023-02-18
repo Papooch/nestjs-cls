@@ -10,7 +10,7 @@ export function InjectCls() {
 }
 
 /**
- * Mark a Proxy provider with this decorator to distinguis it from regular NestJS singleton providers
+ * Mark a Proxy provider with this decorator to distinguish it from regular NestJS singleton providers
  */
 export function InjectableProxy() {
     return (target: any) =>

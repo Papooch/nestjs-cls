@@ -32,6 +32,7 @@ You might also be interested in [The Author's Take](#the-authors-take) on the to
     -   [Using a Middleware](#using-a-middleware-http-only)
     -   [Using a Guard](#using-a-guard)
     -   [Using an Interceptor](#using-an-interceptor)
+    -   [Using an Decorator](#using-a-decorator)
 -   [Features and use cases](#features-and-use-cases)
     -   [Request ID](#request-id)
     -   [Additional CLS Setup](#additional-cls-setup)
@@ -244,6 +245,12 @@ Or mount it manually as `APP_INTERCEPTOR`, or directly on the Controller/Resolve
 
 > **Please note**: Since Nest's _Interceptors_ run after _Guards_, that means using this method makes CLS **unavailable in Guards** (and in case of REST Controllers, also in **Exception Filters**).
 
+## Using a Decorator
+
+The `@UseCls()` decorator can be used at a method level to declaratively wrap the method with a `cls.run()` call. This method should only be used [outside of the context of a web request](#usage-outside-of-web-request).
+
+> Note: Please keep in mind, that since the CLS context initialization _can_ be async, the `@UseCls()` decorator can _only_ be used on _async_ function (or those that return a `Promise`).
+
 # Features and use cases
 
 In addition to the basic functionality described in the [Quick start](#quick-start) chapter, this module provides several other features.
@@ -321,7 +328,7 @@ ClsModule.forRoot({
 
 Sometimes, a part of the app that relies on the CLS storage might need to be called outside of the context of a web request - for example, in a Cron job, while consuming a Queue or during the application bootstrap. In such cases, there are no enhancers that can be bound to the handler to set up the context.
 
-Therefore, you as the the developer are responsible for wrapping the execution with `ClsService#run` and set up the appropriate context variables.
+Therefore, you as the the developer are responsible for wrapping the execution with `ClsService#run`, or using the `@UseCls` decorator. In any case, if any following code depends on some context variables, these need to be set up manually.
 
 ```ts
 @Injectable()
@@ -332,26 +339,25 @@ export class CronController {
     );
 
     @Cron('45 * * * * *')
-    handleCronExample1() {
-        this.clsService.run(() => {
-            // either set up all context variables inside the wrapped `run` call
-            this.cls.set(CLS_ID, uuid());
+    async handleCronExample1() {
+        // either explicitly wrap the function body with
+        // a call to `ClsService#run` ...
+        await this.cls.run(async () => {
             this.cls.set('mode', 'cron');
-            this.someService.doTheThing();
+            await this.someService.doTheThing();
         });
     }
 
     @Cron('90 * * * * *')
-    handleCronExample2() {
-        // or create the context object beforehand...
-        const context = {
-            [CLS_ID]: uuid(),
-            mode: 'cron',
-        };
-        // ...and pass it to the `runWith` call
-        this.clsService.runWith(context, () => {
-            this.someService.doTheThing();
-        });
+    // ... or use the convenience decorator which
+    // does the wrapping for you seamlessly.
+    @UseCls({
+        setup: (cls) => {
+            cls.set('mode', 'cron');
+        },
+    })
+    async handleCronExample2() {
+        await this.someService.doTheThing();
     }
 }
 ```
