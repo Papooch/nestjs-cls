@@ -57,6 +57,23 @@ export class ClsService<S extends ClsStore = ClsStore> {
     }
 
     /**
+     * Set a value on the CLS context if it doesn't already exist
+     * @param key the key
+     * @param value the value to set
+     * @returns `true` if value vas set, `false` if it existed before
+     */
+    setIfUndefined<
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        R = undefined,
+        T extends RecursiveKeyOf<S> = any,
+        P extends DeepPropertyType<S, T> = any,
+    >(key: StringIfNever<T> | keyof ClsStore, value: AnyIfNever<P>): boolean {
+        if (this.has(key)) return false;
+        this.set(key, value);
+        return true;
+    }
+
+    /**
      * Retrieve the whole CLS context
      * @returns the value stored under the key or undefined
      */

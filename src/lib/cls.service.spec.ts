@@ -40,7 +40,7 @@ describe('ClsService', () => {
             });
         });
 
-        it('does not retireve context in a different call (run)', () => {
+        it('does not retrieve context in a different call (run)', () => {
             service.run(() => {
                 service.set('key', 123);
             });
@@ -48,7 +48,7 @@ describe('ClsService', () => {
                 expect(service.get('key')).not.toEqual(123);
             });
         });
-        it('does not retireve context in a different call (enter)', () => {
+        it('does not retrieve context in a different call (enter)', () => {
             const runMe = (cb: () => void) => cb();
             runMe(() => {
                 service.enter();
@@ -87,6 +87,17 @@ describe('ClsService', () => {
             service.run(() => {
                 service.set(CLS_ID, 123);
                 expect(service.getId()).toEqual(123);
+            });
+        });
+
+        it('does not override value with setIfUndefined', () => {
+            service.run(() => {
+                const res1 = service.setIfUndefined('a', 1);
+                expect(res1).toBe(true);
+                expect(service.get('a')).toEqual(1);
+                const res2 = service.setIfUndefined('a', 2);
+                expect(res2).toBe(false);
+                expect(service.get('a')).toEqual(1);
             });
         });
     });
