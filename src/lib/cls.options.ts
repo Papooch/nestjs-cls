@@ -8,7 +8,7 @@ export class ClsModuleOptions {
      * whether to make the module global, so you don't need
      * to import ClsModule.forFeature()` in other modules
      */
-    global? = false;
+    global?= false;
 
     /**
      * An object with additional options for the `ClsMiddleware`
@@ -72,7 +72,7 @@ export class ClsMiddlewareOptions {
      * Function that executes after the CLS context has been initialised.
      * It can be used to put additional variables in the CLS context.
      */
-    setup?: (cls: ClsService, req: any) => void | Promise<void>;
+    setup?: (cls: ClsService, req: any, res: any) => void | Promise<void>;
 
     /**
      * Whether to resolve proxy providers as a part
@@ -80,19 +80,19 @@ export class ClsMiddlewareOptions {
      *
      * Default: `true`
      */
-    resolveProxyProviders? = true;
+    resolveProxyProviders?= true;
 
     /**
      * Whether to store the Request object to the CLS
      * It will be available under the CLS_REQ key
      */
-    saveReq? = true;
+    saveReq?= true;
 
     /**
      * Whether to store the Response object to the CLS
      * It will be available under the CLS_RES key
      */
-    saveRes? = false;
+    saveRes?= false;
 
     /**
      * Set to true to set up the context using a call to
@@ -102,7 +102,7 @@ export class ClsMiddlewareOptions {
      * Most of the time this should not be necessary, but
      * some frameworks are known to lose the context wih `run`.
      */
-    useEnterWith? = false;
+    useEnterWith?= false;
 }
 
 export class ClsGuardOptions {
@@ -137,7 +137,7 @@ export class ClsGuardOptions {
      *
      * Default: `true`
      */
-    resolveProxyProviders? = true;
+    resolveProxyProviders?= true;
 }
 
 export class ClsInterceptorOptions {
@@ -172,7 +172,7 @@ export class ClsInterceptorOptions {
      *
      * Default: `true`
      */
-    resolveProxyProviders? = true;
+    resolveProxyProviders?= true;
 }
 
 export class ClsDecoratorOptions<T extends any[]> {
@@ -206,7 +206,7 @@ export class ClsDecoratorOptions<T extends any[]> {
      *
      * Default: `false`
      */
-    resolveProxyProviders? = false;
+    resolveProxyProviders?= false;
 }
 
 export interface ClsStore {
