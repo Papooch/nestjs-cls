@@ -307,13 +307,13 @@ class MyService {
 
 The CLS middleware/guard/interceptor provide some default functionality, but sometimes you might want to store more things about the request in the context. This can be of course done in a custom enhancer bound after, but for this scenario the options expose the `setup` function, which will be executed in the enhancer right after the CLS context is set up.
 
-The function receives the `ClsService` instance and the `Request` (or `ExecutionContext`) object, and can be asynchronous.
+The function receives the `ClsService` instance, the `Request` and `Response` objects (or the `ExecutionContext` object) , and can be asynchronous.
 
 ```ts
 ClsModule.forRoot({
     middleware: {
         mount: true,
-        setup: (cls, req: Request) => {
+        setup: (cls, req: Request, res: Response) => {
             // put some additional default info in the CLS
             cls.set('TENANT_ID', req.params('tenant_id'));
             cls.set('AUTH', { authenticated: false });
