@@ -34,9 +34,8 @@ jobs:
           git config --local user.email 'github-action[bot]@github.com'
 
       - run: npm ci --audit=false
-      - run: npm run build
-
       - run: npm version ${{ inputs.version }}
+      - run: npm run build
 
       - name: Push to git
         run: |
@@ -46,7 +45,9 @@ jobs:
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "v$(npm -s run env echo '$npm_package_version')"
+        run: |
+          export CURRENT_VERSION=v$(npm pkg get version | tr -d '"')
+          gh release create $CURRENT_VERSION --generate-notes
 
       - run: npm publish
         env:
