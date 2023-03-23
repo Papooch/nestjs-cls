@@ -47,4 +47,4 @@ jobs:
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "v${{ inputs.version }}"
+        run: gh release create "v$(npm -s run env echo '$npm_package_version')"
