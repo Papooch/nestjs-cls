@@ -1,0 +1,53 @@
+name: Publish to NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version string passed to "npm version". Either `patch`, `minor`, `major` or a semver like `1.2.3`
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  cancel-in-progress: true
+  group: publish-${{ github.ref }}
+
+jobs:
+  publish_to_npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - name: Configure git
+        run: |
+          git config --local user.name 'github-action[bot]'
+          git config --local user.email 'github-action[bot]@github.com'
+
+      - run: npm ci --audit=false
+      - run: npm run build
+
+      - run: npm version ${{ inputs.version }}
+
+      - name: Push to git
+        run: |
+          git push
+          git push --tags
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "v$(npm -s run env echo '$npm_package_version')"
+
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
