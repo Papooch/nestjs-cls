@@ -13,9 +13,11 @@ gqlschema.gql
 **/*.spec.js
 **/*.js.map
 
-.eslinrc.js
+.eslintrc.js
 .prettierrc
 nest-cli.json
 tsconfig.tsbuildinfo
+tsconfig.json
+tsconfig.build.json
 .dependency-cruiser.js
 dependency-graph.html
