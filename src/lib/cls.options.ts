@@ -72,7 +72,7 @@ export class ClsMiddlewareOptions {
      * Function that executes after the CLS context has been initialised.
      * It can be used to put additional variables in the CLS context.
      */
-    setup?: (cls: ClsService, req: any) => void | Promise<void>;
+    setup?: (cls: ClsService, req: any, res: any) => void | Promise<void>;
 
     /**
      * Whether to resolve proxy providers as a part
