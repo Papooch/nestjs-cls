@@ -192,7 +192,7 @@ function bootstrap() {
 
 The `ClsGuard` can be also used set up the CLS context. While it is not a "guard" per-se, it's the second best place to set up the CLS context, since after a middleware, it is the first piece of code that the request hits.
 
-To use it, pass its configuration to the `guard` property to the `ClsModule.rotRoot()` options:
+To use it, pass its configuration to the `guard` property to the `ClsModule.forRoot()` options:
 
 ```ts
 ClsModule.forRoot({
