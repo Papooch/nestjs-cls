@@ -151,15 +151,17 @@ For HTTP transports, the context can be preferably set up in a `ClsMiddleware`. 
 
 ## Using a Middleware (HTTP Only)
 
-Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the cls context. This package provides `ClsMiddleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()` call.
+Since in NestJS, HTTP **middleware** is the first thing to run when a request arrives, it is an ideal place to initialise the CLS context. This package provides `ClsMiddleware` that can be mounted to all (or selected) routes inside which the context is set up before the `next()` call.
 
-All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.forRoot()` options which automatically mounts it to all routes.
+All you have to do is mount it to routes in which you want to use CLS, or pass `middleware: { mount: true }` to the `ClsModule.forRoot()` options which automatically mounts it to all routes[*](#manually-mounting-the-middleware).
 
 Once that is set up, the `ClsService` will have access to a common storage in all _Guards, Interceptors, Pipes, Controllers, Services and Exception Filters_ that are called within that route.
 
-## Manually mounting the middleware
+### Manually mounting the middleware
 
-Sometimes, you might want to only use CLS on certain routes. In that case, you can bind the ClsMiddleware manually in the module:
+Sometimes, you might want to only use CLS on certain routes, or you need to have more control over the order of middleware regisration in combination with other middlewares.
+
+In that case, you can bind the ClsMiddleware manually in the module:
 
 ```ts
 export class AppModule implements NestModule {
@@ -169,7 +171,9 @@ export class AppModule implements NestModule {
 }
 ```
 
-Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares that need to run prior to that. In that case, you can mount it directly in the bootstrap method:
+Sometimes, however, that won't be enough, because the middleware could be mounted too late and you won't be able to use it in other middlewares that need to run prior to that - for example, the API versioning feature of NestJS apparently interferes with the order, see issue [#67](https://github.com/Papooch/nestjs-cls/issues/67).
+
+In that case, you can mount it directly in the bootstrap method:
 
 ```ts
 function bootstrap() {
@@ -177,7 +181,7 @@ function bootstrap() {
     // create and mount the middleware manually here
     app.use(
         new ClsMiddleware({
-            /* useEnterWith: true */
+            /* ...settings */
         }).use,
     );
     await app.listen(3000);
