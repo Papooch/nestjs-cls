@@ -552,7 +552,7 @@ export class AutoBootstrappingUser {
 }
 ```
 
-If you need to inject a provider from an external module, use the `ClsService.forFeatureAsync()` registration to import it first.
+If you need to inject a provider from an external module, use the `ClsModule.forFeatureAsync()` registration to import it first.
 
 ```ts
 ClsModule.forFeatureAsync({
