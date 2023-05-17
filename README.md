@@ -456,7 +456,7 @@ declare module 'nestjs-cls' {
 For even more transparent approach without augmenting the declaration, you can create a typed `ClsService` by extending it and creating a custom provider out of it:
 
 ```ts
-export class MyClsService extends ClsService<MyClsStore>
+export class MyClsService extends ClsService<MyClsStore> {}
 
 @Module({
     imports: [ClsModule.forFeature()],
@@ -466,7 +466,7 @@ export class MyClsService extends ClsService<MyClsStore>
     }],
     exports: [MyClsService]
 })
-class MyClsModule
+class MyClsModule {}
 ```
 
 ### Terminal Type
