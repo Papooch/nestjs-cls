@@ -459,7 +459,7 @@ For even more transparent approach without augmenting the declaration, you can c
 export class MyClsService extends ClsService<MyClsStore>
 
 @Module({
-    imports: [ClsModule.forFeature()]
+    imports: [ClsModule.forFeature()],
     providers: [{
         provide: MyClsService,
         useExisting: ClsService
