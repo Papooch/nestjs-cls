@@ -1,10 +1,10 @@
+import { ApolloDriver } from '@nestjs/apollo';
 import { INestApplication, Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsMiddleware, ClsModule } from '../../src';
+import { ClsModule } from '../../src';
 import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
 import { ItemModule } from './item/item.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver } from '@nestjs/apollo';
 
 let app: INestApplication;
 describe('GQL Apollo App - Auto bound Middleware', () => {

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { ClsService } from '../../../src';
-import { RecipesArgs } from './dto/recipes.args';
 import { Item } from './item.model';
 
 @Injectable()
 export class ItemService {
     constructor(private readonly cls: ClsService) {}
 
-    async findAll(recipesArgs: RecipesArgs): Promise<Item[]> {
-        recipesArgs;
+    async findAll(): Promise<Item[]> {
+        // simulate random delay to allow for random concurrent requests
+        await new Promise((ok) => setTimeout(ok, Math.random() * 100));
         const payload = [
             {
                 id: this.cls.getId(),

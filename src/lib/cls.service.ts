@@ -24,7 +24,7 @@ export class ClsRunOptions {
      *
      * `reuse` - Reuse existing context without creating a new one.
      */
-    nested?: 'override' | 'inherit' | 'reuse' = 'override';
+    ifNested?: 'override' | 'inherit' | 'reuse' = 'override';
 }
 
 export class ClsService<S extends ClsStore = ClsStore> {
@@ -141,7 +141,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
             callback = optionsOrCallback;
         }
         if (!this.isActive()) return this.runWith({} as S, callback);
-        switch (options.nested) {
+        switch (options.ifNested) {
             case 'override':
                 return this.runWith({} as S, callback);
             case 'inherit':
@@ -169,7 +169,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
     enter(options: ClsRunOptions): void;
     enter(maybeOptions?: ClsRunOptions) {
         if (!maybeOptions || !this.isActive()) return this.als.enterWith({});
-        switch (maybeOptions.nested) {
+        switch (maybeOptions.ifNested) {
             case 'override':
                 return this.enterWith({} as S);
             case 'inherit':

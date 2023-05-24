@@ -184,7 +184,7 @@ describe('ClsService', () => {
         it('creates empty context with the "override" option', () => {
             service.run(() => {
                 service.set('key', 'value');
-                service.run({ nested: 'override' }, () => {
+                service.run({ ifNested: 'override' }, () => {
                     expect(service.get('key')).toEqual(undefined);
                 });
                 expect(service.get('key')).toEqual('value');
@@ -194,7 +194,7 @@ describe('ClsService', () => {
         it('creates inherits a copy of context with the "inherit" option', () => {
             service.run(() => {
                 service.set('key', 'value');
-                service.run({ nested: 'inherit' }, () => {
+                service.run({ ifNested: 'inherit' }, () => {
                     expect(service.get('key')).toEqual('value');
                     service.set('key', 'value2');
                 });
@@ -205,7 +205,7 @@ describe('ClsService', () => {
         it('reuses existing context with the "reuse" option', () => {
             service.run(() => {
                 service.set('key', 'value');
-                service.run({ nested: 'reuse' }, () => {
+                service.run({ ifNested: 'reuse' }, () => {
                     expect(service.get('key')).toEqual('value');
                     service.set('key', 'value2');
                 });
@@ -214,7 +214,7 @@ describe('ClsService', () => {
         });
 
         it('has no effect if no parent context exists', () => {
-            service.run({ nested: 'reuse' }, () => {
+            service.run({ ifNested: 'reuse' }, () => {
                 service.set('key', 'value');
                 expect(service.get('key')).toEqual('value');
             });

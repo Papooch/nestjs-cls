@@ -22,12 +22,13 @@ export class ClsInterceptor implements NestInterceptor {
     }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        const cls = ClsServiceManager.getClsService();
+        const clsStore = this.createOrReuseStore(context);
+        const cls = ClsServiceManager.getClsService<any>();
         return new Observable((subscriber) => {
-            cls.run(async () => {
+            cls.runWith(clsStore, async () => {
                 if (this.options.generateId) {
                     const id = await this.options.idGenerator?.(context);
-                    cls.set<any>(CLS_ID, id);
+                    cls.setIfUndefined<any>(CLS_ID, id);
                 }
                 if (this.options.setup) {
                     await this.options.setup(cls, context);
@@ -47,5 +48,23 @@ export class ClsInterceptor implements NestInterceptor {
                 }
             });
         });
+    }
+
+    createOrReuseStore(context: ExecutionContext) {
+        let store = {};
+        // NestJS triggers the interceptor for all queries within the same
+        // call individually, so each query would be wrapped in a different
+        // CLS context.
+        // The solution is to store the CLS store in the GQL context and re-use
+        // it each time the interceptor is triggered within the same request.
+        if ((context.getType() as string) == 'graphql') {
+            const gqlContext = context.getArgByIndex(2);
+            if (!gqlContext.__CLS_STORE__) {
+                gqlContext.__CLS_STORE__ = store;
+            } else {
+                store = gqlContext.__CLS_STORE__;
+            }
+        }
+        return store;
     }
 }
