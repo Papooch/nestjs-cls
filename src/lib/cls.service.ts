@@ -165,8 +165,18 @@ export class ClsService<S extends ClsStore = ClsStore> {
     /**
      * Run any following code with a shared CLS context.
      */
-    enter() {
-        return this.als.enterWith({});
+    enter(): void;
+    enter(options: ClsRunOptions): void;
+    enter(maybeOptions?: ClsRunOptions) {
+        if (!maybeOptions || !this.isActive()) return this.als.enterWith({});
+        switch (maybeOptions.nested) {
+            case 'override':
+                return this.enterWith({} as S);
+            case 'inherit':
+                return this.enterWith({ ...this.get() });
+            case 'reuse':
+                return;
+        }
     }
 
     /**
