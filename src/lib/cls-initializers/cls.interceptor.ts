@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { ClsServiceManager } from '../cls-service-manager';
 import { CLS_ID, CLS_INTERCEPTOR_OPTIONS } from '../cls.constants';
 import { ClsInterceptorOptions } from '../cls.options';
+import { ClsService } from '../cls.service';
 
 @Injectable()
 export class ClsInterceptor implements NestInterceptor {
@@ -22,8 +23,8 @@ export class ClsInterceptor implements NestInterceptor {
     }
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-        const clsStore = this.createOrReuseStore(context);
         const cls = ClsServiceManager.getClsService<any>();
+        const clsStore = this.createOrReuseStore(context, cls);
         return new Observable((subscriber) => {
             cls.runWith(clsStore, async () => {
                 if (this.options.generateId) {
@@ -50,8 +51,8 @@ export class ClsInterceptor implements NestInterceptor {
         });
     }
 
-    createOrReuseStore(context: ExecutionContext) {
-        let store = {};
+    createOrReuseStore(context: ExecutionContext, cls: ClsService) {
+        let store = (cls.isActive() && cls.get()) || {};
         // NestJS triggers the interceptor for all queries within the same
         // call individually, so each query would be wrapped in a different
         // CLS context.
