@@ -4,7 +4,7 @@ Below is an example of using this library to store the client's IP address in an
 
 :::note
 
-This example assumes you are using HTTP and therefore can use middleware. For usage with non-HTTP transports, keep reading.
+This example assumes you are using HTTP and therefore can use middleware. For usage with non-HTTP transports, see [Setting up CLS context](../02_setting-up-cls-context/index.md).
 
 :::
 
