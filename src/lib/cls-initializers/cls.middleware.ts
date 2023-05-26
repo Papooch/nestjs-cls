@@ -27,7 +27,7 @@ export class ClsMiddleware implements NestMiddleware {
                 this.options.useEnterWith && cls.enter();
                 if (this.options.generateId) {
                     const id = await this.options.idGenerator?.(req);
-                    cls.set<any>(CLS_ID, id);
+                    cls.setIfUndefined<any>(CLS_ID, id);
                 }
                 if (this.options.saveReq) cls.set<any>(CLS_REQ, req);
                 if (this.options.saveRes) cls.set<any>(CLS_RES, res);

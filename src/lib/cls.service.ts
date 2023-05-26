@@ -12,11 +12,26 @@ import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
 import type { ClsStore } from './cls.options';
 
+export class ClsContextOptions {
+    /**
+     * Sets the behavior of nested CLS context creation. Has no effect if no parent context exists.
+     *
+     * `override` (default) - Run the callback with an new empty context.
+     * No values from the parent context will be accessible.
+     *
+     * `inherit` - Run the callback with a shallow copy of the parent context.
+     * Assignments to top-level properties will not be reflected in the parent context.
+     *
+     * `reuse` - Reuse existing context without creating a new one.
+     */
+    ifNested?: 'override' | 'inherit' | 'reuse' = 'override';
+}
+
 export class ClsService<S extends ClsStore = ClsStore> {
     constructor(private readonly als: AsyncLocalStorage<any>) {}
 
     /**
-     * Set a value on the CLS context.
+     * Set (or overrides) a value on the CLS context.
      * @param key the key
      * @param value the value to set
      */
@@ -39,6 +54,23 @@ export class ClsService<S extends ClsStore = ClsStore> {
         } else {
             setValueFromPath(store as S, key as any, value as P);
         }
+    }
+
+    /**
+     * Set a value on the CLS context if it doesn't already exist
+     * @param key the key
+     * @param value the value to set
+     * @returns `true` if value vas set, `false` if it existed before
+     */
+    setIfUndefined<
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        R = undefined,
+        T extends RecursiveKeyOf<S> = any,
+        P extends DeepPropertyType<S, T> = any,
+    >(key: StringIfNever<T> | keyof ClsStore, value: AnyIfNever<P>): boolean {
+        if (this.has(key)) return false;
+        this.set(key, value);
+        return true;
     }
 
     /**
@@ -94,15 +126,34 @@ export class ClsService<S extends ClsStore = ClsStore> {
 
     /**
      * Run the callback with a shared CLS context.
-     * @param callback function to run
      * @returns whatever the callback returns
      */
-    run<T = any>(callback: () => T) {
-        return this.als.run({}, callback);
+    run<T = any>(callback: () => T): T;
+    run<T = any>(options: ClsContextOptions, callback: () => T): T;
+    run(optionsOrCallback: any, maybeCallback?: any) {
+        let options: ClsContextOptions;
+        let callback: () => any;
+        if (typeof optionsOrCallback === 'object') {
+            options = optionsOrCallback;
+            callback = maybeCallback;
+        } else {
+            options = { ...new ClsContextOptions(), ...optionsOrCallback };
+            callback = optionsOrCallback;
+        }
+        if (!this.isActive()) return this.runWith({} as S, callback);
+        switch (options.ifNested) {
+            case 'override':
+                return this.runWith({} as S, callback);
+            case 'inherit':
+                return this.runWith({ ...this.get() }, callback);
+            case 'reuse':
+                return callback();
+        }
     }
 
     /**
-     * Run the callbacks with a shared CLS context.
+     * Run the callbacks with a new CLS context.
+     *
      * @param store the default context contents
      * @param callback function to run
      * @returns whatever the callback returns
@@ -114,8 +165,18 @@ export class ClsService<S extends ClsStore = ClsStore> {
     /**
      * Run any following code with a shared CLS context.
      */
-    enter() {
-        return this.als.enterWith({});
+    enter(): void;
+    enter(options: ClsContextOptions): void;
+    enter(maybeOptions?: ClsContextOptions) {
+        if (!maybeOptions || !this.isActive()) return this.als.enterWith({});
+        switch (maybeOptions.ifNested) {
+            case 'override':
+                return this.enterWith({} as S);
+            case 'inherit':
+                return this.enterWith({ ...this.get() });
+            case 'reuse':
+                return;
+        }
     }
 
     /**

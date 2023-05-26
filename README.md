@@ -1,6 +1,6 @@
 # NestJS CLS (Async Context)
 
-A continuation-local\* storage module compatible with [NestJS](https://nestjs.com/)' dependency injection based on [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage).
+A continuation-local storage module compatible with [NestJS](https://nestjs.com/)' dependency injection based on [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage).
 
 > **Notice**: The documentation has been moved to [a dedicated website](https://papooch.github.io/nestjs-cls/).
 

@@ -1,14 +1,14 @@
-import { ClsMiddleware, ClsModule } from '../../src';
+import { Module } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { GraphQLModule } from '@nestjs/graphql';
+import { MercuriusDriver } from '@nestjs/mercurius';
 import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { NestFactory } from '@nestjs/core';
+import { ClsModule } from '../../src';
 import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
-import { Module } from '@nestjs/common';
 import { ItemModule } from './item/item.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { MercuriusDriver } from '@nestjs/mercurius';
 
 let app: NestFastifyApplication;
 describe('GQL Mercurius App - Auto bound Middleware', () => {
