@@ -1,5 +1,13 @@
 # Quick Start
 
+## Background
+
+This library exposes a dynamic `ClsModule` which exposes the injectable `ClsService` and provides means to setting up and interacting with the CLS context.
+
+The CLS context is a storage that wraps around a chain of function calls. It can be accessed anywhere during the lifecycle of such chain via the `ClsService`.
+
+## Example
+
 Below is an example of using this library to store the client's IP address in an interceptor and retrieving it in a service without explicitly passing it along.
 
 :::note
@@ -10,7 +18,7 @@ This example assumes you are using HTTP and therefore can use middleware. For us
 
 ### Register the ClsModule
 
-Register the ClsModule and automatically mount the `ClsMiddleware` which wraps the entire request in a shared CLS context on all routes.
+Register the `ClsModule` and automatically mount the `ClsMiddleware` which wraps the entire request in a shared CLS context on all routes.
 
 ```ts title="app.module.ts"
 @Module({
