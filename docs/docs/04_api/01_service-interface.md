@@ -38,6 +38,9 @@ The `S` type parameter is used as the type of custom `ClsStore`.
 -   **_`enterWith`_**`(store: S): void`  
     Run any following code in a new CLS context (while supplying the default store).
 
+-   **_`exit`_**`(callback: () => T): T`  
+    Run the callback _without_ access to a shared CLS context.
+
 -   **_`isActive`_**`(): boolean`  
     Whether the current code runs within an active CLS context.
 

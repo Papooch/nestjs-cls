@@ -8,7 +8,11 @@ The `ClsGuard` (and `ClsMiddleware`, if configured so) uses the less safe `enter
 
 **This has a consequence that should be taken into account:**
 
-> When the `enterWith` method is used, any consequent requests _get access_ to the context of the previous one _until the request hits the `enterWith` call_.
+:::caution
+
+When the `enterWith` method is used, any consequent requests _get access_ to the CLS context of the previous request _until the request hits the `enterWith` call_.
+
+:::
 
 That means, when using `ClsMiddleware` with the `useEnterWith` option, or `ClsGuard` to set up context, be sure to mount them as early in the request lifetime as possible and do not use any other enhancers that rely on `ClsService` before them. For `ClsGuard`, that means you should probably manually mount it in `AppModule` if you require any other guard to run _after_ it.
 

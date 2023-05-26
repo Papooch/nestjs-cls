@@ -24,16 +24,18 @@ Known issues:
 
 ## GraphQL
 
-Using an interceptor or a guard may result in that enhancer triggering multiple times in case there are multiple queries in the GQL request. Due to this, you should ensure that any operation on the CLS store within enhancers is _idempotent_. This includes the `setup` function.
+Using an interceptor or a guard may result in that enhancer triggering multiple times in case there are multiple queries in the GQL request.
+
+Due to this, you should ensure that any operation on the CLS store within enhancers is _idempotent_. This includes the `setup` function. Therefore, it is advised to use the `ClsService#setIfUndefined()` method.
 
 Tested with:
 
 -   ✔ Apollo (Express)
 -   ✔ Mercurius (Fastify)
 
-### `@nestjs/graphql >= 10`,
+### `@nestjs/graphql >= 10`
 
-Since v10, this package is compatible with GraphQL resolvers and the preferred way is to use the `ClsMiddleware` with the `mount` option.
+Since v10, Nest's GraphQL resolvers are compatible with this package and the preferred way to initialize the CLS context is use the `ClsMiddleware` with the `mount` option.
 
 ### `@nestjs/graphql < 10`
 
