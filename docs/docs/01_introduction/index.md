@@ -1,9 +1,10 @@
 ---
 slug: /
 sidebar_position: 0
+title: Introduction
 ---
 
-# Introduction
+# NestJS CLS
 
 A continuation-local\* storage module compatible with [NestJS](https://nestjs.com/)' dependency injection based on Node's [AsyncLocalStorage](https://nodejs.org/api/async_context.html#async_context_class_asynclocalstorage).
 
