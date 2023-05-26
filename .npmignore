@@ -5,6 +5,7 @@ node_modules
 tmp
 test
 src
+docs
 dist/test
 
 gqlschema.gql
