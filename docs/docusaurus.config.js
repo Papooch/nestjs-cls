@@ -62,10 +62,10 @@ const config = {
             // Replace with your project's social card
             navbar: {
                 title: 'NestJS CLS',
-                // logo: {
-                //     alt: 'My Site Logo',
-                //     src: 'img/logo.svg',
-                // },
+                logo: {
+                    alt: 'NestJS CLS Logo',
+                    src: 'img/logo.png',
+                },
                 items: [
                     {
                         type: 'docSidebar',
@@ -76,6 +76,11 @@ const config = {
                     {
                         href: 'https://github.com/papooch/nestjs-cls',
                         label: 'GitHub',
+                        position: 'right',
+                    },
+                    {
+                        href: 'https://www.npmjs.com/package/nestjs-cls',
+                        label: 'npm',
                         position: 'right',
                     },
                 ],
