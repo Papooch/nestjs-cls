@@ -12,7 +12,7 @@ import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
 import type { ClsStore } from './cls.options';
 
-export class ClsRunOptions {
+export class ClsContextOptions {
     /**
      * Sets the behavior of nested CLS context creation. Has no effect if no parent context exists.
      *
@@ -129,15 +129,15 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @returns whatever the callback returns
      */
     run<T = any>(callback: () => T): T;
-    run<T = any>(options: ClsRunOptions, callback: () => T): T;
+    run<T = any>(options: ClsContextOptions, callback: () => T): T;
     run(optionsOrCallback: any, maybeCallback?: any) {
-        let options: ClsRunOptions;
+        let options: ClsContextOptions;
         let callback: () => any;
         if (typeof optionsOrCallback === 'object') {
             options = optionsOrCallback;
             callback = maybeCallback;
         } else {
-            options = { ...new ClsRunOptions(), ...optionsOrCallback };
+            options = { ...new ClsContextOptions(), ...optionsOrCallback };
             callback = optionsOrCallback;
         }
         if (!this.isActive()) return this.runWith({} as S, callback);
@@ -166,8 +166,8 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * Run any following code with a shared CLS context.
      */
     enter(): void;
-    enter(options: ClsRunOptions): void;
-    enter(maybeOptions?: ClsRunOptions) {
+    enter(options: ClsContextOptions): void;
+    enter(maybeOptions?: ClsContextOptions) {
         if (!maybeOptions || !this.isActive()) return this.als.enterWith({});
         switch (maybeOptions.ifNested) {
             case 'override':

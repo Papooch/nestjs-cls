@@ -1,11 +1,10 @@
 # Service Interface
 
+## ClsService
+
 The injectable `ClsService` provides the following API to manipulate the cls context:
 
 The `S` type parameter is used as the type of custom `ClsStore`.
-
--   **_`set`_**`(key: keyof S, value: S[key]): void`  
-    Set a value on the CLS context.
 
 -   **_`get`_**`(): S`  
     Get the entire CLS context.
@@ -13,26 +12,46 @@ The `S` type parameter is used as the type of custom `ClsStore`.
 -   **_`get`_**`(key?: keyof S): S[key]`  
     Retrieve a value from the CLS context by key.
 
--   **_`has`_**`(key: keyof S): boolean`  
-    Check if a key is in the CLS context.
-
 -   **_`getId`_**`(): string;`  
     Retrieve the request ID (a shorthand for `cls.get(CLS_ID)`)
 
--   **_`enter`_**`(): void;`  
-    Run any following code in a shared CLS context.
+-   **_`has`_**`(key: keyof S): boolean`  
+    Check if a key is in the CLS context.
 
--   **_`enterWith`_**`(store: S): void;`  
-    Run any following code in a new CLS context (while supplying the default store).
+-   **_`set`_**`(key: keyof S, value: S[key]): void`  
+    Set a value on the CLS context.
 
--   **_`run`_**`(callback: () => T): T;`  
-    Run the callback in a shared CLS context.
+-   **_`setIfUndefined`_**`(key: keyof S, value: S[key]): void`  
+    Set a value on the CLS context _only_ if it hasn't been already set. Useful for ensuring idempotence if you have multiple entry points.
 
--   **_`runWith`_**`(store: S, callback: () => T): T;`  
+-   **_`run`_**`(callback: () => T): T`  
+    **_`run`_**`(options: ClsContextOptions, callback: () => T): T;`  
+    Run the callback in a shared CLS context. Optionally takes an [options object](#clscontextoptions) as the first parameter.
+
+-   **_`runWith`_**`(store: S, callback: () => T): T`  
     Run the callback in a new CLS context (while supplying the default store).
+
+-   **_`enter`_**`(): void;`  
+    **_`enter`_**`(options: ClsContextOptions): void`  
+    Run any following code in a shared CLS context. Optionally takes an [options object](#clscontextoptions) as the first parameter.
+
+-   **_`enterWith`_**`(store: S): void`  
+    Run any following code in a new CLS context (while supplying the default store).
 
 -   **_`isActive`_**`(): boolean`  
     Whether the current code runs within an active CLS context.
 
 -   **_`resolveProxyProviders`_**`(): Promise<void>`  
-     Manually trigger resolution of Proxy Providers.
+    Manually trigger resolution of Proxy Providers.
+
+## ClsContextOptions
+
+The `run` and `enter` methods can take an additional options object with the following settings:
+
+-   **_`ifNested?:`_** `'override' | 'inherit' | 'reuse'`  
+    Sets the behavior of nested CLS context creation in case the method is invoked in an existing context. It has no effect if no parent context exist.
+    -   `override` (default) - Run the callback with an new empty context.  
+        No values from the parent context will be accessible within the wrapped code.
+    -   `inherit` - Run the callback with a shallow copy of the parent context.  
+        Re-assignments of top-level properties will not be reflected in the parent context. However, modifications of existing properties _will_ be reflected.
+    -   `reuse` - Reuse existing context without creating a new one. All modifications to the existing context will be reflected.
