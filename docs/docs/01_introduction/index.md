@@ -40,8 +40,8 @@ _While the use of `async_hooks` is sometimes criticized for [making Node run slo
 
 _Also, if you use some tracing library (like `otel`), it most likely already uses `async_hooks` under the hood, so you might as well use it to your advantage._
 
-## Updates
+## Highlights
 
-> **New**: Version `3.0` introduces [_Proxy Providers_](#proxy-providers) as an alternative to the imperative API. (Minor breaking changes were introduced, see [Migration guide](#migration-guide)).
+> **New**: Version `3.0` introduces [_Proxy Providers_](../03_features-and-use-cases/06_proxy-providers.md) as an alternative to the imperative API. (Minor breaking changes were introduced, see [Migration guide](../06_migration-guide/01_v2x-v3x.md)).
 
-> Version `2.0` brings advanced [type safety and type inference](#type-safety-and-type-inference). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
+> Version `2.0` brings advanced [type safety and type inference](../03_features-and-use-cases/05_type-safety-and-type-inference.md). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.

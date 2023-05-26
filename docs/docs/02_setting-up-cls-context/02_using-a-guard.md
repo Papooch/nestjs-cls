@@ -56,6 +56,6 @@ or mount it directly on the Controller/Resolver with
 
 :::caution
 
-**Please note**: since the `ClsGuard` uses the `AsyncLocalStorage#enterWith` method, using the `ClsGuard` comes with some [security considerations](#security-considerations)!
+**Please note**: since the `ClsGuard` uses the `AsyncLocalStorage#enterWith` method, using the `ClsGuard` comes with some [security considerations](../05_considerations/01_security.md)!
 
 :::
