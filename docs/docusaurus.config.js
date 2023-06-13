@@ -59,6 +59,13 @@ const config = {
     themeConfig:
         /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
+            metadata: [
+                {
+                    name: 'keywords',
+                    content:
+                        'async, context, request, scope, cls, asynclocalstorage, nestjs, proxy',
+                },
+            ],
             // Replace with your project's social card
             navbar: {
                 title: 'NestJS CLS',
