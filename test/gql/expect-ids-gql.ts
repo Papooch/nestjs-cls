@@ -54,7 +54,7 @@ export const expectOkIdsGql = (
 
 export const expectErrorIdsGql = (
     app: INestApplication,
-    options = { skipGuard: false },
+    options = { skipGuard: false, skipFilter: false },
 ) =>
     request(app.getHttpServer())
         .post('/graphql')
@@ -78,4 +78,5 @@ export const expectErrorIdsGql = (
             expect(body.fromInterceptorAfter).toEqual(id);
             expect(body.fromResolver).toEqual(id);
             expect(body.fromService).toEqual(id);
+            if (!options.skipFilter) expect(body.fromFilter).toEqual(id);
         });

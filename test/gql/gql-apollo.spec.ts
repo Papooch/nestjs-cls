@@ -112,7 +112,7 @@ describe('GQL Apollo App - Auto bound Interceptor', () => {
         ['OK', expectOkIdsGql],
         ['ERROR', expectErrorIdsGql],
     ])('works with %s response', (_, func: any) => {
-        return func(app, { skipGuard: true });
+        return func(app, { skipGuard: true, skipFilter: true });
     });
 
     it.each([
@@ -122,7 +122,7 @@ describe('GQL Apollo App - Auto bound Interceptor', () => {
         return Promise.all(
             Array(10)
                 .fill(0)
-                .map(() => func(app, { skipGuard: true })),
+                .map(() => func(app, { skipGuard: true, skipFilter: true })),
         );
     });
 });

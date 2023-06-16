@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { MercuriusDriver } from '@nestjs/mercurius';
+import { MercuriusDriver } from '@nestjs/mercurius/dist/drivers/mercurius.driver';
 import {
     FastifyAdapter,
     NestFastifyApplication,
@@ -122,7 +122,7 @@ describe('GQL Mercurius App - Auto bound Interceptor', () => {
         ['OK', expectOkIdsGql],
         ['ERROR', expectErrorIdsGql],
     ])('works with %s response', (_, func: any) => {
-        return func(app, { skipGuard: true });
+        return func(app, { skipGuard: true, skipFilter: true });
     });
 
     it.each([
@@ -132,7 +132,7 @@ describe('GQL Mercurius App - Auto bound Interceptor', () => {
         return Promise.all(
             Array(10)
                 .fill(0)
-                .map(() => func(app, { skipGuard: true })),
+                .map(() => func(app, { skipGuard: true, skipFilter: true })),
         );
     });
 });

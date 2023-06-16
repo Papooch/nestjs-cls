@@ -2,11 +2,11 @@
 
 The table below outlines the compatibility with some platforms:
 
-|                                                                |                            REST                            | GQL |         WS         | Microservices |
-| :------------------------------------------------------------: | :--------------------------------------------------------: | :-: | :----------------: | :-----------: |
-|                       **ClsMiddleware**                        |                             ✔                              |  ✔  |         ✖          |       ✖       |
-|              **ClsGuard** <br/>(uses `enterWith`)              |                             ✔                              |  ✔  | ✔[\*](#websockets) |       ✔       |
-| **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_) | ✔<br/>context also inaccessible<br/>in _Exception Filters_ |  ✔  | ✔[\*](#websockets) |       ✔       |
+|                                                                                                | REST | GQL | WS[\*](#websockets) | Microservices |
+| :--------------------------------------------------------------------------------------------: | :--: | :-: | :-----------------: | :-----------: |
+|                                       **ClsMiddleware**                                        |  ✔   |  ✔  |          ✖          |       ✖       |
+|                              **ClsGuard** <br/>(uses `enterWith`)                              |  ✔   |  ✔  |          ✔          |       ✔       |
+| **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_ and<br/> in _Exception Filters_) |  ✔   |  ✔  |          ✔          |       ✔       |
 
 ## REST
 

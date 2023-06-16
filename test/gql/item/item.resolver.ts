@@ -1,7 +1,7 @@
 import { UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { GraphQLError } from 'graphql';
 import { ClsService } from '../../../src';
-import { TestException } from '../../common/test.exception';
 import { TestGuard } from '../../common/test.guard';
 import { TestInterceptor } from '../../common/test.interceptor';
 import { TestGqlExceptionFilter } from '../test-gql.filter';
@@ -28,8 +28,10 @@ export class ItemResolver {
     @Query(() => [Item])
     async error(): Promise<Item[]> {
         this.cls.set('FROM_RESOLVER', this.cls.getId());
-        const response = await this.recipesService.findAll();
-        throw new TestException(response[0]);
+        const [response] = await this.recipesService.findAll();
+        throw new GraphQLError('TestException', {
+            extensions: { exception: { response } },
+        });
     }
 
     @ResolveField(() => NestedItem)
