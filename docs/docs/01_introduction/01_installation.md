@@ -31,6 +31,6 @@ pnpm add nestjs-cls
 
 :::info
 
-This module requires additional peer deps, like the `@nestjs/core` and `@nestjs/core` libraries, but it is assumed those are already installed.
+This module requires additional peer deps, like the `@nestjs/core` and `@nestjs/common` libraries, but it is assumed those are already installed.
 
 :::

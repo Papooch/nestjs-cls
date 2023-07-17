@@ -104,7 +104,7 @@ export class AppService {
 
 ### That's it
 
-This is pretty much all there is to it. This library further further provides more quality-of-life features, so read on!
+This is pretty much all there is to it. This library further provides more quality-of-life features, so read on!
 
 :::info
 
