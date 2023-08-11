@@ -9,9 +9,6 @@
         "allowSyntheticDefaultImports": true,
         "target": "es2017",
         "sourceMap": true,
-        "rootDir": ".",
-        "outDir": "./dist",
-        "baseUrl": "./",
         "incremental": true,
         "skipLibCheck": true,
         "strictNullChecks": true,
@@ -20,5 +17,13 @@
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false
     },
-    "include": ["src/**/*.ts", "test/**/*.ts"]
+    "include": [],
+    "references": [
+        {
+            "path": "docs"
+        },
+        {
+            "path": "packages/core"
+        }
+    ]
 }

@@ -7,6 +7,7 @@ test
 src
 docs
 dist/test
+!dist
 
 gqlschema.gql
 
