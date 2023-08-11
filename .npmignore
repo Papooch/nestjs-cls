@@ -7,12 +7,11 @@ test
 src
 docs
 dist/test
-!dist
-CHANGELOG.md
 
 gqlschema.gql
 
 **/*.spec.ts
+**/*.spec.d.ts
 **/*.spec.js
 **/*.js.map
 
