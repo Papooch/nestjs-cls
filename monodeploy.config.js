@@ -6,6 +6,4 @@ module.exports = {
     git: {
         push: true,
     },
-
-    forceWriteChangeFiles: true,
 };
