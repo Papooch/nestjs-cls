@@ -5,7 +5,7 @@
     "author": "papooch",
     "license": "MIT",
     "engines": {
-        "node": ">=16"
+        "node": ">=12.17.0"
     },
     "repository": {
         "type": "git",
