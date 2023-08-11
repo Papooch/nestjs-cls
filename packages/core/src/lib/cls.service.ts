@@ -28,7 +28,7 @@ export class ClsContextOptions {
 }
 
 export class ClsService<S extends ClsStore = ClsStore> {
-    constructor(private readonly als: AsyncLocalStorage<any>) {}
+    constructor(private readonly als: AsyncLocalStorage<any>) { }
 
     /**
      * Set (or overrides) a value on the CLS context.
