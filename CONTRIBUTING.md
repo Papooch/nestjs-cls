@@ -7,9 +7,9 @@ If you have an idea on how to improve the lib, feel free to create an issue. If 
 ## How too contribute, basically
 
 1. Fork the repo
-2. Clone locally and install dependencies `npm i`
+2. Clone locally and install dependencies `yarn install`
 3. Create a branch for the feature
-4. If you add new features, make sure to also add tests - you can run tests with `npm run test`
+4. If you add new features, make sure to also add tests - you can run tests with `yarn test`
 5. If you're happy with your contribution, create a pull request from the branch against the upstream repo
 6. ??
 7. Profit
