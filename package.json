@@ -7,10 +7,8 @@
     "engines": {
         "node": ">=16"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Papooch/nestjs-cls.git"
-    },
+    "repository": "https://github.com/Papooch/nestjs-cls",
+    "private": true,
     "homepage": "https://papooch.github.io/nestjs-cls/",
     "keywords": [
         "nest",
@@ -23,8 +21,6 @@
         "request context",
         "async context"
     ],
-    "main": "dist/src/index.js",
-    "types": "dist/src/index.d.ts",
     "workspaces": [
         "packages/*",
         "docs"
@@ -37,6 +33,8 @@
     },
     "devDependencies": {
         "@goldstack/utils-typescript-references": "^0.3.9",
-        "dependency-cruiser": "^11.18.0"
+        "@tophat/conventional-changelog-config": "^1.0.1",
+        "dependency-cruiser": "^11.18.0",
+        "monodeploy": "^4.2.0"
     }
 }
