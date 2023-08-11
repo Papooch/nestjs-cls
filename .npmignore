@@ -8,6 +8,7 @@ src
 docs
 dist/test
 !dist
+CHANGELOG.md
 
 gqlschema.gql
 

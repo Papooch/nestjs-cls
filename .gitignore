@@ -47,3 +47,7 @@ lerna-debug.log*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Automatically copied files
+packages/**/LICENSE
+packages/**/README.md
