@@ -1,17 +1,14 @@
 {
-    "name": "nestjs-cls",
-    "version": "3.5.0",
+    "name": "nestjs-cls-root",
+    "version": "0.0.0",
     "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
     "author": "papooch",
-    "private": false,
     "license": "MIT",
     "engines": {
         "node": ">=12.17.0"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Papooch/nestjs-cls.git"
-    },
+    "repository": "https://github.com/Papooch/nestjs-cls",
+    "private": true,
     "homepage": "https://papooch.github.io/nestjs-cls/",
     "keywords": [
         "nest",
@@ -24,81 +21,29 @@
         "request context",
         "async context"
     ],
-    "main": "dist/src/index.js",
-    "types": "dist/src/index.d.ts",
+    "workspaces": [
+        "packages/*",
+        "docs"
+    ],
+    "packageManager": "yarn@3.6.1",
     "scripts": {
-        "prepublish": "tsc",
-        "prebuild": "rimraf dist",
-        "build": "tsc",
-        "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
-        "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:cov": "jest --coverage",
-        "depcruise": "npx depcruise src --include-only \"^src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | npx depcruise-wrap-stream-in-html > dependency-graph.html"
-    },
-    "peerDependencies": {
-        "@nestjs/common": "> 7.0.0 < 11",
-        "@nestjs/core": "> 7.0.0 < 11"
+        "test": "yarn workspaces foreach run test",
+        "build": "yarn workspaces foreach run build",
+        "format": "prettier --write \"packages/**/*.ts\" \"test/**/*.ts\"",
+        "lint": "eslint \"packages/**/*.ts\"",
+        "lint:fix": "eslint \"packages/**/*.ts\" --fix",
+        "depcruise": "npx depcruise packages --include-only \"^packages/.*/src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | npx depcruise-wrap-stream-in-html > dependency-graph.html"
     },
     "devDependencies": {
-        "@nestjs/apollo": "^12.0.1",
-        "@nestjs/cli": "^10.0.2",
-        "@nestjs/common": "^10.0.0",
-        "@nestjs/core": "^10.0.0",
-        "@nestjs/graphql": "^12.0.1",
-        "@nestjs/mercurius": "^12.0.1",
-        "@nestjs/platform-express": "^10.0.0",
-        "@nestjs/platform-fastify": "^10.0.0",
-        "@nestjs/schematics": "^10.0.1",
-        "@nestjs/testing": "^10.0.0",
-        "@types/express": "^4.17.13",
-        "@types/jest": "^28.1.2",
-        "@types/node": "^18.0.0",
-        "@types/supertest": "^2.0.12",
+        "@goldstack/utils-typescript-references": "^0.3.9",
+        "@tophat/conventional-changelog-config": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "^5.28.0",
         "@typescript-eslint/parser": "^5.28.0",
-        "apollo-server-express": "^3.9.0",
         "dependency-cruiser": "^11.18.0",
         "eslint": "^8.18.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.0.0",
-        "graphql": "^16.5.0",
-        "jest": "^28.1.1",
-        "mercurius": "^13.0.0",
-        "prettier": "^2.7.1",
-        "reflect-metadata": "^0.1.13",
-        "rimraf": "^3.0.2",
-        "rxjs": "^7.5.5",
-        "supertest": "^6.2.3",
-        "ts-jest": "^28.0.5",
-        "ts-loader": "^9.3.0",
-        "ts-node": "^10.8.1",
-        "tsconfig-paths": "^4.0.0",
+        "monodeploy": "^4.2.0",
         "typescript": "~4.8.0"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": ".",
-        "testRegex": ".*\\.spec\\.ts$",
-        "transform": {
-            "^.+\\.(t|j)s$": "ts-jest"
-        },
-        "collectCoverageFrom": [
-            "src/**/*.(t|j)s"
-        ],
-        "coverageDirectory": "../coverage",
-        "testEnvironment": "node",
-        "globals": {
-            "ts-jest": {
-                "isolatedModules": true,
-                "maxWorkers": 1
-            }
-        }
     }
 }

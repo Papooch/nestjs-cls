@@ -1,6 +1,7 @@
 # compiled output
-/dist
-/node_modules
+dist
+node_modules
+package.tgz
 
 # temporary files
 /tmp
@@ -37,3 +38,16 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Automatically copied files
+packages/**/LICENSE
+packages/**/README.md

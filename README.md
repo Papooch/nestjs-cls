@@ -27,4 +27,4 @@ Most of these are to some extent solvable using _REQUEST-scoped_ providers or pa
 
 ## Contributing
 
-Contributing to a community project is always welcome, please see the [Contributing guide](./CONTRIBUTING.md) :)
+Contributing to a community project is always welcome, please see the [Contributing guide](/CONTRIBUTING.md) :)

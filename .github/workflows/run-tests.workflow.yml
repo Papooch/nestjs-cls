@@ -23,6 +23,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}.x
           cache: npm
-      - run: npm ci --audit=false
-      - run: npm run lint
-      - run: npm run test
+      - run: yarn
+      - run: yarn lint
+      - run: yarn test
