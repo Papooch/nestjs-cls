@@ -10,6 +10,12 @@ Rather, it injects a _SINGLETON_ [Proxy](https://developer.mozilla.org/en-US/doc
 
 There are two kinds of Proxy providers - [_Class_](#class-proxy-providers) and [_Factory_](#factory-proxy-providers).
 
+:::note
+
+Please note that there are [_some caveats_](#caveats) to using this technique.
+
+:::
+
 ## Class Proxy Providers
 
 These providers look like your regular class providers, with the exception that is the `@InjectableProxy()` decorator to make them easily distinguishable.
@@ -138,11 +144,17 @@ class DogsService {
 }
 ```
 
-:::note
+## Caveats
 
-**Please note**: Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
+### No primitive values
 
-:::
+Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
+
+### `typeof` Proxies is always `function`
+
+In order to support injecting proxies of _functions_, the underlying proxy _target_ is an empty function, too. It must be this way in order to be able to implement the "apply" trap.
+
+As a result of this, calling `typeof` on an instance of a Proxy will always return `function`, regardless of the value it holds. This is fine for most applications, but must be taken into consideration in some cases - please see [Issue #82](https://github.com/Papooch/nestjs-cls/issues/82) for more info and possible workarounds.
 
 ## Delayed resolution of Proxy Providers
 
