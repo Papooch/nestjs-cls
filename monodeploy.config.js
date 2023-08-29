@@ -6,4 +6,5 @@ module.exports = {
     git: {
         push: true,
     },
+    plugins: ['@monodeploy/plugin-github'],
 };

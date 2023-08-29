@@ -2,11 +2,6 @@ name: Publish to NPM
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: The version string passed to "npm version". Either `patch`, `minor`, `major` or a semver like `1.2.3`
-        required: true
-        type: string
 
 permissions:
   contents: write
@@ -25,7 +20,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
           cache: npm
 
       - name: Configure git
@@ -35,13 +30,9 @@ jobs:
 
       - run: yarn
       - run: yarn test
-      - run: yarn depcruise
-      - run: npm set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
       - run: yarn monodeploy
-
-      - name: Create release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          export CURRENT_VERSION=v$(npm pkg get version | tr -d '"')
-          gh release create $CURRENT_VERSION --generate-notes
+          # needed to publish to npm
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # needed to create a release
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
