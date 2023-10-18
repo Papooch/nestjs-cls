@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [3.6.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@3.5.1...nestjs-cls@3.6.0) "nestjs-cls" (2023-10-18)<a name="3.6.0"></a>
+
+### Features
+
+* allow registering Proxy providers globally ([92d00f7](https://github.com/Papooch/nestjs-cls/commits/92d00f7))
+
+
+
+
 ## [3.5.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@3.5.0...nestjs-cls@3.5.1) "nestjs-cls" (2023-08-29)<a name="3.5.1"></a>
 
 ### Bug Fixes
