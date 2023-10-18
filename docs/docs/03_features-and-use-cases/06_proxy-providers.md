@@ -111,10 +111,12 @@ Using `@Inject(CLS_REQ)`, you can entirely replace `@Inject(REQUEST)` in REQUEST
 
 Like your normal factory providers, Proxy factory providers look familiar.
 
+They can be only registered using the `ClsModule.forFeatureAsync()` method.
+
 Here's an example of a hypothetical factory provider that dynamically resolves to a specific tenant database connection:
 
 ```ts
-ClsModule.forFeature({
+ClsModule.forFeatureAsync({
     provide: TENANT_CONNECTION,
     import: [DatabaseConnectionModule],
     inject: [CLS_REQ, DatabaseConnectionService],
@@ -123,6 +125,7 @@ ClsModule.forFeature({
         const connection = await dbService.getTenantConnection(tenantId);
         return connection;
     },
+    global: true, // make the TENANT_CONNECTION available for injection globally
 });
 ```
 
