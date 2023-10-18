@@ -85,6 +85,11 @@ export class ClsModule implements NestModule {
         }
     }
 
+    /**
+     * Configures the CLS module in the root.
+     *
+     * Provides the `ClsService` for injection.
+     */
     static forRoot(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
         const { providers, exports } = this.getProviders();
@@ -107,6 +112,11 @@ export class ClsModule implements NestModule {
         };
     }
 
+    /**
+     * Configures the CLS module in the root with asynchronously provided configuration.
+     *
+     * Provides the `ClsService` for injection.
+     */
     static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
         const { providers, exports } = this.getProviders();
         const proxyProviders = this.createProxyClassProviders(
@@ -134,6 +144,9 @@ export class ClsModule implements NestModule {
      * Registers the `ClsService` provider in the module
      */
     static forFeature(): DynamicModule;
+    /**
+     * Registers the given Class proxy providers in the module along with `ClsService`.
+     */
     static forFeature(...proxyProviderClasses: Array<Type>): DynamicModule;
     static forFeature(...proxyProviderClasses: Array<Type>): DynamicModule {
         const proxyProviders =
@@ -146,6 +159,11 @@ export class ClsModule implements NestModule {
         };
     }
 
+    /**
+     * Registers the given Class or Factory proxy providers in the module along with `ClsService`.
+     *
+     * If used with `global: true`, makes the proxy provider available globally.
+     */
     static forFeatureAsync(
         options: ClsModuleProxyProviderOptions,
     ): DynamicModule {
@@ -159,6 +177,7 @@ export class ClsModule implements NestModule {
             imports: options.imports ?? [],
             providers: [...providers, proxyProvider],
             exports: [...commonProviders, proxyProvider.provide],
+            global: options.global,
         };
     }
 
