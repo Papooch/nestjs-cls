@@ -54,6 +54,7 @@ export function UseCls<TArgs extends any[]>(
                 if (options.resolveProxyProviders) {
                     await cls.resolveProxyProviders();
                 }
+                await cls.initializePlugins();
                 return original.apply(this, args);
             });
         };

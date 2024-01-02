@@ -28,7 +28,7 @@ export class ClsContextOptions {
 }
 
 export class ClsService<S extends ClsStore = ClsStore> {
-    constructor(private readonly als: AsyncLocalStorage<any>) { }
+    constructor(private readonly als: AsyncLocalStorage<any>) {}
 
     /**
      * Set (or overrides) a value on the CLS context.
@@ -215,5 +215,12 @@ export class ClsService<S extends ClsStore = ClsStore> {
             './proxy-provider/proxy-provider-manager'
         );
         await ProxyProviderManager.resolveProxyProviders();
+    }
+
+    async initializePlugins() {
+        const { ClsPluginManager } = await import(
+            './plugin/cls-plugin-manager'
+        );
+        await ClsPluginManager.onClsInit();
     }
 }

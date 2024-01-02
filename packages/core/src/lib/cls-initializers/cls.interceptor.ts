@@ -37,6 +37,7 @@ export class ClsInterceptor implements NestInterceptor {
                 try {
                     if (this.options.resolveProxyProviders)
                         await cls.resolveProxyProviders();
+                    await cls.initializePlugins();
                     next.handle()
                         .pipe()
                         .subscribe({

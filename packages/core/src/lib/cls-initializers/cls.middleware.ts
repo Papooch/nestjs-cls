@@ -36,6 +36,7 @@ export class ClsMiddleware implements NestMiddleware {
                 }
                 if (this.options.resolveProxyProviders)
                     await cls.resolveProxyProviders();
+                await cls.initializePlugins();
                 next();
             } catch (e) {
                 next(e);

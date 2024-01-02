@@ -1,5 +1,6 @@
 import { ExecutionContext, ModuleMetadata, Type } from '@nestjs/common';
 import type { ClsService } from './cls.service';
+import { ClsPlugin } from './plugin/cls-plugin.interface';
 
 const getRandomString = () => Math.random().toString(36).slice(-8);
 
@@ -29,11 +30,16 @@ export class ClsModuleOptions {
      * Array of Proxy Provider classes to register
      */
     proxyProviders?: Type[];
+
+    /**
+     * Array of ClsPlugin instances to register
+     */
+    plugins?: ClsPlugin[];
 }
 
 export type ClsModuleFactoryOptions = Omit<
     ClsModuleOptions,
-    'global' | 'providers'
+    'global' | 'proxyProviders' | 'plugins'
 >;
 export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: any[];
@@ -50,6 +56,11 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
      * Array of Proxy Provider classes to register
      */
     proxyProviders?: Type[];
+
+    /**
+     * Array of ClsPlugin instances to register
+     */
+    plugins?: ClsPlugin[];
 }
 
 export class ClsMiddlewareOptions {
