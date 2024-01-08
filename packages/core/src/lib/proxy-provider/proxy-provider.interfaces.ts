@@ -52,7 +52,17 @@ export interface ClsModuleProxyFactoryProviderOptions
      * Returns (or resolves with) an object (or a function) that will be used by this Proxy Provider.
      */
     useFactory: (...args: any[]) => any;
+
+    /**
+     * Explicit type of the value returned by the `useFactory` function. This is required to construct the base value of the Proxy
+     * when the `useFactory` function returns a non-object value
+     *
+     * Default: 'object'
+     */
+    type?: ClsProxyFactoryReturnType;
 }
+
+export type ClsProxyFactoryReturnType = 'object' | 'function';
 
 export type ClsModuleProxyProviderOptions =
     | ClsModuleProxyClassProviderOptions

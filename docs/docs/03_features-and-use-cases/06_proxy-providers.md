@@ -153,11 +153,29 @@ class DogsService {
 
 Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
 
-### `typeof` Proxies is always `function`
+### `function` Proxies must be explicitly enabled
 
-In order to support injecting proxies of _functions_, the underlying proxy _target_ is an empty function, too. It must be this way in order to be able to implement the "apply" trap.
+In order to support injecting proxies of _functions_, the underlying proxy _target_ must be a function, too, in order to be able to implement the "apply" trap. However, this information cannot be extracted from the factory function itself, so if your factory returns a function, you must explicitly set the `type` property to `function` in the provider definition.
 
-As a result of this, calling `typeof` on an instance of a Proxy will always return `function`, regardless of the value it holds. This is fine for most applications, but must be taken into consideration in some cases - please see [Issue #82](https://github.com/Papooch/nestjs-cls/issues/82) for more info and possible workarounds.
+```ts
+{
+    provide: SOME_FUNCTION,
+    useFactory: () => {
+        return () => {
+            // do something
+        };
+    },
+    // highlight-start
+    type: 'function',
+    // highlight-end
+}
+```
+
+:::note
+
+In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider always returned `function`, regardless of the value it holds. This is no longer the case. Please see [Issue #82](https://github.com/Papooch/nestjs-cls/issues/82)
+
+:::
 
 ## Delayed resolution of Proxy Providers
 

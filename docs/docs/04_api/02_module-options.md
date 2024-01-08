@@ -55,6 +55,9 @@ The `ClsModuleProxyFactoryProviderOptions` interface further accepts:
 -   **_`useFactory:`_ `(...args: any[]) => any`**  
     Factory function that accepts an array of providers in the order of the according tokens in the `inject` array. Returns (or resolves with) an object (or a function) that will be used by this Proxy Provider.
 
+-   **_`type?:`_ `'function' | 'object'`**  
+     Whether the Proxy Provider should be a function or an object. Defaults to `'object'`. See [Caveats](../03_features-and-use-cases/06_proxy-providers.md#caveats) for more information.
+
 ## Middleware & Enhancer options
 
 All of the **`Cls{Middleware,Guard,Interceptor}Options`** take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
