@@ -20,14 +20,17 @@ export function Transactional<TAdapter>(
                 `The @Transactional decorator can be only used on functions, but ${propertyKey.toString()} is not a function.`,
             );
         }
-        descriptor.value = function (...args: any[]) {
+        descriptor.value = function (
+            this: { __transactionHost: TransactionHost },
+            ...args: any[]
+        ) {
             if (!this.__transactionHost) {
                 throw new Error(
                     `Failed to inject transaction host into ${target.constructor.name}`,
                 );
             }
-            return this.__transactionHost.startTransaction(
-                options,
+            return this.__transactionHost.withTransaction(
+                options as never,
                 original.bind(this, ...args),
             );
         };

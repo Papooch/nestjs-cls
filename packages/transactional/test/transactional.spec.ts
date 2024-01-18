@@ -60,13 +60,13 @@ class CallingService {
     }
 
     private async nestedStartTransaction(num: number) {
-        return this.txHost.startTransaction(async () => {
+        return this.txHost.withTransaction(async () => {
             return this.calledService.doWork(num);
         });
     }
 
     async startTransaction() {
-        return this.txHost.startTransaction(async () => {
+        return this.txHost.withTransaction(async () => {
             const q1 = await this.calledService.doWork(3);
             const q2 = await this.calledService.doOtherWork(4);
             return { q1, q2 };
@@ -74,7 +74,7 @@ class CallingService {
     }
 
     async startTransactionWithOptions() {
-        await this.txHost.startTransaction({ serializable: true }, async () => {
+        await this.txHost.withTransaction({ serializable: true }, async () => {
             await this.calledService.doWork(3);
             await this.calledService.doOtherWork(4);
         });
@@ -83,6 +83,16 @@ class CallingService {
     async withoutTransaction() {
         await this.calledService.doWork(5);
         await this.calledService.doOtherWork(6);
+    }
+
+    @Transactional()
+    async multipleNestedTransactions() {
+        await this.calledService.doWork(10);
+        await this.txHost.withTransaction(async () => {
+            await this.calledService.doWork(11);
+            await this.nestedDecorator(12);
+            await this.calledService.doWork(13);
+        });
     }
 }
 
@@ -202,6 +212,23 @@ describe('Transactional', () => {
             await callingService.withoutTransaction();
             const queries = mockDbConnection.getClientsQueries();
             expect(queries).toEqual([['SELECT 5'], ['SELECT 6']]);
+        });
+    });
+
+    describe('when using nested transactions', () => {
+        it('should start a transaction', async () => {
+            await callingService.multipleNestedTransactions();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                ['BEGIN TRANSACTION;', 'SELECT 10', 'COMMIT TRANSACTION;'],
+                [
+                    'BEGIN TRANSACTION;',
+                    'SELECT 11',
+                    'SELECT 13',
+                    'COMMIT TRANSACTION;',
+                ],
+                ['BEGIN TRANSACTION;', 'SELECT 12', 'COMMIT TRANSACTION;'],
+            ]);
         });
     });
 });

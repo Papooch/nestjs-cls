@@ -26,12 +26,12 @@ export class TransactionHost<TAdapter = never> {
         return this.cls.get(TRANSACTIONAL_CLIENT) ?? this._options.getClient();
     }
 
-    startTransaction<R>(fn: (...args: any[]) => Promise<R>): Promise<R>;
-    startTransaction<R>(
+    withTransaction<R>(fn: (...args: any[]) => Promise<R>): Promise<R>;
+    withTransaction<R>(
         options: TOptionsFromAdapter<TAdapter>,
         fn: (...args: any[]) => Promise<R>,
     ): Promise<R>;
-    startTransaction<R>(
+    withTransaction<R>(
         optionsOrFn: any,
         maybeFn?: (...args: any[]) => Promise<R>,
     ) {
