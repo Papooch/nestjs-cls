@@ -1,14 +1,16 @@
 import { Inject } from '@nestjs/common';
+import { TOptionsFromAdapter } from './interfaces';
 import { TransactionHost } from './transaction-host';
 
-export function Transactional<TOptions>(options?: TOptions) {
+export function Transactional<TAdapter>(
+    options?: TOptionsFromAdapter<TAdapter>,
+) {
     const injectTransactionHost = Inject(TransactionHost);
     return (
         target: any,
         propertyKey: string | symbol,
         descriptor: TypedPropertyDescriptor<(...args: any) => Promise<any>>,
     ) => {
-        console.log('target', target);
         if (!target.__transactionHost) {
             injectTransactionHost(target, '__transactionHost');
         }

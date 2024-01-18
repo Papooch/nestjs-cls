@@ -8,18 +8,35 @@ export class MockDbClient {
 
     async query(query: string) {
         this._operations.push(query);
-        return { rows: [] };
+        return { query };
     }
 }
 
 export class MockDbConnection {
+    clients: MockDbClient[] = [];
+
     getClient() {
-        return new MockDbClient();
+        const client = new MockDbClient();
+        this.clients.push(client);
+        return client;
+    }
+
+    getClientsQueries() {
+        return this.clients.map((c) => c.operations);
     }
 }
 
+export interface MockTransactionOptions {
+    serializable?: boolean;
+}
+
 export class MockTransactionAdapter
-    implements TransactionalAdapter<MockDbConnection, MockDbClient, any>
+    implements
+        TransactionalAdapter<
+            MockDbConnection,
+            MockDbClient,
+            MockTransactionOptions
+        >
 {
     connectionToken: any;
     constructor(options: { connectionToken: any }) {
@@ -27,20 +44,28 @@ export class MockTransactionAdapter
     }
     optionsFactory = (connection: MockDbConnection) => ({
         startTransaction: async (
-            options: any,
+            options: MockTransactionOptions | undefined,
             fn: (...args: any[]) => Promise<any>,
-            setClient: (client: any) => void,
+            setClient: (client?: MockDbClient) => void,
         ) => {
             const client = connection.getClient();
             setClient(client);
-            await client.query('BEGIN');
+            let beginQuery = 'BEGIN TRANSACTION;';
+            if (options?.serializable) {
+                beginQuery =
+                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; ' +
+                    beginQuery;
+            }
+            await client.query(beginQuery);
             try {
                 const result = await fn();
-                await client.query('COMMIT');
+                await client.query('COMMIT TRANSACTION;');
                 return result;
             } catch (e) {
-                await client.query('ROLLBACK');
+                await client.query('ROLLBACK TRANSACTION;');
                 throw e;
+            } finally {
+                setClient(undefined);
             }
         },
         getClient: () => {

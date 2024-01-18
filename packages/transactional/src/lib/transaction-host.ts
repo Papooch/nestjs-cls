@@ -8,7 +8,7 @@ import {
 import { TRANSACTIONAL_OPTIONS, TRANSACTIONAL_CLIENT } from './symbols';
 
 @Injectable()
-export class TransactionHost<TAdapter> {
+export class TransactionHost<TAdapter = never> {
     private cls = ClsServiceManager.getClsService();
 
     constructor(
@@ -18,6 +18,13 @@ export class TransactionHost<TAdapter> {
             TOptionsFromAdapter<TAdapter>
         >,
     ) {}
+
+    get client(): TClientFromAdapter<TAdapter> {
+        if (!this.cls.isActive()) {
+            return this._options.getClient();
+        }
+        return this.cls.get(TRANSACTIONAL_CLIENT) ?? this._options.getClient();
+    }
 
     startTransaction<R>(fn: (...args: any[]) => Promise<R>): Promise<R>;
     startTransaction<R>(
@@ -46,11 +53,7 @@ export class TransactionHost<TAdapter> {
         );
     }
 
-    private setClient(client: TClientFromAdapter<TAdapter>) {
+    private setClient(client?: TClientFromAdapter<TAdapter>) {
         this.cls.set(TRANSACTIONAL_CLIENT, client);
-    }
-
-    get client(): TClientFromAdapter<TAdapter> {
-        return this.cls.get(TRANSACTIONAL_CLIENT) ?? this._options.getClient();
     }
 }
