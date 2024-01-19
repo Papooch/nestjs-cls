@@ -1,11 +1,8 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
+import { ClsPluginTransactional, Transactional, TransactionHost } from '../src';
 import { MockDbConnection, MockTransactionAdapter } from './mockDbAdapter';
-
-import { ClsPluginTransactional } from '../src/lib/plugin-transactional';
-import { TransactionHost } from '../src/lib/transaction-host';
-import { Transactional } from '../src/lib/transactional.decorator';
 
 @Injectable()
 class CalledService {
