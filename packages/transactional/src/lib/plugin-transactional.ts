@@ -1,7 +1,10 @@
 import { Provider } from '@nestjs/common';
 import { ClsPlugin } from 'nestjs-cls';
 import { TransactionalPluginOptions } from './interfaces';
-import { TRANSACTIONAL_OPTIONS, TRANSACTION_CONNECTION } from './symbols';
+import {
+    TRANSACTIONAL_ADAPTER_OPTIONS,
+    TRANSACTION_CONNECTION,
+} from './symbols';
 import { TransactionHost } from './transaction-host';
 
 export class ClsPluginTransactional implements ClsPlugin {
@@ -18,7 +21,7 @@ export class ClsPluginTransactional implements ClsPlugin {
                 useExisting: options.adapter.connectionToken,
             },
             {
-                provide: TRANSACTIONAL_OPTIONS,
+                provide: TRANSACTIONAL_ADAPTER_OPTIONS,
                 inject: [TRANSACTION_CONNECTION],
                 useFactory: options.adapter.optionsFactory,
             },

@@ -1,16 +1,17 @@
-export interface TransactionalAdapterOptions<TClient, TOptions> {
-    startTransaction: (
+export interface TransactionalAdapterOptions<TTx, TOptions> {
+    wrapWithTransaction: (
         options: TOptions,
         fn: (...args: any[]) => Promise<any>,
-        setClient: (client?: TClient) => void,
+        setTx: (client?: TTx) => void,
     ) => Promise<any>;
-    getClient: () => TClient;
+    getFallbackInstance: () => TTx;
 }
 
-export type TransactionalOptionsAdapterFactory<TConnection, TClient, TOptions> =
-    (connection: TConnection) => TransactionalAdapterOptions<TClient, TOptions>;
+export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
+    connection: TConnection,
+) => TransactionalAdapterOptions<TTx, TOptions>;
 
-export interface TransactionalAdapter<TConnection, TClient, TOptions> {
+export interface TransactionalAdapter<TConnection, TTx, TOptions> {
     /**
      * Token used to inject the `connection` into the adapter.
      * It is later used to create transactions.
@@ -21,24 +22,27 @@ export interface TransactionalAdapter<TConnection, TClient, TOptions> {
      * Function that accepts the `connection` based on the `connectionToken`
      *
      * Returns an object implementing the `TransactionalAdapterOptions` interface
-     * with the `startTransaction` and `getClient` methods.
+     * with the `startTransaction` and `getTx` methods.
      */
     optionsFactory: TransactionalOptionsAdapterFactory<
         TConnection,
-        TClient,
+        TTx,
         TOptions
     >;
 }
 
-export interface TransactionalPluginOptions<TConnection, TClient, TOptions> {
-    adapter: TransactionalAdapter<TConnection, TClient, TOptions>;
+export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
+    adapter: TransactionalAdapter<TConnection, TTx, TOptions>;
     imports?: any[];
 }
 
-export type TClientFromAdapter<TAdapter> =
-    TAdapter extends TransactionalAdapter<any, infer TClient, any>
-        ? TClient
-        : never;
+export type TTxFromAdapter<TAdapter> = TAdapter extends TransactionalAdapter<
+    any,
+    infer TClient,
+    any
+>
+    ? TClient
+    : never;
 
 export type TOptionsFromAdapter<TAdapter> =
     TAdapter extends TransactionalAdapter<any, any, infer TOptions>

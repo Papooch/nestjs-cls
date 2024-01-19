@@ -2,24 +2,27 @@ import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { ClsPluginTransactional, Transactional, TransactionHost } from '../src';
-import { MockDbConnection, MockTransactionAdapter } from './mockDbAdapter';
+import {
+    MockDbConnection,
+    TransactionAdapterMock,
+} from './transaction-adapter-mock';
 
 @Injectable()
 class CalledService {
     constructor(
-        private readonly txHost: TransactionHost<MockTransactionAdapter>,
+        private readonly txHost: TransactionHost<TransactionAdapterMock>,
     ) {}
 
     async doWork(num: number) {
-        return this.txHost.client.query(`SELECT ${num}`);
+        return this.txHost.tx.query(`SELECT ${num}`);
     }
 
     async doOtherWork(num: number) {
-        return this.txHost.client.query(`SELECT ${num}`);
+        return this.txHost.tx.query(`SELECT ${num}`);
     }
 
     getPerformedOperations() {
-        return this.txHost.client.operations;
+        return this.txHost.tx.operations;
     }
 }
 
@@ -27,7 +30,7 @@ class CalledService {
 class CallingService {
     constructor(
         private readonly calledService: CalledService,
-        private readonly txHost: TransactionHost<MockTransactionAdapter>,
+        private readonly txHost: TransactionHost<TransactionAdapterMock>,
     ) {}
 
     @Transactional()
@@ -37,7 +40,7 @@ class CallingService {
         return { q1, q2 };
     }
 
-    @Transactional<MockTransactionAdapter>({ serializable: true })
+    @Transactional<TransactionAdapterMock>({ serializable: true })
     async transactionWithDecoratorWithOptions() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
@@ -105,7 +108,7 @@ class DbConnectionModule {}
             plugins: [
                 new ClsPluginTransactional({
                     imports: [DbConnectionModule],
-                    adapter: new MockTransactionAdapter({
+                    adapter: new TransactionAdapterMock({
                         connectionToken: MockDbConnection,
                     }),
                 }),
