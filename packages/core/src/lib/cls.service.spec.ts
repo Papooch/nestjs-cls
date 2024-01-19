@@ -49,7 +49,7 @@ describe('ClsService', () => {
             });
         });
         it('does not retrieve context in a different call (enter)', () => {
-            const runMe = (cb: () => void) => cb();
+            const runMe = (cb: () => void) => service.exit(cb);
             runMe(() => {
                 service.enter();
                 service.set('key', 123);
@@ -181,6 +181,17 @@ describe('ClsService', () => {
     });
 
     describe('nested contexts', () => {
+        it('inherits a copy of context by default', () => {
+            service.run(() => {
+                service.set('key', 'value');
+                service.run(() => {
+                    expect(service.get('key')).toEqual('value');
+                    service.set('key', 'value2');
+                });
+                expect(service.get('key')).toEqual('value');
+            });
+        });
+
         it('creates empty context with the "override" option', () => {
             service.run(() => {
                 service.set('key', 'value');
@@ -191,7 +202,7 @@ describe('ClsService', () => {
             });
         });
 
-        it('creates inherits a copy of context with the "inherit" option', () => {
+        it('inherits a copy of context with the "inherit" option', () => {
             service.run(() => {
                 service.set('key', 'value');
                 service.run({ ifNested: 'inherit' }, () => {
@@ -253,16 +264,21 @@ describe('ClsService', () => {
                 typedService.set('b.d.f', ['x']);
                 typedService.set('b.g', new Map());
                 typedService.set('b.h', { i: 'i', j: 1 });
+                // @ts-expect-error Argument of type '"b.q"' is not assignable to parameter of type 'symbol | "b.h" | "a" | "b" | "b.c" | "b.d" | "b.d.e" | "b.d.f" | "b.g"'.
+                typedService.set('b.q', { i: 'i', j: 1 });
 
                 const { a, b } = typedService.get();
                 a;
                 b;
 
                 typedService.get('a');
+                // @ts-expect-error Argument of type '"q"' is not assignable to parameter of type 'symbol | "b.h" | "a" | "b" | "b.c" | "b.d" | "b.d.e" | "b.d.f" | "b.g" | undefined'.
+                typedService.get('q');
                 typedService.get('b.c');
                 typedService.get('b.d');
                 typedService.get('b.d.e');
                 typedService.get('b.d.f')[0];
+                typedService.get('b.g').get('x');
                 typedService.get('b.g').get('x');
                 const { i, j } = typedService.get('b.h');
                 i;

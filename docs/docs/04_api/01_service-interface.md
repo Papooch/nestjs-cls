@@ -51,10 +51,17 @@ The `S` type parameter is used as the type of custom `ClsStore`.
 
 The `run` and `enter` methods can take an additional options object with the following settings:
 
--   **_`ifNested?:`_** `'override' | 'inherit' | 'reuse'`  
+-   **_`ifNested?:`_** `'inherit' | 'reuse' | 'override'`  
     Sets the behavior of nested CLS context creation in case the method is invoked in an existing context. It has no effect if no parent context exist.
-    -   `override` (default) - Run the callback with an new empty context.  
-        No values from the parent context will be accessible within the wrapped code.
-    -   `inherit` - Run the callback with a shallow copy of the parent context.  
+    -   `inherit` (default) - Run the callback with a shallow copy of the parent context.  
         Re-assignments of top-level properties will not be reflected in the parent context. However, modifications of existing properties _will_ be reflected.
-    -   `reuse` - Reuse existing context without creating a new one. All modifications to the existing context will be reflected.
+    -   `reuse` - Reuse existing context without creating a new one. All modifications to the
+        existing context will be reflected.
+    -   `override` - Run the callback with an new empty context.  
+        No values from the parent context will be accessible within the wrapped code.
+
+::: Note
+
+Until `v4`, the default behavior was `override`. This was changed to `inherit` since `v4` to make the behavior more intuitive.
+
+:::

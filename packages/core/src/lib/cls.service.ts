@@ -16,19 +16,19 @@ export class ClsContextOptions {
     /**
      * Sets the behavior of nested CLS context creation. Has no effect if no parent context exists.
      *
-     * `override` (default) - Run the callback with an new empty context.
-     * No values from the parent context will be accessible.
-     *
-     * `inherit` - Run the callback with a shallow copy of the parent context.
+     * `inherit` (default) - Run the callback with a shallow copy of the parent context.
      * Assignments to top-level properties will not be reflected in the parent context.
      *
      * `reuse` - Reuse existing context without creating a new one.
+     *
+     * `override` - Run the callback with an new empty context.
+     * Warning: No values from the parent context will be accessible.
      */
-    ifNested?: 'override' | 'inherit' | 'reuse' = 'override';
+    ifNested?: 'inherit' | 'reuse' | 'override' = 'inherit';
 }
 
 export class ClsService<S extends ClsStore = ClsStore> {
-    constructor(private readonly als: AsyncLocalStorage<any>) { }
+    constructor(private readonly als: AsyncLocalStorage<any>) {}
 
     /**
      * Set (or overrides) a value on the CLS context.
@@ -142,12 +142,12 @@ export class ClsService<S extends ClsStore = ClsStore> {
         }
         if (!this.isActive()) return this.runWith({} as S, callback);
         switch (options.ifNested) {
-            case 'override':
-                return this.runWith({} as S, callback);
             case 'inherit':
                 return this.runWith({ ...this.get() }, callback);
             case 'reuse':
                 return callback();
+            case 'override':
+                return this.runWith({} as S, callback);
         }
     }
 
@@ -168,14 +168,15 @@ export class ClsService<S extends ClsStore = ClsStore> {
     enter(): void;
     enter(options: ClsContextOptions): void;
     enter(maybeOptions?: ClsContextOptions) {
-        if (!maybeOptions || !this.isActive()) return this.als.enterWith({});
-        switch (maybeOptions.ifNested) {
-            case 'override':
-                return this.enterWith({} as S);
+        if (!this.isActive()) return this.als.enterWith({});
+        const options = { ...new ClsContextOptions(), ...maybeOptions };
+        switch (options.ifNested) {
             case 'inherit':
                 return this.enterWith({ ...this.get() });
             case 'reuse':
                 return;
+            case 'override':
+                return this.enterWith({} as S);
         }
     }
 
