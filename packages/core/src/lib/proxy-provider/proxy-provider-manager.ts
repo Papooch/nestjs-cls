@@ -15,6 +15,7 @@ import {
     ClsModuleProxyClassProviderOptions,
     ClsModuleProxyFactoryProviderOptions,
     ClsModuleProxyProviderOptions,
+    ClsProxyFactoryReturnType,
     ProxyClassProvider,
     ProxyFactoryProvider,
     ProxyProvider,
@@ -26,7 +27,10 @@ export class ProxyProviderManager {
 
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
         const providerSymbol = this.getProxyProviderSymbol(options);
-        const proxy = this.createProxy(providerSymbol);
+        const proxy = this.createProxy(
+            providerSymbol,
+            (options as ClsModuleProxyFactoryProviderOptions).type ?? 'object',
+        );
         const proxyProvider: FactoryProvider = {
             provide: this.getProxyProviderToken(options),
             inject: [
@@ -90,9 +94,13 @@ export class ProxyProviderManager {
         );
     }
 
-    private static createProxy(providerKey: symbol | string): any {
+    private static createProxy(
+        providerKey: symbol | string,
+        type: ClsProxyFactoryReturnType = 'object',
+    ): any {
         const getProvider = () => this.clsService.get()?.[providerKey] ?? {};
-        return new Proxy(() => null, {
+        const baseType = type === 'function' ? () => null : {};
+        return new Proxy(baseType, {
             apply(_, thisArg, argArray) {
                 return getProvider().apply(thisArg, argArray);
             },

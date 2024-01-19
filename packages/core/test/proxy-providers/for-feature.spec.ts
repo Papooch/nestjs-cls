@@ -282,12 +282,14 @@ describe('ClsModule', () => {
                     extraProviders: [SomeClass],
                     inject: [SomeClass],
                     useFactory: (some: SomeClass) => () => some,
+                    type: 'function',
                 }),
             ]);
             await cls.run(async () => {
                 await expect(
                     cls.resolveProxyProviders(),
                 ).resolves.not.toThrow();
+                expect(typeof app.get(TOKEN)).toBe('function');
                 expect(app.get(TOKEN)()).toBeInstanceOf(SomeClass);
             });
         });
