@@ -3572,6 +3572,7 @@ __metadata:
     typescript: ~4.8.0
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^"
+    "@prisma/client": "> 4 < 6"
     nestjs-cls: "workspace:^"
     prisma: "> 4 < 6"
   languageName: unknown

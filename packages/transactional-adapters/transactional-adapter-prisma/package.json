@@ -32,16 +32,16 @@
     "scripts": {
         "prepack": "cp ../../LICENSE ./LICENSE && cp ../../README.md ./README.md && yarn build",
         "prebuild": "rimraf dist",
-        "build": "tsc",
+        "build": "yarn prisma generate && tsc",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
         "@nestjs-cls/transactional": "workspace:^",
+        "@prisma/client": "> 4 < 6",
         "nestjs-cls": "workspace:^",
-        "prisma": "> 4 < 6",
-        "@prisma/client": "> 4 < 6"
+        "prisma": "> 4 < 6"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.0.2",
@@ -51,13 +51,13 @@
         "@nestjs/platform-express": "^10.0.0",
         "@nestjs/schematics": "^10.0.1",
         "@nestjs/testing": "^10.0.0",
+        "@prisma/client": "5.8.1",
         "@types/express": "^4.17.13",
         "@types/jest": "^28.1.2",
         "@types/node": "^18.0.0",
         "@types/supertest": "^2.0.12",
         "jest": "^28.1.1",
         "prisma": "^5.8.1",
-        "@prisma/client": "5.8.1",
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
         "rxjs": "^7.5.5",
