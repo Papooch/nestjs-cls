@@ -23,6 +23,7 @@
     ],
     "workspaces": [
         "packages/*",
+        "packages/transactional-adapters/*",
         "docs"
     ],
     "packageManager": "yarn@3.6.1",
