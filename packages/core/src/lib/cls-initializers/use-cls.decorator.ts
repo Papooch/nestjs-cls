@@ -51,6 +51,9 @@ export function UseCls<TArgs extends any[]>(
                 if (options.setup) {
                     await options.setup.apply(this, [cls, ...args]);
                 }
+                if (options.initializePlugins) {
+                    await cls.initializePlugins();
+                }
                 if (options.resolveProxyProviders) {
                     await cls.resolveProxyProviders();
                 }

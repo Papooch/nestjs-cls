@@ -16,6 +16,9 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
+import { ClsGuard } from './cls-initializers/cls.guard';
+import { ClsInterceptor } from './cls-initializers/cls.interceptor';
+import { ClsMiddleware } from './cls-initializers/cls.middleware';
 import { ClsServiceManager } from './cls-service-manager';
 import {
     CLS_GUARD_OPTIONS,
@@ -25,8 +28,6 @@ import {
     CLS_REQ,
     CLS_RES,
 } from './cls.constants';
-import { ClsGuard } from './cls-initializers/cls.guard';
-import { ClsInterceptor } from './cls-initializers/cls.interceptor';
 import {
     ClsGuardOptions,
     ClsInterceptorOptions,
@@ -34,8 +35,8 @@ import {
     ClsModuleAsyncOptions,
     ClsModuleOptions,
 } from './cls.options';
-import { ClsMiddleware } from './cls-initializers/cls.middleware';
 import { ClsService } from './cls.service';
+import { ClsPluginModule } from './plugin/cls-plugin.module';
 import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
 import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';
 
@@ -63,16 +64,9 @@ export class ClsModule implements NestModule {
     private static logger = new Logger(ClsModule.name);
 
     configure(consumer: MiddlewareConsumer) {
-        let options: ClsMiddlewareOptions;
-        try {
-            // if CLS_MIDDLEWARE_OPTIONS provider is available
-            // we are running configure, so we mount the middleware
-            options = this.moduleRef.get(CLS_MIDDLEWARE_OPTIONS);
-        } catch (e) {
-            // we are running forFeature import, so do not mount it
-            return;
-        }
+        if (!this.isForRootImport()) return;
 
+        const options = this.moduleRef.get(CLS_MIDDLEWARE_OPTIONS);
         const adapter = this.adapterHost.httpAdapter;
         let mountPoint = '*';
         if (adapter.constructor.name === 'FastifyAdapter') {
@@ -82,6 +76,16 @@ export class ClsModule implements NestModule {
         if (options.mount) {
             ClsModule.logger.debug('Mounting ClsMiddleware to ' + mountPoint);
             consumer.apply(ClsMiddleware).forRoutes(mountPoint);
+        }
+    }
+
+    private isForRootImport() {
+        // CLS_MODULE_OPTIONS is only available if the module is imported with `forRoot/Async`
+        try {
+            this.moduleRef.get(CLS_MODULE_OPTIONS);
+            return true;
+        } catch (e) {
+            return false;
         }
     }
 
@@ -99,6 +103,7 @@ export class ClsModule implements NestModule {
 
         return {
             module: ClsModule,
+            imports: [ClsPluginModule.forRoot(options.plugins)],
             providers: [
                 {
                     provide: CLS_MODULE_OPTIONS,
@@ -125,7 +130,10 @@ export class ClsModule implements NestModule {
 
         return {
             module: ClsModule,
-            imports: asyncOptions.imports,
+            imports: [
+                ...(asyncOptions.imports ?? []),
+                ClsPluginModule.forRoot(asyncOptions.plugins),
+            ],
             providers: [
                 {
                     provide: CLS_MODULE_OPTIONS,

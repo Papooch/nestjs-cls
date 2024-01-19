@@ -1,5 +1,6 @@
 import { ExecutionContext, ModuleMetadata, Type } from '@nestjs/common';
 import type { ClsService } from './cls.service';
+import { ClsPlugin } from './plugin/cls-plugin.interface';
 
 const getRandomString = () => Math.random().toString(36).slice(-8);
 
@@ -29,11 +30,16 @@ export class ClsModuleOptions {
      * Array of Proxy Provider classes to register
      */
     proxyProviders?: Type[];
+
+    /**
+     * Array of ClsPlugin instances to register
+     */
+    plugins?: ClsPlugin[];
 }
 
 export type ClsModuleFactoryOptions = Omit<
     ClsModuleOptions,
-    'global' | 'providers'
+    'global' | 'proxyProviders' | 'plugins'
 >;
 export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     inject?: any[];
@@ -50,6 +56,11 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
      * Array of Proxy Provider classes to register
      */
     proxyProviders?: Type[];
+
+    /**
+     * Array of ClsPlugin instances to register
+     */
+    plugins?: ClsPlugin[];
 }
 
 export class ClsMiddlewareOptions {
@@ -81,6 +92,14 @@ export class ClsMiddlewareOptions {
      * Default: `true`
      */
     resolveProxyProviders? = true;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `true`
+     */
+    initializePlugins? = true;
 
     /**
      * Whether to store the Request object to the CLS
@@ -138,6 +157,14 @@ export class ClsGuardOptions {
      * Default: `true`
      */
     resolveProxyProviders? = true;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `true`
+     */
+    initializePlugins? = true;
 }
 
 export class ClsInterceptorOptions {
@@ -173,6 +200,14 @@ export class ClsInterceptorOptions {
      * Default: `true`
      */
     resolveProxyProviders? = true;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `true`
+     */
+    initializePlugins? = true;
 }
 
 export class ClsDecoratorOptions<T extends any[]> {
@@ -207,6 +242,14 @@ export class ClsDecoratorOptions<T extends any[]> {
      * Default: `false`
      */
     resolveProxyProviders? = false;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `false`
+     */
+    initializePlugins? = false;
 }
 
 export interface ClsStore {
