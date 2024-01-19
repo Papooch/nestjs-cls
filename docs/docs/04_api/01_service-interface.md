@@ -47,6 +47,9 @@ The `S` type parameter is used as the type of custom `ClsStore`.
 -   **_`resolveProxyProviders`_**`(): Promise<void>`  
     Manually trigger resolution of Proxy Providers.
 
+-   **_`initializePlugins`_**`(): Promise<void>`  
+    Manually trigger `onClsInit` hooks of registered plugins.
+
 ## ClsContextOptions
 
 The `run` and `enter` methods can take an additional options object with the following settings:

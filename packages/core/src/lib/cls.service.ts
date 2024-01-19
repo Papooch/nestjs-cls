@@ -217,4 +217,11 @@ export class ClsService<S extends ClsStore = ClsStore> {
         );
         await ProxyProviderManager.resolveProxyProviders();
     }
+
+    async initializePlugins() {
+        const { ClsPluginManager } = await import(
+            './plugin/cls-plugin-manager'
+        );
+        await ClsPluginManager.onClsInit();
+    }
 }
