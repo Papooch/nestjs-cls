@@ -1,4 +1,5 @@
 import { Inject } from '@nestjs/common';
+import { copyMethodMetadata } from 'nestjs-cls';
 import { TOptionsFromAdapter } from './interfaces';
 import { TransactionHost } from './transaction-host';
 
@@ -34,23 +35,6 @@ export function Transactional<TAdapter>(
                 original.bind(this, ...args),
             );
         };
-        copyMetadata(original, descriptor.value);
+        copyMethodMetadata(original, descriptor.value);
     };
-}
-
-/**
- * Copies all metadata from one object to another.
- * Useful for overwriting function definition in
- * decorators while keeping all previously
- * attached metadata
- *
- * @param from object to copy metadata from
- * @param to object to copy metadata to
- */
-function copyMetadata(from: any, to: any) {
-    const metadataKeys = Reflect.getMetadataKeys(from);
-    metadataKeys.map((key) => {
-        const value = Reflect.getMetadata(key, from);
-        Reflect.defineMetadata(key, value, to);
-    });
 }
