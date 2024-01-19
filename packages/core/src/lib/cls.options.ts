@@ -94,6 +94,14 @@ export class ClsMiddlewareOptions {
     resolveProxyProviders? = true;
 
     /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `true`
+     */
+    initializePlugins? = true;
+
+    /**
      * Whether to store the Request object to the CLS
      * It will be available under the CLS_REQ key
      */
@@ -149,6 +157,14 @@ export class ClsGuardOptions {
      * Default: `true`
      */
     resolveProxyProviders? = true;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `true`
+     */
+    initializePlugins? = true;
 }
 
 export class ClsInterceptorOptions {
@@ -184,6 +200,14 @@ export class ClsInterceptorOptions {
      * Default: `true`
      */
     resolveProxyProviders? = true;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `true`
+     */
+    initializePlugins? = true;
 }
 
 export class ClsDecoratorOptions<T extends any[]> {
@@ -218,6 +242,14 @@ export class ClsDecoratorOptions<T extends any[]> {
      * Default: `false`
      */
     resolveProxyProviders? = false;
+
+    /**
+     * Whether to run the onClsInit hook for plugins as a part
+     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     *
+     * Default: `false`
+     */
+    initializePlugins? = false;
 }
 
 export interface ClsStore {
