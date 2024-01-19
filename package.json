@@ -27,9 +27,9 @@
     ],
     "packageManager": "yarn@3.6.1",
     "scripts": {
-        "test": "yarn workspaces foreach run test",
-        "build": "yarn workspaces foreach run build",
-        "format": "prettier --write \"packages/**/*.ts\" \"test/**/*.ts\"",
+        "test": "yarn workspaces foreach --topological-dev run test",
+        "build": "yarn workspaces foreach --topological-dev run build",
+        "format": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint \"packages/**/*.ts\"",
         "lint:fix": "eslint \"packages/**/*.ts\" --fix",
         "depcruise": "yarn depcruise packages --include-only \"^packages/.*/src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | yarn depcruise-wrap-stream-in-html > dependency-graph.html"
