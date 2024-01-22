@@ -4674,9 +4674,9 @@ __metadata:
     tsconfig-paths: "npm:^4.0.0"
     typescript: "npm:~4.8.0"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^1"
+    "@nestjs-cls/transactional": "workspace:^1.0.1"
     knex: ^3
-    nestjs-cls: "workspace:^4"
+    nestjs-cls: "workspace:^4.0.1"
   languageName: unknown
   linkType: soft
 
