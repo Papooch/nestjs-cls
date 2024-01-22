@@ -35,7 +35,7 @@
     "scripts": {
         "prepack": "cp ../../../LICENSE ./LICENSE",
         "prebuild": "rimraf dist",
-        "build": "yarn prisma generate && tsc",
+        "build": "tsc",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage"
