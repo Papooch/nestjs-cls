@@ -30,7 +30,7 @@ export interface MockTransactionOptions {
     serializable?: boolean;
 }
 
-export class MockTransactionAdapter
+export class TransactionAdapterMock
     implements
         TransactionalAdapter<
             MockDbConnection,
@@ -43,13 +43,13 @@ export class MockTransactionAdapter
         this.connectionToken = options.connectionToken;
     }
     optionsFactory = (connection: MockDbConnection) => ({
-        startTransaction: async (
+        wrapWithTransaction: async (
             options: MockTransactionOptions | undefined,
             fn: (...args: any[]) => Promise<any>,
-            setClient: (client?: MockDbClient) => void,
+            setTxInstance: (client?: MockDbClient) => void,
         ) => {
             const client = connection.getClient();
-            setClient(client);
+            setTxInstance(client);
             let beginQuery = 'BEGIN TRANSACTION;';
             if (options?.serializable) {
                 beginQuery =
@@ -64,11 +64,9 @@ export class MockTransactionAdapter
             } catch (e) {
                 await client.query('ROLLBACK TRANSACTION;');
                 throw e;
-            } finally {
-                setClient(undefined);
             }
         },
-        getClient: () => {
+        getFallbackInstance: () => {
             return connection.getClient();
         },
     });
