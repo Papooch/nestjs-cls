@@ -1,11 +1,14 @@
 {
     "name": "@nestjs-cls/transactional",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "A nestjs-cls plugin for transactional decorators",
     "author": "papooch",
     "license": "MIT",
     "engines": {
-        "node": ">=12.17.0"
+        "node": ">=16"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "repository": {
         "type": "git",
