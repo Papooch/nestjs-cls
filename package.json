@@ -37,7 +37,7 @@
     },
     "devDependencies": {
         "@goldstack/utils-typescript-references": "^0.3.9",
-        "@monodeploy/plugin-github": "^1.1.1",
+        "@monodeploy/plugin-github": "^2.0.1",
         "@tophat/conventional-changelog-config": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "^5.28.0",
         "@typescript-eslint/parser": "^5.28.0",
@@ -45,7 +45,7 @@
         "eslint": "^8.18.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-prettier": "^4.0.0",
-        "monodeploy": "^4.2.0",
+        "monodeploy": "^5.0.1",
         "prettier": "^2.7.1",
         "typescript": "~4.8.0"
     }
