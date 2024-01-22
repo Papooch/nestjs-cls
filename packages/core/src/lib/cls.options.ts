@@ -63,27 +63,26 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     plugins?: ClsPlugin[];
 }
 
-export class ClsMiddlewareOptions {
+export class ClsContextOptions {
     /**
-     * whether to mount the middleware to every route
+     * Sets the behavior of nested CLS context creation. Has no effect if no parent context exists.
+     *
+     * `inherit` (default) - Run the callback with a shallow copy of the parent context.
+     * Assignments to top-level properties will not be reflected in the parent context.
+     *
+     * `reuse` - Reuse existing context without creating a new one.
+     *
+     * `override` - Run the callback with an new empty context.
+     * Warning: No values from the parent context will be accessible.
      */
-    mount?: boolean; // default false
+    ifNested?: 'inherit' | 'reuse' | 'override' = 'inherit';
+}
 
+export class ClsInitializerCommonOptions {
     /**
      * whether to automatically generate request ids
      */
     generateId?: boolean; // default false
-
-    /**
-     * the function to generate request ids inside the middleware
-     */
-    idGenerator?: (req: any) => string | Promise<string> = getRandomString;
-
-    /**
-     * Function that executes after the CLS context has been initialised.
-     * It can be used to put additional variables in the CLS context.
-     */
-    setup?: (cls: ClsService, req: any, res: any) => void | Promise<void>;
 
     /**
      * Whether to resolve proxy providers as a part
@@ -100,6 +99,24 @@ export class ClsMiddlewareOptions {
      * Default: `true`
      */
     initializePlugins? = true;
+}
+
+export class ClsMiddlewareOptions extends ClsInitializerCommonOptions {
+    /**
+     * whether to mount the middleware to every route
+     */
+    mount?: boolean; // default false
+
+    /**
+     * the function to generate request ids for the CLS context
+     */
+    idGenerator?: (req: any) => string | Promise<string> = getRandomString;
+
+    /**
+     * Function that executes after the CLS context has been initialized.
+     * It can be used to put additional variables in the CLS context.
+     */
+    setup?: (cls: ClsService, req: any, res: any) => void | Promise<void>;
 
     /**
      * Whether to store the Request object to the CLS
@@ -124,16 +141,11 @@ export class ClsMiddlewareOptions {
     useEnterWith? = false;
 }
 
-export class ClsGuardOptions {
+export class ClsGuardOptions extends ClsInitializerCommonOptions {
     /**
      * whether to mount the guard globally
      */
     mount?: boolean; // default false
-
-    /**
-     * whether to automatically generate request ids
-     */
-    generateId?: boolean; // default false
 
     /**
      * the function to generate request ids inside the guard
@@ -149,34 +161,13 @@ export class ClsGuardOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
-
-    /**
-     * Whether to resolve proxy providers as a part
-     * of the CLS context registration
-     *
-     * Default: `true`
-     */
-    resolveProxyProviders? = true;
-
-    /**
-     * Whether to run the onClsInit hook for plugins as a part
-     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
-     *
-     * Default: `true`
-     */
-    initializePlugins? = true;
 }
 
-export class ClsInterceptorOptions {
+export class ClsInterceptorOptions extends ClsInitializerCommonOptions {
     /**
      * whether to mount the interceptor globally
      */
     mount?: boolean; // default false
-
-    /**
-     * whether to automatically generate request ids
-     */
-    generateId?: boolean; // default false
 
     /**
      * the function to generate request ids inside the interceptor
@@ -192,64 +183,48 @@ export class ClsInterceptorOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
-
-    /**
-     * Whether to resolve proxy providers as a part
-     * of the CLS context registration
-     *
-     * Default: `true`
-     */
-    resolveProxyProviders? = true;
-
-    /**
-     * Whether to run the onClsInit hook for plugins as a part
-     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
-     *
-     * Default: `true`
-     */
-    initializePlugins? = true;
 }
 
-export class ClsDecoratorOptions<T extends any[]> {
+export class ClsDecoratorOptions<
+    T extends any[],
+> extends ClsInitializerCommonOptions {
     /**
-     * Whether to automatically generate request ids
+     * Additional options for the `ClsService#run` method.
      */
-    generateId?: boolean; // default false
+    runOptions?: ClsContextOptions;
 
     /**
      * The function to generate request ids inside the interceptor.
      *
      * Takes the same parameters in the same order as the decorated function.
      *
+     * If you use a `function` expression, it will executed with the `this` context of the decorated class instance.
+     * to get type safety, use:
+     *
+     * `idGenerator: function (this: MyClass, ...args) { ... }`
+     *
      * Note: To avoid type errors, you must list all parameters, even if they're not used,
-     * or type the decorator as `@UseCls<[arg1: Type1, arg2: Type2]>()`
+     * or type the decorator as:
+     *
+     * `@UseCls<[arg1: Type1, arg2: Type2]>()`
      */
     idGenerator?: (...args: T) => string | Promise<string> = getRandomString;
 
     /**
-     * Function that executes after the CLS context has been initialised.
+     * Function that executes after the CLS context has been initialized.
      * Takes ClsService as the first parameter and then the same parameters in the same order as the decorated function.
      *
+     * If you use a `function` expression, it will executed with the `this` context of the decorated class instance.
+     * to get type safety, use:
+     *
+     * `setup: function (this: MyClass, cls: ClsService, ...args) { ... }`
+     *
      * Note: To avoid type errors, you must list all parameters, even if they're not used,
-     * or type the decorator as `@UseCls<[arg1: Type1, arg2: Type2]>()`
+     * or type the decorator as:
+     *
+     * `@UseCls<[arg1: Type1, arg2: Type2]>()`
      */
     setup?: (cls: ClsService, ...args: T) => void | Promise<void>;
-
-    /**
-     * Whether to resolve proxy providers as a part
-     * of the CLS context registration
-     *
-     * Default: `false`
-     */
-    resolveProxyProviders? = false;
-
-    /**
-     * Whether to run the onClsInit hook for plugins as a part
-     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
-     *
-     * Default: `false`
-     */
-    initializePlugins? = false;
 }
 
 export interface ClsStore {
