@@ -75,7 +75,7 @@ class UserService {
 @Injectable()
 class UserRepository {
     constructor(
-        private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+        private readonly txHost: TransactionHost<TransactionalAdapterKnex>,
     ) {}
 
     async getUserById(id: number) {
