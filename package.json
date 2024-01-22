@@ -26,10 +26,10 @@
         "packages/transactional-adapters/*",
         "docs"
     ],
-    "packageManager": "yarn@3.6.1",
+    "packageManager": "yarn@4.0.2",
     "scripts": {
-        "test": "yarn workspaces foreach --topological-dev run test",
-        "build": "yarn workspaces foreach --topological-dev --exclude nestjs-cls-docs run build",
+        "test": "yarn workspaces foreach --all --topological-dev run test",
+        "build": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build",
         "format": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint \"packages/**/*.ts\"",
         "lint:fix": "eslint \"packages/**/*.ts\" --fix",
