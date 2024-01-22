@@ -24,6 +24,6 @@ jobs:
           node-version: ${{ matrix.node }}.x
           cache: npm
       - run: yarn
-      - run: yarn workspace nestjs-cls build
+      - run: yarn build
       - run: yarn lint
       - run: yarn test

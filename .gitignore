@@ -4,7 +4,7 @@ node_modules
 package.tgz
 
 # temporary files
-/tmp
+tmp
 gqlschema.gql
 
 # Logs

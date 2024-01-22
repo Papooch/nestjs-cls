@@ -27,6 +27,9 @@
     },
     {
       "path": "packages/transactional"
+    },
+    {
+      "path": "packages/transactional-adapters/transactional-adapter-prisma"
     }
   ]
 }
