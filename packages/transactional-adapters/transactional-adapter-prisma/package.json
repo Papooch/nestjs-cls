@@ -41,9 +41,9 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^1.0.1",
+        "@nestjs-cls/transactional": "workspace:^1",
         "@prisma/client": "> 4 < 6",
-        "nestjs-cls": "workspace:^4.0.1",
+        "nestjs-cls": "workspace:^4",
         "prisma": "> 4 < 6"
     },
     "devDependencies": {
