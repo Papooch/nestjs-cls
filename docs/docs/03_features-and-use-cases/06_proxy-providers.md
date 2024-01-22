@@ -226,7 +226,7 @@ export class CronController {
 
 #### With @UseCls()
 
-The `resolveProxyProviders` is set to `false` by default on the `@UseCls` decorator. To achieve the same behavior using it, you must set it to `true`.
+Since the `@UseCls()` decorator wraps the function body with `cls.run()` automatically, you can use the `setup` function to prepare the context.
 
 The Proxy Providers will be resolved after the `setup` phase.
 
@@ -238,9 +238,8 @@ export class CronController {
     @Cron('45 * * * * *')
     @UseCls({
         // highlight-start
-        resolveProxyProviders: true,
         setup: (cls) => {
-            this.cls.set('some-key', 'some-value');
+            cls.set('some-key', 'some-value');
         },
         // highlight-end
     })

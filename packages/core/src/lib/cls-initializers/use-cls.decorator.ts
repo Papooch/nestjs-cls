@@ -44,7 +44,7 @@ export function UseCls<TArgs extends any[]>(
             );
         }
         descriptor.value = function (...args: TArgs) {
-            return cls.run(async () => {
+            return cls.run(options.runOptions ?? {}, async () => {
                 if (options.generateId) {
                     const id = await options.idGenerator?.apply(this, args);
                     cls.set<string>(CLS_ID, id);
