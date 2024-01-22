@@ -83,7 +83,7 @@ class UserService {
 const knex = Knex({
     client: 'sqlite',
     connection: {
-        filename: 'memory:',
+        filename: 'test.db',
     },
     useNullAsDefault: true,
     pool: { min: 1, max: 2 },
