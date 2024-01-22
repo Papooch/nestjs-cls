@@ -29,6 +29,9 @@
       "path": "packages/transactional"
     },
     {
+      "path": "packages/transactional-adapters/transactional-adapter-knex"
+    },
+    {
       "path": "packages/transactional-adapters/transactional-adapter-prisma"
     }
   ]
