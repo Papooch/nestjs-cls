@@ -4667,9 +4667,9 @@ __metadata:
     tsconfig-paths: "npm:^4.0.0"
     typescript: "npm:~4.8.0"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^"
+    "@nestjs-cls/transactional": "workspace:^1.0.1"
     "@prisma/client": "> 4 < 6"
-    nestjs-cls: "workspace:^"
+    nestjs-cls: "workspace:^4.0.1"
     prisma: "> 4 < 6"
   languageName: unknown
   linkType: soft
@@ -4697,7 +4697,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": "> 7.0.0 < 11"
     "@nestjs/core": "> 7.0.0 < 11"
-    nestjs-cls: "workspace:^"
+    nestjs-cls: "workspace:^4.0.1"
     reflect-metadata: "*"
     rxjs: ">= 7"
   languageName: unknown
