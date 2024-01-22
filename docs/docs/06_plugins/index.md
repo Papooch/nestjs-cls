@@ -20,8 +20,8 @@ ClsModule.forRoot({
 
 ## Available plugins
 
-For a list of plugins managed by the author of `nestjs-cls`, see the [Available Plugins](./02_available-plugins/index.md) page.
+For a list of plugins managed by the author of `nestjs-cls`, see the [Available Plugins](./01_available-plugins/index.md) page.
 
 ## Creating a plugin
 
-To create a custom plugin, see the [Plugin API](./01_plugin-api.md) reference.
+To create a custom plugin, see the [Plugin API](./02_plugin-api.md) reference.
