@@ -10,22 +10,7 @@ import {
 } from '../types/type-if-type.type';
 import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
-import type { ClsStore } from './cls.options';
-
-export class ClsContextOptions {
-    /**
-     * Sets the behavior of nested CLS context creation. Has no effect if no parent context exists.
-     *
-     * `inherit` (default) - Run the callback with a shallow copy of the parent context.
-     * Assignments to top-level properties will not be reflected in the parent context.
-     *
-     * `reuse` - Reuse existing context without creating a new one.
-     *
-     * `override` - Run the callback with an new empty context.
-     * Warning: No values from the parent context will be accessible.
-     */
-    ifNested?: 'inherit' | 'reuse' | 'override' = 'inherit';
-}
+import { ClsContextOptions, ClsStore } from './cls.options';
 
 export class ClsService<S extends ClsStore = ClsStore> {
     constructor(private readonly als: AsyncLocalStorage<any>) {}
