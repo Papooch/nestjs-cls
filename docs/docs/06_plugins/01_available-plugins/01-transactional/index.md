@@ -38,7 +38,8 @@ The plugin works in conjunction with various adapters that provide the actual tr
 
 Adapters for the following libraries are available:
 
--   Prisma (see [prisma-adapter](./01-prisma-adapter.md))
+-   Prisma (see [@nestjs-cls/transactional-adapter-prisma](./01-prisma-adapter.md))
+-   Knex (see [@nestjs-cls/transactional-adapter-knex](./02-knex-adapter.md))
 
 Adapters _will not_ be implemented for the following libraries:
 
