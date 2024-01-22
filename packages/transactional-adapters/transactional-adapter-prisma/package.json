@@ -30,7 +30,7 @@
         "dist/src/**/!(*.spec).js"
     ],
     "scripts": {
-        "prepack": "cp ../../LICENSE ./LICENSE && cp ../../README.md ./README.md && yarn build",
+        "prepack": "cp ../../../LICENSE ./LICENSE",
         "prebuild": "rimraf dist",
         "build": "yarn prisma generate && tsc",
         "test": "jest",

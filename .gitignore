@@ -50,4 +50,4 @@ lerna-debug.log*
 
 # Automatically copied files
 packages/**/LICENSE
-packages/**/README.md
+packages/core/README.md

@@ -18,7 +18,7 @@ Some common use cases that this library enables include:
 -   Keeping track of the user throughout the whole request
 -   Making the dynamic Tenant database connection available everywhere in multi-tenant apps
 -   Propagating the authentication level or role to restrict access to resources
--   Seamlessly propagating the `transaction` object of your favourite ORM across services without breaking encapsulation and isolation by explicitly passing it around.
+-   Seamlessly propagating database transaction across services without breaking encapsulation and isolation by explicitly passing it around (**Now available with the [Transactional plugin](../06_plugins/01_available-plugins/01-transactional/index.md)**)
 -   Using "request" context in cases where actual REQUEST-scoped providers are not supported (passport strategies, cron controllers, websocket gateways, ...)
 
 Most of these are to some extent solvable using _REQUEST-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
@@ -43,7 +43,7 @@ _Also, if you use some tracing library (like `otel`), it most likely already use
 
 ## Highlights
 
-> **New** Version `4.0` brings support for [Plugins](!!) which enable pre-built integrations with other libraries and frameworks. (See [Migration guide](../10_migration-guide/01_v3x-v4x.md) for breaking changes).
+> **New** Version `4.0` brings support for [Plugins](../06_plugins/index.md) which enable pre-built integrations with other libraries and frameworks. (See [Migration guide](../10_migration-guide/01_v3x-v4x.md) for breaking changes).
 
 > Version `3.0` introduces [_Proxy Providers_](../03_features-and-use-cases/06_proxy-providers.md) as an alternative to the imperative API. (Minor breaking changes were introduced, see [Migration guide](../10_migration-guide/01_v2x-v3x.md)).
 
