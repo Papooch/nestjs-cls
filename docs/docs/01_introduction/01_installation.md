@@ -6,21 +6,21 @@ import TabItem from '@theme/TabItem';
 Install as any other NPM package using your favorite package manager.
 
 <Tabs>
-<TabItem value="apple" label="npm" default>
+<TabItem value="npm" label="npm" default>
 
 ```sh
 npm install nestjs-cls
 ```
 
 </TabItem>
-<TabItem value="orange" label="yarn">
+<TabItem value="yarn" label="yarn">
 
 ```sh
 yarn add nestjs-cls
 ```
 
 </TabItem>
-<TabItem value="banana" label="pnpm">
+<TabItem value="pnpm" label="pnpm">
 
 ```sh
 pnpm add nestjs-cls
