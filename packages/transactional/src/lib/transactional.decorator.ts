@@ -1,13 +1,32 @@
 import { Inject } from '@nestjs/common';
 import { copyMethodMetadata } from 'nestjs-cls';
 import { TOptionsFromAdapter } from './interfaces';
+import { Propagation } from './propagation';
 import { TransactionHost } from './transaction-host';
 
 export function Transactional<TAdapter>(
     options?: TOptionsFromAdapter<TAdapter>,
-) {
+): MethodDecorator;
+export function Transactional<TAdapter>(
+    propagation: Propagation,
+    options?: TOptionsFromAdapter<TAdapter>,
+): MethodDecorator;
+export function Transactional(
+    optionsOrPropagation?: any,
+    maybeOptions?: any,
+): MethodDecorator {
+    let options: any;
+    let propagation: Propagation | undefined;
+    if (maybeOptions) {
+        options = maybeOptions;
+        propagation = optionsOrPropagation;
+    } else if (typeof optionsOrPropagation === 'string') {
+        propagation = optionsOrPropagation as Propagation;
+    } else {
+        options = optionsOrPropagation;
+    }
     const injectTransactionHost = Inject(TransactionHost);
-    return (
+    return ((
         target: any,
         propertyKey: string | symbol,
         descriptor: TypedPropertyDescriptor<(...args: any) => Promise<any>>,
@@ -31,10 +50,11 @@ export function Transactional<TAdapter>(
                 );
             }
             return this.__transactionHost.withTransaction(
+                propagation as Propagation,
                 options as never,
                 original.bind(this, ...args),
             );
         };
         copyMethodMetadata(original, descriptor.value);
-    };
+    }) as MethodDecorator;
 }

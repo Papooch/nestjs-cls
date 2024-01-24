@@ -109,7 +109,7 @@ export class TransactionHost<TAdapter = never> {
         secondParam?: any,
         thirdParam?: (...args: any[]) => Promise<R>,
     ) {
-        let propagation: string = Propagation.Required;
+        let propagation: string;
         let options: any;
         let fn: (...args: any[]) => Promise<R>;
         if (thirdParam) {
@@ -126,6 +126,7 @@ export class TransactionHost<TAdapter = never> {
         } else {
             fn = firstParam;
         }
+        propagation ??= Propagation.Required;
         return this.decidePropagationAndRun(propagation, options, fn);
     }
 
