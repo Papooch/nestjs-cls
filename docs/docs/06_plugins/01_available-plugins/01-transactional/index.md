@@ -8,6 +8,8 @@ a CLS-enabled transaction by storing the transaction reference in the CLS contex
 
 The transaction reference can be then retrieved in any other service and refer to the same transaction without having to pass it around.
 
+The plugin is designed to be database-agnostic and can be used with any database library that supports transactions (via adapters). At the expense of using a [minimal wrapper](#using-the-transactionhost), it deliberately **does not require any monkey-patching** of the underlying library.
+
 ## Installation
 
 <Tabs>
