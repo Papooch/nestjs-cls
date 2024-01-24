@@ -4,13 +4,25 @@ import { TOptionsFromAdapter } from './interfaces';
 import { Propagation } from './propagation';
 import { TransactionHost } from './transaction-host';
 
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param options Transaction options depending on the adapter.
+ */
 export function Transactional<TAdapter>(
     options?: TOptionsFromAdapter<TAdapter>,
 ): MethodDecorator;
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param propagation The propagation mode to use, @see{Propagation}.
+ * @param options Transaction options depending on the adapter.
+ */
 export function Transactional<TAdapter>(
     propagation: Propagation,
     options?: TOptionsFromAdapter<TAdapter>,
 ): MethodDecorator;
+
 export function Transactional(
     optionsOrPropagation?: any,
     maybeOptions?: any,

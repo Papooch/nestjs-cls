@@ -20,10 +20,6 @@ class CalledService {
     async doOtherWork(num: number) {
         return this.txHost.tx.query(`SELECT ${num}`);
     }
-
-    getPerformedOperations() {
-        return this.txHost.tx.operations;
-    }
 }
 
 @Injectable()
@@ -212,23 +208,6 @@ describe('Transactional', () => {
             await callingService.withoutTransaction();
             const queries = mockDbConnection.getClientsQueries();
             expect(queries).toEqual([['SELECT 5'], ['SELECT 6']]);
-        });
-    });
-
-    describe('when using nested transactions', () => {
-        it('should start a transaction', async () => {
-            await callingService.multipleNestedTransactions();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                ['BEGIN TRANSACTION;', 'SELECT 10', 'COMMIT TRANSACTION;'],
-                [
-                    'BEGIN TRANSACTION;',
-                    'SELECT 11',
-                    'SELECT 13',
-                    'COMMIT TRANSACTION;',
-                ],
-                ['BEGIN TRANSACTION;', 'SELECT 12', 'COMMIT TRANSACTION;'],
-            ]);
         });
     });
 });

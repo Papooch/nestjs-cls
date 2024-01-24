@@ -7,6 +7,7 @@ import {
 } from './interfaces';
 import {
     Propagation,
+    TransactionAlreadyActiveError,
     TransactionNotActiveError,
     TransactionPropagationError,
 } from './propagation';
@@ -169,7 +170,7 @@ export class TransactionHost<TAdapter = never> {
                 return fn();
             case Propagation.Never:
                 if (this.isTransactionActive()) {
-                    throw new TransactionNotActiveError(fnName);
+                    throw new TransactionAlreadyActiveError(fnName);
                 }
                 return this.runWithTransaction(options, fn);
             default:
