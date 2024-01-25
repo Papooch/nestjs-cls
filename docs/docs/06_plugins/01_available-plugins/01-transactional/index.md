@@ -117,7 +117,7 @@ class UserService {
 }
 ```
 
-```ts title="user.service.ts"
+```ts title="account.service.ts"
 @Injectable()
 class AccountService {
     constructor(
@@ -163,7 +163,9 @@ class UserService {
 
 ### Passing transaction options
 
-The both the `withTransaction` method and the `Transactional` decorator accepts an optional `TransactionOptions` object as the first argument. This object can be used to configure the transaction, for example to set the isolation level or the timeout. The type is also provided by the adapter.
+The both the `withTransaction` method and the `Transactional` decorator accepts an optional `TransactionOptions` object as the first argument. This object can be used to configure the transaction, for example to set the isolation level or the timeout.
+
+The type of the object is provided by the adapter, so to enforce the correct type, you need to pass the adapter type argument to the `TransactionHost` or to the `Transactional` decorator.
 
 ```ts
 // highlight-start
@@ -188,6 +190,81 @@ async createUser(name: string): Promise<User> {
 }
 ```
 
+### Transaction propagation
+
+Similar to how the `@Transactional` decorator work in [Spring](https://www.baeldung.com/spring-transactional-propagation-isolation) and other similar frameworks. The `@Transactional` decorator and the `withTransaction` method accept an optional `propagation` option as the _first parameter_ which can be used to configure how the transaction should be propagated.
+
+The propagation option is controlled by the `Propagation` enum, which has the following values:
+
+-   **_`Required`_**:
+    (**default**) Reuse the existing transaction or create a new one if none exists.
+
+-   **_`RequiresNew`_**:
+    Create a new transaction even if one already exists.
+
+-   **_`NotSupported`_**:
+    Run without a transaction even if one exists.
+
+-   **_`Mandatory`_**:
+    Reuse an existing transaction, throw an exception otherwise
+
+-   **_`Never`_**:
+    Throw an exception if an existing transaction exists, otherwise create a new one
+
+This parameter comes _before_ the `TransactionOptions` object, if one is provided. The default behavior when a nested transaction decorator is encountered if no propagation option is provided, is to reuse the existing transaction or create a new one if none exists, which is the same as the `Required` propagation option.
+
+Example:
+
+```ts title="user.service.ts"
+@Injectable()
+class UserService {
+    constructor(
+        private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+        private readonly accountService: AccountService,
+    ) {}
+
+    @Transactional(
+        // highlight-start
+        // Propagation.RequiresNew will always create a new transaction
+        // even if one already exists.
+        Propagation.RequiresNew,
+        // highlight-end
+    )
+    async createUser(name: string): Promise<User> {
+        const user = await this.txHost.tx.user.create({ data: { name } });
+        await this.accountService.createAccountForUser(user.id);
+        return user;
+    }
+}
+```
+
+```ts title="account.service.ts"
+@Injectable()
+class AccountService {
+    constructor(
+        private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+    ) {}
+
+    @Transactional<TransactionalAdapterPrisma>(
+        // highlight-start
+        // Propagation.Mandatory enforces that an existing transaction is reused,
+        // otherwise an exception is thrown.
+        Propagation.Mandatory,
+        // When a propagation option is provided,
+        // the transaction options are passed as the second parameter.
+        {
+            isolationLevel: 'Serializable',
+        },
+        // highlight-end
+    )
+    async createAccountForUser(id: number): Promise<Account> {
+        return this.txHost.tx.user.create({
+            data: { userId: id, number: Math.random() },
+        });
+    }
+}
+```
+
 ## ClsPluginTransactional Interface
 
 The `ClsPluginTransactional` constructor takes an options object with the following properties:
@@ -205,15 +282,26 @@ The `TransactionHost` interface is the main working interface of the plugin. It 
 -   **_`tx`_**`: Transaction`  
     Reference to the currently active transaction. Depending on the adapter implementation for the underlying database library, this can be either a transaction client instance, a transaction object or a transaction ID. If no transaction is active, refers to the default non-transactional client instance (or undefined transaction ID).
 
--   **_`withTransaction`_**`(callback): Promise`\
+-   **_`withTransaction`_**`(callback: Promise): Promise`\
     **_`withTransaction`_**`(options, callback): Promise`  
-    Runs the callback in a transaction. Optionally takes a `TransactionOptions` object as the first parameter.
+    **_`withTransaction`_**`(propagation, callback): Promise`  
+    **_`withTransaction`_**`(propagation, options, callback): Promise`  
+    Runs the callback in a transaction. Optionally takes `Propagation` and `TransactionOptions` as the first one or two parameters.
 
--   **_`withOutTransaction`_**`(callback): Promise`  
+-   **_`withoutTransaction`_**`(callback): Promise`  
     Runs the callback without a transaction (even if one is active in the parent scope).
 
 -   **_`isTransactionActive`_**`(): boolean`  
     Returns whether a CLS-managed transaction is active in the current scope.
+
+### Transactional decorator interface
+
+The `@Transactional` decorator can be used to wrap a method call in the `withTransaction` call implicitly. It has the following call signatures:
+
+-   **_`@Transactional`_**`()`
+-   **_`@Transactional`_**`(propagation)`
+-   **_`@Transactional`_**`(options)`
+-   **_`@Transactional`_**`(propagation, options)`
 
 ## Considerations
 
