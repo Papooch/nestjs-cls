@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClsServiceManager } from 'nestjs-cls';
 import {
     TTxFromAdapter,
@@ -6,17 +6,24 @@ import {
     TransactionalAdapterOptions,
 } from './interfaces';
 import {
+    Propagation,
+    TransactionAlreadyActiveError,
+    TransactionNotActiveError,
+    TransactionPropagationError,
+} from './propagation';
+import {
     TRANSACTIONAL_ADAPTER_OPTIONS,
     TRANSACTIONAL_INSTANCE,
 } from './symbols';
 
 @Injectable()
 export class TransactionHost<TAdapter = never> {
-    private cls = ClsServiceManager.getClsService();
+    private readonly cls = ClsServiceManager.getClsService();
+    private readonly logger = new Logger(TransactionHost.name);
 
     constructor(
         @Inject(TRANSACTIONAL_ADAPTER_OPTIONS)
-        private _options: TransactionalAdapterOptions<
+        private readonly _options: TransactionalAdapterOptions<
             TTxFromAdapter<TAdapter>,
             TOptionsFromAdapter<TAdapter>
         >,
@@ -51,23 +58,132 @@ export class TransactionHost<TAdapter = never> {
      * @returns Whatever the passed function returns
      */
     withTransaction<R>(fn: (...args: any[]) => Promise<R>): Promise<R>;
+    /**
+     * Wrap a function call in a transaction defined by the adapter.
+     *
+     * The transaction instance will be accessible on the TransactionHost as `tx`.
+     *
+     * This is useful when you want to run a function in a transaction, but can't use the `@Transactional()` decorator.
+     *
+     * @param options Transaction options depending on the adapter.
+     * @param fn The function to run in a transaction.
+     * @returns Whatever the passed function returns
+     */
     withTransaction<R>(
         options: TOptionsFromAdapter<TAdapter>,
         fn: (...args: any[]) => Promise<R>,
     ): Promise<R>;
+    /**
+     * Wrap a function call in a transaction defined by the adapter.
+     *
+     * The transaction instance will be accessible on the TransactionHost as `tx`.
+     *
+     * This is useful when you want to run a function in a transaction, but can't use the `@Transactional()` decorator.
+     *
+     * @param propagation The propagation mode to use, @see{Propagation}.
+     * @param fn The function to run in a transaction.
+     * @returns Whatever the passed function returns
+     */
     withTransaction<R>(
-        optionsOrFn: any,
-        maybeFn?: (...args: any[]) => Promise<R>,
+        propagation: Propagation,
+        fn: (...args: any[]) => Promise<R>,
+    ): Promise<R>;
+    /**
+     * Wrap a function call in a transaction defined by the adapter.
+     *
+     * The transaction instance will be accessible on the TransactionHost as `tx`.
+     *
+     * This is useful when you want to run a function in a transaction, but can't use the `@Transactional()` decorator.
+     *
+     * @param propagation The propagation mode to use, @see{Propagation}.
+     * @param options Transaction options depending on the adapter.
+     * @param fn The function to run in a transaction.
+     * @returns Whatever the passed function returns
+     */
+    withTransaction<R>(
+        propagation: Propagation,
+        options: TOptionsFromAdapter<TAdapter>,
+        fn: (...args: any[]) => Promise<R>,
+    ): Promise<R>;
+    withTransaction<R>(
+        firstParam: any,
+        secondParam?: any,
+        thirdParam?: (...args: any[]) => Promise<R>,
     ) {
+        let propagation: string;
         let options: any;
         let fn: (...args: any[]) => Promise<R>;
-        if (maybeFn) {
-            options = optionsOrFn;
-            fn = maybeFn;
+        if (thirdParam) {
+            propagation = firstParam;
+            options = secondParam;
+            fn = thirdParam;
+        } else if (secondParam) {
+            fn = secondParam;
+            if (typeof firstParam === 'string') {
+                propagation = firstParam;
+            } else {
+                options = firstParam;
+            }
         } else {
-            options = {};
-            fn = optionsOrFn;
+            fn = firstParam;
         }
+        propagation ??= Propagation.Required;
+        return this.decidePropagationAndRun(propagation, options, fn);
+    }
+
+    private decidePropagationAndRun(
+        propagation: string,
+        options: any,
+        fn: (...args: any[]) => Promise<any>,
+    ) {
+        const fnName = fn.name || 'anonymous';
+        switch (propagation) {
+            case Propagation.Required:
+                if (this.isTransactionActive()) {
+                    if (isNotEmpty(options)) {
+                        this.logger.warn(
+                            `Transaction options are ignored because a transaction is already active and the propagation mode is ${propagation} (for method ${fnName}).`,
+                        );
+                    }
+                    return fn();
+                } else {
+                    return this.runWithTransaction(options, fn);
+                }
+            case Propagation.RequiresNew:
+                return this.runWithTransaction(options, fn);
+            case Propagation.NotSupported:
+                if (isNotEmpty(options)) {
+                    this.logger.warn(
+                        `Transaction options are ignored because the propagation mode is ${propagation} (for method ${fnName}).`,
+                    );
+                }
+                return this.withoutTransaction(fn);
+            case Propagation.Mandatory:
+                if (!this.isTransactionActive()) {
+                    throw new TransactionNotActiveError(fnName);
+                }
+                if (isNotEmpty(options)) {
+                    this.logger.warn(
+                        `Transaction options are ignored because the propagation mode is ${propagation} (for method ${fnName}).`,
+                    );
+                }
+                return fn();
+            case Propagation.Never:
+                if (this.isTransactionActive()) {
+                    throw new TransactionAlreadyActiveError(fnName);
+                }
+                return this.runWithTransaction(options, fn);
+            default:
+                throw new TransactionPropagationError(
+                    `Unknown propagation mode ${propagation}`,
+                );
+        }
+    }
+
+    private runWithTransaction(
+        options: any,
+        fn: (...args: any[]) => Promise<any>,
+    ) {
         return this.cls.run({ ifNested: 'inherit' }, () =>
             this._options
                 .wrapWithTransaction(options, fn, this.setTxInstance.bind(this))
@@ -101,4 +217,8 @@ export class TransactionHost<TAdapter = never> {
     private setTxInstance(txInstance?: TTxFromAdapter<TAdapter>) {
         this.cls.set(TRANSACTIONAL_INSTANCE, txInstance);
     }
+}
+
+function isNotEmpty(obj: any) {
+    return obj && Object.keys(obj).length > 0;
 }
