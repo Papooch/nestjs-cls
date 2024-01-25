@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "description": "A nestjs-cls plugin for transactional decorators",
     "author": "papooch",
     "license": "MIT",
@@ -43,7 +43,7 @@
     "peerDependencies": {
         "@nestjs/common": "> 7.0.0 < 11",
         "@nestjs/core": "> 7.0.0 < 11",
-        "nestjs-cls": "workspace:^4",
+        "nestjs-cls": "workspace:^4.0.1",
         "reflect-metadata": "*",
         "rxjs": ">= 7"
     },
