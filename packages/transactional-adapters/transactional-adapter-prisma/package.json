@@ -24,7 +24,12 @@
         "AsyncLocalStorage",
         "async_hooks",
         "request context",
-        "async context"
+        "async context",
+        "transaction",
+        "transactional",
+        "transactional decorator",
+        "aop",
+        "prisma"
     ],
     "main": "dist/src/index.js",
     "types": "dist/src/index.d.ts",
