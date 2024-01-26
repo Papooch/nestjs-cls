@@ -4680,6 +4680,34 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@nestjs-cls/transactional-adapter-kysely@workspace:packages/transactional-adapters/transactional-adapter-kysely":
+  version: 0.0.0-use.local
+  resolution: "@nestjs-cls/transactional-adapter-kysely@workspace:packages/transactional-adapters/transactional-adapter-kysely"
+  dependencies:
+    "@nestjs/cli": "npm:^10.0.2"
+    "@nestjs/common": "npm:^10.0.0"
+    "@nestjs/core": "npm:^10.0.0"
+    "@nestjs/testing": "npm:^10.0.0"
+    "@types/jest": "npm:^28.1.2"
+    "@types/node": "npm:^18.0.0"
+    better-sqlite3: "npm:^9.3.0"
+    jest: "npm:^28.1.1"
+    kysely: "npm:^0.27.2"
+    reflect-metadata: "npm:^0.1.13"
+    rimraf: "npm:^3.0.2"
+    rxjs: "npm:^7.5.5"
+    ts-jest: "npm:^28.0.5"
+    ts-loader: "npm:^9.3.0"
+    ts-node: "npm:^10.8.1"
+    tsconfig-paths: "npm:^4.0.0"
+    typescript: "npm:~4.8.0"
+  peerDependencies:
+    "@nestjs-cls/transactional": "workspace:^2.0.0"
+    kysely: ^0.27
+    nestjs-cls: "workspace:^4.0.1"
+  languageName: unknown
+  linkType: soft
+
 "@nestjs-cls/transactional-adapter-pg-promise@workspace:packages/transactional-adapters/transactional-adapter-pg-promise":
   version: 0.0.0-use.local
   resolution: "@nestjs-cls/transactional-adapter-pg-promise@workspace:packages/transactional-adapters/transactional-adapter-pg-promise"
@@ -8064,6 +8092,17 @@ __metadata:
   version: 2.2.3
   resolution: "before-after-hook@npm:2.2.3"
   checksum: 0488c4ae12df758ca9d49b3bb27b47fd559677965c52cae7b335784724fb8bf96c42b6e5ba7d7afcbc31facb0e294c3ef717cc41c5bc2f7bd9e76f8b90acd31c
+  languageName: node
+  linkType: hard
+
+"better-sqlite3@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "better-sqlite3@npm:9.3.0"
+  dependencies:
+    bindings: "npm:^1.5.0"
+    node-gyp: "npm:latest"
+    prebuild-install: "npm:^7.1.1"
+  checksum: 08943620079dd3f7de7e12a7cb63b9a6ca5b399ca3e06363f120b2589c86cadef2eca56558243bfaf930fb28b4d956ab0b3910bc8b09a35276670efe7b7c516c
   languageName: node
   linkType: hard
 
@@ -14009,6 +14048,13 @@ __metadata:
   bin:
     knex: bin/cli.js
   checksum: d8a1f99fad143c6057e94759b2ae700ae661a0b0b2385f643011962ef501dcc7b32cfdb5bda66ef81283ca56f13630f47691c579ce66ad0e8128e209533c3785
+  languageName: node
+  linkType: hard
+
+"kysely@npm:^0.27.2":
+  version: 0.27.2
+  resolution: "kysely@npm:0.27.2"
+  checksum: c9bf222d66896bb1310c3c179cfbfb9a8159a2a381fbfe3658c9def6572a19f7d427c4fd39b26263fe19093a3eb43ff135e55d5c59714e637b6dec69dc8e7f87
   languageName: node
   linkType: hard
 
