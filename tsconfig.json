@@ -33,6 +33,9 @@
     },
     {
       "path": "packages/transactional-adapters/transactional-adapter-prisma"
+    },
+    {
+      "path": "packages/transactional-adapters/transactional-adapter-pg-promise"
     }
   ]
 }

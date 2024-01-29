@@ -42,6 +42,7 @@ Adapters for the following libraries are available:
 
 -   Prisma (see [@nestjs-cls/transactional-adapter-prisma](./01-prisma-adapter.md))
 -   Knex (see [@nestjs-cls/transactional-adapter-knex](./02-knex-adapter.md))
+-   pg-promise (see [@nestjs-cls/transactional-adapter-pg-promise](./03-pg-promise-adapter.md)) 
 
 Adapters _will not_ be implemented for the following libraries:
 
