@@ -12,7 +12,7 @@ Some common use cases that this library enables include:
 -   Keeping track of the user throughout the whole request
 -   Making the dynamic Tenant database connection available everywhere in multi-tenant apps
 -   Propagating the authentication level or role to restrict access to resources
--   Seamlessly propagating the `transaction` object of your favourite ORM across services without breaking encapsulation and isolation by explicitly passing it around.
+-   Seamlessly propagating database transaction across services without breaking encapsulation and isolation by explicitly passing it around (**Now available with the [Transactional plugin](https://papooch.github.io/nestjs-cls/plugins/available-plugins/transactional)**)
 -   Using "request" context in cases where actual REQUEST-scoped providers are not supported (passport strategies, cron controllers, websocket gateways, ...)
 
 Most of these are to some extent solvable using _REQUEST-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
