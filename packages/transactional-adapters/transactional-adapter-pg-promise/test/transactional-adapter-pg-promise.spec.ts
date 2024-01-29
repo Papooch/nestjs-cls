@@ -134,7 +134,7 @@ describe('Transactional', () => {
 
     beforeAll(async () => {
         execSync(
-            'docker-compose -f test/docker-compose.yml up -d --quiet-pull --wait',
+            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
             {
                 stdio: 'inherit',
                 cwd: process.cwd(),
@@ -159,7 +159,7 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         pgp.end();
-        execSync('docker-compose -f test/docker-compose.yml down', {
+        execSync('docker compose -f test/docker-compose.yml down', {
             stdio: 'inherit',
         });
     }, 60_000);
