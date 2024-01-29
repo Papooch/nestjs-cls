@@ -151,10 +151,13 @@ describe('Transactional', () => {
     let callingService: UserService;
 
     beforeAll(async () => {
-        execSync('docker compose -f test/docker-compose.yml up -d --wait', {
-            stdio: 'inherit',
-            cwd: process.cwd(),
-        });
+        execSync(
+            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
+            {
+                stdio: 'inherit',
+                cwd: process.cwd(),
+            },
+        );
         await kyselyDb.schema.dropTable('user').ifExists().execute();
         await kyselyDb.schema
             .createTable('user')
@@ -162,7 +165,7 @@ describe('Transactional', () => {
             .addColumn('name', 'varchar', (column) => column.notNull())
             .addColumn('email', 'varchar', (column) => column.notNull())
             .execute();
-    });
+    }, 60_000);
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
@@ -178,7 +181,7 @@ describe('Transactional', () => {
             stdio: 'inherit',
             cwd: process.cwd(),
         });
-    });
+    }, 60_000);
 
     describe('TransactionalAdapterKysely', () => {
         it('should run a transaction with the default options with a decorator', async () => {
