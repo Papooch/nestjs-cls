@@ -50,7 +50,7 @@ ClsModule.forRoot({
 
 ## Typing & usage
 
-The `tx` property on the `TransactionHost<TransactionalAdapterPgPromise>` is typed as [`Task`](https://vitaly-t.github.io/pg-promise/Task.html).
+The `tx` property on the `TransactionHost<TransactionalAdapterPgPromise>` is typed as [`Database`](https://vitaly-t.github.io/pg-promise/Database.html).
 
 ## Example
 
