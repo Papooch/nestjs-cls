@@ -7,6 +7,11 @@ export interface TransactionalAdapterOptions<TTx, TOptions> {
     getFallbackInstance: () => TTx;
 }
 
+export interface TransactionalAdapterOptionsWithName<TTx, TOptions>
+    extends TransactionalAdapterOptions<TTx, TOptions> {
+    connectionName: string;
+}
+
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
     connection: TConnection,
 ) => TransactionalAdapterOptions<TTx, TOptions>;
@@ -32,8 +37,18 @@ export interface TransactionalAdapter<TConnection, TTx, TOptions> {
 }
 
 export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
+    /**
+     * An instance of the transactional adapter.
+     */
     adapter: TransactionalAdapter<TConnection, TTx, TOptions>;
+    /**
+     * An array of modules that export providers required by the adapter.
+     */
     imports?: any[];
+    /**
+     * An optional name of the connection. Useful when there are multiple TransactionalPlugins registered in the app.
+     */
+    connectionName?: string;
 }
 
 export type TTxFromAdapter<TAdapter> = TAdapter extends TransactionalAdapter<
