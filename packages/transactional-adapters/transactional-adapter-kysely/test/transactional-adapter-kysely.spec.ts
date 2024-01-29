@@ -40,7 +40,7 @@ class UserRepository {
     }
 
     async createUser(name: string) {
-        const created = await this.txHost.tx
+        return this.txHost.tx
             .insertInto('user')
             .values({
                 name: name,
@@ -48,7 +48,6 @@ class UserRepository {
             })
             .returningAll()
             .executeTakeFirstOrThrow();
-        return created;
     }
 }
 
