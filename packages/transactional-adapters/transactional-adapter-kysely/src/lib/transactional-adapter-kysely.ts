@@ -1,33 +1,43 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
-import { Knex } from 'knex';
+import { Kysely, TransactionBuilder } from 'kysely';
 
-export interface KnexTransactionalAdapterOptions {
+export interface KyselyTransactionalAdapterOptions {
     /**
-     * The injection token for the Knex instance.
+     * The injection token for the Kysely instance.
      */
-    knexInstanceToken: any;
+    kyselyInstanceToken: any;
 }
 
-export class TransactionalAdapterKnex
-    implements TransactionalAdapter<Knex, Knex, Knex.TransactionConfig>
+export interface KyselyTransactionOptions {
+    isolationLevel?: Parameters<
+        TransactionBuilder<any>['setIsolationLevel']
+    >[0];
+}
+
+export class TransactionalAdapterKysely<DB = any>
+    implements TransactionalAdapter<Kysely<DB>, Kysely<DB>, any>
 {
     connectionToken: any;
 
-    constructor(options: KnexTransactionalAdapterOptions) {
-        this.connectionToken = options.knexInstanceToken;
+    constructor(options: KyselyTransactionalAdapterOptions) {
+        this.connectionToken = options.kyselyInstanceToken;
     }
 
-    optionsFactory = (knexInstance: Knex) => ({
+    optionsFactory = (kyselyDb: Kysely<DB>) => ({
         wrapWithTransaction: async (
-            options: Knex.TransactionConfig,
+            options: KyselyTransactionOptions,
             fn: (...args: any[]) => Promise<any>,
-            setClient: (client?: Knex) => void,
+            setClient: (client?: Kysely<DB>) => void,
         ) => {
-            return knexInstance.transaction((trx) => {
+            const transaction = kyselyDb.transaction();
+            if (options?.isolationLevel) {
+                transaction.setIsolationLevel(options.isolationLevel);
+            }
+            return transaction.execute(async (trx) => {
                 setClient(trx);
                 return fn();
-            }, options);
+            });
         },
-        getFallbackInstance: () => knexInstance,
+        getFallbackInstance: () => kyselyDb,
     });
 }
