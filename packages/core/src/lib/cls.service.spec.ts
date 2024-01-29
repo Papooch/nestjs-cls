@@ -143,6 +143,14 @@ describe('ClsService', () => {
                 expect(service.has(sym)).toEqual(true);
             });
         });
+
+        it('checks key presence without context (string key)', () => {
+            expect(service.has('d')).toEqual(false);
+        });
+
+        it('checks key presence without context (symbol key)', () => {
+            expect(service.has(Symbol('sym'))).toEqual(false);
+        });
     });
 
     describe('edge cases', () => {
@@ -151,6 +159,18 @@ describe('ClsService', () => {
                 const value = service.get('key');
                 expect(value).toBeUndefined();
             });
+        });
+
+        it('returns undefined if trying to get a value without context (string key)', () => {
+            expect(service.get('key')).toBeUndefined();
+        });
+
+        it('returns undefined if trying to get a value without context (symbol key)', () => {
+            expect(service.get(Symbol('xx'))).toBeUndefined();
+        });
+
+        it('returns undefined if trying to get request ID without context (symbol key)', () => {
+            expect(service.getId()).toBeUndefined();
         });
 
         it('throws error if trying to set a value without context', () => {
@@ -230,6 +250,12 @@ describe('ClsService', () => {
                 expect(service.get('key')).toEqual('value');
             });
             expect(service.get('key')).toEqual(undefined);
+        });
+    });
+
+    describe('manual creation', () => {
+        it('should fail with error', () => {
+            expect(() => new ClsService(undefined as any)).toThrowError();
         });
     });
 

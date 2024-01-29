@@ -13,7 +13,13 @@ import { CLS_ID } from './cls.constants';
 import { ClsContextOptions, ClsStore } from './cls.options';
 
 export class ClsService<S extends ClsStore = ClsStore> {
-    constructor(private readonly als: AsyncLocalStorage<any>) {}
+    constructor(private readonly als: AsyncLocalStorage<any>) {
+        if (!als) {
+            throw new Error(
+                `Cannot create ClsService because no AsyncLocalStorage instance was provided.\nPlease make sure that ClsService is only provided by the ClsModule and not constructed manually or added to the providers array.`,
+            );
+        }
+    }
 
     /**
      * Set (or overrides) a value on the CLS context.
@@ -79,7 +85,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
         const store = this.als.getStore();
         if (!key) return store;
         if (typeof key === 'symbol') {
-            return store[key];
+            return store?.[key];
         }
         return getValueFromPath(store as S, key as any) as any;
     }
@@ -95,7 +101,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
     has(key: string | symbol): boolean {
         const store = this.als.getStore();
         if (typeof key === 'symbol') {
-            return store[key] !== undefined;
+            return store?.[key] !== undefined;
         }
         return getValueFromPath(store as S, key as any) !== undefined;
     }
