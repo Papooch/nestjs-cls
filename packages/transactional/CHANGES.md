@@ -2,6 +2,10 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.0.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.0.0...@nestjs-cls/transactional@2.0.1) "@nestjs-cls/transactional" (2024-01-29)<a name="2.0.1"></a>
+
+
+
 ## [2.0.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@1.0.1...@nestjs-cls/transactional@2.0.0) "@nestjs-cls/transactional" (2024-01-25)<a name="2.0.0"></a>
 
 ### Breaking Changes

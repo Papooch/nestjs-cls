@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.0.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.1...nestjs-cls@4.0.2) "nestjs-cls" (2024-01-29)<a name="4.0.2"></a>
+
+### Bug Fixes
+
+* symbol key access and explicit constructor error (#113) ([0d4e97b](https://github.com/Papooch/nestjs-cls/commits/0d4e97b))
+
+
+
+
 ## [4.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.0...nestjs-cls@4.0.1) "nestjs-cls" (2024-01-22)<a name="4.0.1"></a>
 
 ### Bug Fixes

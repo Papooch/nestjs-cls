@@ -2,6 +2,10 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.1.3](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-knex@1.1.2...@nestjs-cls/transactional-adapter-knex@1.1.3) "@nestjs-cls/transactional-adapter-knex" (2024-01-29)<a name="1.1.3"></a>
+
+
+
 ## [1.1.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-knex@1.1.0...@nestjs-cls/transactional-adapter-knex@1.1.1) "@nestjs-cls/transactional-adapter-knex" (2024-01-23)<a name="1.1.1"></a>
 
 ### Bug Fixes

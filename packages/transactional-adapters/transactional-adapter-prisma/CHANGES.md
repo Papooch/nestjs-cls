@@ -2,6 +2,10 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.0.3](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.0.2...@nestjs-cls/transactional-adapter-prisma@1.0.3) "@nestjs-cls/transactional-adapter-prisma" (2024-01-29)<a name="1.0.3"></a>
+
+
+
 ## [1.0.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.0.0...@nestjs-cls/transactional-adapter-prisma@1.0.1) "@nestjs-cls/transactional-adapter-prisma" (2024-01-22)<a name="1.0.1"></a>
 
 ### Bug Fixes
