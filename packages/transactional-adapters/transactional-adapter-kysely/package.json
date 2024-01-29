@@ -1,0 +1,74 @@
+{
+    "name": "@nestjs-cls/transactional-adapter-kysely",
+    "version": "1.0.0",
+    "description": "A Kysely adapter for @nestjs-cls/transactional",
+    "author": "papooch",
+    "license": "MIT",
+    "engines": {
+        "node": ">=18"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Papooch/nestjs-cls.git"
+    },
+    "homepage": "https://papooch.github.io/nestjs-cls/",
+    "keywords": [
+        "nest",
+        "nestjs",
+        "cls",
+        "continuation-local-storage",
+        "als",
+        "AsyncLocalStorage",
+        "async_hooks",
+        "request context",
+        "async context",
+        "transaction",
+        "transactional",
+        "transactional decorator",
+        "aop",
+        "kysely"
+    ],
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "files": [
+        "dist/src/**/!(*.spec).d.ts",
+        "dist/src/**/!(*.spec).js"
+    ],
+    "scripts": {
+        "prepack": "cp ../../../LICENSE ./LICENSE",
+        "prebuild": "rimraf dist",
+        "build": "tsc",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:cov": "jest --coverage"
+    },
+    "peerDependencies": {
+        "@nestjs-cls/transactional": "workspace:^2.0.0",
+        "kysely": "^0.27",
+        "nestjs-cls": "workspace:^4.0.1"
+    },
+    "devDependencies": {
+        "@nestjs/cli": "^10.0.2",
+        "@nestjs/common": "^10.0.0",
+        "@nestjs/core": "^10.0.0",
+        "@nestjs/testing": "^10.0.0",
+        "@types/better-sqlite3": "^7.6.9",
+        "@types/jest": "^28.1.2",
+        "@types/node": "^18.0.0",
+        "@types/pg": "^8",
+        "jest": "^28.1.1",
+        "kysely": "^0.27.2",
+        "pg": "^8.11.3",
+        "reflect-metadata": "^0.1.13",
+        "rimraf": "^3.0.2",
+        "rxjs": "^7.5.5",
+        "ts-jest": "^28.0.5",
+        "ts-loader": "^9.3.0",
+        "ts-node": "^10.8.1",
+        "tsconfig-paths": "^4.0.0",
+        "typescript": "~4.8.0"
+    }
+}

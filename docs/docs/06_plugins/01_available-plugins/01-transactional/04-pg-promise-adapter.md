@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# pg-promise adapter
+# Pg-promise adapter
 
 ## Installation
 
