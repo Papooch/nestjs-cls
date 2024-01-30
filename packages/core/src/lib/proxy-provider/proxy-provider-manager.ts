@@ -108,7 +108,7 @@ export class ProxyProviderManager {
                 return getProvider()[prop];
             },
             set(_, prop, value) {
-                return (getProvider()[prop] = value);
+                return Reflect.set(getProvider(), prop, value);
             },
             ownKeys() {
                 return Reflect.ownKeys(getProvider());
