@@ -83,8 +83,8 @@ class UserRepository {
 
     async getUserById(id: number) {
         // highlight-start
-        // txHost.tx is typed as Task
-        return this.txHost.tx.one(`SELECT * FROM user WHERE id = $1`);
+        // txHost.tx is typed as Database
+        return this.txHost.tx.one(`SELECT * FROM user WHERE id = $1`, [id]);
         // highlight-end
     }
 
