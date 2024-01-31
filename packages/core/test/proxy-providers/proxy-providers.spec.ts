@@ -18,6 +18,8 @@ import {
     ProxyResult,
     ProxyResults,
 } from './expect-ids-proxy';
+import { globalClsService } from '../../src/lib/cls-service.globals';
+import { ProxyProviderManager } from '../../src/lib/proxy-provider';
 
 @Injectable()
 class InjectedClass {
@@ -140,5 +142,26 @@ describe('Proxy providers', () => {
             interceptor: { mount: true, generateId: true },
         });
         await expectOkIdsProxy(app);
+    });
+});
+
+describe('Edge cases', () => {
+    it('proxy should allow setting falsy value', async () => {
+        const clsService = globalClsService;
+        const symbol = Symbol('testSymbol');
+        const proxyProvider = ProxyProviderManager.createProxyProvider({
+            provide: symbol,
+            type: 'object',
+            useFactory: () => ({
+                booleanTest: true,
+            }),
+        });
+        const proxy = proxyProvider.useFactory();
+        await clsService.run(async () => {
+            await ProxyProviderManager.resolveProxyProviders();
+            expect(proxy.booleanTest).toBe(true);
+            proxy.booleanTest = false;
+            expect(proxy.booleanTest).toBe(false);
+        });
     });
 });
