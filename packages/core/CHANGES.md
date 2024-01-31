@@ -2,6 +2,18 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.0.3](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.2...nestjs-cls@4.0.3) "nestjs-cls" (2024-01-31)<a name="4.0.3"></a>
+
+### Bug Fixes
+
+* **proxy-provider-manager**: handle setting falsy value
+
+Co-authored-by: Jerry Laloan <jerrylaloan@users.noreply.github.com> ([26737d8](https://github.com/Papooch/nestjs-cls/commits/26737d8))
+* **core**: handle setting falsy value in proxy providers (#118) ([26737d8](https://github.com/Papooch/nestjs-cls/commits/26737d8))
+
+
+
+
 ## [4.0.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.1...nestjs-cls@4.0.2) "nestjs-cls" (2024-01-29)<a name="4.0.2"></a>
 
 ### Bug Fixes
