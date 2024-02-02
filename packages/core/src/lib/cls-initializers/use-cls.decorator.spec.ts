@@ -4,6 +4,7 @@ import { CLS_ID } from '../cls.constants';
 import { ClsModule } from '../cls.module';
 import { ClsService } from '../cls.service';
 import { UseCls } from './use-cls.decorator';
+import { ClsServiceManager } from '../cls-service-manager';
 
 @Injectable()
 class TestClass {
@@ -38,6 +39,7 @@ class TestClass {
         return {
             id: this.cls.getId(),
             value: this.cls.get('value'),
+            inheritedValue: this.cls.get('inheritedValue'),
         };
     }
 }
@@ -61,6 +63,20 @@ describe('@UseCls', () => {
             value: 'something',
         });
     });
+
+    it('should handle nested context', async () => {
+        const cls = ClsServiceManager.getClsService();
+        await cls.run(async () => {
+            cls.set('inheritedValue', 'other');
+            const result = await testClass.startContext('something');
+            expect(result).toEqual({
+                id: 'the-id',
+                value: 'something',
+                inheritedValue: 'other',
+            });
+        });
+    });
+
     it('calls id generator and setup and uses correct this', async () => {
         const result = await testClass.startContextWithIdAndSetup(
             'something else',
