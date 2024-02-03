@@ -125,10 +125,10 @@ export class ClsService<S extends ClsStore = ClsStore> {
         let options: ClsContextOptions;
         let callback: () => any;
         if (typeof optionsOrCallback === 'object') {
-            options = optionsOrCallback;
+            options = { ...new ClsContextOptions(), ...optionsOrCallback };
             callback = maybeCallback;
         } else {
-            options = { ...new ClsContextOptions(), ...optionsOrCallback };
+            options = new ClsContextOptions();
             callback = optionsOrCallback;
         }
         if (!this.isActive()) return this.runWith({} as S, callback);
