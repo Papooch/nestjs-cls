@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.0.4](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.3...nestjs-cls@4.0.4) "nestjs-cls" (2024-02-03)<a name="4.0.4"></a>
+
+### Bug Fixes
+
+* **core**: handle nested context correctly with UseCls decorator (#119) ([df90f30](https://github.com/Papooch/nestjs-cls/commits/df90f30))
+
+
+
+
 ## [4.0.3](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.2...nestjs-cls@4.0.3) "nestjs-cls" (2024-01-31)<a name="4.0.3"></a>
 
 ### Bug Fixes
