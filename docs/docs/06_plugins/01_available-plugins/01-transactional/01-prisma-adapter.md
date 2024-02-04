@@ -48,6 +48,12 @@ ClsModule.forRoot({
 }),
 ```
 
+:::important
+
+The `prismaInjectionToken` is the token under which an instance of `PrismaClient` provided. Usually, in Nest, this the custom `PrismaService` class which `extends PrismaClient` and is exported from a custom module.
+
+:::
+
 ## Typing & usage
 
 The `tx` property on the `TransactionHost<TransactionalAdapterPrisma>` refers to the transactional `PrismaClient` instance when used in a transactional context. It is the instance that is passed to the `prisma.$transaction(( tx ) => { ... })` callback.
