@@ -2,6 +2,27 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.1.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.4...nestjs-cls@4.1.0) "nestjs-cls" (2024-02-09)<a name="4.1.0"></a>
+
+### Bug Fixes
+
+* rework how plugins are registered (internals)
+
+Previously all plugins' providers were mixed into one module,
+now each plugin gets its own module. ([839df61](https://github.com/Papooch/nestjs-cls/commits/839df61))
+
+### Features
+
+* add multiple transactional adapters support
+
+* Add tests for multiple named connections
+
+* Add docs for multiple connections ([839df61](https://github.com/Papooch/nestjs-cls/commits/839df61))
+* add support for multiple transactional adapters (#114) ([839df61](https://github.com/Papooch/nestjs-cls/commits/839df61))
+
+
+
+
 ## [4.0.4](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.3...nestjs-cls@4.0.4) "nestjs-cls" (2024-02-03)<a name="4.0.4"></a>
 
 ### Bug Fixes
