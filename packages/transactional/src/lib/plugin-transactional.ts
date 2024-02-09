@@ -29,7 +29,14 @@ export class ClsPluginTransactional implements ClsPlugin {
             {
                 provide: TRANSACTIONAL_ADAPTER_OPTIONS,
                 inject: [TRANSACTION_CONNECTION],
-                useFactory: options.adapter.optionsFactory,
+                useFactory: (connection: any) => {
+                    const adapterOptions =
+                        options.adapter.optionsFactory(connection);
+                    return {
+                        ...adapterOptions,
+                        connectionName: options.connectionName,
+                    };
+                },
             },
             {
                 provide: transactionHostToken,

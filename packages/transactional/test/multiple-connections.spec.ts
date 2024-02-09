@@ -12,210 +12,187 @@ import {
     TransactionAdapterMock,
 } from './transaction-adapter-mock';
 
-@Injectable()
 class CalledService {
     constructor(
-        @InjectTransactionHost('test')
         private readonly txHost: TransactionHost<TransactionAdapterMock>,
     ) {}
 
     async doWork(num: number) {
         return this.txHost.tx.query(`SELECT ${num}`);
     }
+}
 
-    async doOtherWork(num: number) {
-        return this.txHost.tx.query(`SELECT ${num}`);
+@Injectable()
+class CalledService1 extends CalledService {
+    constructor(
+        @InjectTransactionHost('test1')
+        txHost: TransactionHost<TransactionAdapterMock>,
+    ) {
+        super(txHost);
+    }
+}
+
+@Injectable()
+class CalledService2 extends CalledService {
+    constructor(
+        @InjectTransactionHost('test2')
+        txHost: TransactionHost<TransactionAdapterMock>,
+    ) {
+        super(txHost);
     }
 }
 
 @Injectable()
 class CallingService {
     constructor(
-        private readonly calledService: CalledService,
-        @InjectTransactionHost('test')
-        private readonly txHost: TransactionHost<TransactionAdapterMock>,
+        private readonly calledService1: CalledService1,
+        private readonly calledService2: CalledService2,
+        @InjectTransactionHost('test1')
+        private readonly txHost1: TransactionHost<TransactionAdapterMock>,
+        @InjectTransactionHost('test2')
+        private readonly txHost2: TransactionHost<TransactionAdapterMock>,
     ) {}
 
-    @Transactional('test')
-    async transactionWithDecorator() {
-        const q1 = await this.calledService.doWork(1);
-        const q2 = await this.calledService.doOtherWork(2);
+    async twoUnrelatedTransactionsWithDecorators() {
+        const [q1, q2] = await Promise.all([
+            this.nestedStartTransaction1(1),
+            this.nestedStartTransaction2(2),
+        ]);
         return { q1, q2 };
     }
 
-    @Transactional<TransactionAdapterMock>('test', { serializable: true })
-    async transactionWithDecoratorWithOptions() {
-        await this.calledService.doWork(1);
-        await this.calledService.doOtherWork(2);
+    @Transactional('test1')
+    private async nestedStartTransaction1(num: number) {
+        return this.calledService1.doWork(num);
     }
 
-    async parallelTransactions() {
-        return Promise.all([
-            this.nestedStartTransaction(7),
-            this.calledService.doWork(9),
-            this.nestedDecorator(8),
+    @Transactional('test2')
+    private async nestedStartTransaction2(num: number) {
+        return this.calledService2.doWork(num);
+    }
+
+    async twoUnrelatedTransactionsWithStartTransaction() {
+        const [q1, q2] = await Promise.all([
+            this.txHost1.withTransaction(() => this.calledService1.doWork(3)),
+            this.txHost2.withTransaction(() => this.calledService2.doWork(4)),
         ]);
+        return { q1, q2 };
     }
 
-    @Transactional('test')
-    private async nestedDecorator(num: number) {
-        return this.calledService.doWork(num);
-    }
-
-    private async nestedStartTransaction(num: number) {
-        return this.txHost.withTransaction(async () => {
-            return this.calledService.doWork(num);
-        });
-    }
-
-    async startTransaction() {
-        return this.txHost.withTransaction(async () => {
-            const q1 = await this.calledService.doWork(3);
-            const q2 = await this.calledService.doOtherWork(4);
-            return { q1, q2 };
-        });
-    }
-
-    async startTransactionWithOptions() {
-        await this.txHost.withTransaction({ serializable: true }, async () => {
-            await this.calledService.doWork(3);
-            await this.calledService.doOtherWork(4);
-        });
-    }
-
-    async withoutTransaction() {
-        await this.calledService.doWork(5);
-        await this.calledService.doOtherWork(6);
-    }
-
-    @Transactional('test')
-    async multipleNestedTransactions() {
-        await this.calledService.doWork(10);
-        await this.txHost.withTransaction(async () => {
-            await this.calledService.doWork(11);
-            await this.nestedDecorator(12);
-            await this.calledService.doWork(13);
-        });
+    @Transactional('test1')
+    async namedTransactionWithinAnotherNamedTransaction() {
+        const q1 = await this.calledService1.doWork(5);
+        const q2 = await this.calledService2.doWork(6);
+        const q3 = await this.nestedStartTransaction2(7);
+        return { q1, q2, q3 };
     }
 }
 
+class MockDbConnection2 extends MockDbConnection {}
+class MockDbConnection1 extends MockDbConnection {}
+
 @Module({
-    providers: [MockDbConnection],
-    exports: [MockDbConnection],
+    providers: [MockDbConnection1],
+    exports: [MockDbConnection1],
 })
-class DbConnectionModule {}
+class DbConnectionModule1 {}
+
+@Module({
+    providers: [MockDbConnection2],
+    exports: [MockDbConnection2],
+})
+class DbConnectionModule2 {}
 
 @Module({
     imports: [
         ClsModule.forRoot({
             plugins: [
                 new ClsPluginTransactional({
-                    connectionName: 'test',
-                    imports: [DbConnectionModule],
+                    connectionName: 'test1',
+                    imports: [DbConnectionModule1],
                     adapter: new TransactionAdapterMock({
-                        connectionToken: MockDbConnection,
+                        connectionToken: MockDbConnection1,
+                    }),
+                }),
+                new ClsPluginTransactional({
+                    connectionName: 'test2',
+                    imports: [DbConnectionModule2],
+                    adapter: new TransactionAdapterMock({
+                        connectionToken: MockDbConnection2,
                     }),
                 }),
             ],
         }),
     ],
-    providers: [CallingService, CalledService],
+    providers: [CallingService, CalledService1, CalledService2],
 })
 class AppModule {}
 
 describe('Transactional', () => {
     let module: TestingModule;
     let callingService: CallingService;
-    let mockDbConnection: MockDbConnection;
+    let mockDbConnection1: MockDbConnection;
+    let mockDbConnection2: MockDbConnection;
     beforeEach(async () => {
         module = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
         await module.init();
         callingService = module.get(CallingService);
-        mockDbConnection = module.get(MockDbConnection);
+        mockDbConnection1 = module.get(MockDbConnection1);
+        mockDbConnection2 = module.get(MockDbConnection2);
     });
 
     describe('when using the @Transactional decorator', () => {
-        it('should start a transaction', async () => {
-            const result = await callingService.transactionWithDecorator();
+        it('should start two transactions independently with decorator', async () => {
+            const result =
+                await callingService.twoUnrelatedTransactionsWithDecorators();
             expect(result).toEqual({
                 q1: { query: 'SELECT 1' },
                 q2: { query: 'SELECT 2' },
             });
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
+            const queries1 = mockDbConnection1.getClientsQueries();
+            expect(queries1).toEqual([
+                ['BEGIN TRANSACTION;', 'SELECT 1', 'COMMIT TRANSACTION;'],
+            ]);
+            const queries2 = mockDbConnection2.getClientsQueries();
+            expect(queries2).toEqual([
+                ['BEGIN TRANSACTION;', 'SELECT 2', 'COMMIT TRANSACTION;'],
             ]);
         });
-        it('should start a transaction with options', async () => {
-            await callingService.transactionWithDecoratorWithOptions();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-            ]);
-        });
-        it('should start two transaction in parallel', async () => {
-            const results = await callingService.parallelTransactions();
-            expect(results).toEqual([
-                { query: 'SELECT 7' },
-                { query: 'SELECT 9' },
-                { query: 'SELECT 8' },
-            ]);
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                ['BEGIN TRANSACTION;', 'SELECT 7', 'COMMIT TRANSACTION;'],
-                ['SELECT 9'],
-                ['BEGIN TRANSACTION;', 'SELECT 8', 'COMMIT TRANSACTION;'],
-            ]);
-        });
-    });
-    describe('when using the startTransaction method on TransactionHost', () => {
-        it('should start a transaction', async () => {
-            const result = await callingService.startTransaction();
+        it('should start two transactions independently with startTransaction', async () => {
+            const result =
+                await callingService.twoUnrelatedTransactionsWithStartTransaction();
             expect(result).toEqual({
                 q1: { query: 'SELECT 3' },
                 q2: { query: 'SELECT 4' },
             });
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'BEGIN TRANSACTION;',
-                    'SELECT 3',
-                    'SELECT 4',
-                    'COMMIT TRANSACTION;',
-                ],
+            const queries1 = mockDbConnection1.getClientsQueries();
+            expect(queries1).toEqual([
+                ['BEGIN TRANSACTION;', 'SELECT 3', 'COMMIT TRANSACTION;'],
+            ]);
+            const queries2 = mockDbConnection2.getClientsQueries();
+            expect(queries2).toEqual([
+                ['BEGIN TRANSACTION;', 'SELECT 4', 'COMMIT TRANSACTION;'],
             ]);
         });
-        it('should start a transaction with options', async () => {
-            await callingService.startTransactionWithOptions();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
-                    'SELECT 3',
-                    'SELECT 4',
-                    'COMMIT TRANSACTION;',
-                ],
+        it('ignore transactions for other named connection', async () => {
+            const result =
+                await callingService.namedTransactionWithinAnotherNamedTransaction();
+            expect(result).toEqual({
+                q1: { query: 'SELECT 5' },
+                q2: { query: 'SELECT 6' },
+                q3: { query: 'SELECT 7' },
+            });
+            const queries1 = mockDbConnection1.getClientsQueries();
+            expect(queries1).toEqual([
+                ['BEGIN TRANSACTION;', 'SELECT 5', 'COMMIT TRANSACTION;'],
             ]);
-        });
-    });
-
-    describe('when not using a transaction', () => {
-        it('should not start a transaction', async () => {
-            await callingService.withoutTransaction();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([['SELECT 5'], ['SELECT 6']]);
+            const queries2 = mockDbConnection2.getClientsQueries();
+            expect(queries2).toEqual([
+                ['SELECT 6'],
+                ['BEGIN TRANSACTION;', 'SELECT 7', 'COMMIT TRANSACTION;'],
+            ]);
         });
     });
 });
