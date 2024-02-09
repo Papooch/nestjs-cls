@@ -305,8 +305,76 @@ The `@Transactional` decorator can be used to wrap a method call in the `withTra
 -   **_`@Transactional`_**`(options)`
 -   **_`@Transactional`_**`(propagation, options)`
 
-## Considerations
+Or when using named connections:
 
-Please note that at this time, the `@nestjs-cls/transactional` plugin only supports a _single_ database connection per application. This means that if you have multiple databases, you can only use one of them with the transactional plugin.
+-   **_`@Transactional`_**`(connectionName, propagation?, options?)`
 
-This is a subject to change in the future, as there are plans to support multiple `TransactionHost` instances, each with their own adapter and a database connection.
+## Multiple databases
+
+Similar to other `@nestjs/<orm>` libraries, the `@nestjs-cls/transactional` plugin can be used to manage transactions for multiple database connections, or even multiple database libraries altogether.
+
+### Registration
+
+To use multiple connections, register multiple instances of the `ClsPluginTransactional`, each with an unique `connectionName`:
+
+```ts
+ClsModule.forRoot({
+    plugins: [
+        new ClsPluginTransactional({
+            // highlight-start
+            connectionName: 'prisma-connection',
+            // highlight-end
+            imports: [PrismaModule],
+            adapter: new TransactionalAdapterPrisma({
+                prismaInjectionToken: PrismaClient,
+            }),
+        }),
+        new ClsPluginTransactional({
+            // highlight-start
+            connectionName: 'knex-connection',
+            // highlight-end
+            imports: [KnexModule],
+            adapter: new TransactionalAdapterKnex({
+                knexInstanceToken: KNEX,
+            }),
+        }),
+    ],
+}),
+```
+
+This works for any number of connections and any number of database libraries.
+
+### Usage
+
+To use the `TransactionHost` for a specific connection, you _need to_ use `@InjectTransactionHost('connectionName')` decorator to inject the `TransactionHost`. Otherwise Nest will try to inject the default unnamed instance which will result in an injection error.
+
+```ts
+@Injectable()
+class UserService {
+    constructor(
+        // highlight-start
+        @InjectTransactionHost('prisma-connection')
+        private readonly // highlight-end
+        private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+    ) {}
+
+    // ...
+}
+
+```
+
+:::note
+
+`@InjectTransactionHost('connectionName')` is a short for `@Inject(getTransactionHostToken('connectionName'))`. The `getTransactionHostToken` function is useful for when you need to mock the `TransactionHost` in unit tests.
+
+:::
+
+In a similar fashion, using the `@Transactional` decorator requires the `connectionName` to be passed as the first argument.
+
+```ts
+@Transactional('prisma-connection')
+async createUser(name: string): Promise<User> {
+    await this.accountService.createAccountForUser(user.id);
+    return user;
+}
+```

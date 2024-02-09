@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Inject } from '@nestjs/common';
 import { copyMethodMetadata } from 'nestjs-cls';
 import { TOptionsFromAdapter } from './interfaces';
 import { Propagation } from './propagation';
-import { TransactionHost } from './transaction-host';
+import { getTransactionHostToken, TransactionHost } from './transaction-host';
 
 /**
  * Run the decorated method in a transaction.
@@ -12,6 +13,47 @@ import { TransactionHost } from './transaction-host';
 export function Transactional<TAdapter>(
     options?: TOptionsFromAdapter<TAdapter>,
 ): MethodDecorator;
+
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param propagation The propagation mode to use, @see{Propagation}.
+ */
+export function Transactional<TAdapter>(
+    propagation?: Propagation,
+): MethodDecorator;
+
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param connectionName The name of the connection to use.
+ */
+export function Transactional<TAdapter>(
+    connectionName?: string,
+): MethodDecorator;
+
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param connectionName The name of the connection to use.
+ * @param options Transaction options depending on the adapter.
+ */
+export function Transactional<TAdapter>(
+    connectionName: string,
+    options?: TOptionsFromAdapter<TAdapter>,
+): MethodDecorator;
+
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param connectionName The name of the connection to use.
+ * @param propagation The propagation mode to use, @see{Propagation}.
+ */
+export function Transactional<TAdapter>(
+    connectionName: string,
+    propagation?: Propagation,
+): MethodDecorator;
+
 /**
  * Run the decorated method in a transaction.
  *
@@ -19,32 +61,51 @@ export function Transactional<TAdapter>(
  * @param options Transaction options depending on the adapter.
  */
 export function Transactional<TAdapter>(
+    connectionName: string,
     propagation: Propagation,
     options?: TOptionsFromAdapter<TAdapter>,
 ): MethodDecorator;
 
 export function Transactional(
-    optionsOrPropagation?: any,
-    maybeOptions?: any,
+    firstParam?: any,
+    secondParam?: any,
+    thirdParam?: any,
 ): MethodDecorator {
+    let connectionName: string | undefined;
     let options: any;
     let propagation: Propagation | undefined;
-    if (maybeOptions) {
-        options = maybeOptions;
-        propagation = optionsOrPropagation;
-    } else if (typeof optionsOrPropagation === 'string') {
-        propagation = optionsOrPropagation as Propagation;
+    if (thirdParam) {
+        connectionName = firstParam;
+        propagation = secondParam;
+        options = thirdParam;
+    } else if (secondParam) {
+        if (paramIsPropagationMode(firstParam)) {
+            propagation = firstParam;
+        } else {
+            connectionName = firstParam;
+        }
+        options = secondParam;
     } else {
-        options = optionsOrPropagation;
+        if (paramIsPropagationMode(firstParam)) {
+            propagation = firstParam;
+        } else if (typeof firstParam === 'string') {
+            connectionName = firstParam;
+        } else {
+            options = firstParam;
+        }
     }
-    const injectTransactionHost = Inject(TransactionHost);
+    const transactionHostProperty =
+        getTransactionHostPropertyName(connectionName);
+    const injectTransactionHost = Inject(
+        getTransactionHostToken(connectionName),
+    );
     return ((
         target: any,
         propertyKey: string | symbol,
         descriptor: TypedPropertyDescriptor<(...args: any) => Promise<any>>,
     ) => {
-        if (!target.__transactionHost) {
-            injectTransactionHost(target, '__transactionHost');
+        if (!target[transactionHostProperty]) {
+            injectTransactionHost(target, transactionHostProperty);
         }
         const original = descriptor.value;
         if (typeof original !== 'function') {
@@ -52,16 +113,15 @@ export function Transactional(
                 `The @Transactional decorator can be only used on functions, but ${propertyKey.toString()} is not a function.`,
             );
         }
-        descriptor.value = function (
-            this: { __transactionHost: TransactionHost },
-            ...args: any[]
-        ) {
-            if (!this.__transactionHost) {
+        descriptor.value = function (...args: any[]) {
+            if (!this[transactionHostProperty]) {
                 throw new Error(
                     `Failed to inject transaction host into ${target.constructor.name}`,
                 );
             }
-            return this.__transactionHost.withTransaction(
+            return (
+                this[transactionHostProperty] as TransactionHost
+            ).withTransaction(
                 propagation as Propagation,
                 options as never,
                 original.bind(this, ...args),
@@ -69,4 +129,15 @@ export function Transactional(
         };
         copyMethodMetadata(original, descriptor.value);
     }) as MethodDecorator;
+}
+
+function getTransactionHostPropertyName(connectionName?: string) {
+    return `__transactionHost${connectionName ? `_${connectionName}` : ''}`;
+}
+
+function paramIsPropagationMode(param: any): param is Propagation {
+    return (
+        typeof param === 'string' &&
+        Object.values(Propagation).includes(param as Propagation)
+    );
 }

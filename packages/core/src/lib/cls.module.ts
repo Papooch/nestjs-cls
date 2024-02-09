@@ -36,7 +36,8 @@ import {
     ClsModuleOptions,
 } from './cls.options';
 import { ClsService } from './cls.service';
-import { ClsPluginModule } from './plugin/cls-plugin.module';
+import { ClsPluginManager } from './plugin/cls-plugin-manager';
+
 import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
 import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';
 
@@ -103,7 +104,7 @@ export class ClsModule implements NestModule {
 
         return {
             module: ClsModule,
-            imports: [ClsPluginModule.forRoot(options.plugins)],
+            imports: ClsPluginManager.registerPlugins(options.plugins),
             providers: [
                 {
                     provide: CLS_MODULE_OPTIONS,
@@ -132,7 +133,7 @@ export class ClsModule implements NestModule {
             module: ClsModule,
             imports: [
                 ...(asyncOptions.imports ?? []),
-                ClsPluginModule.forRoot(asyncOptions.plugins),
+                ...ClsPluginManager.registerPlugins(asyncOptions.plugins),
             ],
             providers: [
                 {

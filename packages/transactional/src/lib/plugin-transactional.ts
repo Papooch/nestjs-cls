@@ -5,17 +5,23 @@ import {
     TRANSACTIONAL_ADAPTER_OPTIONS,
     TRANSACTION_CONNECTION,
 } from './symbols';
-import { TransactionHost } from './transaction-host';
+import { getTransactionHostToken, TransactionHost } from './transaction-host';
 
 export class ClsPluginTransactional implements ClsPlugin {
-    name: 'cls-plugin-transactional';
+    name: string;
     providers: Provider[];
     imports?: any[];
+    exports?: any[];
 
     constructor(options: TransactionalPluginOptions<any, any, any>) {
+        this.name = options.connectionName
+            ? `cls-plugin-transactional-${options.connectionName}`
+            : 'cls-plugin-transactional';
         this.imports = options.imports;
+        const transactionHostToken = getTransactionHostToken(
+            options.connectionName,
+        );
         this.providers = [
-            TransactionHost,
             {
                 provide: TRANSACTION_CONNECTION,
                 useExisting: options.adapter.connectionToken,
@@ -23,8 +29,20 @@ export class ClsPluginTransactional implements ClsPlugin {
             {
                 provide: TRANSACTIONAL_ADAPTER_OPTIONS,
                 inject: [TRANSACTION_CONNECTION],
-                useFactory: options.adapter.optionsFactory,
+                useFactory: (connection: any) => {
+                    const adapterOptions =
+                        options.adapter.optionsFactory(connection);
+                    return {
+                        ...adapterOptions,
+                        connectionName: options.connectionName,
+                    };
+                },
+            },
+            {
+                provide: transactionHostToken,
+                useClass: TransactionHost,
             },
         ];
+        this.exports = [transactionHostToken];
     }
 }
