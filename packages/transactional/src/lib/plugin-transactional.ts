@@ -1,6 +1,10 @@
 import { Provider } from '@nestjs/common';
-import { ClsPlugin } from 'nestjs-cls';
-import { TransactionalPluginOptions } from './interfaces';
+import { ClsModule, ClsPlugin } from 'nestjs-cls';
+import { getTransactionToken } from './inject-transaction.decorator';
+import {
+    MergedTransactionalAdapterOptions,
+    TransactionalPluginOptions,
+} from './interfaces';
 import {
     TRANSACTIONAL_ADAPTER_OPTIONS,
     TRANSACTION_CONNECTION,
@@ -10,14 +14,14 @@ import { getTransactionHostToken, TransactionHost } from './transaction-host';
 export class ClsPluginTransactional implements ClsPlugin {
     name: string;
     providers: Provider[];
-    imports?: any[];
-    exports?: any[];
+    imports: any[] = [];
+    exports: any[] = [];
 
     constructor(options: TransactionalPluginOptions<any, any, any>) {
         this.name = options.connectionName
             ? `cls-plugin-transactional-${options.connectionName}`
             : 'cls-plugin-transactional';
-        this.imports = options.imports;
+        this.imports.push(...(options.imports ?? []));
         const transactionHostToken = getTransactionHostToken(
             options.connectionName,
         );
@@ -29,12 +33,16 @@ export class ClsPluginTransactional implements ClsPlugin {
             {
                 provide: TRANSACTIONAL_ADAPTER_OPTIONS,
                 inject: [TRANSACTION_CONNECTION],
-                useFactory: (connection: any) => {
+                useFactory: (
+                    connection: any,
+                ): MergedTransactionalAdapterOptions<any, any> => {
                     const adapterOptions =
                         options.adapter.optionsFactory(connection);
                     return {
                         ...adapterOptions,
                         connectionName: options.connectionName,
+                        enableTransactionProxy:
+                            options.enableTransactionProxy ?? false,
                     };
                 },
             },
@@ -43,6 +51,21 @@ export class ClsPluginTransactional implements ClsPlugin {
                 useClass: TransactionHost,
             },
         ];
-        this.exports = [transactionHostToken];
+        this.exports.push(transactionHostToken);
+
+        if (options.enableTransactionProxy) {
+            const transactionProxyToken = getTransactionToken(
+                options.connectionName,
+            );
+            this.imports.push(
+                ClsModule.forFeatureAsync({
+                    provide: transactionProxyToken,
+                    inject: [transactionHostToken],
+                    useFactory: (txHost: TransactionHost) => txHost.tx,
+                    type: 'function',
+                    global: true,
+                }),
+            );
+        }
     }
 }

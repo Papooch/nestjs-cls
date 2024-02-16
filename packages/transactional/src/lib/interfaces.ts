@@ -7,9 +7,10 @@ export interface TransactionalAdapterOptions<TTx, TOptions> {
     getFallbackInstance: () => TTx;
 }
 
-export interface TransactionalAdapterOptionsWithName<TTx, TOptions>
+export interface MergedTransactionalAdapterOptions<TTx, TOptions>
     extends TransactionalAdapterOptions<TTx, TOptions> {
-    connectionName: string;
+    connectionName: string | undefined;
+    enableTransactionProxy: boolean;
 }
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
@@ -49,6 +50,12 @@ export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
      * An optional name of the connection. Useful when there are multiple TransactionalPlugins registered in the app.
      */
     connectionName?: string;
+    /**
+     * Whether to enable injecting the Transaction instance directly using `@InjectTransaction()`
+     *
+     * Default: `true`
+     */
+    enableTransactionProxy?: boolean;
 }
 
 export type TTxFromAdapter<TAdapter> = TAdapter extends TransactionalAdapter<
@@ -63,3 +70,6 @@ export type TOptionsFromAdapter<TAdapter> =
     TAdapter extends TransactionalAdapter<any, any, infer TOptions>
         ? TOptions
         : never;
+
+export type Transaction<TAdapter extends TransactionalAdapter<any, any, any>> =
+    TTxFromAdapter<TAdapter>;
