@@ -1,8 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClsServiceManager } from 'nestjs-cls';
+import { getTransactionToken } from './inject-transaction.decorator';
 import {
     TOptionsFromAdapter,
-    TransactionalAdapterOptionsWithName,
+    MergedTransactionalAdapterOptions,
     TTxFromAdapter,
 } from './interfaces';
 import {
@@ -11,25 +12,22 @@ import {
     TransactionNotActiveError,
     TransactionPropagationError,
 } from './propagation';
-import {
-    getTransactionalInstanceSymbol,
-    TRANSACTIONAL_ADAPTER_OPTIONS,
-} from './symbols';
+import { getTransactionClsKey, TRANSACTIONAL_ADAPTER_OPTIONS } from './symbols';
 
 @Injectable()
 export class TransactionHost<TAdapter = never> {
     private readonly cls = ClsServiceManager.getClsService();
     private readonly logger = new Logger(TransactionHost.name);
-    private readonly transactionalInstanceSymbol: symbol;
+    private readonly transactionInstanceSymbol: symbol;
 
     constructor(
         @Inject(TRANSACTIONAL_ADAPTER_OPTIONS)
-        private readonly _options: TransactionalAdapterOptionsWithName<
+        private readonly _options: MergedTransactionalAdapterOptions<
             TTxFromAdapter<TAdapter>,
             TOptionsFromAdapter<TAdapter>
         >,
     ) {
-        this.transactionalInstanceSymbol = getTransactionalInstanceSymbol(
+        this.transactionInstanceSymbol = getTransactionClsKey(
             this._options.connectionName,
         );
     }
@@ -47,7 +45,7 @@ export class TransactionHost<TAdapter = never> {
             return this._options.getFallbackInstance();
         }
         return (
-            this.cls.get(this.transactionalInstanceSymbol) ??
+            this.cls.get(this.transactionInstanceSymbol) ??
             this._options.getFallbackInstance()
         );
     }
@@ -216,11 +214,17 @@ export class TransactionHost<TAdapter = never> {
         if (!this.cls.isActive()) {
             return false;
         }
-        return !!this.cls.get(this.transactionalInstanceSymbol);
+        return !!this.cls.get(this.transactionInstanceSymbol);
     }
 
     private setTxInstance(txInstance?: TTxFromAdapter<TAdapter>) {
-        this.cls.set(this.transactionalInstanceSymbol, txInstance);
+        this.cls.set(this.transactionInstanceSymbol, txInstance);
+        if (this._options.enableTransactionProxy) {
+            this.cls.setProxy(
+                getTransactionToken(this._options.connectionName),
+                txInstance,
+            );
+        }
     }
 }
 

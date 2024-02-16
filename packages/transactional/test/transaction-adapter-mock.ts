@@ -22,7 +22,9 @@ export class MockDbConnection {
     }
 
     getClientsQueries() {
-        return this.clients.map((c) => c.operations);
+        return this.clients
+            .map((c) => c.operations)
+            .filter((o) => o.length > 0);
     }
 }
 
