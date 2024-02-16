@@ -11,6 +11,7 @@ import {
 import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
 import { CLS_ID } from './cls.constants';
 import { ClsContextOptions, ClsStore } from './cls.options';
+import { getProxyProviderSymbol } from './proxy-provider/get-proxy-provider-symbol';
 
 export class ClsService<S extends ClsStore = ClsStore> {
     constructor(private readonly als: AsyncLocalStorage<any>) {
@@ -194,6 +195,26 @@ export class ClsService<S extends ClsStore = ClsStore> {
      */
     isActive() {
         return !!this.als.getStore();
+    }
+
+    /**
+     * Retrieve a Proxy provider from the CLS context
+     * based on its injection token.
+     */
+    getProxy<T = any>(proxyToken: string | symbol): T;
+    getProxy<T>(proxyToken: new (...args: any) => T): T;
+    getProxy(proxyToken: any) {
+        return this.get(getProxyProviderSymbol(proxyToken));
+    }
+
+    /**
+     * Replace an instance of a Proxy provider in the CLS context
+     * based on its injection token.
+     */
+    setProxy<T = any>(proxyToken: string | symbol, value: T): void;
+    setProxy<T>(proxyToken: new (...args: any) => T, value: T): void;
+    setProxy(proxyToken: any, value: any) {
+        return this.set(getProxyProviderSymbol(proxyToken), value);
     }
 
     /**
