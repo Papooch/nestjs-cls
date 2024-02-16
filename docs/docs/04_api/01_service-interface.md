@@ -44,8 +44,18 @@ The `S` type parameter is used as the type of custom `ClsStore`.
 -   **_`isActive`_**`(): boolean`  
     Whether the current code runs within an active CLS context.
 
+The following methods only apply to the [Proxy](../03_features-and-use-cases/06_proxy-providers.md) feature:
+
+-   **_`getProxy`_**`(proxyToken: any): any`  
+    Retrieve a Proxy provider from the CLS context based on its injection token.
+
+-   **_`setProxy`_**`(proxyToken: any, value? any): any`  
+    Replace an instance of a Proxy provider in the CLS context based on its injection token.
+
 -   **_`resolveProxyProviders`_**`(): Promise<void>`  
     Manually trigger resolution of Proxy Providers.
+
+The following methods involve the [plugin lifecycle](../06_plugins/02_plugin-api.md):
 
 -   **_`initializePlugins`_**`(): Promise<void>`  
     Manually trigger `onClsInit` hooks of registered plugins.

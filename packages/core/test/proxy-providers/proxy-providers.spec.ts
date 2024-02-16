@@ -11,6 +11,7 @@ import {
     ClsModule,
     ClsModuleOptions,
     ClsService,
+    CLS_ID,
     InjectableProxy,
 } from '../../src';
 import {
@@ -44,12 +45,16 @@ class RequestScopedClass {
 }
 
 const FACTORY_PROVIDER = 'FACTORY_PROVIDER';
+
 function requestScopedFactory(injected: InjectedClass, cls: ClsService) {
     return {
         id: cls.getId(),
         getInjected: () => injected.property,
     };
 }
+type RequestScopedFactoryResult = Awaited<
+    ReturnType<typeof requestScopedFactory>
+>;
 
 function randomString() {
     return Math.random().toString(36).slice(-10);
@@ -60,7 +65,7 @@ class TestController {
     constructor(
         private readonly rsc: RequestScopedClass,
         @Inject(FACTORY_PROVIDER)
-        private readonly rsf: Awaited<ReturnType<typeof requestScopedFactory>>,
+        private readonly rsf: RequestScopedFactoryResult,
     ) {}
 
     @Get('/hello')
@@ -120,7 +125,7 @@ async function getTestApp(forRoorOptions: ClsModuleOptions) {
     return app;
 }
 
-describe('Proxy providers', () => {
+describe('Injecting Proxy providers', () => {
     let app: INestApplication;
 
     it('works with middleware', async () => {
@@ -142,6 +147,46 @@ describe('Proxy providers', () => {
             interceptor: { mount: true, generateId: true },
         });
         await expectOkIdsProxy(app);
+    });
+});
+
+describe('Proxy providers from CLS', () => {
+    let app: INestApplication;
+
+    it('allows getting a Class Proxy provider from CLS', async () => {
+        app = await getTestApp({});
+        const cls = app.get(ClsService);
+        const id = randomString();
+        await cls.runWith({ [CLS_ID]: id }, async () => {
+            await cls.resolveProxyProviders();
+            const rsc = cls.getProxy(RequestScopedClass);
+            expect(rsc.id).toEqual(id);
+        });
+    });
+
+    it('allows getting a factory Proxy provider from CLS', async () => {
+        app = await getTestApp({});
+        const cls = app.get(ClsService);
+        const id = randomString();
+        await cls.runWith({ [CLS_ID]: id }, async () => {
+            await cls.resolveProxyProviders();
+            const rsc =
+                cls.getProxy<RequestScopedFactoryResult>(FACTORY_PROVIDER);
+            expect(rsc.id).toEqual(id);
+        });
+    });
+
+    it('allows setting a Class Proxy provider in CLS', async () => {
+        app = await getTestApp({});
+        const cls = app.get(ClsService);
+        const id = randomString();
+        await cls.runWith({ [CLS_ID]: id }, async () => {
+            await cls.resolveProxyProviders();
+            const rsc = new RequestScopedClass(cls, new InjectedClass());
+            cls.setProxy(RequestScopedClass, rsc);
+            const rscFromCls = cls.getProxy(RequestScopedClass);
+            expect(rscFromCls).toEqual(rsc);
+        });
     });
 });
 

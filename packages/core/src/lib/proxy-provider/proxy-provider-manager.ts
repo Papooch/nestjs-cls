@@ -2,6 +2,7 @@ import { FactoryProvider, Type, ValueProvider } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
 import { globalClsService } from '../cls-service.globals';
+import { getProxyProviderSymbol } from './get-proxy-provider-symbol';
 import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
     ProxyProviderNotDecoratedException,
@@ -26,13 +27,14 @@ export class ProxyProviderManager {
     private static proxyProviderMap = new Map<symbol, ProxyProvider>();
 
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
-        const providerSymbol = this.getProxyProviderSymbol(options);
+        const providerToken = this.getProxyProviderToken(options);
+        const providerSymbol = getProxyProviderSymbol(providerToken);
         const proxy = this.createProxy(
             providerSymbol,
             (options as ClsModuleProxyFactoryProviderOptions).type ?? 'object',
         );
         const proxyProvider: FactoryProvider = {
-            provide: this.getProxyProviderToken(options),
+            provide: providerToken,
             inject: [
                 ModuleRef,
                 ...((options as ClsModuleProxyFactoryProviderOptions).inject ??
@@ -68,21 +70,6 @@ export class ProxyProviderManager {
             useValue: proxy,
         };
         return proxyProvider;
-    }
-
-    private static getProxyProviderSymbol(
-        options: ClsModuleProxyProviderOptions,
-    ) {
-        const maybeExistingSymbol =
-            typeof options.provide == 'symbol' ? options.provide : undefined;
-        return (
-            maybeExistingSymbol ??
-            Symbol.for(
-                options.provide?.toString() ??
-                    (options as ClsModuleProxyClassProviderOptions).useClass
-                        .name,
-            )
-        );
     }
 
     private static getProxyProviderToken(
