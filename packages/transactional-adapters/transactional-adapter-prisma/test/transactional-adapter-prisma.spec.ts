@@ -1,5 +1,7 @@
 import {
     ClsPluginTransactional,
+    InjectTransaction,
+    Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
@@ -13,15 +15,16 @@ import { TransactionalAdapterPrisma } from '../src';
 @Injectable()
 class UserRepository {
     constructor(
-        private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+        @InjectTransaction()
+        private readonly tx: Transaction<TransactionalAdapterPrisma>,
     ) {}
 
     async getUserById(id: number) {
-        return this.txHost.tx.user.findUnique({ where: { id } });
+        return this.tx.user.findUnique({ where: { id } });
     }
 
     async createUser(name: string) {
-        return this.txHost.tx.user.create({
+        return this.tx.user.create({
             data: { name: name, email: `${name}@email.com` },
         });
     }
@@ -93,6 +96,7 @@ class PrismaModule {}
                     adapter: new TransactionalAdapterPrisma({
                         prismaInjectionToken: PrismaClient,
                     }),
+                    enableTransactionProxy: true,
                 }),
             ],
         }),
