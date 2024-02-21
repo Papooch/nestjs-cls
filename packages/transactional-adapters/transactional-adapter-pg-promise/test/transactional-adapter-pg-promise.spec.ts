@@ -1,14 +1,16 @@
 import {
     ClsPluginTransactional,
+    InjectTransaction,
+    Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
-import { Database, TransactionalAdapterPgPromise } from '../src';
-import pgPromise from 'pg-promise';
 import { execSync } from 'node:child_process';
+import pgPromise from 'pg-promise';
+import { Database, TransactionalAdapterPgPromise } from '../src';
 
 type UserRecord = { id: number; name: string; email: string };
 
@@ -31,18 +33,19 @@ const transactionMode = new TransactionMode({
 @Injectable()
 class UserRepository {
     constructor(
-        private readonly txHost: TransactionHost<TransactionalAdapterPgPromise>,
+        @InjectTransaction()
+        private readonly tx: Transaction<TransactionalAdapterPgPromise>,
     ) {}
 
     async getUserById(id: number) {
-        return this.txHost.tx.one<UserRecord>(
+        return this.tx.one<UserRecord>(
             'SELECT * FROM public.user WHERE id = $1',
             [id],
         );
     }
 
     async createUser(name: string) {
-        const created = await this.txHost.tx.one<UserRecord>(
+        const created = await this.tx.one<UserRecord>(
             'INSERT INTO public.user (name, email) VALUES ($1, $2) RETURNING *',
             [name, `${name}@email.com`],
         );
@@ -120,6 +123,7 @@ class PgPromiseModule {}
                     adapter: new TransactionalAdapterPgPromise({
                         dbInstanceToken: PG_PROMISE,
                     }),
+                    enableTransactionProxy: true,
                 }),
             ],
         }),

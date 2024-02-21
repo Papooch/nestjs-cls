@@ -1,5 +1,7 @@
 import {
     ClsPluginTransactional,
+    InjectTransaction,
+    Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
@@ -26,13 +28,12 @@ interface User {
 @Injectable()
 class UserRepository {
     constructor(
-        private readonly txHost: TransactionHost<
-            TransactionalAdapterKysely<Database>
-        >,
+        @InjectTransaction()
+        private readonly tx: Transaction<TransactionalAdapterKysely<Database>>,
     ) {}
 
     async getUserById(id: number) {
-        return this.txHost.tx
+        return this.tx
             .selectFrom('user')
             .where('id', '=', id)
             .selectAll()
@@ -40,7 +41,7 @@ class UserRepository {
     }
 
     async createUser(name: string) {
-        return this.txHost.tx
+        return this.tx
             .insertInto('user')
             .values({
                 name: name,
@@ -138,6 +139,7 @@ class KnexModule {}
                     adapter: new TransactionalAdapterKysely({
                         kyselyInstanceToken: KYSELY,
                     }),
+                    enableTransactionProxy: true,
                 }),
             ],
         }),
