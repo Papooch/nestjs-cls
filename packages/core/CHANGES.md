@@ -2,6 +2,19 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.2.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.1.0...nestjs-cls@4.2.0) "nestjs-cls" (2024-02-21)<a name="4.2.0"></a>
+
+### Bug Fixes
+
+* make proxy providers compatible with #private fields ([367dfc7](https://github.com/Papooch/nestjs-cls/commits/367dfc7))
+
+### Features
+
+* add imperative API to get/set Proxy providers (#123) ([fbb27dc](https://github.com/Papooch/nestjs-cls/commits/fbb27dc))
+
+
+
+
 ## [4.1.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.0.4...nestjs-cls@4.1.0) "nestjs-cls" (2024-02-09)<a name="4.1.0"></a>
 
 ### Bug Fixes

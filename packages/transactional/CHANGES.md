@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.1.0...@nestjs-cls/transactional@2.2.0) "@nestjs-cls/transactional" (2024-02-21)<a name="2.2.0"></a>
+
+### Features
+
+* add option to inject tx directly as Proxy ([a522e85](https://github.com/Papooch/nestjs-cls/commits/a522e85))
+
+
+
+
 ## [2.1.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.0.3...@nestjs-cls/transactional@2.1.0) "@nestjs-cls/transactional" (2024-02-09)<a name="2.1.0"></a>
 
 ### Bug Fixes
