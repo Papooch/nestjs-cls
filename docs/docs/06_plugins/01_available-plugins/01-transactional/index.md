@@ -91,7 +91,7 @@ export class AppModule {}
 
 This registers a `TransactionHost` provider in the global context which can be used to start a new transaction and retrieve the current transaction reference.
 
-### Using the TransactionHost
+### Using the `TransactionHost`
 
 Now that we have the plugin registered, we can use the `TransactionHost` to start a new transaction and retrieve the current transaction reference.
 
@@ -100,6 +100,10 @@ Suppose that any time we create an `User`, we want to create an `Account` for th
 The type argument on the `TransactionHost<Adapter>` makes sure that the `tx` property is typed correctly and the `withTransaction` method returns the correct type. This is ensured by the implementation of the adapter:
 
 ```ts title="user.service.ts"
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+// ... other imports
+
 @Injectable()
 class UserService {
     constructor(
@@ -120,6 +124,10 @@ class UserService {
 ```
 
 ```ts title="account.service.ts"
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+// ... other imports
+
 @Injectable()
 class AccountService {
     constructor(
@@ -140,13 +148,17 @@ Notice that we never used either raw `PrismaClient` or the `prisma.$transaction`
 
 :::
 
-### Using the Transactional decorator
+### Using the `@Transactional` decorator
 
 The `@Transactional` decorator can be used to wrap a method call in the `withTransaction` call implicitly. This saves a lot of boilerplate code and makes the code more readable.
 
 Using the decorator, we can change the `createUser` method like so without changing the behavior:
 
 ```ts title="user.service.ts"
+import { TransactionHost, Transactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+// ... other imports
+
 @Injectable()
 class UserService {
     constructor(
@@ -162,6 +174,57 @@ class UserService {
     }
 }
 ```
+
+### Using the `@InjectTransaction` decorator
+
+<small>since `v2.2.0`</small>
+
+The `@InjectTransaction` decorator can be used to inject a [Proxy Provider](../../../03_features-and-use-cases/06_proxy-providers.md) of the Transaction instance (the `tx` property of the `TransactionHost`) directly as a dependency.
+
+This is useful when you don't want to inject the entire `TransactionHost` and only need the transaction instance itself. For example when you're migrating an existing codebase and don't want to change all database calls to use `txHost.tx`.
+
+The type argument of `Transaction<Adapter>` behaves silimarly to the `TransactionHost` type argument, and ensures that the transaction instance is typed correctly.
+
+<!-- prettier-ignore -->
+```ts title="account.service.ts"
+import { InjectTransaction, Transaction, Transactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
+// ... other imports
+
+@Injectable()
+class AccountService {
+    constructor(
+        // highlight-start
+        @InjectTransaction()
+        private readonly tx: Transaction<TransactionalAdapterPrisma>,
+        // highlight-end
+    ) {}
+
+    async createAccountForUser(id: number): Promise<Account> {
+        return this.txHost.tx.create({
+            data: { userId: id, number: Math.random() },
+        });
+    }
+}
+```
+
+:::note
+
+This feature must be explicitly enabled with the `enableTransactionProxy: true` option of the `ClsPluginTransactional` constructor.
+
+```ts
+new ClsPluginTransactional({
+    imports: [PrismaModule],
+    adapter: new TransactionalAdapterPrisma({
+        prismaInjectionToken: PrismaClient,
+    }),
+    // highlight-start
+    enableTransactionProxy: true,
+    // highlight-end
+}),
+```
+
+:::
 
 ### Passing transaction options
 
@@ -277,6 +340,9 @@ The `ClsPluginTransactional` constructor takes an options object with the follow
 -   **_`adapter`_**`: TransactionalAdapter`  
      An instance of the adapter that should be used for the plugin.
 
+-   **_`enableTransactionProxy`_**`: boolean` (default: `false`)  
+     Whether to enable injecting the Transaction instance directly using [`@InjectTransaction()`](#using-the-injecttransaction-decorator)
+
 ## TransactionHost Interface
 
 The `TransactionHost` interface is the main working interface of the plugin. It provides the following API:
@@ -348,31 +414,41 @@ This works for any number of connections and any number of database libraries.
 
 To use the `TransactionHost` for a specific connection, you _need to_ use `@InjectTransactionHost('connectionName')` decorator to inject the `TransactionHost`. Otherwise Nest will try to inject the default unnamed instance which will result in an injection error.
 
+Similarly, the `@InjectTransaction` decorator accepts the connection name as the first argument.
+
+<!-- prettier-ignore -->
 ```ts
 @Injectable()
 class UserService {
     constructor(
         // highlight-start
         @InjectTransactionHost('prisma-connection')
-        private readonly // highlight-end
+        // highlight-end
         private readonly txHost: TransactionHost<TransactionalAdapterPrisma>,
+        // highlight-start
+        @InjectTransaction('prisma-connection')
+        // highlight-end
+        private readonly tx: Transaction<TransactionalAdapterPrisma>,
     ) {}
 
     // ...
 }
-
 ```
 
 :::note
 
 `@InjectTransactionHost('connectionName')` is a short for `@Inject(getTransactionHostToken('connectionName'))`. The `getTransactionHostToken` function is useful for when you need to mock the `TransactionHost` in unit tests.
 
+Similarly, `@InjectTransaction('connectionName')` is a short for `@Inject(getTransactionToken('connectionName'))`.
+
 :::
 
 In a similar fashion, using the `@Transactional` decorator requires the `connectionName` to be passed as the first argument.
 
 ```ts
+// highlight-start
 @Transactional('prisma-connection')
+// highlight-end
 async createUser(name: string): Promise<User> {
     await this.accountService.createAccountForUser(user.id);
     return user;

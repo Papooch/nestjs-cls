@@ -53,7 +53,7 @@ export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
     /**
      * Whether to enable injecting the Transaction instance directly using `@InjectTransaction()`
      *
-     * Default: `true`
+     * Default: `false`
      */
     enableTransactionProxy?: boolean;
 }
