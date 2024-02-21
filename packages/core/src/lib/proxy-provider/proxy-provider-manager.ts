@@ -88,14 +88,21 @@ export class ProxyProviderManager {
         const getProvider = () => this.clsService.get()?.[providerKey] ?? {};
         const baseType = type === 'function' ? () => null : {};
         return new Proxy(baseType, {
-            apply(_, thisArg, argArray) {
-                return getProvider().apply(thisArg, argArray);
+            apply(_, __, argArray) {
+                const provider = getProvider();
+                return provider.apply(provider, argArray);
             },
-            get(_, prop) {
-                return getProvider()[prop];
+            get(_, propName) {
+                const provider = getProvider();
+                const prop = provider[propName];
+                if (typeof prop === 'function') {
+                    return prop.bind(provider);
+                } else {
+                    return prop;
+                }
             },
-            set(_, prop, value) {
-                return Reflect.set(getProvider(), prop, value);
+            set(_, propName, value) {
+                return Reflect.set(getProvider(), propName, value);
             },
             ownKeys() {
                 return Reflect.ownKeys(getProvider());
