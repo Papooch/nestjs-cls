@@ -101,6 +101,42 @@ class UserRepository {
 }
 ```
 
-## Caveats
+## Custom client type
 
-Since Prisma generates its own client to `node_modules`, this plugin works with the assumption that the types for the client are available as `@prisma/client`. If you have a different setup, you might need to use `declare module '@prisma/client'` to make typescript happy.
+<small>Since `1.1.0`</small>
+
+By default, the adapter assumes that the Prisma client is available as `@prisma/client`. If you have a different setup, or you use some Prisma client _extensions_, you can provide a custom type for the client as a generic parameter of the adapter.
+
+```ts
+TransactionalAdapterPrisma<CustomPrismaClient>;
+```
+
+This type will need to be used whenever you inject the `TransactionHost` or `Transaction`
+
+```ts
+private readonly txHost: TransactionHost<TransactionalAdapterPrisma<CustomPrismaClient>>
+```
+
+Which becomes pretty verbose, so it's recommended to create a custom type alias for the adapter.
+
+:::note
+
+Please make sure you set up the module with the _custom_ prisma client and not the default one,
+otherwise you would get a runtime error.
+
+```ts
+new ClsPluginTransactional({
+    imports: [
+        // module in which the PrismaClient is provided
+        PrismaModule
+    ],
+    adapter: new TransactionalAdapterPrisma({
+        // the injection token of the PrismaClient
+        // highlight-start
+        prismaInjectionToken: CUSTOM_PRISMA_CLIENT_TOKEN,
+        // highlight-end
+    }),
+}),
+```
+
+:::
