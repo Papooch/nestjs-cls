@@ -39,7 +39,7 @@ export class TransactionalAdapterPrisma<
         wrapWithTransaction: async (
             options: PrismaTransactionOptions,
             fn: (...args: any[]) => Promise<any>,
-            setClient: (client?: PrismaTransactionalClient) => void,
+            setClient: (client?: PrismaTransactionalClient<TClient>) => void,
         ) => {
             return await prisma.$transaction(async (p) => {
                 setClient(p);
