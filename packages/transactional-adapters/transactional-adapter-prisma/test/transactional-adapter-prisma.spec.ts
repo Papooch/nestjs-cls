@@ -12,6 +12,8 @@ import { execSync } from 'child_process';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
 
+process.env.DATA_SOURCE_URL = 'file:../tmp/test.db';
+
 @Injectable()
 class UserRepository {
     constructor(
@@ -111,7 +113,7 @@ describe('Transactional', () => {
     let prisma: PrismaClient;
 
     beforeAll(async () => {
-        execSync('yarn prisma migrate reset --force');
+        execSync('yarn prisma migrate reset --force', { env: process.env });
     });
 
     beforeEach(async () => {
