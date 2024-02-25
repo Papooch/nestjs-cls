@@ -119,7 +119,7 @@ private readonly txHost: TransactionHost<TransactionalAdapterPrisma<CustomPrisma
 
 Which becomes pretty verbose, so it's recommended to create a custom type alias for the adapter.
 
-:::note
+:::important
 
 Please make sure you set up the module with the _custom_ prisma client and not the default one,
 otherwise you would get a runtime error.
