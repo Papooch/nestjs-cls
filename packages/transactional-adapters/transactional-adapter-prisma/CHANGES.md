@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.1.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.0.7...@nestjs-cls/transactional-adapter-prisma@1.1.0) "@nestjs-cls/transactional-adapter-prisma" (2024-02-25)<a name="1.1.0"></a>
+
+### Features
+
+* enable setting custom prisma client type for adapter (#126) ([88e24be](https://github.com/Papooch/nestjs-cls/commits/88e24be))
+
+
+
+
 ## [1.0.3](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.0.2...@nestjs-cls/transactional-adapter-prisma@1.0.3) "@nestjs-cls/transactional-adapter-prisma" (2024-01-29)<a name="1.0.3"></a>
 
 
