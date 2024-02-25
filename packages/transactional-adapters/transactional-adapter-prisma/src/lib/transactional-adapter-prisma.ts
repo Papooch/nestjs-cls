@@ -1,13 +1,17 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { PrismaClient } from '@prisma/client';
 
-export type PrismaTransactionalClient = Parameters<
-    Parameters<PrismaClient['$transaction']>[0]
->[0];
+interface AnyTransactionClient {
+    $transaction: (fn: (client: any) => Promise<any>, options?: any) => any;
+}
 
-export type PrismaTransactionOptions = Parameters<
-    PrismaClient['$transaction']
->[1];
+export type PrismaTransactionalClient<
+    TClient extends AnyTransactionClient = PrismaClient,
+> = Parameters<Parameters<TClient['$transaction']>[0]>[0];
+
+export type PrismaTransactionOptions<
+    TClient extends AnyTransactionClient = PrismaClient,
+> = Parameters<TClient['$transaction']>[1];
 
 export interface PrismaTransactionalAdapterOptions {
     /**
@@ -16,12 +20,13 @@ export interface PrismaTransactionalAdapterOptions {
     prismaInjectionToken: any;
 }
 
-export class TransactionalAdapterPrisma
-    implements
+export class TransactionalAdapterPrisma<
+    TClient extends AnyTransactionClient = PrismaClient,
+> implements
         TransactionalAdapter<
-            PrismaClient,
-            PrismaTransactionalClient,
-            PrismaTransactionOptions
+            TClient,
+            PrismaTransactionalClient<TClient>,
+            PrismaTransactionOptions<TClient>
         >
 {
     connectionToken: any;
@@ -30,11 +35,11 @@ export class TransactionalAdapterPrisma
         this.connectionToken = options.prismaInjectionToken;
     }
 
-    optionsFactory = (prisma: PrismaClient) => ({
+    optionsFactory = (prisma: TClient) => ({
         wrapWithTransaction: async (
             options: PrismaTransactionOptions,
             fn: (...args: any[]) => Promise<any>,
-            setClient: (client?: PrismaTransactionalClient) => void,
+            setClient: (client?: PrismaTransactionalClient<TClient>) => void,
         ) => {
             return await prisma.$transaction(async (p) => {
                 setClient(p);
