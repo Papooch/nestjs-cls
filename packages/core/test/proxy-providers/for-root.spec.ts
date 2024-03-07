@@ -107,7 +107,7 @@ describe('ClsModule', () => {
 
             @Injectable()
             class SomeClass {
-                public proxy: SomeClass;
+                public proxy!: SomeClass;
             }
 
             app = await createAndInitTestingApp([ProxyClass], [SomeClass]);

@@ -7,11 +7,9 @@ import {
     CLS_RES,
 } from '../cls.constants';
 import { ClsMiddlewareOptions } from '../cls.options';
-import { ClsService } from '../cls.service';
 
 @Injectable()
 export class ClsMiddleware implements NestMiddleware {
-    private readonly cls: ClsService;
     private readonly options: Omit<ClsMiddlewareOptions, 'mount'>;
 
     constructor(

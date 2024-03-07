@@ -37,7 +37,6 @@ export function UseCls<TArgs extends any[]>(
         const options = { ...new ClsDecoratorOptions(), ...maybeOptions };
         const cls = ClsServiceManager.getClsService();
         const original = descriptor.value;
-        // console.log('original is', original?.toString());
         if (typeof original !== 'function') {
             throw new Error(
                 `The @UseCls decorator can be only used on functions, but ${propertyKey.toString()} is not a function.`,

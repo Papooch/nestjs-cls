@@ -67,11 +67,11 @@ class NestedTransactionsService {
 @Injectable()
 class CallingServiceWithoutTransaction {
     @Inject(CalledService)
-    protected readonly calledService: CalledService;
+    protected readonly calledService!: CalledService;
     @Inject(TransactionHost)
-    protected readonly txHost: TransactionHost<TransactionAdapterMock>;
+    protected readonly txHost!: TransactionHost<TransactionAdapterMock>;
     @Inject(NestedTransactionsService)
-    protected readonly nested: NestedTransactionsService;
+    protected readonly nested!: NestedTransactionsService;
 
     async defaultPropagation() {
         await this.calledService.doWork(1);
