@@ -7,6 +7,7 @@ import {
 import { ClsServiceManager } from '../cls-service-manager';
 import { CLS_GUARD_OPTIONS, CLS_ID } from '../cls.constants';
 import { ClsGuardOptions } from '../cls.options';
+import { ContextClsStoreMap } from './utils/context-cls-store-map';
 
 @Injectable()
 export class ClsGuard implements CanActivate {
@@ -21,7 +22,13 @@ export class ClsGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const cls = ClsServiceManager.getClsService();
-        cls.enter({ ifNested: 'reuse' });
+        const existingStore = ContextClsStoreMap.get(context);
+        if (existingStore) {
+            cls.enter({ ifNested: 'reuse' });
+        } else {
+            cls.enterWith({});
+            ContextClsStoreMap.set(context, cls.get());
+        }
         if (this.options.generateId) {
             const id = await this.options.idGenerator?.(context);
             cls.setIfUndefined<any>(CLS_ID, id);
