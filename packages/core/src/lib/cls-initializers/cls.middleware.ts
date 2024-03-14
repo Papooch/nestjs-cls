@@ -7,6 +7,7 @@ import {
     CLS_RES,
 } from '../cls.constants';
 import { ClsMiddlewareOptions } from '../cls.options';
+import { ContextClsStoreMap } from './utils/context-cls-store-map';
 
 @Injectable()
 export class ClsMiddleware implements NestMiddleware {
@@ -23,6 +24,7 @@ export class ClsMiddleware implements NestMiddleware {
         const callback = async () => {
             try {
                 this.options.useEnterWith && cls.enter();
+                ContextClsStoreMap.setByRaw(req, cls.get());
                 if (this.options.generateId) {
                     const id = await this.options.idGenerator?.(req);
                     cls.setIfUndefined<any>(CLS_ID, id);
