@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.2.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.2.0...nestjs-cls@4.2.1) "nestjs-cls" (2024-03-14)<a name="4.2.1"></a>
+
+### Bug Fixes
+
+* prevent context from leaking with ClsGuard (#129) ([7026fdf](https://github.com/Papooch/nestjs-cls/commits/7026fdf))
+
+
+
+
 ## [4.2.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.1.0...nestjs-cls@4.2.0) "nestjs-cls" (2024-02-21)<a name="4.2.0"></a>
 
 ### Bug Fixes
