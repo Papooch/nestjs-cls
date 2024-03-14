@@ -30,7 +30,7 @@ class InjectedClass {
 @InjectableProxy()
 class RequestScopedClass {
     id: string;
-    requestScopedValue: string;
+    requestScopedValue?: string;
 
     constructor(
         private readonly cls: ClsService,

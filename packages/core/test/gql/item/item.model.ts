@@ -9,7 +9,7 @@ export class NestedItem {
 @ObjectType({ description: 'item' })
 export class Item {
     @Field(() => ID)
-    id: string;
+    id!: string;
 
     @Field({ nullable: true })
     fromGuard?: string;

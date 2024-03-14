@@ -8,7 +8,10 @@ export function getValueFromPath<T, TP extends RecursiveKeyOf<T> & string>(
     path: TP,
 ): DeepPropertyType<T, TP> {
     const pathSegments = path.split('.');
-    return pathSegments.reduce((acc, curr) => acc?.[curr], obj);
+    return pathSegments.reduce(
+        (acc, curr) => acc?.[curr],
+        obj,
+    ) as DeepPropertyType<T, TP>;
 }
 
 export function setValueFromPath<
@@ -21,6 +24,7 @@ export function setValueFromPath<
         acc[curr] ?? (acc[curr] = {});
         return acc[curr];
     }, obj ?? {});
-    leaf[pathSegments.pop()] = value;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    leaf[pathSegments.at(-1)!] = value;
     return obj;
 }
