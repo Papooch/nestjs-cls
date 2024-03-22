@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.3.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.2.1...nestjs-cls@4.3.0) "nestjs-cls" (2024-03-22)<a name="4.3.0"></a>
+
+### Features
+
+* add option to selectively resolve proxy providers ([26baa42](https://github.com/Papooch/nestjs-cls/commits/26baa42))
+* selectively resolve proxy providers (#131) ([26baa42](https://github.com/Papooch/nestjs-cls/commits/26baa42))
+
+
+
+
 ## [4.2.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.2.0...nestjs-cls@4.2.1) "nestjs-cls" (2024-03-14)<a name="4.2.1"></a>
 
 ### Bug Fixes
