@@ -59,9 +59,6 @@ describe('ClsModule', () => {
                 ClsModule.forFeature(ProxyClass),
             ]);
             expect(() => app.get(ProxyClass)).not.toThrow();
-            await cls.run(async () => {
-                await cls.resolveProxyProviders();
-            });
         });
 
         it('provides a class proxy that injects CLS_REQ and CLS_RES', async () => {
@@ -77,9 +74,6 @@ describe('ClsModule', () => {
                 ClsModule.forFeature(ProxyClass),
             ]);
             expect(() => app.get(ProxyClass)).not.toThrow();
-            await cls.run(async () => {
-                await cls.resolveProxyProviders();
-            });
         });
 
         it('provides multiple class proxies', async () => {

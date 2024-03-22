@@ -6,6 +6,7 @@ import { getProxyProviderSymbol } from './get-proxy-provider-symbol';
 import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
     ProxyProviderNotDecoratedException,
+    ProxyProviderNotRegisteredException,
     UnknownProxyDependenciesException,
 } from './proxy-provider.exceptions';
 import {
@@ -119,9 +120,12 @@ export class ProxyProviderManager {
         });
     }
 
-    static async resolveProxyProviders() {
-        const promises = [...this.proxyProviderMap.keys()].map(
-            (providerSymbol) => this.resolveProxyProvider(providerSymbol),
+    static async resolveProxyProviders(providerSymbols?: symbol[]) {
+        const providerSymbolsToResolve = providerSymbols?.length
+            ? providerSymbols
+            : Array.from(this.proxyProviderMap.keys());
+        const promises = providerSymbolsToResolve.map((providerSymbol) =>
+            this.resolveProxyProvider(providerSymbol),
         );
         await Promise.all(promises);
     }
@@ -131,9 +135,10 @@ export class ProxyProviderManager {
             // skip resolution if the provider already exists in the CLS
             return;
         }
-        const provider = this.proxyProviderMap.get(
-            providerSymbol,
-        ) as ProxyProvider;
+        const provider = this.proxyProviderMap.get(providerSymbol);
+        if (!provider) {
+            throw ProxyProviderNotRegisteredException.create(providerSymbol);
+        }
         if (isProxyClassProvider(provider)) {
             await this.resolveProxyClassProvider(providerSymbol, provider);
         } else {
