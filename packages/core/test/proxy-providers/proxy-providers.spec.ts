@@ -11,16 +11,16 @@ import {
     ClsModule,
     ClsModuleOptions,
     ClsService,
+    ClsServiceManager,
     CLS_ID,
     InjectableProxy,
 } from '../../src';
+import { ProxyProviderManager } from '../../src/lib/proxy-provider';
 import {
     expectOkIdsProxy,
     ProxyResult,
     ProxyResults,
 } from './expect-ids-proxy';
-import { globalClsService } from '../../src/lib/cls-service.globals';
-import { ProxyProviderManager } from '../../src/lib/proxy-provider';
 
 @Injectable()
 class InjectedClass {
@@ -192,7 +192,7 @@ describe('Proxy providers from CLS', () => {
 
 describe('Edge cases', () => {
     it('proxy should allow setting falsy value', async () => {
-        const clsService = globalClsService;
+        const clsService = ClsServiceManager.getClsService();
         const symbol = Symbol('testSymbol');
         const proxyProvider = ProxyProviderManager.createProxyProvider({
             provide: symbol,
@@ -203,7 +203,7 @@ describe('Edge cases', () => {
         });
         const proxy = proxyProvider.useFactory();
         await clsService.run(async () => {
-            await ProxyProviderManager.resolveProxyProviders();
+            await clsService.resolveProxyProviders();
             expect(proxy.booleanTest).toBe(true);
             proxy.booleanTest = false;
             expect(proxy.booleanTest).toBe(false);

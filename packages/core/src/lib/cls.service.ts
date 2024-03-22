@@ -221,13 +221,16 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * Use to manually trigger resolution of Proxy Providers
      * in case `resolveProxyProviders` is not enabled in the enhancer.
      */
-    async resolveProxyProviders() {
+    async resolveProxyProviders(proxyTokens?: any[]) {
         // Workaround for a circular dep
         // TODO: This should be untangled and cleaned up
         const { ProxyProviderManager } = await import(
             './proxy-provider/proxy-provider-manager'
         );
-        await ProxyProviderManager.resolveProxyProviders();
+        const proxySymbols = proxyTokens
+            ? proxyTokens.map(getProxyProviderSymbol)
+            : [];
+        await ProxyProviderManager.resolveProxyProviders(proxySymbols);
     }
 
     async initializePlugins() {

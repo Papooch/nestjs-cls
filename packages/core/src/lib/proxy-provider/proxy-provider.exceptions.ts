@@ -23,7 +23,7 @@ export class UnknownProxyDependenciesException extends Error {
             notFoundParamName,
             notFoundParamIndex,
         );
-        return new UnknownProxyDependenciesException(message);
+        return new this(message);
     }
 
     private static extractDependencyParams(
@@ -55,6 +55,15 @@ export class ProxyProviderNotDecoratedException extends Error {
 
     static create(Provider: Type) {
         const message = `Cannot create a Proxy provider for ${Provider.name}. The class must be explicitly decorated with the @InjectableProxy() decorator to distinguish it from a regular provider.`;
-        return new ProxyProviderNotDecoratedException(message);
+        return new this(message);
+    }
+}
+
+export class ProxyProviderNotRegisteredException extends Error {
+    name = ProxyProviderNotRegisteredException.name;
+
+    static create(providerSymbol: symbol) {
+        const message = `Cannot resolve a Proxy provider for symbol "${providerSymbol.description}", because it was not registered using "ClsModule.forFeature()" or "ClsModule.forFeatureAsync()".`;
+        return new this(message);
     }
 }
