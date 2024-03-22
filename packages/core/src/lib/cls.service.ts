@@ -220,6 +220,9 @@ export class ClsService<S extends ClsStore = ClsStore> {
     /**
      * Use to manually trigger resolution of Proxy Providers
      * in case `resolveProxyProviders` is not enabled in the enhancer.
+     *
+     * @param proxyTokens An optional array of Proxy Provider injection tokens
+     * to resolve. If not supplied, resolves all registered proxy providers.
      */
     async resolveProxyProviders(proxyTokens?: any[]) {
         // Workaround for a circular dep

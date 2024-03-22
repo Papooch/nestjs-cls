@@ -52,8 +52,8 @@ The following methods only apply to the [Proxy](../03_features-and-use-cases/06_
 -   **_`setProxy`_**`(proxyToken: any, value? any): any`  
     Replace an instance of a Proxy provider in the CLS context based on its injection token.
 
--   **_`resolveProxyProviders`_**`(): Promise<void>`  
-    Manually trigger resolution of Proxy Providers.
+-   **_`resolveProxyProviders`_**`(proxyTokens?: any[]): Promise<void>`  
+    Manually trigger resolution of registered Proxy Providers. If an array of injection tokens is provided, resolves only those Proxy Providers.
 
 The following methods involve the [plugin lifecycle](../06_plugins/02_plugin-api.md):
 
