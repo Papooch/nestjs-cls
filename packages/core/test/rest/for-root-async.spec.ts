@@ -48,7 +48,7 @@ describe('Http Express App - Async Configuration', () => {
             app = moduleFixture.createNestApplication();
             await app.init();
 
-            return expectOkIdsRest(app);
+            return expectOkIdsRest('/hello')(app);
         },
     );
 });

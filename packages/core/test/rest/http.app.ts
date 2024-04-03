@@ -44,6 +44,13 @@ export class TestHttpController {
     }
 
     @UseInterceptors(TestInterceptor)
+    @Get()
+    rootPath() {
+        this.cls.set('FROM_CONTROLLER', this.cls.getId());
+        return this.service.hello();
+    }
+
+    @UseInterceptors(TestInterceptor)
     @Get('error')
     async error() {
         this.cls.set('FROM_CONTROLLER', this.cls.getId());
