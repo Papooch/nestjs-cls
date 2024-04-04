@@ -31,8 +31,39 @@ describe('Http Express App - Auto bound Middleware', () => {
     });
 
     it.each([
-        ['OK', expectOkIdsRest],
-        ['ERROR', expectErrorIdsRest],
+        ['OK', expectOkIdsRest('/hello')],
+        ['OK (on root path)', expectOkIdsRest('/')],
+        ['ERROR', expectErrorIdsRest('/error')],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
+    });
+});
+
+describe('Http Express App - Auto bound Middleware + global prefix', () => {
+    @Module({
+        imports: [
+            ClsModule.forRoot({
+                middleware: { mount: true, generateId: true },
+            }),
+        ],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithAutoBoundMiddleware {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithAutoBoundMiddleware],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        app.setGlobalPrefix('api');
+        await app.init();
+    });
+
+    it.each([
+        ['OK', expectOkIdsRest('/api/hello')],
+        ['OK (on root path)', expectOkIdsRest('/api')],
+        ['ERROR', expectErrorIdsRest('/api/error')],
     ])('works with %s response', (_, func: any) => {
         return func(app);
     });
@@ -59,12 +90,44 @@ describe('Http Express App - Manually bound Middleware in AppModule', () => {
     });
 
     it.each([
-        ['OK', expectOkIdsRest],
-        ['ERROR', expectErrorIdsRest],
+        ['OK', expectOkIdsRest('/hello')],
+        ['OK (on root path)', expectOkIdsRest('/')],
+        ['ERROR', expectErrorIdsRest('/error')],
     ])('works with %s response', (_, func: any) => {
         return func(app);
     });
 });
+
+describe('Http Express App - Manually bound Middleware in AppModule + global prefix', () => {
+    @Module({
+        imports: [ClsModule.forRoot({ middleware: { generateId: true } })],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithManuallyBoundMiddleware implements NestModule {
+        configure(consumer: MiddlewareConsumer) {
+            consumer.apply(ClsMiddleware).forRoutes('*');
+        }
+    }
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithManuallyBoundMiddleware],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        app.setGlobalPrefix('api');
+        await app.init();
+    });
+
+    it.each([
+        ['OK', expectOkIdsRest('/api/hello')],
+        ['OK (on root path)', expectOkIdsRest('/api')],
+        ['ERROR', expectErrorIdsRest('/api/error')],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
+    });
+});
+
 describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
     @Module({
         imports: [ClsModule.forRoot()],
@@ -83,8 +146,36 @@ describe('Http Express App - Manually bound Middleware in Bootstrap', () => {
     });
 
     it.each([
-        ['OK', expectOkIdsRest],
-        ['ERROR', expectErrorIdsRest],
+        ['OK', expectOkIdsRest('/hello')],
+        ['OK (on root path)', expectOkIdsRest('/')],
+        ['ERROR', expectErrorIdsRest('/error')],
+    ])('works with %s response', (_, func: any) => {
+        return func(app);
+    });
+});
+
+describe('Http Express App - Manually bound Middleware in Bootstrap + global prefix', () => {
+    @Module({
+        imports: [ClsModule.forRoot()],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithoutMiddleware {}
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithoutMiddleware],
+        }).compile();
+        app = moduleFixture.createNestApplication();
+        app.setGlobalPrefix('api');
+        app.use(new ClsMiddleware({ generateId: true }).use);
+        await app.init();
+    });
+
+    it.each([
+        ['OK', expectOkIdsRest('/api/hello')],
+        ['OK (on root path)', expectOkIdsRest('/api')],
+        ['ERROR', expectErrorIdsRest('/api/error')],
     ])('works with %s response', (_, func: any) => {
         return func(app);
     });
@@ -111,15 +202,15 @@ describe('Http Express App - Auto bound Guard', () => {
     });
 
     it.each([
-        ['OK', expectOkIdsRest],
-        ['ERROR', expectErrorIdsRest],
+        ['OK', expectOkIdsRest('/hello')],
+        ['ERROR', expectErrorIdsRest('/error')],
     ])('works with %s response', (_, func: any) => {
         return func(app);
     });
 
     it.each([
-        ['OK', expectOkIdsRest],
-        ['ERROR', expectErrorIdsRest],
+        ['OK', expectOkIdsRest('/hello')],
+        ['ERROR', expectErrorIdsRest('/error')],
     ])('does not leak context with %s response', (_, func: any) => {
         return Promise.all(Array(10).fill(app).map(func));
     });
@@ -145,7 +236,7 @@ describe('Http Express App - Auto bound Interceptor', () => {
     });
 
     it('works with OK response', () => {
-        return expectOkIdsRest(app);
+        return expectOkIdsRest('/hello')(app);
     });
 
     it('does not leak context', () => {

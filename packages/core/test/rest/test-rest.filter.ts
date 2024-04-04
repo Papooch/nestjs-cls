@@ -11,7 +11,7 @@ export class TestRestExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
 
-        response.status(500).json({
+        response.status(500).send({
             ...exception.response,
             fromFilter: this.cls.getId(),
         });
