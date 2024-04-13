@@ -57,8 +57,6 @@ ClsModule.forRoot({
 
 The `tx` property on the `TransactionHost<TransactionalAdapterPgPromise>` is typed as [`Database`](https://vitaly-t.github.io/pg-promise/Database.html).
 
-`@Transactional()` takes an optional argument that is the same as the `option` argument to `Database.tx()` in `pg-promise` ([docs](https://vitaly-t.github.io/pg-promise/Database.html#tx)).
-
 ## Example
 
 ```ts title="user.service.ts"

@@ -11,6 +11,10 @@ export interface PgPromiseTransactionalAdapterOptions {
      */
     dbInstanceToken: any;
 
+    /**
+     * Default options for the transaction. These will be merged with any transaction-specific options
+     * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
+     */
     defaultTxOptions?: TxOptions;
 }
 
@@ -33,7 +37,7 @@ export class TransactionalAdapterPgPromise
             setClient: (client?: Database) => void,
         ) => {
             return pgPromiseDbInstance.tx(
-                options ?? this.defaultTxOptions ?? {},
+                { ...this.defaultTxOptions, ...options },
                 (tx) => {
                     setClient(tx as unknown as Database);
                     return fn();
