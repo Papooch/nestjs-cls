@@ -212,14 +212,11 @@ describe('Transactional', () => {
             );
         });
     });
-});
-
-describe('TransactionalAdapterPgPromise', () => {
-    const txMock = jest.fn();
-
-    beforeEach(() => jest.resetAllMocks());
-
     describe('wrapWithTransaction()', () => {
+        const txMock = jest.fn();
+
+        beforeEach(() => jest.resetAllMocks());
+
         describe('sets the transaction options correctly', () => {
             const defaultTxOptions = { tag: 'some-tag' };
             const txOptions = {
