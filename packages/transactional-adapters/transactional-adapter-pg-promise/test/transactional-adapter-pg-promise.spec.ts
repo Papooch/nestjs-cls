@@ -219,64 +219,8 @@ describe('TransactionalAdapterPgPromise', () => {
 
     beforeEach(() => jest.resetAllMocks());
 
-    describe('optionsFactory()', () => {
-        test('no default options, no tx options', async () => {
-            const transactionalAdapterPgPromise =
-                new TransactionalAdapterPgPromise({
-                    dbInstanceToken: 'SOME_TOKEN',
-                });
-            const { wrapWithTransaction } =
-                transactionalAdapterPgPromise.optionsFactory({
-                    tx: txMock,
-                } as unknown as Database);
-
-            await wrapWithTransaction(null, jest.fn(), jest.fn());
-
-            expect(txMock).toHaveBeenCalledTimes(1);
-            expect(txMock).toHaveBeenCalledWith({}, expect.anything());
-        });
-
-        test('default options only', async () => {
-            const defaultTxOptions = { tag: 'some-tag' };
-
-            const transactionalAdapterPgPromise =
-                new TransactionalAdapterPgPromise({
-                    dbInstanceToken: 'SOME_TOKEN',
-                    defaultTxOptions,
-                });
-            const { wrapWithTransaction } =
-                transactionalAdapterPgPromise.optionsFactory({
-                    tx: txMock,
-                } as unknown as Database);
-
-            await wrapWithTransaction(null, jest.fn(), jest.fn());
-
-            expect(txMock).toHaveBeenCalledTimes(1);
-            expect(txMock).toHaveBeenCalledWith(
-                defaultTxOptions,
-                expect.anything(),
-            );
-        });
-
-        test('tx options only', async () => {
-            const txOptions = { tag: 'some-tag' };
-
-            const transactionalAdapterPgPromise =
-                new TransactionalAdapterPgPromise({
-                    dbInstanceToken: 'SOME_TOKEN',
-                });
-            const { wrapWithTransaction } =
-                transactionalAdapterPgPromise.optionsFactory({
-                    tx: txMock,
-                } as unknown as Database);
-
-            await wrapWithTransaction(txOptions, jest.fn(), jest.fn());
-
-            expect(txMock).toHaveBeenCalledTimes(1);
-            expect(txMock).toHaveBeenCalledWith(txOptions, expect.anything());
-        });
-
-        test('default options and tx options', async () => {
+    describe('wrapWithTransaction()', () => {
+        describe('sets the transaction options correctly', () => {
             const defaultTxOptions = { tag: 'some-tag' };
             const txOptions = {
                 mode: new txMode.TransactionMode({
@@ -284,23 +228,80 @@ describe('TransactionalAdapterPgPromise', () => {
                 }),
             };
 
-            const transactionalAdapterPgPromise =
-                new TransactionalAdapterPgPromise({
-                    dbInstanceToken: 'SOME_TOKEN',
+            test('no default options, no tx options', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(null, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith({}, expect.anything());
+            });
+
+            test('default options only', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                        defaultTxOptions,
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(null, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith(
                     defaultTxOptions,
-                });
-            const { wrapWithTransaction } =
-                transactionalAdapterPgPromise.optionsFactory({
-                    tx: txMock,
-                } as unknown as Database);
+                    expect.anything(),
+                );
+            });
 
-            await wrapWithTransaction(txOptions, jest.fn(), jest.fn());
+            test('tx options only', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
 
-            expect(txMock).toHaveBeenCalledTimes(1);
-            expect(txMock).toHaveBeenCalledWith(
-                { tag: 'some-tag', mode: txOptions.mode },
-                expect.anything(),
-            );
+                await wrapWithTransaction(txOptions, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith(
+                    txOptions,
+                    expect.anything(),
+                );
+            });
+
+            test('default options and tx options', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                        defaultTxOptions,
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(txOptions, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith(
+                    { tag: 'some-tag', mode: txOptions.mode },
+                    expect.anything(),
+                );
+            });
         });
     });
 });
