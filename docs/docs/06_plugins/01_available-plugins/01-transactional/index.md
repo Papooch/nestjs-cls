@@ -201,7 +201,7 @@ class AccountService {
     ) {}
 
     async createAccountForUser(id: number): Promise<Account> {
-        return this.txHost.tx.create({
+        return this.tx.create({
             data: { userId: id, number: Math.random() },
         });
     }
