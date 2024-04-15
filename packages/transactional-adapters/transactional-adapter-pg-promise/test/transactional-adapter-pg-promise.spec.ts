@@ -9,7 +9,7 @@ import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
-import pgPromise from 'pg-promise';
+import pgPromise, { txMode } from 'pg-promise';
 import { Database, TransactionalAdapterPgPromise } from '../src';
 
 type UserRecord = { id: number; name: string; email: string };
@@ -210,6 +210,95 @@ describe('Transactional', () => {
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
+        });
+    });
+    describe('wrapWithTransaction()', () => {
+        const txMock = jest.fn();
+
+        beforeEach(() => jest.resetAllMocks());
+
+        describe('sets the transaction options correctly', () => {
+            const defaultTxOptions = { tag: 'some-tag' };
+            const txOptions = {
+                mode: new txMode.TransactionMode({
+                    tiLevel: txMode.isolationLevel.serializable,
+                }),
+            };
+
+            test('no default options, no tx options', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(null, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith({}, expect.anything());
+            });
+
+            test('default options only', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                        defaultTxOptions,
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(null, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith(
+                    defaultTxOptions,
+                    expect.anything(),
+                );
+            });
+
+            test('tx options only', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(txOptions, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith(
+                    txOptions,
+                    expect.anything(),
+                );
+            });
+
+            test('default options and tx options', async () => {
+                const transactionalAdapterPgPromise =
+                    new TransactionalAdapterPgPromise({
+                        dbInstanceToken: 'SOME_TOKEN',
+                        defaultTxOptions,
+                    });
+                const { wrapWithTransaction } =
+                    transactionalAdapterPgPromise.optionsFactory({
+                        tx: txMock,
+                    } as unknown as Database);
+
+                await wrapWithTransaction(txOptions, jest.fn(), jest.fn());
+
+                expect(txMock).toHaveBeenCalledTimes(1);
+                expect(txMock).toHaveBeenCalledWith(
+                    { tag: 'some-tag', mode: txOptions.mode },
+                    expect.anything(),
+                );
+            });
         });
     });
 });

@@ -10,6 +10,12 @@ export interface PgPromiseTransactionalAdapterOptions {
      * The injection token for the pg-promise instance.
      */
     dbInstanceToken: any;
+
+    /**
+     * Default options for the transaction. These will be merged with any transaction-specific options
+     * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
+     */
+    defaultTxOptions?: TxOptions;
 }
 
 export class TransactionalAdapterPgPromise
@@ -17,8 +23,11 @@ export class TransactionalAdapterPgPromise
 {
     connectionToken: any;
 
+    defaultTxOptions?: TxOptions;
+
     constructor(options: PgPromiseTransactionalAdapterOptions) {
         this.connectionToken = options.dbInstanceToken;
+        this.defaultTxOptions = options.defaultTxOptions;
     }
 
     optionsFactory = (pgPromiseDbInstance: Database) => ({
@@ -27,10 +36,13 @@ export class TransactionalAdapterPgPromise
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Database) => void,
         ) => {
-            return pgPromiseDbInstance.tx(options ?? {}, (tx) => {
-                setClient(tx as unknown as Database);
-                return fn();
-            });
+            return pgPromiseDbInstance.tx(
+                { ...this.defaultTxOptions, ...options },
+                (tx) => {
+                    setClient(tx as unknown as Database);
+                    return fn();
+                },
+            );
         },
         getFallbackInstance: () => pgPromiseDbInstance,
     });

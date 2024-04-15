@@ -32,6 +32,8 @@ pnpm add @nestjs-cls/transactional-adapter-pg-promise
 ## Registration
 
 ```ts
+import { txMode } from 'pg-promise'
+
 ClsModule.forRoot({
     plugins: [
         new ClsPluginTransactional({
@@ -42,6 +44,9 @@ ClsModule.forRoot({
             adapter: new TransactionalAdapterPgPromise({
                 // the injection token of the database instance
                 dbInstanceToken: DB,
+
+                // default transaction options (optional)
+                defaultTxOptions: { mode: new txMode.TransactionMode({ tiLevel: txMode.isolationLevel.serializable }) }
             }),
         }),
     ],
