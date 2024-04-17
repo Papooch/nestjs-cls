@@ -1,6 +1,0 @@
-{
-  "editor.formatOnSave": true,
-  "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "conventionalCommits.scopes": ["transactional-adapter-typeorm"]
-}

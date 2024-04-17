@@ -127,7 +127,7 @@ class TypeOrmModule {}
                 new ClsPluginTransactional({
                     imports: [TypeOrmModule],
                     adapter: new TransactionalAdapterTypeOrm({
-                        typeOrmInstanceToken: DataSource,
+                        dataSourceToken: DataSource,
                     }),
                 }),
             ],
