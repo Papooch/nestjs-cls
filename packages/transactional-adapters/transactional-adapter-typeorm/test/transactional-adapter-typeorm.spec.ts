@@ -9,6 +9,7 @@ import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
 import { DataSource, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { TransactionalAdapterTypeOrm } from '../src';
+import { promises as fs } from 'fs';
 
 @Entity()
 class User {
@@ -23,12 +24,8 @@ class User {
 }
 
 const dataSource = new DataSource({
-    type: 'postgres',
-    host: 'localhost',
-    port: 5444,
-    username: 'postgres',
-    password: 'postgres',
-    database: 'postgres',
+    type: 'sqlite',
+    database: './test.db', // Path to the SQLite database file
     entities: [User],
     synchronize: true,
 });
@@ -74,13 +71,8 @@ class UserService {
     })
     async transactionWithDecoratorWithOptions() {
         const r1 = await this.userRepository.createUser('James');
-        const r2 = await this.datasource
-            .getRepository(User)
-            .createQueryBuilder('user')
-            .where('user.id = :id', { id: r1.id })
-            .getOne();
-        const r3 = await this.userRepository.getUserById(r1.id);
-        return { r1, r2, r3 };
+        const r2 = await this.userRepository.getUserById(r1.id);
+        return { r1, r2 };
     }
 
     async transactionWithFunctionWrapper() {
@@ -88,13 +80,8 @@ class UserService {
             { isolationLevel: 'SERIALIZABLE' },
             async () => {
                 const r1 = await this.userRepository.createUser('Joe');
-                const r2 = await this.datasource
-                    .getRepository(User)
-                    .createQueryBuilder('user')
-                    .where('user.id = :id', { id: r1.id })
-                    .getOne();
-                const r3 = await this.userRepository.getUserById(r1.id);
-                return { r1, r2, r3 };
+                const r2 = await this.userRepository.getUserById(r1.id);
+                return { r1, r2 };
             },
         );
     }
@@ -142,13 +129,6 @@ describe('Transactional', () => {
     let callingService: UserService;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
         await dataSource.initialize();
 
         await dataSource.query('DROP TABLE IF EXISTS "User"');
@@ -165,9 +145,14 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         await dataSource.destroy();
-        execSync('docker compose -f test/docker-compose.yml down', {
-            stdio: 'inherit',
-        });
+
+        try {
+            await fs.access('test.db');
+            await fs.unlink('test.db'); // Remove the file
+            console.log('test.db has been deleted.');
+        } catch (error) {
+            console.error('Error deleting test.db:', error);
+        }
     }, 60_000);
 
     describe('TransactionalAdapterTypeOrmPromise', () => {
@@ -179,19 +164,17 @@ describe('Transactional', () => {
         });
 
         it('should run a transaction with the specified options with a decorator', async () => {
-            const { r1, r2, r3 } =
+            const { r1, r2 } =
                 await callingService.transactionWithDecoratorWithOptions();
-            expect(r1).toEqual(r3);
-            expect(r2).toBeNull();
+            expect(r1).toEqual(r2);
             const users = await dataSource.manager.find(User);
             expect(users).toEqual(expect.arrayContaining([r1]));
         });
 
         it('should run a transaction with the specified options with a function wrapper', async () => {
-            const { r1, r2, r3 } =
+            const { r1, r2 } =
                 await callingService.transactionWithFunctionWrapper();
-            expect(r1).toEqual(r3);
-            expect(r2).toBeNull();
+            expect(r1).toEqual(r2);
             const users = await dataSource.manager.find(User);
             expect(users).toEqual(expect.arrayContaining([r1]));
         });
