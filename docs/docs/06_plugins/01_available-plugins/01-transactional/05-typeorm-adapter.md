@@ -42,7 +42,7 @@ ClsModule.forRoot({
             ],
             adapter: new TransactionalAdapterTypeOrm({
                 // the injection token of the database instance
-                dbInstanceToken: DB,
+                dataSourceToken: DataSource,
             }),
         }),
     ],
