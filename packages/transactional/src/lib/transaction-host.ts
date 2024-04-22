@@ -131,6 +131,7 @@ export class TransactionHost<TAdapter = never> {
             fn = firstParam;
         }
         propagation ??= Propagation.Required;
+        options = { ...this._options.defaultTxOptions, ...options };
         return this.decidePropagationAndRun(propagation, options, fn);
     }
 

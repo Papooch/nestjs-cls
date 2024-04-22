@@ -43,6 +43,8 @@ export class ClsPluginTransactional implements ClsPlugin {
                         connectionName: options.connectionName,
                         enableTransactionProxy:
                             options.enableTransactionProxy ?? false,
+                        defaultTxOptions:
+                            options.adapter.defaultTxOptions ?? {},
                     };
                 },
             },

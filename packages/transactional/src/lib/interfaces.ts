@@ -11,6 +11,7 @@ export interface MergedTransactionalAdapterOptions<TTx, TOptions>
     extends TransactionalAdapterOptions<TTx, TOptions> {
     connectionName: string | undefined;
     enableTransactionProxy: boolean;
+    defaultTxOptions: Partial<TOptions>;
 }
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
@@ -23,6 +24,11 @@ export interface TransactionalAdapter<TConnection, TTx, TOptions> {
      * It is later used to create transactions.
      */
     connectionToken: any;
+
+    /**
+     * Default options for all transactions
+     */
+    defaultTxOptions?: Partial<TOptions>;
 
     /**
      * Function that accepts the `connection` based on the `connectionToken`
