@@ -44,10 +44,10 @@ Adapters for the following libraries are available:
 -   Knex (see [@nestjs-cls/transactional-adapter-knex](./02-knex-adapter.md))
 -   Kysely (see [@nestjs-cls/transactional-adapter-knex](./03-kysely-adapter.md))
 -   Pg-promise (see [@nestjs-cls/transactional-adapter-pg-promise](./04-pg-promise-adapter.md))
+-   TypeORM (see [@nestjs-cls/transactional-adapter-typeorm](./05-typeorm-adapter.md))
 
-Adapters _will not_ be implemented for the following libraries:
+Adapters _will not_ be implemented for the following libraries (unless there is a serious demand):
 
--   TypeORM (since a more fully-featured [community package already exists](https://github.com/Aliheym/typeorm-transactional))
 -   Sequelize (since it already includes a [built-in CLS-enabled transaction support](https://sequelize.org/docs/v6/other-topics/transactions/#automatically-pass-transactions-to-all-queries))
 
 ## Example
