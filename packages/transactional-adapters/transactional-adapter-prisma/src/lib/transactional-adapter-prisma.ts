@@ -13,11 +13,19 @@ export type PrismaTransactionOptions<
     TClient extends AnyTransactionClient = PrismaClient,
 > = Parameters<TClient['$transaction']>[1];
 
-export interface PrismaTransactionalAdapterOptions {
+export interface PrismaTransactionalAdapterOptions<
+    TClient extends AnyTransactionClient = PrismaClient,
+> {
     /**
      * The injection token for the PrismaClient instance.
      */
     prismaInjectionToken: any;
+
+    /**
+     * Default options for the transaction. These will be merged with any transaction-specific options
+     * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
+     */
+    defaultTxOptions?: Partial<PrismaTransactionOptions<TClient>>;
 }
 
 export class TransactionalAdapterPrisma<
@@ -31,8 +39,11 @@ export class TransactionalAdapterPrisma<
 {
     connectionToken: any;
 
-    constructor(options: { prismaInjectionToken: any }) {
+    defaultTxOptions?: Partial<PrismaTransactionOptions<TClient>>;
+
+    constructor(options: PrismaTransactionalAdapterOptions<TClient>) {
         this.connectionToken = options.prismaInjectionToken;
+        this.defaultTxOptions = options.defaultTxOptions;
     }
 
     optionsFactory = (prisma: TClient) => ({

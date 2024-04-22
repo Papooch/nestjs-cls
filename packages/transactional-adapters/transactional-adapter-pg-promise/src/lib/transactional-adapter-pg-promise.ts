@@ -3,7 +3,7 @@ import { IDatabase } from 'pg-promise';
 
 export type Database = IDatabase<unknown>;
 
-type TxOptions = Parameters<Database['tx']>[0];
+type PgPromiseTxOptions = Parameters<Database['tx']>[0];
 
 export interface PgPromiseTransactionalAdapterOptions {
     /**
@@ -15,15 +15,15 @@ export interface PgPromiseTransactionalAdapterOptions {
      * Default options for the transaction. These will be merged with any transaction-specific options
      * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
      */
-    defaultTxOptions?: TxOptions;
+    defaultTxOptions?: PgPromiseTxOptions;
 }
 
 export class TransactionalAdapterPgPromise
-    implements TransactionalAdapter<Database, Database, any>
+    implements TransactionalAdapter<Database, Database, PgPromiseTxOptions>
 {
     connectionToken: any;
 
-    defaultTxOptions?: TxOptions;
+    defaultTxOptions?: Partial<PgPromiseTxOptions>;
 
     constructor(options: PgPromiseTransactionalAdapterOptions) {
         this.connectionToken = options.dbInstanceToken;
@@ -32,17 +32,14 @@ export class TransactionalAdapterPgPromise
 
     optionsFactory = (pgPromiseDbInstance: Database) => ({
         wrapWithTransaction: async (
-            options: TxOptions | null,
+            options: PgPromiseTxOptions,
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Database) => void,
         ) => {
-            return pgPromiseDbInstance.tx(
-                { ...this.defaultTxOptions, ...options },
-                (tx) => {
-                    setClient(tx as unknown as Database);
-                    return fn();
-                },
-            );
+            return pgPromiseDbInstance.tx(options, (tx) => {
+                setClient(tx as unknown as Database);
+                return fn();
+            });
         },
         getFallbackInstance: () => pgPromiseDbInstance,
     });

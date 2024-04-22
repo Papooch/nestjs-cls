@@ -7,6 +7,12 @@ export interface TypeOrmTransactionalAdapterOptions {
      * The injection token for the TypeORM DataSource instance.
      */
     dataSourceToken: any;
+
+    /**
+     * Default options for the transaction. These will be merged with any transaction-specific options
+     * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
+     */
+    defaultTxOptions?: Partial<TypeOrmTransactionOptions>;
 }
 
 export interface TypeOrmTransactionOptions {
@@ -23,8 +29,11 @@ export class TransactionalAdapterTypeOrm
 {
     connectionToken: any;
 
+    defaultTxOptions?: Partial<TypeOrmTransactionOptions>;
+
     constructor(options: TypeOrmTransactionalAdapterOptions) {
         this.connectionToken = options.dataSourceToken;
+        this.defaultTxOptions = options.defaultTxOptions;
     }
 
     optionsFactory = (dataSource: DataSource) => ({
