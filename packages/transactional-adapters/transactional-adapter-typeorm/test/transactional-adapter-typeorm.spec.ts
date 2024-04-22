@@ -1,5 +1,7 @@
 import {
     ClsPluginTransactional,
+    InjectTransaction,
+    Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
@@ -25,7 +27,7 @@ class User {
 const dataSource = new DataSource({
     type: 'postgres',
     host: 'localhost',
-    port: 5444,
+    port: 5446,
     username: 'postgres',
     password: 'postgres',
     database: 'postgres',
@@ -36,17 +38,16 @@ const dataSource = new DataSource({
 @Injectable()
 class UserRepository {
     constructor(
-        private readonly transactionHost: TransactionHost<TransactionalAdapterTypeOrm>,
+        @InjectTransaction()
+        private readonly tx: Transaction<TransactionalAdapterTypeOrm>,
     ) {}
 
     async getUserById(id: number) {
-        return await this.transactionHost.tx
-            .getRepository(User)
-            .findOneBy({ id });
+        return await this.tx.getRepository(User).findOneBy({ id });
     }
 
     async createUser(name: string) {
-        return await this.transactionHost.tx.getRepository(User).save({
+        return await this.tx.getRepository(User).save({
             name,
             email: `${name}@email.com`,
         });
@@ -58,8 +59,7 @@ class UserService {
     constructor(
         private readonly userRepository: UserRepository,
         private readonly transactionHost: TransactionHost<TransactionalAdapterTypeOrm>,
-
-        private datasource: DataSource,
+        private readonly dataSource: DataSource,
     ) {}
 
     @Transactional()
@@ -74,7 +74,7 @@ class UserService {
     })
     async transactionWithDecoratorWithOptions() {
         const r1 = await this.userRepository.createUser('James');
-        const r2 = await this.datasource
+        const r2 = await this.dataSource
             .getRepository(User)
             .createQueryBuilder('user')
             .where('user.id = :id', { id: r1.id })
@@ -88,7 +88,7 @@ class UserService {
             { isolationLevel: 'SERIALIZABLE' },
             async () => {
                 const r1 = await this.userRepository.createUser('Joe');
-                const r2 = await this.datasource
+                const r2 = await this.dataSource
                     .getRepository(User)
                     .createQueryBuilder('user')
                     .where('user.id = :id', { id: r1.id })
@@ -129,6 +129,7 @@ class TypeOrmModule {}
                     adapter: new TransactionalAdapterTypeOrm({
                         dataSourceToken: DataSource,
                     }),
+                    enableTransactionProxy: true,
                 }),
             ],
         }),

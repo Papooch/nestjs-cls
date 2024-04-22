@@ -1,9 +1,17 @@
-import { DataSource, EntityManager } from 'typeorm';
-import {
-    TypeOrmTransactionOptions,
-    TypeOrmTransactionalAdapterOptions,
-} from './transactional-options';
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
+import { DataSource, EntityManager } from 'typeorm';
+import type { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
+
+export interface TypeOrmTransactionalAdapterOptions {
+    /**
+     * The injection token for the TypeORM DataSource instance.
+     */
+    dataSourceToken: any;
+}
+
+export interface TypeOrmTransactionOptions {
+    isolationLevel: IsolationLevel;
+}
 
 export class TransactionalAdapterTypeOrm
     implements
