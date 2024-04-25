@@ -7,8 +7,8 @@ import {
 } from '@nestjs-cls/transactional';
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsModule } from 'nestjs-cls';
 import Knex from 'knex';
+import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterKnex } from '../src';
 
 const KNEX = 'KNEX';
@@ -179,6 +179,21 @@ describe('Transactional', () => {
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
+        });
+    });
+});
+
+describe('Default options', () => {
+    it('Should correctly set default options on the adapter instance', async () => {
+        const adapter = new TransactionalAdapterKnex({
+            knexInstanceToken: KNEX,
+            defaultTxOptions: {
+                isolationLevel: 'snapshot',
+            },
+        });
+
+        expect(adapter.defaultTxOptions).toEqual({
+            isolationLevel: 'snapshot',
         });
     });
 });

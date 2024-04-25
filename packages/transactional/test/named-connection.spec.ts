@@ -113,7 +113,7 @@ class DbConnectionModule {}
 })
 class AppModule {}
 
-describe('Transactional', () => {
+describe('Transactional - named connections', () => {
     let module: TestingModule;
     let callingService: CallingService;
     let mockDbConnection: MockDbConnection;

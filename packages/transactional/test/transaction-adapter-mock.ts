@@ -30,6 +30,7 @@ export class MockDbConnection {
 
 export interface MockTransactionOptions {
     serializable?: boolean;
+    sayHello?: boolean;
 }
 
 export class TransactionAdapterMock
@@ -41,9 +42,16 @@ export class TransactionAdapterMock
         >
 {
     connectionToken: any;
-    constructor(options: { connectionToken: any }) {
+    defaultTxOptions: Partial<MockTransactionOptions>;
+
+    constructor(options: {
+        connectionToken: any;
+        defaultTxOptions?: MockTransactionOptions;
+    }) {
         this.connectionToken = options.connectionToken;
+        this.defaultTxOptions = options.defaultTxOptions ?? {};
     }
+
     optionsFactory = (connection: MockDbConnection) => ({
         wrapWithTransaction: async (
             options: MockTransactionOptions | undefined,
@@ -57,6 +65,9 @@ export class TransactionAdapterMock
                 beginQuery =
                     'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; ' +
                     beginQuery;
+            }
+            if (options?.sayHello) {
+                beginQuery = '/* Hello */ ' + beginQuery;
             }
             await client.query(beginQuery);
             try {

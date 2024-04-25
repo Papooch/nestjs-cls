@@ -128,7 +128,7 @@ class DbConnectionModule2 {}
 })
 class AppModule {}
 
-describe('Transactional', () => {
+describe('Transactional - multiple connections', () => {
     let module: TestingModule;
     let callingService: CallingService;
     let mockDbConnection1: MockDbConnection;

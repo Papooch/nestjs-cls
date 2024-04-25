@@ -67,9 +67,11 @@ class PrismaModule {}
             plugins: [
                 new ClsPluginTransactional({
                     imports: [PrismaModule],
-                    adapter: new TransactionalAdapterPrisma({
-                        prismaInjectionToken: CUSTOM_PRISMA_CLIENT,
-                    }),
+                    adapter: new TransactionalAdapterPrisma<CustomPrismaClient>(
+                        {
+                            prismaInjectionToken: CUSTOM_PRISMA_CLIENT,
+                        },
+                    ),
                     enableTransactionProxy: true,
                 }),
             ],

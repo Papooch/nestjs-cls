@@ -6,6 +6,12 @@ export interface KnexTransactionalAdapterOptions {
      * The injection token for the Knex instance.
      */
     knexInstanceToken: any;
+
+    /**
+     * Default options for the transaction. These will be merged with any transaction-specific options
+     * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
+     */
+    defaultTxOptions?: Partial<Knex.TransactionConfig>;
 }
 
 export class TransactionalAdapterKnex
@@ -13,8 +19,11 @@ export class TransactionalAdapterKnex
 {
     connectionToken: any;
 
+    defaultTxOptions?: Partial<Knex.TransactionConfig>;
+
     constructor(options: KnexTransactionalAdapterOptions) {
         this.connectionToken = options.knexInstanceToken;
+        this.defaultTxOptions = options.defaultTxOptions;
     }
 
     optionsFactory = (knexInstance: Knex) => ({

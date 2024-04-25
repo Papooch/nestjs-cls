@@ -6,6 +6,12 @@ export interface KyselyTransactionalAdapterOptions {
      * The injection token for the Kysely instance.
      */
     kyselyInstanceToken: any;
+
+    /**
+     * Default options for the transaction. These will be merged with any transaction-specific options
+     * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
+     */
+    defaultTxOptions?: Partial<KyselyTransactionOptions>;
 }
 
 export interface KyselyTransactionOptions {
@@ -15,12 +21,16 @@ export interface KyselyTransactionOptions {
 }
 
 export class TransactionalAdapterKysely<DB = any>
-    implements TransactionalAdapter<Kysely<DB>, Kysely<DB>, any>
+    implements
+        TransactionalAdapter<Kysely<DB>, Kysely<DB>, KyselyTransactionOptions>
 {
     connectionToken: any;
 
+    defaultTxOptions?: Partial<KyselyTransactionOptions>;
+
     constructor(options: KyselyTransactionalAdapterOptions) {
         this.connectionToken = options.kyselyInstanceToken;
+        this.defaultTxOptions = options.defaultTxOptions;
     }
 
     optionsFactory = (kyselyDb: Kysely<DB>) => ({

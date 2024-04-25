@@ -9,6 +9,7 @@ A transactional adapter is an instance of an object implementing the following i
 ```ts
 interface TransactionalAdapter<TConnection, TTx, TOptions> {
     connectionToken: any;
+    defaultTyOptions?: Partial<TOptions>;
     optionsFactory: TransactionalOptionsAdapterFactory<
         TConnection,
         TTx,
@@ -19,7 +20,9 @@ interface TransactionalAdapter<TConnection, TTx, TOptions> {
 
 The `connectionToken` is an injection token under which the underlying database connection object is provided.
 
-An options factory is a function that takes the injected connection object and returns the adapter options object of interface:
+The `defaultTxOptions` object is the default transaction options that are used when no options are passed to the `withTransaction` call.
+
+An `optionFactory` is a function that takes the injected connection object and returns the adapter options object of interface:
 
 ```ts
 interface TransactionalAdapterOptions<TTx, TOptions> {
@@ -35,7 +38,7 @@ interface TransactionalAdapterOptions<TTx, TOptions> {
 This object contains two methods:
 
 -   `wrapWithTransaction` - a function that takes the method decorated with `@Transactional` (or a callback passed to `TransactionHost#withTransaction`) and wraps it with transaction handling logic. It should return a promise that resolves to the result of the decorated method.
-    The other parameter is the adapter-specific transaction `options` object and the `setTx` function which should be called with the transaction instance to make it available in the CLS context.
+    The other parameter is the adapter-specific transaction `options` object (which contains the transaction-specific options merged with the default ones) and the `setTx` function which should be called with the transaction instance to make it available in the CLS context.
 
 -   `getFallbackInstance` - when a transactional context is not available, this method is used to return a "fallback" instance of the transaction object. This is needed for cases when the `tx` property on `TransactionHost` is accessed outside of a transactional context.
 
@@ -117,16 +120,25 @@ export class MyTransactionalAdapterKnex
     // implement the property for the connection token
     connectionToken: any;
 
-    // In the constructor, we can decide to accept a custom options object.
-    // However, in this example, we'll just accept the connection token.
-    constructor(myKnexInstanceToken: any) {
+    // implement default options feature
+    defaultTxOptions?: Partial<Knex.TransactionConfig>;
+
+    // We can decide on a custom API for the transactional adapter.
+    // In this example, we just pass individual parameters, but
+    // a custom interface is usually preferred.
+    constructor(
+        myKnexInstanceToken: any,
+        defaultTxOptions: Partial<Knex.TransactionConfig>,
+    ) {
         this.connectionToken = myKnexInstanceToken;
+        this.defaultTxOptions = defaultTxOptions;
     }
 
     //
     optionsFactory = (knexInstance: Knex) => {
         return {
             wrapWithTransaction: (
+                // the options object is the transaction-specific options merged with the default ones
                 options: Knex.TransactionConfig,
                 fn: (...args: any[]) => Promise<any>,
                 setTx: (client: Knex) => void,
@@ -172,7 +184,7 @@ ClsModule.forRoot({
             // Don't forget to import the module which provides the knex instance
             imports: [KnexModule],
             // highlight-start
-            adapter: new MyTransactionalAdapterKnex(KNEX_TOKEN),
+            adapter: new MyTransactionalAdapterKnex(KNEX_TOKEN, { isolationLevel: 'serializable' }),
             // highlight-end
         }),
     ],

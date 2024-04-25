@@ -161,3 +161,18 @@ describe('Transactional', () => {
         });
     });
 });
+
+describe('Default options', () => {
+    it('Should correctly set default options on the adapter instance', async () => {
+        const adapter = new TransactionalAdapterPrisma({
+            prismaInjectionToken: PrismaClient,
+            defaultTxOptions: {
+                timeout: 24,
+            },
+        });
+
+        expect(adapter.defaultTxOptions).toEqual({
+            timeout: 24,
+        });
+    });
+});
