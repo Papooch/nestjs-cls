@@ -213,3 +213,18 @@ describe('Transactional', () => {
         });
     });
 });
+
+describe('Default options', () => {
+    it('Should correctly set default options on the adapter instance', async () => {
+        const adapter = new TransactionalAdapterPgPromise({
+            dbInstanceToken: PG_PROMISE,
+            defaultTxOptions: {
+                tag: 'test-tag',
+            },
+        });
+
+        expect(adapter.defaultTxOptions).toEqual({
+            tag: 'test-tag',
+        });
+    });
+});

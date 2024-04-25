@@ -9,7 +9,7 @@ import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
-import { DataSource, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, DataSource, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TransactionalAdapterTypeOrm } from '../src';
 
 @Entity()
@@ -205,6 +205,21 @@ describe('Transactional', () => {
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
+        });
+    });
+});
+
+describe('Default options', () => {
+    it('Should correctly set default options on the adapter instance', async () => {
+        const adapter = new TransactionalAdapterTypeOrm({
+            dataSourceToken: DataSource,
+            defaultTxOptions: {
+                isolationLevel: 'READ COMMITTED',
+            },
+        });
+
+        expect(adapter.defaultTxOptions).toEqual({
+            isolationLevel: 'READ COMMITTED',
         });
     });
 });

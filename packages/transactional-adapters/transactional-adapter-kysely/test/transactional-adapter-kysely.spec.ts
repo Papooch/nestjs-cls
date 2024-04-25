@@ -233,3 +233,18 @@ describe('Transactional', () => {
         });
     });
 });
+
+describe('Default options', () => {
+    it('Should correctly set default options on the adapter instance', async () => {
+        const adapter = new TransactionalAdapterKysely({
+            kyselyInstanceToken: KYSELY,
+            defaultTxOptions: {
+                isolationLevel: 'repeatable read',
+            },
+        });
+
+        expect(adapter.defaultTxOptions).toEqual({
+            isolationLevel: 'repeatable read',
+        });
+    });
+});
