@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.1.2...@nestjs-cls/transactional-adapter-prisma@1.2.0) "@nestjs-cls/transactional-adapter-prisma" (2024-04-25)<a name="1.2.0"></a>
+
+### Features
+
+* **plugin-transactional**: add default options parameter to transactional adapter  (#145) ([8c2c150](https://github.com/Papooch/nestjs-cls/commits/8c2c150))
+
+
+
+
 ## [1.1.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.0.7...@nestjs-cls/transactional-adapter-prisma@1.1.0) "@nestjs-cls/transactional-adapter-prisma" (2024-02-25)<a name="1.1.0"></a>
 
 ### Features

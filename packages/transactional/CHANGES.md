@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.2.2...@nestjs-cls/transactional@2.3.0) "@nestjs-cls/transactional" (2024-04-25)<a name="2.3.0"></a>
+
+### Features
+
+* **plugin-transactional**: add default options parameter to transactional adapter  (#145) ([8c2c150](https://github.com/Papooch/nestjs-cls/commits/8c2c150))
+
+
+
+
 ## [2.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.1.0...@nestjs-cls/transactional@2.2.0) "@nestjs-cls/transactional" (2024-02-21)<a name="2.2.0"></a>
 
 ### Features
