@@ -113,20 +113,22 @@ export function Transactional(
                 `The @Transactional decorator can be only used on functions, but ${propertyKey.toString()} is not a function.`,
             );
         }
-        descriptor.value = function (...args: any[]) {
-            if (!this[transactionHostProperty]) {
-                throw new Error(
-                    `Failed to inject transaction host into ${target.constructor.name}`,
+        descriptor.value = new Proxy(original, {
+            apply: function (...args: any[]) {
+                if (!this[transactionHostProperty]) {
+                    throw new Error(
+                        `Failed to inject transaction host into ${target.constructor.name}`,
+                    );
+                }
+                return (
+                    this[transactionHostProperty] as TransactionHost
+                ).withTransaction(
+                    propagation as Propagation,
+                    options as never,
+                    original.bind(this, ...args),
                 );
-            }
-            return (
-                this[transactionHostProperty] as TransactionHost
-            ).withTransaction(
-                propagation as Propagation,
-                options as never,
-                original.bind(this, ...args),
-            );
-        };
+            },
+        });
         copyMethodMetadata(original, descriptor.value);
     }) as MethodDecorator;
 }
