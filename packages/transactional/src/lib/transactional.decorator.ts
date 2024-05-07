@@ -114,18 +114,18 @@ export function Transactional(
             );
         }
         descriptor.value = new Proxy(original, {
-            apply: function (...args: any[]) {
-                if (!this[transactionHostProperty]) {
+            apply: function (_, outerThis, ...args: any[]) {
+                if (!outerThis[transactionHostProperty]) {
                     throw new Error(
                         `Failed to inject transaction host into ${target.constructor.name}`,
                     );
                 }
                 return (
-                    this[transactionHostProperty] as TransactionHost
+                    outerThis[transactionHostProperty] as TransactionHost
                 ).withTransaction(
                     propagation as Propagation,
                     options as never,
-                    original.bind(this, ...args),
+                    original.bind(outerThis, ...args),
                 );
             },
         });
