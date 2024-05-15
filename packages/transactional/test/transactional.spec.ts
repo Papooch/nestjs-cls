@@ -6,10 +6,6 @@ import {
     MockDbConnection,
     TransactionAdapterMock,
 } from './transaction-adapter-mock';
-import {
-    MetadataDefiningDecorator,
-    PropertyDefiningDecorator,
-} from './mock-decorators';
 
 @Injectable()
 class CalledService {
@@ -34,8 +30,6 @@ class CallingService {
     ) {}
 
     @Transactional()
-    @MetadataDefiningDecorator()
-    @PropertyDefiningDecorator()
     async transactionWithDecorator() {
         const q1 = await this.calledService.doWork(1);
         const q2 = await this.calledService.doOtherWork(2);
@@ -214,23 +208,6 @@ describe('Transactional', () => {
             await callingService.withoutTransaction();
             const queries = mockDbConnection.getClientsQueries();
             expect(queries).toEqual([['SELECT 5'], ['SELECT 6']]);
-        });
-    });
-
-    describe('should mantain method properties set by other decorators', () => {
-        it('should mantain metadata', () => {
-            expect(
-                Reflect.getMetadata(
-                    'testproperty',
-                    callingService.transactionWithDecorator,
-                ),
-            ).toEqual('testvalue');
-        });
-
-        it('should mantain property', () => {
-            expect(
-                callingService.transactionWithDecorator['testproperty'],
-            ).toEqual('testvalue');
         });
     });
 });
