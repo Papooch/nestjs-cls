@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.3.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.3.0...@nestjs-cls/transactional@2.3.1) "@nestjs-cls/transactional" (2024-05-22)<a name="2.3.1"></a>
+
+### Bug Fixes
+
+* **transactional**: preserve swagger metadata on methods decorated with @Transactional (#150) ([52b067e](https://github.com/Papooch/nestjs-cls/commits/52b067e))
+
+
+
+
 ## [2.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.2.2...@nestjs-cls/transactional@2.3.0) "@nestjs-cls/transactional" (2024-04-25)<a name="2.3.0"></a>
 
 ### Features
