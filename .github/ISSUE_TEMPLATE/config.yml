@@ -1,0 +1,6 @@
+blank_issues_enabled: true
+
+contact_links:
+  - name: "\u2753 Discord Community"
+    url: "https://discord.gg/nestjs"
+    about: "If you're not sure you have an actual issue and just want to chat about it, visit the NestJS discord."
