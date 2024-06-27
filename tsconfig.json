@@ -32,10 +32,19 @@
       "path": "packages/transactional-adapters/transactional-adapter-knex"
     },
     {
-      "path": "packages/transactional-adapters/transactional-adapter-prisma"
+      "path": "packages/transactional-adapters/transactional-adapter-kysely"
+    },
+    {
+      "path": "packages/transactional-adapters/transactional-adapter-mongodb"
     },
     {
       "path": "packages/transactional-adapters/transactional-adapter-pg-promise"
+    },
+    {
+      "path": "packages/transactional-adapters/transactional-adapter-prisma"
+    },
+    {
+      "path": "packages/transactional-adapters/transactional-adapter-typeorm"
     }
   ]
 }
