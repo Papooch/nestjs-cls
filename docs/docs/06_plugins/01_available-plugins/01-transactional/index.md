@@ -45,6 +45,7 @@ Adapters for the following libraries are available:
 -   Kysely (see [@nestjs-cls/transactional-adapter-knex](./03-kysely-adapter.md))
 -   Pg-promise (see [@nestjs-cls/transactional-adapter-pg-promise](./04-pg-promise-adapter.md))
 -   TypeORM (see [@nestjs-cls/transactional-adapter-typeorm](./05-typeorm-adapter.md))
+-   MongoDB (see [@nestjs-cls/transactional-adapter-mongodb](./06-mongodb-adapter.md))
 
 Adapters _will not_ be implemented for the following libraries (unless there is a serious demand):
 
