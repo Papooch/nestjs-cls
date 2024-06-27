@@ -1,3 +1,11 @@
+import {
+    BeforeApplicationShutdown,
+    OnApplicationBootstrap,
+    OnApplicationShutdown,
+    OnModuleDestroy,
+    OnModuleInit,
+} from '@nestjs/common';
+
 export interface TransactionalAdapterOptions<TTx, TOptions> {
     wrapWithTransaction: (
         options: TOptions,
@@ -12,13 +20,23 @@ export interface MergedTransactionalAdapterOptions<TTx, TOptions>
     connectionName: string | undefined;
     enableTransactionProxy: boolean;
     defaultTxOptions: Partial<TOptions>;
+    onModuleInit?: () => void | Promise<void>;
 }
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
     connection: TConnection,
 ) => TransactionalAdapterOptions<TTx, TOptions>;
 
-export interface TransactionalAdapter<TConnection, TTx, TOptions> {
+export type OptionalLifecycleHooks = Partial<
+    OnModuleInit &
+        OnModuleDestroy &
+        OnApplicationBootstrap &
+        BeforeApplicationShutdown &
+        OnApplicationShutdown
+>;
+
+export interface TransactionalAdapter<TConnection, TTx, TOptions>
+    extends OptionalLifecycleHooks {
     /**
      * Token used to inject the `connection` into the adapter.
      * It is later used to create transactions.

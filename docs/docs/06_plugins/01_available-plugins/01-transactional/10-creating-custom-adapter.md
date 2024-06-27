@@ -135,7 +135,7 @@ export class MyTransactionalAdapterKnex
     }
 
     //
-    optionsFactory = (knexInstance: Knex) => {
+    optionsFactory(knexInstance: Knex) {
         return {
             wrapWithTransaction: (
                 // the options object is the transaction-specific options merged with the default ones
@@ -169,7 +169,7 @@ export class MyTransactionalAdapterKnex
             // highlight-end
             getFallbackInstance: () => knexInstance,
         };
-    };
+    }
 }
 ```
 
@@ -194,3 +194,11 @@ ClsModule.forRoot({
 When injecting the `TransactionHost`, type it as `TransactionHost<MyTransactionalAdapterKnex>` to get the correct typing of the `tx` property.
 
 In a similar manner, use `@Transactional<MyTransactionalAdapterKnex>()` to get typing for the options object.
+
+:::note
+
+The `TransactionalAdapter` can also implement all [Lifecycle hooks](https://docs.nestjs.com/fundamentals/lifecycle-events) if there's any setup or teardown logic required.
+
+However, being created manually outside of Nest's control, it _can not_ inject any dependencies except for the pre-defined database connection instance via the `connectionToken`.
+
+:::

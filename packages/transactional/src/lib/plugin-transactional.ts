@@ -3,6 +3,7 @@ import { ClsModule, ClsPlugin } from 'nestjs-cls';
 import { getTransactionToken } from './inject-transaction.decorator';
 import {
     MergedTransactionalAdapterOptions,
+    OptionalLifecycleHooks,
     TransactionalPluginOptions,
 } from './interfaces';
 import {
@@ -36,10 +37,13 @@ export class ClsPluginTransactional implements ClsPlugin {
                 useFactory: (
                     connection: any,
                 ): MergedTransactionalAdapterOptions<any, any> => {
-                    const adapterOptions =
-                        options.adapter.optionsFactory(connection);
+                    const adapterOptions = options.adapter.optionsFactory.call(
+                        options.adapter,
+                        connection,
+                    );
                     return {
                         ...adapterOptions,
+                        ...this.bindLifecycleHooks(options),
                         connectionName: options.connectionName,
                         enableTransactionProxy:
                             options.enableTransactionProxy ?? false,
@@ -69,5 +73,28 @@ export class ClsPluginTransactional implements ClsPlugin {
                 }),
             );
         }
+    }
+
+    private bindLifecycleHooks(
+        options: TransactionalPluginOptions<any, any, any>,
+    ): OptionalLifecycleHooks {
+        const {
+            onModuleInit,
+            onModuleDestroy,
+            onApplicationBootstrap,
+            beforeApplicationShutdown,
+            onApplicationShutdown,
+        } = options.adapter;
+        return {
+            onModuleInit: onModuleInit?.bind(options.adapter),
+            onModuleDestroy: onModuleDestroy?.bind(options.adapter),
+            onApplicationBootstrap: onApplicationBootstrap?.bind(
+                options.adapter,
+            ),
+            beforeApplicationShutdown: beforeApplicationShutdown?.bind(
+                options.adapter,
+            ),
+            onApplicationShutdown: onApplicationShutdown?.bind(options.adapter),
+        };
     }
 }
