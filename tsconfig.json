@@ -38,6 +38,9 @@
       "path": "packages/transactional-adapters/transactional-adapter-mongodb"
     },
     {
+      "path": "packages/transactional-adapters/transactional-adapter-mongoose"
+    },
+    {
       "path": "packages/transactional-adapters/transactional-adapter-pg-promise"
     },
     {
