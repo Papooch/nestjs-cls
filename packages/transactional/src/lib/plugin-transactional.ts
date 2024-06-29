@@ -4,6 +4,7 @@ import { getTransactionToken } from './inject-transaction.decorator';
 import {
     MergedTransactionalAdapterOptions,
     OptionalLifecycleHooks,
+    TransactionalAdapter,
     TransactionalPluginOptions,
 } from './interfaces';
 import {
@@ -60,6 +61,9 @@ export class ClsPluginTransactional implements ClsPlugin {
         this.exports.push(transactionHostToken);
 
         if (options.enableTransactionProxy) {
+            if (options.adapter.supportsTransactionProxy === false) {
+                throw new TransactionProxyUnsupportedError(options.adapter);
+            }
             const transactionProxyToken = getTransactionToken(
                 options.connectionName,
             );
@@ -96,5 +100,13 @@ export class ClsPluginTransactional implements ClsPlugin {
             ),
             onApplicationShutdown: onApplicationShutdown?.bind(options.adapter),
         };
+    }
+}
+
+export class TransactionProxyUnsupportedError extends Error {
+    constructor(adapter: TransactionalAdapter<any, any, any>) {
+        super(
+            `The adapter ${adapter.constructor.name} does not support the "Transaction Proxy" feature, please disable the "enableTransactionProxy" option.`,
+        );
     }
 }

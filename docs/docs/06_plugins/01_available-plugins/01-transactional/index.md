@@ -212,7 +212,11 @@ class AccountService {
 
 When a transaction is not active, the `Transaction` instance refers to the default non-transactional instance. However, if the CLS context is _not active_, the `Transaction` instance will be `undefined` instead, which could cause runtime errors.
 
-Therefore, this feature works reliably only when the CLS context is active _prior to starting the transaction_, which should be the case in most cases, however, for that reason, this is an opt-in feature that must be explicitly enabled with the `enableTransactionProxy: true` option of the `ClsPluginTransactional` constructor.
+Therefore, this feature works reliably only when the CLS context is active _prior to starting the transaction_.
+
+Additionally, _some adapters do not support this feature_ due to the nature of how transactions work in the library they implement.
+
+For these reasons, this is an opt-in feature that must be explicitly enabled with the `enableTransactionProxy: true` option of the `ClsPluginTransactional` constructor.
 
 ```ts
 new ClsPluginTransactional({
@@ -223,7 +227,7 @@ new ClsPluginTransactional({
     // highlight-start
     enableTransactionProxy: true,
     // highlight-end
-}),
+});
 ```
 
 :::

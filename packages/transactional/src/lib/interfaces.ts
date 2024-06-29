@@ -20,7 +20,6 @@ export interface MergedTransactionalAdapterOptions<TTx, TOptions>
     connectionName: string | undefined;
     enableTransactionProxy: boolean;
     defaultTxOptions: Partial<TOptions>;
-    onModuleInit?: () => void | Promise<void>;
 }
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
@@ -59,6 +58,15 @@ export interface TransactionalAdapter<TConnection, TTx, TOptions>
         TTx,
         TOptions
     >;
+
+    /**
+     * Whether this adapter support the {@link TransactionalPluginOptions.enableTransactionProxy} option.
+     *
+     * The default is `true`. Set to `false` to explicitly forbid this feature.
+     *
+     * When set to `false`, and {@link TransactionalPluginOptions.enableTransactionProxy} is `true`, an error will be thrown.
+     */
+    supportsTransactionProxy?: boolean;
 }
 
 export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
@@ -78,6 +86,8 @@ export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
      * Whether to enable injecting the Transaction instance directly using `@InjectTransaction()`
      *
      * Default: `false`
+     *
+     * Note: Not all adapters support this feature, please refer to the docs for the adapter you are using.
      */
     enableTransactionProxy?: boolean;
 }
