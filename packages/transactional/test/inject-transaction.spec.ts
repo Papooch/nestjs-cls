@@ -8,6 +8,7 @@ import {
     Transaction,
     Transactional,
     TransactionHost,
+    TransactionProxyUnsupportedError,
 } from '../src';
 import {
     MockDbConnection,
@@ -199,5 +200,31 @@ describe('InjectTransaction with multiple named connections', () => {
                 ['BEGIN TRANSACTION;', 'SELECT 7', 'COMMIT TRANSACTION;'],
             ]);
         });
+    });
+});
+
+class TransactionAdapterMockWithoutTransactionProxySupport extends TransactionAdapterMock {
+    supportsTransactionProxy = false;
+}
+
+describe('Using enableTransactionProxy when the adapter does not support it', () => {
+    it('should throw an error', async () => {
+        const modulePromise = () =>
+            Test.createTestingModule({
+                imports: [
+                    ClsModule.forRoot({
+                        plugins: [
+                            new ClsPluginTransactional({
+                                enableTransactionProxy: true,
+                                adapter:
+                                    new TransactionAdapterMockWithoutTransactionProxySupport(
+                                        { connectionToken: MockDbConnection1 },
+                                    ),
+                            }),
+                        ],
+                    }),
+                ],
+            }).compile();
+        expect(modulePromise).toThrowError(TransactionProxyUnsupportedError);
     });
 });
