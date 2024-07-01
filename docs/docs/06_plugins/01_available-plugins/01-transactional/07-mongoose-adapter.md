@@ -117,3 +117,16 @@ class UserRepository {
     }
 }
 ```
+
+## Considerations
+
+### Using with built-in Mongoose AsyncLocalStorage support
+
+Mongoose > 8.4 has a built-in support for [propagating the `session` via `AsyncLocalStorage`](https://mongoosejs.com/docs/transactions.html#asynclocalstorage).
+
+The feature is compatible with `@nestjs-cls/transactional` and when enabled, one _does not_ have to pass `TransactionHost#tx` to queries and still enjoy the simplicity of the `@Transactional` decorator, which starts and ends the underlying transaction automatically.
+
+**However**, because `@nestjs-cls/transactional` has no control over the propagation of the `session` instance via Mongoose's `AsyncLocalStorage`,
+there is **no implicit support for opting out of an ongoing transaction** via `TransactionHost#withoutTransaction` (or analogously the [`Propagation.NotSupported`](./index.md#transaction-propagation) mode).
+
+To opt out of an ongoing transaction, you have to explicitly pass `null` to the `session` option when calling the query. Alternatively, you can explicitly pass in the value of `TransactionHost#tx` if the query should support both transactional and non-transactional mode and you want to control it using `Propagation`.
