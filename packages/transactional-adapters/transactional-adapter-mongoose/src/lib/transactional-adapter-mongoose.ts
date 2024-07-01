@@ -1,5 +1,5 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
-import mongoose, { ClientSession, Connection } from 'mongoose';
+import { ClientSession, Connection } from 'mongoose';
 
 type MongooseTransactionOptions = Parameters<Connection['transaction']>[1];
 
@@ -14,19 +14,6 @@ export interface MongoDBTransactionalAdapterOptions {
      * passed to the `@Transactional` decorator or the `TransactionHost#withTransaction` method.
      */
     defaultTxOptions?: Partial<MongooseTransactionOptions>;
-
-    /**
-     * Only supported for `mongoose >= 8.4`
-     *
-     * Whether to automatically enable the
-     * [native AsyncLocalStorage integration](https://mongoosejs.com/docs/transactions.html#asynclocalstorage)
-     * for transactions. This will set the `transactionAsyncLocalStorage` option to `true` in Mongoose.
-     *
-     * If enabled, there is no need to pass the  session (`tx`) of `TransactionHost` to queries.
-     * All queries executed within a `TransactionalHost#withTransaction` or the `@Transactional` decorator
-     * will be executed within the same transaction.
-     */
-    enableNativeAsyncLocalStorage?: boolean;
 }
 
 export class TransactionalAdapterMongoose
@@ -44,9 +31,6 @@ export class TransactionalAdapterMongoose
     constructor(options: MongoDBTransactionalAdapterOptions) {
         this.connectionToken = options.mongooseConnectionToken;
         this.defaultTxOptions = options.defaultTxOptions;
-        if (options.enableNativeAsyncLocalStorage) {
-            mongoose.set('transactionAsyncLocalStorage', true);
-        }
     }
 
     supportsTransactionProxy = false;
