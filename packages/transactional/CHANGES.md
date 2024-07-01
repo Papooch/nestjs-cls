@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.3.1...@nestjs-cls/transactional@2.4.0) "@nestjs-cls/transactional" (2024-07-01)<a name="2.4.0"></a>
+
+### Features
+
+* **transactional**: enable using lifecycle hooks in TransactionalAdapter (#156) ([1ec49ea](https://github.com/Papooch/nestjs-cls/commits/1ec49ea))
+* **transactional**: enable adapters to opt out of transactional proxy support (#160) ([9542cdb](https://github.com/Papooch/nestjs-cls/commits/9542cdb))
+
+
+
+
 ## [2.3.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.3.0...@nestjs-cls/transactional@2.3.1) "@nestjs-cls/transactional" (2024-05-22)<a name="2.3.1"></a>
 
 ### Bug Fixes
