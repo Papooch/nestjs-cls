@@ -120,7 +120,6 @@ class MongooseModule {}
                     adapter: new TransactionalAdapterMongoose({
                         mongooseConnectionToken: MONGOOSE_CONNECTION,
                     }),
-                    enableTransactionProxy: true,
                 }),
             ],
         }),
