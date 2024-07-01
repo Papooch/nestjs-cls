@@ -50,7 +50,7 @@ ClsModule.forRoot({
 
 :::important
 
-The `prismaInjectionToken` is the token under which an instance of `PrismaClient` provided. Usually, in Nest, this the custom `PrismaService` class which `extends PrismaClient` and is exported from a custom module.
+The `prismaInjectionToken` is the token under which an instance of [`PrismaClient`](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction) provided. Usually, in Nest, this the custom `PrismaService` class which `extends PrismaClient` and is exported from a custom module.
 
 :::
 
@@ -72,7 +72,7 @@ class UserService {
         // highlight-start
         // both methods are executed in the same transaction
         const user = await this.userRepository.createUser('John');
-        const foundUser = await this.userRepository.getUserById(r1.id);
+        const foundUser = await this.userRepository.getUserById(user.id);
         // highlight-end
         assert(foundUser.id === user.id);
     }

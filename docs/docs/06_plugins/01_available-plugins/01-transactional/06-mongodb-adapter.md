@@ -76,9 +76,9 @@ class UserService {
         // highlight-start
         // both methods are executed in the same transaction
         const user = await this.userRepository.createUser('John');
-        const foundUser = await this.userRepository.getUserById(r1.id);
+        const foundUser = await this.userRepository.getUserById(user._id);
         // highlight-end
-        assert(foundUser.id === user.id);
+        assert(foundUser._id === user._id);
     }
 }
 ```
@@ -93,7 +93,7 @@ class UserRepository {
     ) {}
 
     async getUserById(id: ObjectId) {
-        // txHost.tx is typed as Knex
+        // txHost.tx is typed as ClientSession
         return this.mongoClient.db('default').collection('user').findOne(
             { _id: id },
             // highlight-start

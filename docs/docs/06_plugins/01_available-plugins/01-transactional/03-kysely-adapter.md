@@ -36,11 +36,11 @@ ClsModule.forRoot({
     plugins: [
         new ClsPluginTransactional({
             imports: [
-              // module in which the Kysely is provided
+              // module in which Kysely is provided
               KyselyModule
             ],
             adapter: new TransactionalAdapterKysely({
-                // the injection token of the Kysely client
+                // the injection token of the Kysely client instance
                 kyselyInstanceToken: KYSELY,
             }),
         }),
@@ -50,7 +50,7 @@ ClsModule.forRoot({
 
 ## Typing & usage
 
-The `tx` property on the `TransactionHost<TransactionalAdapterKysely>` is typed as `Kysely<any>` by default. To get the full typing, you need to supply your database type as the type parameter for the `TransactionalAdapterKysely` when injecting it:
+The `tx` property on the `TransactionHost<TransactionalAdapterKysely>` is typed as [`Kysely<any>`](https://kysely-org.github.io/kysely-apidoc/classes/Kysely.html) by default. To get the full typing, you need to supply your database type as the type parameter for the `TransactionalAdapterKysely` when injecting it:
 
 ```ts
 constructor(
@@ -102,7 +102,7 @@ class UserService {
         // highlight-start
         // both methods are executed in the same transaction
         const user = await this.userRepository.createUser('John');
-        const foundUser = await this.userRepository.getUserById(r1.id);
+        const foundUser = await this.userRepository.getUserById(user.id);
         // highlight-end
         assert(foundUser.id === user.id);
     }

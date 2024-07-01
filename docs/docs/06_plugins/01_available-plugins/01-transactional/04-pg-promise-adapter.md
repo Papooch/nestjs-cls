@@ -72,7 +72,7 @@ class UserService {
             'John',
             'john@acme.com',
         );
-        const foundUser = await this.userRepository.getUserById(r1.id);
+        const foundUser = await this.userRepository.getUserById(user.id);
         // highlight-end
         assert(foundUser.id === user.id);
     }

@@ -36,11 +36,11 @@ ClsModule.forRoot({
     plugins: [
         new ClsPluginTransactional({
             imports: [
-              // module in which the Knex is provided
+              // module in which Knex is provided
               KnexModule
             ],
             adapter: new TransactionalAdapterKnex({
-                // the injection token of the Knex client
+                // the injection token of the Knex client instance
                 knexInstanceToken: KNEX,
             }),
         }),
@@ -50,7 +50,7 @@ ClsModule.forRoot({
 
 ## Typing & usage
 
-The `tx` property on the `TransactionHost<TransactionalAdapterKnex>` is typed as `Knex`.
+The `tx` property on the `TransactionHost<TransactionalAdapterKnex>` is typed as [`Knex`](https://knexjs.org/guide/query-builder.html#knex).
 
 ## Example
 
@@ -64,7 +64,7 @@ class UserService {
         // highlight-start
         // both methods are executed in the same transaction
         const user = await this.userRepository.createUser('John');
-        const foundUser = await this.userRepository.getUserById(r1.id);
+        const foundUser = await this.userRepository.getUserById(user.id);
         // highlight-end
         assert(foundUser.id === user.id);
     }

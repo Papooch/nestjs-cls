@@ -64,7 +64,9 @@ When using with `@nestjs/typeorm`, the data source token needs to be retrieved w
 ```ts
 import { getDataSourceToken } from '@nestjs/typeorm';
 // ...
-dataSourceToken: getDataSourceToken(),
+new TransactionalAdapterTypeOrm({
+    dataSourceToken: getDataSourceToken(),
+});
 ```
 
 :::
@@ -85,7 +87,7 @@ class UserService {
         // highlight-start
         // both methods are executed in the same transaction
         const user = await this.userRepository.createUser('John');
-        const foundUser = await this.userRepository.getUserById(r1.id);
+        const foundUser = await this.userRepository.getUserById(user.id);
         // highlight-end
         assert(foundUser.id === user.id);
     }
