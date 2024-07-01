@@ -49,6 +49,8 @@ export class TransactionalAdapterMongoose
         }
     }
 
+    supportsTransactionProxy = false;
+
     optionsFactory(connection: Connection) {
         return {
             wrapWithTransaction: async (
