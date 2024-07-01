@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
     ClsPluginTransactional,
-    InjectTransaction,
-    Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
@@ -18,8 +16,7 @@ const MONGO_CLIENT = 'MONGO_CLIENT';
 @Injectable()
 class UserRepository {
     constructor(
-        @InjectTransaction()
-        private readonly session: Transaction<TransactionalAdapterMongoDB>,
+        private readonly txHost: TransactionHost<TransactionalAdapterMongoDB>,
         @Inject(MONGO_CLIENT)
         private readonly mongo: MongoClient,
     ) {}
@@ -28,7 +25,7 @@ class UserRepository {
         return this.mongo
             .db('default')
             .collection('user')
-            .findOne({ _id: id }, { session: this.session });
+            .findOne({ _id: id }, { session: this.txHost.tx });
     }
 
     async createUser(name: string) {
@@ -37,7 +34,7 @@ class UserRepository {
             .collection('user')
             .insertOne(
                 { name: name, email: `${name}@email.com` },
-                { session: this.session },
+                { session: this.txHost.tx },
             );
         const createdId = created.insertedId;
         const createdUser = await this.getUserById(createdId);
@@ -135,7 +132,6 @@ class MongoDBModule {}
                     adapter: new TransactionalAdapterMongoDB({
                         mongoClientToken: MONGO_CLIENT,
                     }),
-                    enableTransactionProxy: true,
                 }),
             ],
         }),

@@ -31,7 +31,7 @@ export class TransactionalAdapterMongoDB
     implements
         TransactionalAdapter<
             MongoClient,
-            ClientSession,
+            ClientSession | undefined,
             MongoDBTransactionOptions
         >
 {
@@ -39,16 +39,13 @@ export class TransactionalAdapterMongoDB
 
     defaultTxOptions?: Partial<TransactionOptions>;
 
-    private fallbackSession: ClientSession | undefined;
-
     constructor(options: MongoDBTransactionalAdapterOptions) {
         this.connectionToken = options.mongoClientToken;
         this.defaultTxOptions = options.defaultTxOptions;
     }
 
-    async onModuleDestroy() {
-        await this.fallbackSession?.endSession({ force: true });
-    }
+    /** cannot proxy an `undefined` value */
+    supportsTransactionProxy = false;
 
     optionsFactory(mongoClient: MongoClient) {
         return {
@@ -66,12 +63,7 @@ export class TransactionalAdapterMongoDB
                         }, options),
                 );
             },
-            getFallbackInstance: () => {
-                if (!this.fallbackSession || this.fallbackSession.hasEnded) {
-                    this.fallbackSession = mongoClient.startSession();
-                }
-                return this.fallbackSession;
-            },
+            getFallbackInstance: () => undefined,
         };
     }
 }
