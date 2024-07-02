@@ -1,4 +1,4 @@
-# @nestjs-cls/transactional-adapter-knex
+# @nestjs-cls/transactional-adapter-mongoose
 
 Mongoose adapter for the `@nestjs-cls/transactional` plugin.
 

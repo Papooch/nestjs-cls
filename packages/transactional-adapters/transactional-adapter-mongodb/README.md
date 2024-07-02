@@ -1,5 +1,5 @@
-# @nestjs-cls/transactional-adapter-knex
+# @nestjs-cls/transactional-adapter-mongodb
 
-Mongodb adapter for the `@nestjs-cls/transactional` plugin.
+MongoDB adapter for the `@nestjs-cls/transactional` plugin.
 
 ### ➡️ [Go to the documentation website](https://papooch.github.io/nestjs-cls/plugins/available-plugins/transactional/mongodb-adapter) 📖
