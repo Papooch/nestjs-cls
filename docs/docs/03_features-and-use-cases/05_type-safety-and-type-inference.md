@@ -97,6 +97,14 @@ class MyClsModule {}
 
 Now you can inject `MyClsService` as an alias for `ClsService<MyClsStore>` without "polluting" the global type space.
 
+:::important
+
+Please note that in this case, the extended class acts only as an alternative _Injection token_. It doesn't allow you to extend the `ClsService` with custom methods (they wouldn't be accessible on the injected instance, because what gets injected is the original `ClsService`).
+
+If you're thinking of extending the `ClsService`, please consider instead wrapping it in a custom provider (an adapter/facade if you will) that exposes only methods appropriate for your application and proxies calls to `ClsService`. If you still aren't convinced, please create a feature request and explain your reasoning.
+
+:::
+
 ## Terminal Type
 
 It can happen, that the object you want to store in the context is too complex, or contains cyclic references.
