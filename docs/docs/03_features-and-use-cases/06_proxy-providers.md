@@ -147,41 +147,11 @@ class DogsService {
 }
 ```
 
-## Caveats
-
-### No primitive values
-
-Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
-
-### `function` Proxies must be explicitly enabled
-
-In order to support injecting proxies of _functions_, the underlying proxy _target_ must be a function, too, in order to be able to implement the "apply" trap. However, this information cannot be extracted from the factory function itself, so if your factory returns a function, you must explicitly set the `type` property to `function` in the provider definition.
-
-```ts
-{
-    provide: SOME_FUNCTION,
-    useFactory: () => {
-        return () => {
-            // do something
-        };
-    },
-    // highlight-start
-    type: 'function',
-    // highlight-end
-}
-```
-
-:::note
-
-In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider always returned `function`, regardless of the value it holds. This is no longer the case. Please see [Issue #82](https://github.com/Papooch/nestjs-cls/issues/82)
-
-:::
-
 ## Delayed resolution of Proxy Providers
 
 By default, proxy providers are resolved as soon as the `setup` function in an enhancer (middleware/guard/interceptor) finishes. For some use cases, it might be required that the resolution is delayed until some later point in the request lifecycle once more information is present in the CLS .
 
-To achieve that, set `resolveProxyProviders` to `false` in the enhancer options and call `ClsService#resolveProxyProviders()` manually at any time.
+To achieve that, set `resolveProxyProviders` to `false` in the enhancer options and call (and await) `ClsService#resolveProxyProviders()` manually at any time.
 
 ```ts
 ClsModule.forRoot({
@@ -191,15 +161,19 @@ ClsModule.forRoot({
         // highlight-end
     },
 });
+
+//... later
+
+await this.cls.resolveProxyProviders();
 ```
 
 ### Outside web request
 
-This is also necessary [outside the context of web request](./04_usage-outside-of-web-request.md), otherwise all access to an injected Proxy Provider will return `undefined`.
+This might also be necessary [outside the context of web request](./04_usage-outside-of-web-request.md).
 
 #### With cls.run()
 
-If you set up the context with `cls.run()` to wrap any subsequent code thar relies on Proxy Providers.
+If you set up the context with `cls.run()` to wrap any subsequent code thar relies on Proxy Providers, you _must_ call `ClsService#resolveProxyProviders()` before accessing them, otherwise access to any property of the injected Proxy Provider will return `undefined`, that is because an unresolved Proxy Provider falls back to an _empty object_.
 
 ```ts title=cron.controller.ts
 @Injectable()
@@ -248,3 +222,53 @@ export class CronController {
     }
 }
 ```
+
+### Selective resolution of Proxy Providers
+
+You can also selectively resolve a subset of Proxy Providers, by passing a list of their injection tokens to `ClsService#resolveProxyProviders(tokens)`. This is useful if the providers need to be resolved in a specific order or when some part of the application does not need all of them.
+
+```ts
+// resolves ProviderA only
+await this.cls.resolveProxyProviders([ProviderA]);
+
+// ... later
+
+// resolves the rest of the providers that have not been resolved yet
+await this.cls.resolveProxyProviders();
+```
+
+## Caveats
+
+### No primitive values
+
+Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
+
+### `function` Proxies must be explicitly enabled
+
+In order to support injecting proxies of _functions_, the underlying proxy _target_ must be a function, too, in order to be able to implement the "apply" trap. However, this information cannot be extracted from the factory function itself, so if your factory returns a function, you must explicitly set the `type` property to `function` in the provider definition.
+
+```ts
+{
+    provide: SOME_FUNCTION,
+    useFactory: () => {
+        return () => {
+            // do something
+        };
+    },
+    // highlight-start
+    type: 'function',
+    // highlight-end
+}
+```
+
+:::note
+
+In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider always returned `function`, regardless of the value it holds. This is no longer the case. Please see [Issue #82](https://github.com/Papooch/nestjs-cls/issues/82)
+
+:::
+
+### Limited support for injecting Proxy Providers into each other
+
+Apart from the built-in `CLS_REQ` and `CLS_RES` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
+
+There is an open [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming, but until then, refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique.
