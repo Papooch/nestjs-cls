@@ -98,10 +98,10 @@ class TestController {
 })
 class ImportedModule {}
 
-async function getTestApp(forRoorOptions: ClsModuleOptions) {
+async function getTestApp(forRootOptions: ClsModuleOptions) {
     @Module({
         imports: [
-            ClsModule.forRoot(forRoorOptions),
+            ClsModule.forRoot(forRootOptions),
             ClsModule.forFeatureAsync({
                 imports: [ImportedModule],
                 useClass: RequestScopedClass,

@@ -98,6 +98,7 @@ export class ClsModule implements NestModule {
     static forRoot(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
         const { providers, exports } = this.getProviders();
+        ProxyProviderManager.reset(); // ensure that the proxy manager's state is clean
         const proxyProviders = this.createProxyClassProviders(
             options.proxyProviders,
         );
@@ -125,6 +126,7 @@ export class ClsModule implements NestModule {
      */
     static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
         const { providers, exports } = this.getProviders();
+        ProxyProviderManager.reset(); // ensure that the proxy manager's state is clean
         const proxyProviders = this.createProxyClassProviders(
             asyncOptions.proxyProviders,
         );

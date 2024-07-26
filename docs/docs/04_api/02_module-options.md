@@ -58,6 +58,9 @@ The `ClsModuleProxyFactoryProviderOptions` interface further accepts:
 -   **_`type?:`_**`'function' | 'object'`  
      Whether the Proxy Provider should be a function or an object. Defaults to `'object'`. See [Caveats](../03_features-and-use-cases/06_proxy-providers.md#caveats) for more information.
 
+-   **_`strict?:`_**`boolean`  
+     Whether to register this Proxy Provider in [strict mode](../03_features-and-use-cases/06_proxy-providers.md#strict-proxy-providers). Defaults to `false`.
+
 ## Middleware & Enhancer options
 
 All of the **`Cls{Middleware,Guard,Interceptor}Options`** take the following parameters (either in `ClsModuleOptions` or directly when instantiating them manually):
