@@ -176,7 +176,7 @@ export class TransactionHost<TAdapter = never> {
                 if (this.isTransactionActive()) {
                     throw new TransactionAlreadyActiveError(fnName);
                 }
-                return this.runWithTransaction(options, fn);
+                return this.withoutTransaction(fn);
             default:
                 throw new TransactionPropagationError(
                     `Unknown propagation mode ${propagation}`,
