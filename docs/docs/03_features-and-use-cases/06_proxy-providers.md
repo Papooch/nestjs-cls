@@ -228,13 +228,49 @@ export class CronController {
 You can also selectively resolve a subset of Proxy Providers, by passing a list of their injection tokens to `ClsService#resolveProxyProviders(tokens)`. This is useful if the providers need to be resolved in a specific order or when some part of the application does not need all of them.
 
 ```ts
-// resolves ProviderA only
-await this.cls.resolveProxyProviders([ProviderA]);
+// resolves ProviderA and ProviderB only
+await this.cls.resolveProxyProviders([ProviderA, ProviderB]);
 
 // ... later
 
 // resolves the rest of the providers that have not been resolved yet
 await this.cls.resolveProxyProviders();
+```
+
+## Strict Proxy Providers
+
+<small>since `v4.4.0`</small>
+
+By default, accessing an unresolved Proxy Provider behaves as if it was an _empty object_. In order to prevent silent failures, you can set the `strict` option to `true` in the proxy provider registration. In this case, any attempt to access a property or a method on an unresolved Proxy Provider will throw an error.
+
+For Class Proxy Providers, you can use the according option on the `@InjectableProxy()` decorator.
+
+```ts title=user.proxy.ts
+@InjectableProxy({
+    // highlight-start
+    strict: true,
+    // highlight-end
+})
+export class User {
+    id: number;
+    role: string;
+}
+```
+
+In case of Factory Proxy Providers, use the option on the `ClsModule.forFeatureAsync()` registration.
+
+```ts
+ClsModule.forFeatureAsync({
+    provide: TENANT_CONNECTION,
+    import: [DatabaseConnectionModule],
+    inject: [CLS_REQ],
+    useFactory: async (req: Request) => {
+        // ... some implementation
+    },
+    // highlight-start
+    strict: true,
+    // highlight-end
+});
 ```
 
 ## Caveats
@@ -271,4 +307,4 @@ In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider
 
 Apart from the built-in `CLS_REQ` and `CLS_RES` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
 
-There is an open [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming, but until then, refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique.
+There is an open [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming, but until then, refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique. You can also leverage the [strict](#strict-proxy-providers) mode to find out which Proxy Providers are not yet resolved.
