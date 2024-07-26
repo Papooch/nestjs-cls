@@ -31,18 +31,18 @@ describe('resolveProxyProviders - strict mode', () => {
 
     const ProxyToken = Symbol('ProxyToken');
 
-    // @InjectableProxy()
-    // class StrictProxyClass {
-    //     something = 'something';
-    // }
+    @InjectableProxy({ strict: true })
+    class StrictProxyClass {
+        something = 'something';
+    }
 
     describe.each([
-        // [
-        //     'class using forFeature',
-        //     StrictProxyClass,
-        //     StrictProxyClass.name,
-        //     ClsModule.forFeature(StrictProxyClass),
-        // ],
+        [
+            'class using forFeature',
+            StrictProxyClass,
+            StrictProxyClass.name,
+            ClsModule.forFeature(StrictProxyClass),
+        ],
         [
             'class using forFeatureAsync',
             ProxyClass,

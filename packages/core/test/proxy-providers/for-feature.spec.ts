@@ -96,12 +96,9 @@ describe('ClsModule', () => {
                 prop = 'proxy';
             }
 
-            const appPromise = createAndInitTestingApp([
-                ClsModule.forFeature(ProxyClass),
-            ]);
-            await expect(appPromise).rejects.toThrow(
-                ProxyProviderNotDecoratedException,
-            );
+            const createApp = () =>
+                createAndInitTestingApp([ClsModule.forFeature(ProxyClass)]);
+            expect(createApp).toThrow(ProxyProviderNotDecoratedException);
         });
 
         it('throws if class proxy injects provider that is not part of the module', async () => {

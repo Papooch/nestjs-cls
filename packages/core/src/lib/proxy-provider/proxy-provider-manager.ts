@@ -23,6 +23,7 @@ import {
     ProxyFactoryProvider,
     ProxyProvider,
 } from './proxy-provider.interfaces';
+import { InjectableProxyMetadata } from './injectable-proxy.decorator';
 
 type ProxyOptions = {
     type?: ClsProxyFactoryReturnType;
@@ -47,8 +48,16 @@ export class ProxyProviderManager {
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
         const providerToken = this.getProxyProviderToken(options);
         const providerSymbol = getProxyProviderSymbol(providerToken);
+
+        let strict: boolean | undefined = undefined;
+        if (isProxyClassProviderOptions(options)) {
+            const metadata = this.getInjectableProxyMetadata(options.useClass);
+            strict = metadata.strict;
+        }
+        strict = options.strict ?? strict ?? false;
+
         const proxy = this.createProxy(providerSymbol, {
-            strict: options.strict,
+            strict,
             type: (options as ClsModuleProxyFactoryProviderOptions).type,
         });
         const proxyProvider: FactoryProvider = {
@@ -61,7 +70,6 @@ export class ProxyProviderManager {
             useFactory: (moduleRef: ModuleRef, ...injected: any[]) => {
                 let providerOptions: ProxyProvider;
                 if (isProxyClassProviderOptions(options)) {
-                    this.throwIfClassHasNoProxyMetadata(options.useClass);
                     providerOptions = {
                         moduleRef,
                         token: options.provide,
@@ -88,6 +96,16 @@ export class ProxyProviderManager {
             useValue: proxy,
         };
         return proxyProvider;
+    }
+
+    private static getInjectableProxyMetadata(
+        Provider: Type,
+    ): InjectableProxyMetadata {
+        const metadata = Reflect.getMetadata(CLS_PROXY_METADATA_KEY, Provider);
+        if (!metadata) {
+            throw ProxyProviderNotDecoratedException.create(Provider);
+        }
+        return metadata;
     }
 
     private static getProxyProviderToken(
@@ -183,16 +201,6 @@ export class ProxyProviderManager {
         } catch (error: unknown) {
             if (!(error instanceof UnknownDependenciesException)) throw error;
             throw UnknownProxyDependenciesException.create(error, Provider);
-        }
-    }
-
-    private static throwIfClassHasNoProxyMetadata(Provider: Type) {
-        const hasMetadata = Reflect.getMetadata(
-            CLS_PROXY_METADATA_KEY,
-            Provider,
-        );
-        if (!hasMetadata) {
-            throw ProxyProviderNotDecoratedException.create(Provider);
         }
     }
 
