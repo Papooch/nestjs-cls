@@ -2,6 +2,17 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.4.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.3.0...nestjs-cls@4.4.0) "nestjs-cls" (2024-07-26)<a name="4.4.0"></a>
+
+### Features
+
+* add `strict` option to proxy providers ([3f3de78](https://github.com/Papooch/nestjs-cls/commits/3f3de78))
+* enable setting proxy provider `strict` option via a decorator. ([3f3de78](https://github.com/Papooch/nestjs-cls/commits/3f3de78))
+* enable `strict` mode for Proxy Providers (#171) ([3f3de78](https://github.com/Papooch/nestjs-cls/commits/3f3de78))
+
+
+
+
 ## [4.3.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.2.1...nestjs-cls@4.3.0) "nestjs-cls" (2024-03-22)<a name="4.3.0"></a>
 
 ### Features
