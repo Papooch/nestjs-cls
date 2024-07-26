@@ -27,6 +27,17 @@ export class ProxyProviderManager {
     private static clsService = globalClsService;
     private static proxyProviderMap = new Map<symbol, ProxyProvider>();
 
+    /**
+     * Init method called by the ClsModule#forRoot/Async
+     *
+     * It ensures that the internal state is reset to support testing multiple setups in the same process.
+     *
+     * Otherwise the proxy provider map would leak from one test to the next.
+     */
+    static reset() {
+        this.proxyProviderMap = new Map();
+    }
+
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
         const providerToken = this.getProxyProviderToken(options);
         const providerSymbol = getProxyProviderSymbol(providerToken);

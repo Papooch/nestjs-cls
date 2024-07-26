@@ -1,7 +1,6 @@
 import { INestApplication, ModuleMetadata } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule, ClsServiceManager, InjectableProxy } from '../../src';
-import { ProxyProviderManager } from '../../src/lib/proxy-provider';
 
 async function createAndInitTestingApp(imports: ModuleMetadata['imports']) {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,11 +16,6 @@ async function createAndInitTestingApp(imports: ModuleMetadata['imports']) {
 const cls = ClsServiceManager.getClsService();
 
 describe('resolveProxyProviders', () => {
-    beforeEach(() => {
-        // reset state of the singleton ProxyProviderManager
-        (ProxyProviderManager as any).proxyProviderMap = new Map();
-    });
-
     let app: INestApplication;
 
     @InjectableProxy()
