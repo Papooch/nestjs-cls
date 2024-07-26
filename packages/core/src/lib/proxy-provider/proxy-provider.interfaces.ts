@@ -32,6 +32,17 @@ export interface ClsModuleProxyClassProviderOptions
      * The target class that will be used by this Proxy Provider. Make sure it is decorated with `@InjectableProxy`.
      */
     useClass: Type;
+
+    /**
+     * If true, accessing any property on this provider while it is unresolved will throw an exception.
+     *
+     * Otherwise, the application behaves as if accessing a property on an empty object.
+     *
+     * Default: false
+     */
+    strict?: boolean;
+
+    type?: never;
 }
 export interface ClsModuleProxyFactoryProviderOptions
     extends ClsModuleProxyProviderCommonOptions {
@@ -52,6 +63,15 @@ export interface ClsModuleProxyFactoryProviderOptions
      * Returns (or resolves with) an object (or a function) that will be used by this Proxy Provider.
      */
     useFactory: (...args: any[]) => any;
+
+    /**
+     * If true, accessing any property on this provider while it is unresolved will throw an exception.
+     *
+     * Otherwise, the application behaves as if accessing a property on an empty object.
+     *
+     * Default: false
+     */
+    strict?: boolean;
 
     /**
      * Explicit type of the value returned by the `useFactory` function. This is required to construct the base value of the Proxy

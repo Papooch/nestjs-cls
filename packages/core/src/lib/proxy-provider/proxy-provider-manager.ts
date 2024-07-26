@@ -7,6 +7,7 @@ import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
     ProxyProviderNotDecoratedException,
     ProxyProviderNotRegisteredException,
+    ProxyProviderNotResolvedException,
     UnknownProxyDependenciesException,
 } from './proxy-provider.exceptions';
 import {
@@ -22,6 +23,11 @@ import {
     ProxyFactoryProvider,
     ProxyProvider,
 } from './proxy-provider.interfaces';
+
+type ProxyOptions = {
+    type?: ClsProxyFactoryReturnType;
+    strict?: boolean;
+};
 
 export class ProxyProviderManager {
     private static clsService = globalClsService;
@@ -41,10 +47,10 @@ export class ProxyProviderManager {
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
         const providerToken = this.getProxyProviderToken(options);
         const providerSymbol = getProxyProviderSymbol(providerToken);
-        const proxy = this.createProxy(
-            providerSymbol,
-            (options as ClsModuleProxyFactoryProviderOptions).type ?? 'object',
-        );
+        const proxy = this.createProxy(providerSymbol, {
+            strict: options.strict,
+            type: (options as ClsModuleProxyFactoryProviderOptions).type,
+        });
         const proxyProvider: FactoryProvider = {
             provide: providerToken,
             inject: [
@@ -95,17 +101,20 @@ export class ProxyProviderManager {
 
     private static createProxy(
         providerKey: symbol | string,
-        type: ClsProxyFactoryReturnType = 'object',
+        { type = 'object', strict = false }: ProxyOptions = {},
     ): any {
-        const getProvider = () => this.clsService.get()?.[providerKey] ?? {};
+        const checkAccess = getPropertyAccessChecker(providerKey, strict);
+        const getProvider = () => this.clsService.get()?.[providerKey];
+        const getProviderOrEmpty = () => getProvider() ?? {};
         const baseType = type === 'function' ? () => null : {};
+
         return new Proxy(baseType, {
             apply(_, __, argArray) {
-                const provider = getProvider();
+                const provider = getProvider() ?? checkAccess();
                 return provider.apply(provider, argArray);
             },
             get(_, propName) {
-                const provider = getProvider();
+                const provider = getProvider() ?? checkAccess(propName);
                 const prop = provider[propName];
                 if (typeof prop === 'function') {
                     return prop.bind(provider);
@@ -114,19 +123,23 @@ export class ProxyProviderManager {
                 }
             },
             set(_, propName, value) {
-                return Reflect.set(getProvider(), propName, value);
+                const provider = getProvider() ?? checkAccess(propName);
+                return Reflect.set(provider, propName, value);
             },
             ownKeys() {
-                return Reflect.ownKeys(getProvider());
+                return Reflect.ownKeys(getProviderOrEmpty());
             },
             getPrototypeOf() {
-                return Reflect.getPrototypeOf(getProvider());
+                return Reflect.getPrototypeOf(getProviderOrEmpty());
             },
             getOwnPropertyDescriptor(_, prop) {
-                return Reflect.getOwnPropertyDescriptor(getProvider(), prop);
+                return Reflect.getOwnPropertyDescriptor(
+                    getProviderOrEmpty(),
+                    prop,
+                );
             },
             has(_, prop) {
-                return Reflect.has(getProvider(), prop);
+                return Reflect.has(getProviderOrEmpty(), prop);
             },
         });
     }
@@ -191,4 +204,42 @@ export class ProxyProviderManager {
         const proxyProvider = await provider.useFactory.apply(null, injected);
         this.clsService.set(providerSymbol, proxyProvider);
     }
+}
+
+const allowedPropertyAccess = new Set([
+    // used by Nest to check for async providers
+    'then',
+    // checked by Nest to trigger lifecycle hooks
+    'onModuleInit',
+    'onApplicationBootstrap',
+    'onModuleDestroy',
+    'beforeApplicationShutdown',
+    'onApplicationShutdown',
+]);
+
+/**
+ * To enable strict mode, which means throwing an error when a property on an unresolved proxy provider is accessed,
+ * we still need to allow access to some properties in order for Nest to bootstrap properly.
+ *
+ * This is because Nest checks for the presence of some properties of all providers in the bootstrap process,
+ * but at that time, all Proxy providers are still undefined.
+ */
+function getPropertyAccessChecker(
+    providerKey: symbol | string,
+    strict: boolean,
+) {
+    const empty = {};
+
+    if (!strict) {
+        return () => empty;
+    }
+    return function checkAllowedPropertyAccess(propName?: string | symbol) {
+        if (!propName || !allowedPropertyAccess.has(propName.toString())) {
+            throw ProxyProviderNotResolvedException.create(
+                providerKey,
+                propName?.toString(),
+            );
+        }
+        return empty;
+    };
 }

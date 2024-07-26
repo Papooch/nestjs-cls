@@ -67,3 +67,22 @@ export class ProxyProviderNotRegisteredException extends Error {
         return new this(message);
     }
 }
+
+export class ProxyProviderNotResolvedException extends Error {
+    name = ProxyProviderNotResolvedException.name;
+
+    static create(providerSymbol: symbol | string, propName?: string) {
+        const providerName =
+            typeof providerSymbol == 'string'
+                ? providerSymbol
+                : providerSymbol.description;
+        let message: string;
+        if (propName) {
+            message = `Cannot access the property "${propName}" on the proxy provider`;
+        } else {
+            message = 'Cannot call the proxy provider';
+        }
+        message += ` ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the proxy provider.`;
+        return new this(message);
+    }
+}
