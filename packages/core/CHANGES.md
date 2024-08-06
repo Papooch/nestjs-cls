@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.4.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.4.0...nestjs-cls@4.4.1) "nestjs-cls" (2024-08-06)<a name="4.4.1"></a>
+
+### Bug Fixes
+
+* **core**: support primitive values in websocket payload ([7f5c068](https://github.com/Papooch/nestjs-cls/commits/7f5c068))
+* **core**: support primitive values in websocket payload (#172) ([7f5c068](https://github.com/Papooch/nestjs-cls/commits/7f5c068))
+
+
+
+
 ## [4.4.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.3.0...nestjs-cls@4.4.0) "nestjs-cls" (2024-07-26)<a name="4.4.0"></a>
 
 ### Features

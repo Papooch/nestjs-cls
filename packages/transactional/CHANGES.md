@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.4.2](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.1...@nestjs-cls/transactional@2.4.2) "@nestjs-cls/transactional" (2024-08-06)<a name="2.4.2"></a>
+
+### Bug Fixes
+
+* **transactional**: correct behavior of `Propagation.Never` ([cc63009](https://github.com/Papooch/nestjs-cls/commits/cc63009))
+* **transactional**: correct behavior of `Propagation.Never` (#167) ([cc63009](https://github.com/Papooch/nestjs-cls/commits/cc63009))
+
+
+
+
 ## [2.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.3.1...@nestjs-cls/transactional@2.4.0) "@nestjs-cls/transactional" (2024-07-01)<a name="2.4.0"></a>
 
 ### Features
