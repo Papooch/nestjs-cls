@@ -39,7 +39,7 @@ export class ContextClsStoreMap {
             case 'http':
                 return context.switchToHttp().getRequest();
             case 'ws':
-                return context.switchToWs().getData();
+                return context.switchToWs();
             case 'rpc':
                 return context.switchToRpc().getContext();
             case 'graphql':
