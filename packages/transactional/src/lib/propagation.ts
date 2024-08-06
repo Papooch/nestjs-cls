@@ -7,19 +7,19 @@ export enum Propagation {
      */
     Required = 'REQUIRED',
     /**
-     * Create a new transaction even if one already exists.
+     * Create a new transaction even if one already exists. The new transaction is committed independently of the existing one.
      */
     RequiresNew = 'REQUIRES_NEW',
     /**
-     * Run without a transaction even if one exists.
+     * Run without a transaction even if one exists. The existing transaction is resumed once the callback completes.
      */
     NotSupported = 'NOT_SUPPORTED',
     /**
-     * Reuse an existing transaction, throw an exception otherwise
+     * Reuse an existing transaction, throw an exception otherwise.
      */
     Mandatory = 'MANDATORY',
     /**
-     * Throw an exception if an existing transaction exists, otherwise create a new one
+     * Run without a transaction, throw an exception if one already exists.
      */
     Never = 'NEVER',
 }

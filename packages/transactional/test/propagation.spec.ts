@@ -261,10 +261,7 @@ describe('Propagation', () => {
         it('should not start a transaction in NEVER mode', async () => {
             await withoutTx.neverPropagation();
             const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                ['SELECT 11'],
-                ['BEGIN TRANSACTION;', 'SELECT 12', 'COMMIT TRANSACTION;'],
-            ]);
+            expect(queries).toEqual([['SELECT 11'], ['SELECT 12']]);
         });
     });
 

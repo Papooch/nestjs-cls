@@ -58,9 +58,15 @@ For this example, we'll use the `prisma` library and the [`@nestjs-cls/transacti
 
 Suppose we already have a `PrismaModule` which provides a `PrismaClient` instance and two other services `UserService` and `AccountService` which we'd like to make transactional.
 
+:::note
+
+The prisma adapter is only given as an example simply because it was the first one that was implemented. It does not mean it is the best or the most compatible one.
+
+:::
+
 ### Plugin registration
 
-To add register the transactional plugin with `nestjs-cls`, we need to pass it to the `forRoot` method of the `ClsModule`:
+To register the transactional plugin with `nestjs-cls`, we need to pass it to the `plugins` array of the `ClsModule.forRoot` method.
 
 ```ts title="app.module.ts"
 import { ClsModule } from 'nestjs-cls';
@@ -78,7 +84,7 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
                     // if PrismaModule is not global, we need to make it available to the plugin
                     imports: [PrismaModule],
                     adapter: new TransactionalAdapterPrisma({
-                        // each adapter has its own options, see the adapter docs for more info
+                        // each adapter has its own options, see the specific adapter docs for details
                         prismaInjectionToken: PrismaClient,
                     }),
                 }),
@@ -91,13 +97,15 @@ import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-pr
 export class AppModule {}
 ```
 
-This registers a `TransactionHost` provider in the global context which can be used to start a new transaction and retrieve the current transaction reference.
+This registers a `TransactionHost` provider in the global context which can be used to start new transactions and retrieve the current transaction reference.
 
 ### Using the `TransactionHost`
 
 Now that we have the plugin registered, we can use the `TransactionHost` to start a new transaction and retrieve the current transaction reference.
 
-Suppose that any time we create an `User`, we want to create an `Account` for them as well and both operations must either succeed or fail. We can use the `TransactionHost` to start a new transaction and retrieve the current transaction reference.
+Suppose that any time we create an `User`, we want to create an `Account` for them as well and both operations must either succeed or fail. We can use the `TransactionHost` for this.
+
+If the callback function passed to the `withTransaction` completes successfully, the transaction will be committed. If it throws an error, the transaction will be rolled back.
 
 The type argument on the `TransactionHost<Adapter>` makes sure that the `tx` property is typed correctly and the `withTransaction` method returns the correct type. This is ensured by the implementation of the adapter:
 
@@ -146,13 +154,13 @@ class AccountService {
 
 :::note
 
-Notice that we never used either raw `PrismaClient` or the `prisma.$transaction` directly. This is because the adapter takes care of that for us, otherwise the transaction would not be propagated in the CLS context.
+Notice that we never used either raw `PrismaClient` or the `prisma.$transaction` method directly. This is because the adapter takes care of that for us, otherwise the transaction would not be propagated in the CLS context.
 
 :::
 
 ### Using the `@Transactional` decorator
 
-The `@Transactional` decorator can be used to wrap a method call in the `withTransaction` call implicitly. This saves a lot of boilerplate code and makes the code more readable.
+The `@Transactional` decorator can be used to wrap a method call in the `withTransaction` call implicitly. This saves a lot of boilerplate code and makes the code more readable, all the while de-cluttering the application logic.
 
 Using the decorator, we can change the `createUser` method like so without changing the behavior:
 
@@ -183,13 +191,13 @@ class UserService {
 
 The `@InjectTransaction` decorator can be used to inject a [Proxy Provider](../../../03_features-and-use-cases/06_proxy-providers.md) of the Transaction instance (the `tx` property of the `TransactionHost`) directly as a dependency.
 
-This is useful when you don't want to inject the entire `TransactionHost` and only need the transaction instance itself. For example when you're migrating an existing codebase and don't want to change all database calls to use `txHost.tx`.
+This is useful when you don't want to inject the entire `TransactionHost` and only need the transaction instance itself, or for example, when you're migrating an existing codebase and don't want to change all database calls to use `txHost.tx`.
 
-The type argument of `Transaction<Adapter>` behaves silimarly to the `TransactionHost` type argument, and ensures that the transaction instance is typed correctly.
+The type argument of `Transaction<Adapter>` behaves similarly to the `TransactionHost<Adapter>` type argument, and ensures that the transaction instance is typed correctly.
 
 <!-- prettier-ignore -->
 ```ts title="account.service.ts"
-import { InjectTransaction, Transaction, Transactional } from '@nestjs-cls/transactional';
+import { InjectTransaction, Transaction } from '@nestjs-cls/transactional';
 import { TransactionalAdapterPrisma } from '@nestjs-cls/transactional-adapter-prisma';
 // ... other imports
 
@@ -214,9 +222,9 @@ class AccountService {
 
 When a transaction is not active, the `Transaction` instance refers to the default non-transactional instance. However, if the CLS context is _not active_, the `Transaction` instance will be `undefined` instead, which could cause runtime errors.
 
-Therefore, this feature works reliably only when the CLS context is active _prior to starting the transaction_.
+Therefore, this feature works reliably only when the CLS context is active _prior to accessing the transaction_.
 
-Additionally, _some adapters do not support this feature_ due to the nature of how transactions work in the library they implement.
+Additionally, _some adapters do not support this feature_ due to the nature of how transactions work in the library they implement (notably MongoDB and Mongoose).
 
 For these reasons, this is an opt-in feature that must be explicitly enabled with the `enableTransactionProxy: true` option of the `ClsPluginTransactional` constructor.
 
@@ -234,9 +242,9 @@ new ClsPluginTransactional({
 
 :::
 
-### Passing transaction options
+### Transaction options
 
-The both the `withTransaction` method and the `Transactional` decorator accepts an optional `TransactionOptions` object as the first argument. This object can be used to configure the transaction, for example to set the isolation level or the timeout.
+The both the `withTransaction` method and the `Transactional` decorator accepts an optional `TransactionOptions` object. This object can be used to configure the transaction, for example to set the isolation level or the timeout.
 
 The type of the object is provided by the adapter, so to enforce the correct type, you need to pass the adapter type argument to the `TransactionHost` or to the `Transactional` decorator.
 
@@ -263,9 +271,17 @@ async createUser(name: string): Promise<User> {
 }
 ```
 
+:::note
+
+You might have noticed that using the `@Transactional` decorator on service methods does leak implementation details to the application code when used with the adapter-specific options. This is a deliberate choice, because the alternative would be building even more abstraction and ensuring compatibility with all other adapters. That is not the path that I want this relatively simple plugin to take.
+
+:::
+
 ### Transaction propagation
 
-Similar to how the `@Transactional` decorator work in [Spring](https://www.baeldung.com/spring-transactional-propagation-isolation) and other similar frameworks. The `@Transactional` decorator and the `withTransaction` method accept an optional `propagation` option as the _first parameter_ which can be used to configure how the transaction should be propagated.
+The `@Transactional` decorator and the `withTransaction` method accept an optional `propagation` option as the _first parameter_ which can be used to configure how multiple nested transactional calls are encountered.
+
+This option is directly inspired by a similar feature of the [Spring](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/annotation/Propagation.html) framework for Java and Kotlin.
 
 The propagation option is controlled by the `Propagation` enum, which has the following values:
 
@@ -273,16 +289,16 @@ The propagation option is controlled by the `Propagation` enum, which has the fo
     (**default**) Reuse the existing transaction or create a new one if none exists.
 
 -   **_`RequiresNew`_**:
-    Create a new transaction even if one already exists.
+    Create a new transaction even if one already exists. The new transaction is committed independently of the existing one.
 
 -   **_`NotSupported`_**:
-    Run without a transaction even if one exists.
+    Run without a transaction even if one exists. The existing transaction is resumed once the callback completes.
 
 -   **_`Mandatory`_**:
-    Reuse an existing transaction, throw an exception otherwise
+    Reuse an existing transaction, throw an exception otherwise.
 
 -   **_`Never`_**:
-    Throw an exception if an existing transaction exists, otherwise create a new one
+    Run without a transaction, throw an exception if one already exists.
 
 This parameter comes _before_ the `TransactionOptions` object, if one is provided. The default behavior when a nested transaction decorator is encountered if no propagation option is provided, is to reuse the existing transaction or create a new one if none exists, which is the same as the `Required` propagation option.
 
@@ -338,7 +354,9 @@ class AccountService {
 }
 ```
 
-## ClsPluginTransactional Interface
+## Plugin API
+
+### `ClsPluginTransactional` Interface
 
 The `ClsPluginTransactional` constructor takes an options object with the following properties:
 
@@ -351,26 +369,26 @@ The `ClsPluginTransactional` constructor takes an options object with the follow
 -   **_`enableTransactionProxy`_**`: boolean` (default: `false`)  
      Whether to enable injecting the Transaction instance directly using [`@InjectTransaction()`](#using-the-injecttransaction-decorator)
 
-## TransactionHost Interface
+### `TransactionHost` Interface
 
 The `TransactionHost` interface is the main working interface of the plugin. It provides the following API:
 
 -   **_`tx`_**`: Transaction`  
     Reference to the currently active transaction. Depending on the adapter implementation for the underlying database library, this can be either a transaction client instance, a transaction object or a transaction ID. If no transaction is active, refers to the default non-transactional client instance (or undefined transaction ID).
 
--   **_`withTransaction`_**`(callback: Promise): Promise`\
+-   **_`withTransaction`_**`(callback): Promise`\
     **_`withTransaction`_**`(options, callback): Promise`  
     **_`withTransaction`_**`(propagation, callback): Promise`  
     **_`withTransaction`_**`(propagation, options, callback): Promise`  
     Runs the callback in a transaction. Optionally takes `Propagation` and `TransactionOptions` as the first one or two parameters.
 
 -   **_`withoutTransaction`_**`(callback): Promise`  
-    Runs the callback without a transaction (even if one is active in the parent scope).
+    Runs the callback without a transaction (even if one is active in the parent scope). This is analogous to using the `Propagation.NotSupported` mode.
 
 -   **_`isTransactionActive`_**`(): boolean`  
     Returns whether a CLS-managed transaction is active in the current scope.
 
-### Transactional decorator interface
+### `@Transactional` decorator interface
 
 The `@Transactional` decorator can be used to wrap a method call in the `withTransaction` call implicitly. It has the following call signatures:
 
