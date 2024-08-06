@@ -56,3 +56,13 @@ Below are listed transports with which it is confirmed to work:
 ### Websockets
 
 _Websocket Gateways_ don't respect globally bound enhancers, therefore it is required to bind the `ClsGuard` or `ClsInterceptor` manually on the `WebsocketGateway`. Special care is also needed for the `handleConnection` method (See [#8](https://github.com/Papooch/nestjs-cls/issues/8))
+
+```ts
+@WebSocketGateway()
+// highlight-start
+@UseInterceptors(ClsInterceptor)
+// highlight-end
+export class Gateway {
+    // ...
+}
+```

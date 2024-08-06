@@ -101,6 +101,15 @@ const config = {
                 style: 'dark',
                 links: [
                     {
+                        title: 'Docs',
+                        items: [
+                            {
+                                label: 'NestJS Documentation',
+                                href: 'https://docs.nestjs.com/',
+                            },
+                        ],
+                    },
+                    {
                         title: 'Community',
                         items: [
                             {
