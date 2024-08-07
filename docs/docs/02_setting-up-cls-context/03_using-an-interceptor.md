@@ -37,7 +37,7 @@ Or mount it manually as `APP_INTERCEPTOR`
         {
             // highlight-start
             provide: APP_INTERCEPTOR,
-            useClass: ClsGuard,
+            useClass: ClsInterceptor,
             // highlight-end
         },
     ],
