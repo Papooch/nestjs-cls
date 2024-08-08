@@ -16,7 +16,7 @@ ClsModule.forRoot({
         mount: true,
         // highlight-start
         setup: (cls, req: Request, res: Response) => {
-            cls.set('TENANT_ID', req.params('tenant_id'));
+            cls.set('TENANT_ID', req.params['tenantId']);
             cls.set('AUTH', { authenticated: false });
         },
         // highlight-end
@@ -35,10 +35,16 @@ ClsModule.forRoot({
         // highlight-start
         setup: (cls, context) => {
             const req = context.switchToHttp().getRequest<Request>();
-            cls.set('TENANT_ID', req.params('tenant_id'));
+            cls.set('TENANT_ID', req.params['tenantId']);
             cls.set('AUTH', { authenticated: false });
         },
         // highlight-end
     },
 });
 ```
+
+:::info
+
+The examples assume usage of _Express_ by default. In case of using _Fastify_, the types of request and response objects are `FastifyRequest` and `FastifyReply`, respectively.
+
+:::
