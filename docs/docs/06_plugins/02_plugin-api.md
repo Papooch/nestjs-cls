@@ -4,7 +4,7 @@
 
 The Plugin API is still experimental and might change in the future, you should not rely on it in production.
 
-Using any of the "official" plugins is safe since they are maintained by the same author. If you want to create your own plugin, you should be aware that the API might change between minor versions.
+Using any of the "official" plugins is safe since they are maintained by the same author and compatibility of new versions is ensured. If you want to create your own plugin, you should be aware that the API might change between minor versions.
 
 :::
 
@@ -19,6 +19,7 @@ export interface ClsPlugin {
 
     /**
      * Function that is called within a Cls initializer (middleware, interceptor, guard, etc.)
+     * right after `setup`.
      */
     onClsInit?: (cls: ClsService) => void | Promise<void>;
 
@@ -28,7 +29,8 @@ export interface ClsPlugin {
     onModuleInit?: () => void | Promise<void>;
 
     /**
-     * A lifecycle method called when the `ClsModule` is destroyed (only when shutdown hooks are enabled)
+     * A lifecycle method called when the `ClsModule` is destroyed
+     * (only when shutdown hooks are enabled)
      */
     onModuleDestroy?: () => void | Promise<void>;
 
@@ -49,4 +51,4 @@ export interface ClsPlugin {
 }
 ```
 
-The plugin options are then mixed into a _global_ `ClsPluginModule` and the exposed providers can be used for injection by other plugin-related code.
+Each plugin creates a new instance of a _global_ `ClsPluginModule` and the exposed providers can be used for injection by other plugin-related code.
