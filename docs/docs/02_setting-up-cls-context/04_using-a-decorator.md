@@ -44,3 +44,26 @@ class SomeService {
 It is important to define the `setup` and `idGenerator` functions as `function`s, not arrow functions, so that the `this` context is properly bound.
 
 :::
+
+## Gotchas
+
+Since the `@UseCls()` decorator operates on the method's parameters, it must be type-safe. In order to support this, it requires a generic type parameter, which is a tuple of the types of the method's arguments.
+
+If there's a mismatch between the generic argument and the actual method signature, typescript will complain.
+
+This also means that the decorator is not inherently compatible with Nest's `applyDecorators` function for decorator composition, because it would lose the type safety.
+
+If you _need to_ use `@UseCls()` with `applyDecorators`, you have to cast it to to `MethodDecorator`, _knowing that type-safety will be lost_, e.g.:
+
+```ts
+export const ProcessWithCls = (queue: string) => {
+    return applyDecorators(
+        UseCls({
+            /* options */
+            // highlight-start
+        }) as MethodDecorator,
+        // highlight-end
+        Process(queue),
+    );
+};
+```
