@@ -1,7 +1,7 @@
 {
     "name": "@nestjs-cls/transactional-adapter-drizzle",
     "version": "1.2.4",
-    "description": "A Knex adapter for @nestjs-cls/transactional",
+    "description": "A drizzle-orm adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
     "engines": {
