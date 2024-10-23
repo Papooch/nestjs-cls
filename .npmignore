@@ -14,6 +14,7 @@ gqlschema.gql
 **/*.spec.d.ts
 **/*.spec.js
 **/*.js.map
+**/*.d.ts.map
 
 .eslintrc.js
 .prettierrc
