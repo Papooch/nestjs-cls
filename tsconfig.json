@@ -30,6 +30,9 @@
       "path": "packages/transactional"
     },
     {
+      "path": "packages/transactional-adapters/transactional-adapter-drizzle-orm"
+    },
+    {
       "path": "packages/transactional-adapters/transactional-adapter-knex"
     },
     {
