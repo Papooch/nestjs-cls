@@ -47,6 +47,7 @@ Adapters for the following libraries are available:
 -   TypeORM (see [@nestjs-cls/transactional-adapter-typeorm](./05-typeorm-adapter.md))
 -   MongoDB (see [@nestjs-cls/transactional-adapter-mongodb](./06-mongodb-adapter.md))
 -   MongoDB (see [@nestjs-cls/transactional-adapter-mongoose](./07-mongoose-adapter.md))
+-   Drizzle ORM (see [@nestjs-cls/transactional-adapter-drizzle-orm](./08-drizzle-orm-adapter.md))
 
 Adapters _will not_ be implemented for the following libraries (unless there is a serious demand):
 
