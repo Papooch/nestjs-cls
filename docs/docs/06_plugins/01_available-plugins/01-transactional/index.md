@@ -55,7 +55,7 @@ Adapters _will not_ be implemented for the following libraries (unless there is 
 
 ## Example
 
-For this example, we'll use the `prisma` library and the [`@nestjs-cls/transactional-adapter-prisma` adapter](./01-prisma-adapter.md). Later, you'll learn how to [create your own adapter](10-creating-custom-adapter.md).
+For this example, we'll use the `prisma` library and the [`@nestjs-cls/transactional-adapter-prisma` adapter](./01-prisma-adapter.md). Later, you'll learn how to [create your own adapter](99-creating-custom-adapter.md).
 
 Suppose we already have a `PrismaModule` which provides a `PrismaClient` instance and two other services `UserService` and `AccountService` which we'd like to make transactional.
 
