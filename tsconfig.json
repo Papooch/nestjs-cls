@@ -49,6 +49,9 @@
     },
     {
       "path": "packages/transactional-adapters/transactional-adapter-typeorm"
+    },
+    {
+      "path": "packages/transactional-adapters/transactional-adapter-drizzle"
     }
   ]
 }
