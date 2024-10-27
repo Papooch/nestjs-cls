@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.1.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.1.0...@nestjs-cls/transactional-adapter-drizzle-orm@1.1.1) "@nestjs-cls/transactional-adapter-drizzle-orm" (2024-10-27)<a name="1.1.1"></a>
+
+### Bug Fixes
+
+* update drizzle adapter readme with correct link ([1d684c6](https://github.com/Papooch/nestjs-cls/commits/1d684c6))
+
+
+
+
 ## [1.1.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.0.0...@nestjs-cls/transactional-adapter-drizzle-orm@1.1.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2024-10-27)<a name="1.1.0"></a>
 
 ### Features
