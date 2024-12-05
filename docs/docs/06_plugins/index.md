@@ -18,6 +18,12 @@ ClsModule.forRoot({
 });
 ```
 
+If you need to inject Plugins from an external module, use the `ClsModule.registerPlugins()` registration to import the containing module.
+
+```ts
+ClsModule.registerPlugins([new MyPlugin()]);
+```
+
 ## Available plugins
 
 For a list of plugins managed by the author of `nestjs-cls`, see the [Available Plugins](./01_available-plugins/index.md) page.
