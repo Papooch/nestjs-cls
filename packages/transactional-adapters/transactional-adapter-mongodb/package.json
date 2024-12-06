@@ -47,7 +47,7 @@
     },
     "peerDependencies": {
         "@nestjs-cls/transactional": "workspace:^2.4.2",
-        "mongodb": "> 6",
+        "mongodb": ">= 6",
         "nestjs-cls": "workspace:^4.4.1"
     },
     "devDependencies": {
