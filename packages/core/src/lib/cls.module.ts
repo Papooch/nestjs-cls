@@ -40,6 +40,7 @@ import { ClsPluginManager } from './plugin/cls-plugin-manager';
 
 import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
 import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';
+import { ClsPlugin } from './plugin/cls-plugin.interface';
 
 const clsServiceProvider: ValueProvider<ClsService> = {
     provide: ClsService,
@@ -189,6 +190,18 @@ export class ClsModule implements NestModule {
             providers: [...providers, proxyProvider],
             exports: [...commonProviders, proxyProvider.provide],
             global: options.global,
+        };
+    }
+
+    /**
+     * Registers the given Plugins the module along with `ClsService`.
+     */
+    static registerPlugins(plugins: ClsPlugin[]): DynamicModule {
+        return {
+            module: ClsModule,
+            imports: ClsPluginManager.registerPlugins(plugins),
+            providers: commonProviders,
+            exports: commonProviders,
         };
     }
 
