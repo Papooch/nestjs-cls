@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [4.5.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.4.1...nestjs-cls@4.5.0) "nestjs-cls" (2024-12-07)<a name="4.5.0"></a>
+
+### Features
+
+* **core**: adds ClsModule.registerPlugins to inject Plugins from an external module (#192) ([11c40a0](https://github.com/Papooch/nestjs-cls/commits/11c40a0))
+
+
+
+
 ## [4.4.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.4.0...nestjs-cls@4.4.1) "nestjs-cls" (2024-08-06)<a name="4.4.1"></a>
 
 ### Bug Fixes
