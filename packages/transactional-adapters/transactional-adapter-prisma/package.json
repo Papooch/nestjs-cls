@@ -49,7 +49,7 @@
         "@nestjs-cls/transactional": "workspace:^2.4.3",
         "@prisma/client": "> 4 < 6",
         "nestjs-cls": "workspace:^4.5.0",
-        "prisma": "> 4 < 6"
+        "prisma": "> 4 < 7"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.0.2",
