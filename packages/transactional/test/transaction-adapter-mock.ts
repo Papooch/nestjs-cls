@@ -1,14 +1,40 @@
 import { TransactionalAdapter } from '../src/lib/interfaces';
 
 export class MockDbClient {
+    private finished = false;
     private _operations: string[] = [];
     get operations() {
         return this._operations;
     }
 
     async query(query: string) {
+        if (this.finished) {
+            throw new Error('Transaction already finished');
+        }
         this._operations.push(query);
         return { query };
+    }
+
+    async begin(options?: MockTransactionOptions) {
+        let beginQuery = 'BEGIN TRANSACTION;';
+        if (options?.serializable) {
+            beginQuery =
+                'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; ' + beginQuery;
+        }
+        if (options?.sayHello) {
+            beginQuery = '/* Hello */ ' + beginQuery;
+        }
+        await this.query(beginQuery);
+    }
+
+    async commit() {
+        await this.query('COMMIT TRANSACTION;');
+        this.finished = true;
+    }
+
+    async rollback() {
+        await this.query('ROLLBACK TRANSACTION;');
+        this.finished = true;
     }
 }
 
@@ -60,22 +86,13 @@ export class TransactionAdapterMock
         ) => {
             const client = connection.getClient();
             setTxInstance(client);
-            let beginQuery = 'BEGIN TRANSACTION;';
-            if (options?.serializable) {
-                beginQuery =
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; ' +
-                    beginQuery;
-            }
-            if (options?.sayHello) {
-                beginQuery = '/* Hello */ ' + beginQuery;
-            }
-            await client.query(beginQuery);
+            await client.begin(options);
             try {
                 const result = await fn();
-                await client.query('COMMIT TRANSACTION;');
+                await client.commit();
                 return result;
             } catch (e) {
-                await client.query('ROLLBACK TRANSACTION;');
+                await client.rollback();
                 throw e;
             }
         },
