@@ -17,13 +17,19 @@ const prisma = new PrismaClient();
 const customPrismaClient = prisma.$extends({
     model: {
         user: {
-            async createWithEmail(name: string) {
-                return await prisma.user.create({
+            async createWithEmail(
+                this: (typeof customPrismaClient)['user'],
+                name: string,
+            ) {
+                return await this.create({
                     data: { name: name, email: `${name}@email.com` },
                 });
             },
-            async getById(id: number) {
-                return await prisma.user.findUnique({ where: { id } });
+            async getById(
+                this: (typeof customPrismaClient)['user'],
+                id: number,
+            ) {
+                return await this.findUnique({ where: { id } });
             },
         },
     },
