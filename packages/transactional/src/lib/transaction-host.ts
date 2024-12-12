@@ -44,10 +44,8 @@ export class TransactionHost<TAdapter = never> {
         if (!this.cls.isActive()) {
             return this._options.getFallbackInstance();
         }
-        return (
-            this.cls.get(this.transactionInstanceSymbol) ??
-            this._options.getFallbackInstance()
-        );
+        return (this.cls.get(this.transactionInstanceSymbol) ??
+            this._options.getFallbackInstance()) as TTxFromAdapter<TAdapter>;
     }
 
     /**
@@ -149,7 +147,7 @@ export class TransactionHost<TAdapter = never> {
                             `Transaction options are ignored because a transaction is already active and the propagation mode is ${propagation} (for method ${fnName}).`,
                         );
                     }
-                    return fn();
+                    return this.cls.run({ ifNested: 'inherit' }, fn);
                 } else {
                     return this.runWithTransaction(options, fn);
                 }
