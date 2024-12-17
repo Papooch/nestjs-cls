@@ -62,6 +62,11 @@ class NestedTransactionsService {
     async withNeverPropagation(num: number) {
         return this.calledService.doWork(num);
     }
+
+    @Transactional(Propagation.Supports)
+    async withSupportsPropagation(num: number) {
+        return this.calledService.doWork(num);
+    }
 }
 
 @Injectable()
@@ -100,6 +105,10 @@ class CallingServiceWithoutTransaction {
         await this.calledService.doWork(11);
         await this.nested.withNeverPropagation(12);
     }
+    async supportsPropagation() {
+        await this.calledService.doWork(13);
+        await this.nested.withSupportsPropagation(14);
+    }
 }
 
 @Injectable()
@@ -128,6 +137,10 @@ class CallingServiceWithTransaction extends CallingServiceWithoutTransaction {
     neverPropagation(): Promise<void> {
         return super.neverPropagation();
     }
+    @Transactional()
+    supportsPropagation(): Promise<void> {
+        return super.supportsPropagation();
+    }
 
     @Transactional<TransactionAdapterMock>(Propagation.NotSupported, {
         serializable: true,
@@ -145,6 +158,7 @@ class CallingServiceWithTransaction extends CallingServiceWithoutTransaction {
                 await this.defaultPropagationWithOptions(13);
                 await this.calledService.doWork(14);
                 await this.mandatoryPropagationWithOptions(15);
+                await this.supportsPropagationWithOptions(16);
                 throw new Error('Bad thing');
             },
         );
@@ -169,6 +183,13 @@ class CallingServiceWithTransaction extends CallingServiceWithoutTransaction {
     })
     private async mandatoryPropagationWithOptions(num: number) {
         return this.nested.withRequiredPropagation(num);
+    }
+
+    @Transactional<TransactionAdapterMock>(Propagation.Supports, {
+        serializable: true,
+    })
+    private async supportsPropagationWithOptions(num: number) {
+        return this.nested.withSupportsPropagation(num);
     }
 }
 
@@ -263,6 +284,11 @@ describe('Propagation', () => {
             const queries = mockDbConnection.getClientsQueries();
             expect(queries).toEqual([['SELECT 11'], ['SELECT 12']]);
         });
+        it('should not start a transaction in SUPPORTS mode', async () => {
+            await withoutTx.supportsPropagation();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([['SELECT 13'], ['SELECT 14']]);
+        });
     });
 
     describe('when run in an existing transaction', () => {
@@ -327,6 +353,18 @@ describe('Propagation', () => {
                 ['BEGIN TRANSACTION;', 'SELECT 11', 'ROLLBACK TRANSACTION;'],
             ]);
         });
+        it('should re-use the existing transaction in SUPPORTS mode', async () => {
+            await withTx.supportsPropagation();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                [
+                    'BEGIN TRANSACTION;',
+                    'SELECT 13',
+                    'SELECT 14',
+                    'COMMIT TRANSACTION;',
+                ],
+            ]);
+        });
     });
 
     describe('when multiple nested transactions with different options are used', () => {
@@ -347,6 +385,7 @@ describe('Propagation', () => {
                     'SELECT 13',
                     'SELECT 14',
                     'SELECT 15',
+                    'SELECT 16',
                     'ROLLBACK TRANSACTION;',
                 ],
                 ['BEGIN TRANSACTION;', 'SELECT 12', 'COMMIT TRANSACTION;'],
@@ -362,6 +401,10 @@ describe('Propagation', () => {
                 ],
                 [
                     'Transaction options are ignored because the propagation mode is MANDATORY (for method bound mandatoryPropagationWithOptions).',
+                    'TransactionHost',
+                ],
+                [
+                    'Transaction options are ignored because the propagation mode is SUPPORTS (for method bound supportsPropagationWithOptions).',
                     'TransactionHost',
                 ],
             ]);

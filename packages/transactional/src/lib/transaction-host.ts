@@ -177,6 +177,16 @@ export class TransactionHost<TAdapter = never> {
                     throw new TransactionAlreadyActiveError(fnName);
                 }
                 return this.withoutTransaction(fn);
+            case Propagation.Supports:
+                if (this.isTransactionActive()) {
+                    if (isNotEmpty(options)) {
+                        this.logger.warn(
+                            `Transaction options are ignored because the propagation mode is ${propagation} (for method ${fnName}).`,
+                        );
+                    }
+                    return fn();
+                }
+                return this.withoutTransaction(fn);
             default:
                 throw new TransactionPropagationError(
                     `Unknown propagation mode ${propagation}`,
