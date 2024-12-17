@@ -22,6 +22,10 @@ export enum Propagation {
      * Run without a transaction, throw an exception if one already exists.
      */
     Never = 'NEVER',
+    /**
+     * Reuse the existing transaction or continue without a transaction if none exists.
+     */
+    Supports = 'SUPPORTS',
 }
 
 /**
