@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-knex",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "description": "A Knex adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
@@ -46,7 +46,7 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^2.4.3",
+        "@nestjs-cls/transactional": "workspace:^2.4.4",
         "knex": "^3",
         "nestjs-cls": "workspace:^4.5.0"
     },

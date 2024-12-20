@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.4.4](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.3...@nestjs-cls/transactional@2.4.4) "@nestjs-cls/transactional" (2024-12-20)<a name="2.4.4"></a>
+
+### Bug Fixes
+
+* **transactional**: always inherit cls context ([45d7041](https://github.com/Papooch/nestjs-cls/commits/45d7041))
+* **transactional**: do not reuse parent transaction context (#196) ([45d7041](https://github.com/Papooch/nestjs-cls/commits/45d7041))
+
+
+
+
 ## [2.4.2](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.1...@nestjs-cls/transactional@2.4.2) "@nestjs-cls/transactional" (2024-08-06)<a name="2.4.2"></a>
 
 ### Bug Fixes
