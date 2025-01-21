@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.1.4](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.1.3...@nestjs-cls/transactional-adapter-drizzle-orm@1.1.4) "@nestjs-cls/transactional-adapter-drizzle-orm" (2025-01-21)<a name="1.1.4"></a>
+
+### Dependencies
+
+* update all nestjs-related peer deps to latest (v11) ([915e797](https://github.com/Papooch/nestjs-cls/commits/915e797))
+
+
+
+
 ## [1.1.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.1.0...@nestjs-cls/transactional-adapter-drizzle-orm@1.1.1) "@nestjs-cls/transactional-adapter-drizzle-orm" (2024-10-27)<a name="1.1.1"></a>
 
 ### Bug Fixes

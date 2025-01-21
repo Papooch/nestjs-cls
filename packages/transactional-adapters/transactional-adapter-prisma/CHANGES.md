@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.2.8](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.2.7...@nestjs-cls/transactional-adapter-prisma@1.2.8) "@nestjs-cls/transactional-adapter-prisma" (2025-01-21)<a name="1.2.8"></a>
+
+### Dependencies
+
+* update all nestjs-related peer deps to latest (v11) ([915e797](https://github.com/Papooch/nestjs-cls/commits/915e797))
+
+
+
+
 ## [1.2.6](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.2.5...@nestjs-cls/transactional-adapter-prisma@1.2.6) "@nestjs-cls/transactional-adapter-prisma" (2024-12-10)<a name="1.2.6"></a>
 
 ### Bug Fixes

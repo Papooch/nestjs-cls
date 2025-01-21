@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.1.7](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongodb@1.1.6...@nestjs-cls/transactional-adapter-mongodb@1.1.7) "@nestjs-cls/transactional-adapter-mongodb" (2025-01-21)<a name="1.1.7"></a>
+
+### Dependencies
+
+* update all nestjs-related peer deps to latest (v11) ([915e797](https://github.com/Papooch/nestjs-cls/commits/915e797))
+
+
+
+
 ## [1.1.4](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongodb@1.1.3...@nestjs-cls/transactional-adapter-mongodb@1.1.4) "@nestjs-cls/transactional-adapter-mongodb" (2024-12-06)<a name="1.1.4"></a>
 
 ### Bug Fixes

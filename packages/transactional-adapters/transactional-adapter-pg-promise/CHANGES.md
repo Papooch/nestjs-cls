@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.3.7](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.3.6...@nestjs-cls/transactional-adapter-pg-promise@1.3.7) "@nestjs-cls/transactional-adapter-pg-promise" (2025-01-21)<a name="1.3.7"></a>
+
+### Dependencies
+
+* update all nestjs-related peer deps to latest (v11) ([915e797](https://github.com/Papooch/nestjs-cls/commits/915e797))
+
+
+
+
 ## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.2.0...@nestjs-cls/transactional-adapter-pg-promise@1.3.0) "@nestjs-cls/transactional-adapter-pg-promise" (2024-04-25)<a name="1.3.0"></a>
 
 ### Features

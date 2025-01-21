@@ -2,6 +2,23 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.0.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.5.0...nestjs-cls@5.0.0) "nestjs-cls" (2025-01-21)<a name="5.0.0"></a>
+
+### Breaking Changes
+
+* The default mount point for express middleware has been changed from '*' to '/' ([4542aba](https://github.com/Papooch/nestjs-cls/commits/4542aba))
+
+### Dependencies
+
+* update all nestjs-related peer deps to latest (v11) ([915e797](https://github.com/Papooch/nestjs-cls/commits/915e797))
+
+### Features
+
+* **core**: support NestJS 11 ([4542aba](https://github.com/Papooch/nestjs-cls/commits/4542aba))
+
+
+
+
 ## [4.5.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.4.1...nestjs-cls@4.5.0) "nestjs-cls" (2024-12-07)<a name="4.5.0"></a>
 
 ### Features
