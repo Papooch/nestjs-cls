@@ -17,7 +17,6 @@ import { ClsStore } from '../../cls.options';
  */
 export class ContextClsStoreMap {
     private static readonly contextMap = new WeakMap<any, ClsStore>();
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     private constructor() {}
     static set(context: ExecutionContext, value: ClsStore): void {
         const ctx = this.getContextByType(context);
