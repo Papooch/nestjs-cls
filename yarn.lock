@@ -5182,11 +5182,11 @@ __metadata:
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     drizzle-orm: ^0
@@ -5210,11 +5210,11 @@ __metadata:
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
     sqlite3: "npm:^5.1.7"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     knex: ^3
@@ -5240,11 +5240,11 @@ __metadata:
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     kysely: ^0.27
@@ -5269,11 +5269,11 @@ __metadata:
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
     sqlite3: "npm:^5.1.7"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     mongodb: ">= 6"
@@ -5298,11 +5298,11 @@ __metadata:
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
     sqlite3: "npm:^5.1.7"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     mongoose: "> 8"
@@ -5325,11 +5325,11 @@ __metadata:
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     nestjs-cls: "workspace:^4.5.0"
@@ -5353,11 +5353,11 @@ __metadata:
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     "@prisma/client": "> 4 < 7"
@@ -5380,12 +5380,12 @@ __metadata:
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
     typeorm: "npm:0.3.20"
-    typescript: "npm:5.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^2.4.4"
     nestjs-cls: "workspace:^4.5.0"
@@ -5408,11 +5408,11 @@ __metadata:
     reflect-metadata: "npm:^0.1.13"
     rimraf: "npm:^3.0.2"
     rxjs: "npm:^7.5.5"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
   peerDependencies:
     "@nestjs/common": "> 7.0.0 < 11"
     "@nestjs/core": "> 7.0.0 < 11"
@@ -8551,6 +8551,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async@npm:^3.2.3":
+  version: 3.2.6
+  resolution: "async@npm:3.2.6"
+  checksum: 10c0/36484bb15ceddf07078688d95e27076379cc2f87b10c03b6dd8a83e89475a3c8df5848859dd06a4c95af1e4c16fc973de0171a77f18ea00be899aca2a4f85e70
+  languageName: node
+  linkType: hard
+
 "asynckit@npm:^0.4.0":
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
@@ -9078,7 +9085,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bs-logger@npm:0.x":
+"bs-logger@npm:^0.2.6":
   version: 0.2.6
   resolution: "bs-logger@npm:0.2.6"
   dependencies:
@@ -9349,7 +9356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:4.1.2, chalk@npm:^4.0.0, chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:^4.1.2":
+"chalk@npm:4.1.2, chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
   dependencies:
@@ -11228,6 +11235,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ejs@npm:^3.1.10":
+  version: 3.1.10
+  resolution: "ejs@npm:3.1.10"
+  dependencies:
+    jake: "npm:^10.8.5"
+  bin:
+    ejs: bin/cli.js
+  checksum: 10c0/52eade9e68416ed04f7f92c492183340582a36482836b11eab97b159fcdcfdedc62233a1bf0bf5e5e1851c501f2dca0e2e9afd111db2599e4e7f53ee29429ae1
+  languageName: node
+  linkType: hard
+
 "electron-to-chromium@npm:^1.4.431":
   version: 1.4.461
   resolution: "electron-to-chromium@npm:1.4.461"
@@ -12211,6 +12229,15 @@ __metadata:
   version: 1.0.0
   resolution: "file-uri-to-path@npm:1.0.0"
   checksum: 10c0/3b545e3a341d322d368e880e1c204ef55f1d45cdea65f7efc6c6ce9e0c4d22d802d5629320eb779d006fe59624ac17b0e848d83cc5af7cd101f206cb704f5519
+  languageName: node
+  linkType: hard
+
+"filelist@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "filelist@npm:1.0.4"
+  dependencies:
+    minimatch: "npm:^5.0.1"
+  checksum: 10c0/426b1de3944a3d153b053f1c0ebfd02dccd0308a4f9e832ad220707a6d1f1b3c9784d6cadf6b2f68f09a57565f63ebc7bcdc913ccf8012d834f472c46e596f41
   languageName: node
   linkType: hard
 
@@ -14579,6 +14606,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jake@npm:^10.8.5":
+  version: 10.9.2
+  resolution: "jake@npm:10.9.2"
+  dependencies:
+    async: "npm:^3.2.3"
+    chalk: "npm:^4.0.2"
+    filelist: "npm:^1.0.4"
+    minimatch: "npm:^3.1.2"
+  bin:
+    jake: bin/cli.js
+  checksum: 10c0/c4597b5ed9b6a908252feab296485a4f87cba9e26d6c20e0ca144fb69e0c40203d34a2efddb33b3d297b8bd59605e6c1f44f6221ca1e10e69175ecbf3ff5fe31
+  languageName: node
+  linkType: hard
+
 "jest-changed-files@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-changed-files@npm:29.7.0"
@@ -15479,7 +15520,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.memoize@npm:4.x, lodash.memoize@npm:^4.1.2":
+"lodash.memoize@npm:^4.1.2":
   version: 4.1.2
   resolution: "lodash.memoize@npm:4.1.2"
   checksum: 10c0/c8713e51eccc650422716a14cece1809cfe34bc5ab5e242b7f8b4e2241c2483697b971a604252807689b9dd69bfe3a98852e19a5b89d506b000b4187a1285df8
@@ -15671,7 +15712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-error@npm:1.x, make-error@npm:^1.1.1":
+"make-error@npm:^1.1.1, make-error@npm:^1.3.6":
   version: 1.3.6
   resolution: "make-error@npm:1.3.6"
   checksum: 10c0/171e458d86854c6b3fc46610cfacf0b45149ba043782558c6875d9f42f222124384ad0b468c92e996d815a8a2003817a710c0a160e49c1c394626f76fa45396f
@@ -17325,7 +17366,7 @@ __metadata:
     prism-react-renderer: "npm:^2.3.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    typescript: "npm:5.0"
+    typescript: "npm:5.7.3"
   languageName: unknown
   linkType: soft
 
@@ -17344,7 +17385,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^4.0.0"
     monodeploy: "npm:^5.0.1"
     prettier: "npm:^2.7.1"
-    typescript: "npm:5.0"
+    typescript: "npm:5.7.3"
   languageName: unknown
   linkType: soft
 
@@ -17378,11 +17419,11 @@ __metadata:
     rxjs: "npm:^7.5.5"
     supertest: "npm:^6.2.3"
     superwstest: "npm:^2.0.4"
-    ts-jest: "npm:^29.1.2"
-    ts-loader: "npm:^9.3.0"
-    ts-node: "npm:^10.8.1"
-    tsconfig-paths: "npm:^4.0.0"
-    typescript: "npm:5.0"
+    ts-jest: "npm:^29.2.5"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.7.3"
     ws: "npm:^8.18.0"
   peerDependencies:
     "@nestjs/common": "> 7.0.0 < 11"
@@ -20460,6 +20501,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.6.3":
+  version: 7.6.3
+  resolution: "semver@npm:7.6.3"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
+  languageName: node
+  linkType: hard
+
 "send@npm:0.18.0":
   version: 0.18.0
   resolution: "send@npm:0.18.0"
@@ -20870,7 +20920,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:0.7.4, source-map@npm:^0.7.0":
+"source-map@npm:0.7.4, source-map@npm:^0.7.0, source-map@npm:^0.7.4":
   version: 0.7.4
   resolution: "source-map@npm:0.7.4"
   checksum: 10c0/dc0cf3768fe23c345ea8760487f8c97ef6fca8a73c83cd7c9bf2fde8bc2c34adb9c0824d6feb14bc4f9e37fb522e18af621543f1289038a66ac7586da29aa7dc
@@ -21855,26 +21905,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.1.2":
-  version: 29.1.2
-  resolution: "ts-jest@npm:29.1.2"
+"ts-jest@npm:^29.2.5":
+  version: 29.2.5
+  resolution: "ts-jest@npm:29.2.5"
   dependencies:
-    bs-logger: "npm:0.x"
-    fast-json-stable-stringify: "npm:2.x"
+    bs-logger: "npm:^0.2.6"
+    ejs: "npm:^3.1.10"
+    fast-json-stable-stringify: "npm:^2.1.0"
     jest-util: "npm:^29.0.0"
     json5: "npm:^2.2.3"
-    lodash.memoize: "npm:4.x"
-    make-error: "npm:1.x"
-    semver: "npm:^7.5.3"
-    yargs-parser: "npm:^21.0.1"
+    lodash.memoize: "npm:^4.1.2"
+    make-error: "npm:^1.3.6"
+    semver: "npm:^7.6.3"
+    yargs-parser: "npm:^21.1.1"
   peerDependencies:
     "@babel/core": ">=7.0.0-beta.0 <8"
+    "@jest/transform": ^29.0.0
     "@jest/types": ^29.0.0
     babel-jest: ^29.0.0
     jest: ^29.0.0
     typescript: ">=4.3 <6"
   peerDependenciesMeta:
     "@babel/core":
+      optional: true
+    "@jest/transform":
       optional: true
     "@jest/types":
       optional: true
@@ -21884,28 +21938,29 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/c2f51f0241f89d127d41392decbcb83b5dfd5e57ab9d50220aa7b7e2f9b3f3b07ccdbba33311284df1c41941879e4ddfad44b15a9d0da4b74bd1b98702b729df
+  checksum: 10c0/acb62d168faec073e64b20873b583974ba8acecdb94681164eb346cef82ade8fb481c5b979363e01a97ce4dd1e793baf64d9efd90720bc941ad7fc1c3d6f3f68
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.3.0":
-  version: 9.4.4
-  resolution: "ts-loader@npm:9.4.4"
+"ts-loader@npm:^9.5.2":
+  version: 9.5.2
+  resolution: "ts-loader@npm:9.5.2"
   dependencies:
     chalk: "npm:^4.1.0"
     enhanced-resolve: "npm:^5.0.0"
     micromatch: "npm:^4.0.0"
     semver: "npm:^7.3.4"
+    source-map: "npm:^0.7.4"
   peerDependencies:
     typescript: "*"
     webpack: ^5.0.0
-  checksum: 10c0/11dba0651d7177eba9af38c43c79a28898ffcdfe7e73079fe48716dd93ca6634d3140dbbbc3ac34907be564be2429f0299ebdc7b58ce09482fad54333ccf611c
+  checksum: 10c0/d4f4e67f1365a8c4a929d26148611b6a82a9241bd988863386c9cc0c034eec8b14562206e09540fae38154595e0b3b9520b701b5c83c0e5d743c4016cd91d9f1
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.8.1":
-  version: 10.9.1
-  resolution: "ts-node@npm:10.9.1"
+"ts-node@npm:^10.9.2":
+  version: 10.9.2
+  resolution: "ts-node@npm:10.9.2"
   dependencies:
     "@cspotcode/source-map-support": "npm:^0.8.0"
     "@tsconfig/node10": "npm:^1.0.7"
@@ -21937,7 +21992,7 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: 10c0/95187932fb83f3901e22546bd2feeac7d2feb4f412f42ac3a595f049a23e8dcf70516dffb51866391228ea2dbcfaea039e250fb2bb334d48a86ab2b6aea0ae2d
+  checksum: 10c0/5f29938489f96982a25ba650b64218e83a3357d76f7bede80195c65ab44ad279c8357264639b7abdd5d7e75fc269a83daa0e9c62fd8637a3def67254ecc9ddc2
   languageName: node
   linkType: hard
 
@@ -21963,7 +22018,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:4.2.0, tsconfig-paths@npm:^4.0.0, tsconfig-paths@npm:^4.1.2":
+"tsconfig-paths@npm:4.2.0, tsconfig-paths@npm:^4.0.0, tsconfig-paths@npm:^4.1.2, tsconfig-paths@npm:^4.2.0":
   version: 4.2.0
   resolution: "tsconfig-paths@npm:4.2.0"
   dependencies:
@@ -22221,16 +22276,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.0":
-  version: 5.0.4
-  resolution: "typescript@npm:5.0.4"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/2f5bd1cead194905957cb34e220b1d6ff1662399adef8ec1864f74620922d860ee35b6e50eafb3b636ea6fd437195e454e1146cb630a4236b5095ed7617395c2
-  languageName: node
-  linkType: hard
-
 "typescript@npm:5.1.6":
   version: 5.1.6
   resolution: "typescript@npm:5.1.6"
@@ -22241,13 +22286,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.0#optional!builtin<compat/typescript>":
-  version: 5.0.4
-  resolution: "typescript@patch:typescript@npm%3A5.0.4#optional!builtin<compat/typescript>::version=5.0.4&hash=b5f058"
+"typescript@npm:5.7.3":
+  version: 5.7.3
+  resolution: "typescript@npm:5.7.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/c3f7b80577bddf6fab202a7925131ac733bfc414aec298c2404afcddc7a6f242cfa8395cf2d48192265052e11a7577c27f6e5fac8d8fe6a6602023c83d6b3292
+  checksum: 10c0/b7580d716cf1824736cc6e628ab4cd8b51877408ba2be0869d2866da35ef8366dd6ae9eb9d0851470a39be17cbd61df1126f9e211d8799d764ea7431d5435afa
   languageName: node
   linkType: hard
 
@@ -22258,6 +22303,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/c2bded58ab897a8341fdbb0c1d92ea2362f498cfffebdc8a529d03e15ea2454142dfbf122dabbd9a5cb79b7123790d27def16e11844887d20636226773ed329a
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A5.7.3#optional!builtin<compat/typescript>":
+  version: 5.7.3
+  resolution: "typescript@patch:typescript@npm%3A5.7.3#optional!builtin<compat/typescript>::version=5.7.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/6fd7e0ed3bf23a81246878c613423730c40e8bdbfec4c6e4d7bf1b847cbb39076e56ad5f50aa9d7ebd89877999abaee216002d3f2818885e41c907caaa192cc4
   languageName: node
   linkType: hard
 
@@ -23398,7 +23453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs-parser@npm:21.1.1, yargs-parser@npm:^21.0.1, yargs-parser@npm:^21.1.1":
+"yargs-parser@npm:21.1.1, yargs-parser@npm:^21.1.1":
   version: 21.1.1
   resolution: "yargs-parser@npm:21.1.1"
   checksum: 10c0/f84b5e48169479d2f402239c59f084cfd1c3acc197a05c59b98bab067452e6b3ea46d4dd8ba2985ba7b3d32a343d77df0debd6b343e5dae3da2aab2cdf5886b2
