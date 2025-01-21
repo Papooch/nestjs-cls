@@ -1,6 +1,24 @@
 # Compatibility
 
-The table below outlines the compatibility with some platforms:
+## NestJS-related versions Compatibility Matrix
+
+This table lists the compatibility of major versions of `nestjs-cls` with versions of NestJS and other related packages.
+
+|        `nestjs-cls`        | `<= 4.x`  |   `5.x`   |
+| :------------------------: | :-------: | :-------: |
+|   `@nestjs/core,common`    | `<= 10.x` |  `>= 11`  |
+| `@nestjs/platform-express` | `<= 10.x` |  `>= 11`  |
+| `@nestjs/platform-fastify` | `<= 10.x` |  `>= 11`  |
+|     `@nestjs/graphql`      | `<= 12.x` |  `>= 13`  |
+|         `graphql`          | `<= 16.x` | `>= 16.x` |
+|      `@nestjs/apollo`      | `<= 12.x` | `>= 13.x` |
+|      `@apollo/server`      | `<= 4.x`  | `>= 4.x`  |
+|    `@nestjs/mercurius`     | `<= 12.x` | `>= 13.x` |
+|        `mercurius`         | `<= 13.x` | `>= 16.x` |
+|    `@nestjs/websockets`    | `<= 10.x` | `>= 11.x` |
+|   `@nestjs/platform-ws`    | `<= 10.x` | `>= 11.x` |
+
+The table below outlines the compatibility of different ways of initializing the CLS context with various transports:
 
 |                                                                                                | REST | GQL | WS[\*](#websockets) | Microservices |
 | :--------------------------------------------------------------------------------------------: | :--: | :-: | :-----------------: | :-----------: |
