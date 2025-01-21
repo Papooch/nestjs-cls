@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
-import request from 'superwstest';
+import request, { WSChain } from 'superwstest';
 
 export const expectOkIdsWs =
     (path = '', event = 'hello', data = {}) =>
-    async (app: INestApplication) =>
+    async (app: INestApplication): Promise<WSChain> =>
         request(await app.getUrl())
             .ws(path)
             .sendJson({
@@ -22,8 +22,8 @@ export const expectOkIdsWs =
 
 export const expectErrorIdsWs =
     (path = '', event = 'error', data = {}) =>
-    (app: INestApplication) =>
-        request(app.getHttpServer())
+    async (app: INestApplication): Promise<WSChain> =>
+        request(await app.getUrl())
             .ws(path)
             .sendJson({
                 event,
