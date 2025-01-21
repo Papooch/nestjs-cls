@@ -37,14 +37,16 @@ _I created this library to solve a specific use case, which was limiting access 
 
 _`AsyncLocalStorage` is still fairly new and not many people know of its existence and benefits. Here's a nice [talk from NodeConf](https://youtu.be/R2RMGQhWyCk?t=9742) about the history. I've invested a great deal of my personal time in making the use of it as pleasant as possible._
 
-_While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want fast, use a compiled language._
+_While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want speed, use a compiled language._
 
 _Also, if you use some tracing library (like `otel`), it most likely already uses `async_hooks` under the hood, so you might as well use it to your advantage._
 
 ## Highlights
 
-> **New** Version `4.0` brings support for [Plugins](../06_plugins/index.md) which enable pre-built integrations with other libraries and frameworks. (See [Migration guide](../10_migration-guide/01_v3x-v4x.md) for breaking changes).
+> **New** Version `5.0` adds support for NestJS v11 (See [5.x Migration guide](../10_migration-guide/01_v4x-v5x.md) for breaking changes and the [Version compatibility matrix](../05_considerations/02_compatibility.md#nestjs-related-versions-compatibility-matrix) when performing an update).
 
-> Version `3.0` introduces [_Proxy Providers_](../03_features-and-use-cases/06_proxy-providers.md) as an alternative to the imperative API. (Minor breaking changes were introduced, see [Migration guide](../10_migration-guide/02_v2x-v3x.md)).
+> Version `4.0` brings support for [Plugins](../06_plugins/index.md) which enable pre-built integrations with other libraries and frameworks. (See [4.x Migration guide](../10_migration-guide/02_v3x-v4x.md) for breaking changes).
+
+> Version `3.0` introduces [_Proxy Providers_](../03_features-and-use-cases/06_proxy-providers.md) as an alternative to the imperative API. (Minor breaking changes were introduced, see [3.x Migration guide](../10_migration-guide/03_v2x-v3x.md)).
 
 > Version `2.0` brings advanced [type safety and type inference](../03_features-and-use-cases/05_type-safety-and-type-inference.md). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
