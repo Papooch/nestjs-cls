@@ -77,7 +77,7 @@ describe('Http Express App - Manually bound Middleware in AppModule', () => {
     })
     class TestAppWithManuallyBoundMiddleware implements NestModule {
         configure(consumer: MiddlewareConsumer) {
-            consumer.apply(ClsMiddleware).forRoutes('*');
+            consumer.apply(ClsMiddleware).forRoutes('/');
         }
     }
 
@@ -106,7 +106,7 @@ describe('Http Express App - Manually bound Middleware in AppModule + global pre
     })
     class TestAppWithManuallyBoundMiddleware implements NestModule {
         configure(consumer: MiddlewareConsumer) {
-            consumer.apply(ClsMiddleware).forRoutes('*');
+            consumer.apply(ClsMiddleware).forRoutes('/');
         }
     }
 
