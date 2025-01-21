@@ -78,9 +78,8 @@ describe('@UseCls', () => {
     });
 
     it('calls id generator and setup and uses correct this', async () => {
-        const result = await testClass.startContextWithIdAndSetup(
-            'something else',
-        );
+        const result =
+            await testClass.startContextWithIdAndSetup('something else');
         expect(result).toEqual({
             id: 'the-id',
             value: 'something else',

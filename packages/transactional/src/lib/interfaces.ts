@@ -92,13 +92,10 @@ export interface TransactionalPluginOptions<TConnection, TTx, TOptions> {
     enableTransactionProxy?: boolean;
 }
 
-export type TTxFromAdapter<TAdapter> = TAdapter extends TransactionalAdapter<
-    any,
-    infer TClient,
-    any
->
-    ? TClient
-    : never;
+export type TTxFromAdapter<TAdapter> =
+    TAdapter extends TransactionalAdapter<any, infer TClient, any>
+        ? TClient
+        : never;
 
 export type TOptionsFromAdapter<TAdapter> =
     TAdapter extends TransactionalAdapter<any, any, infer TOptions>

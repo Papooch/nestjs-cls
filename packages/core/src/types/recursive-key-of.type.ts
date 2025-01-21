@@ -38,12 +38,12 @@ export type RecursiveKeyOf<
 > = T extends TerminalType
     ? never
     : IsAny<T> extends true
-    ? never
-    : {
-          [K in keyof T & string]: [Prefix] extends [never]
-              ? K | RecursiveKeyOf<T[K], K>
-              : `${Prefix}.${K}` | RecursiveKeyOf<T[K], `${Prefix}.${K}`>;
-      }[keyof T & string];
+      ? never
+      : {
+            [K in keyof T & string]: [Prefix] extends [never]
+                ? K | RecursiveKeyOf<T[K], K>
+                : `${Prefix}.${K}` | RecursiveKeyOf<T[K], `${Prefix}.${K}`>;
+        }[keyof T & string];
 
 /**
  * Get the type of a nested property with dot syntax
@@ -64,5 +64,5 @@ export type DeepPropertyType<
             : never
         : never
     : P extends keyof TT
-    ? TT[P]
-    : never;
+      ? TT[P]
+      : never;

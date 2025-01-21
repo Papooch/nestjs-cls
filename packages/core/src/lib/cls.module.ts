@@ -86,7 +86,7 @@ export class ClsModule implements NestModule {
         try {
             this.moduleRef.get(CLS_MODULE_OPTIONS);
             return true;
-        } catch (e) {
+        } catch (_e) {
             return false;
         }
     }

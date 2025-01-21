@@ -46,9 +46,7 @@ class CalledService {
 
 @Injectable()
 class CallingService {
-    constructor(
-        private readonly calledService: CalledService,
-    ) {}
+    constructor(private readonly calledService: CalledService) {}
 
     @Transactional<TransactionAdapterMock>({ serializable: true })
     @MetadataDefiningDecorator()
