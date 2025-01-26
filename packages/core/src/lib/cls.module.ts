@@ -72,7 +72,7 @@ export class ClsModule implements NestModule {
         const adapter = this.adapterHost.httpAdapter;
         let mountPoint = '/';
         if (adapter.constructor.name === 'FastifyAdapter') {
-            mountPoint = '(.*)';
+            mountPoint = '{*path}';
         }
 
         if (options.mount) {
