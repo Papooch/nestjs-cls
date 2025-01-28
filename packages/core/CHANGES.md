@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.0.0...nestjs-cls@5.0.1) "nestjs-cls" (2025-01-28)<a name="5.0.1"></a>
+
+### Bug Fixes
+
+* **core**: update fastify route pattern to support latest syntax (#206) ([dd87a33](https://github.com/Papooch/nestjs-cls/commits/dd87a33))
+
+
+
+
 ## [5.0.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@4.5.0...nestjs-cls@5.0.0) "nestjs-cls" (2025-01-21)<a name="5.0.0"></a>
 
 ### Breaking Changes
