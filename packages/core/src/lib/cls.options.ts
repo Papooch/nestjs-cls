@@ -49,6 +49,8 @@ export interface ClsModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
     /**
      * whether to make the module global, so you don't need
      * to import `ClsModule.forFeature()` in other modules
+     *
+     * Default: `false`
      */
     global?: boolean;
 
@@ -81,8 +83,10 @@ export class ClsContextOptions {
 export class ClsInitializerCommonOptions {
     /**
      * whether to automatically generate request ids
+     *
+     * Default: `false`
      */
-    generateId?: boolean; // default false
+    generateId? = false;
 
     /**
      * Whether to resolve proxy providers as a part
@@ -104,8 +108,10 @@ export class ClsInitializerCommonOptions {
 export class ClsMiddlewareOptions extends ClsInitializerCommonOptions {
     /**
      * whether to mount the middleware to every route
+     *
+     * Default: `false`
      */
-    mount?: boolean; // default false
+    mount? = false;
 
     /**
      * the function to generate request ids for the CLS context
@@ -144,8 +150,10 @@ export class ClsMiddlewareOptions extends ClsInitializerCommonOptions {
 export class ClsGuardOptions extends ClsInitializerCommonOptions {
     /**
      * whether to mount the guard globally
+     *
+     * Default: `false`
      */
-    mount?: boolean; // default false
+    mount? = false;
 
     /**
      * the function to generate request ids inside the guard
@@ -161,13 +169,23 @@ export class ClsGuardOptions extends ClsInitializerCommonOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
+
+    /**
+     * Whether to store the ExecutionContext object to the CLS
+     * It will be available under the CLS_CTX key
+     *
+     * Default: `true`
+     */
+    saveCtx? = true;
 }
 
 export class ClsInterceptorOptions extends ClsInitializerCommonOptions {
     /**
      * whether to mount the interceptor globally
+     *
+     * Default: `false`
      */
-    mount?: boolean; // default false
+    mount? = false;
 
     /**
      * the function to generate request ids inside the interceptor
@@ -183,6 +201,14 @@ export class ClsInterceptorOptions extends ClsInitializerCommonOptions {
         cls: ClsService,
         context: ExecutionContext,
     ) => void | Promise<void>;
+
+    /**
+     * Whether to store the ExecutionContext object to the CLS
+     * It will be available under the CLS_CTX key
+     *
+     * Default: `true`
+     */
+    saveCtx? = true;
 }
 
 export class ClsDecoratorOptions<

@@ -5,7 +5,7 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_ID } from '../cls.constants';
+import { CLS_CTX, CLS_ID } from '../cls.constants';
 import { CLS_GUARD_OPTIONS } from '../cls.internal-constants';
 import { ClsGuardOptions } from '../cls.options';
 import { ContextClsStoreMap } from './utils/context-cls-store-map';
@@ -33,6 +33,9 @@ export class ClsGuard implements CanActivate {
         if (this.options.generateId) {
             const id = await this.options.idGenerator?.(context);
             cls.setIfUndefined<any>(CLS_ID, id);
+        }
+        if (this.options.saveCtx) {
+            cls.set<ExecutionContext>(CLS_CTX, context);
         }
         if (this.options.setup) {
             await this.options.setup(cls, context);
