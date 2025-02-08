@@ -2,6 +2,22 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.1.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.0.1...nestjs-cls@5.1.0) "nestjs-cls" (2025-02-08)<a name="5.1.0"></a>
+
+### Bug Fixes
+
+* **core**: allow accessing constructor on strict proxy providers (#211) ([bf0f871](https://github.com/Papooch/nestjs-cls/commits/bf0f871))
+
+### Features
+
+* **core**: add saveCtx option in enhancer setup
+
+This allows storing the ExecutionContext in the CLS (enabled by default) ([4dcda62](https://github.com/Papooch/nestjs-cls/commits/4dcda62))
+* **core**: add `saveCtx` option in enhancer setup (#212) ([4dcda62](https://github.com/Papooch/nestjs-cls/commits/4dcda62))
+
+
+
+
 ## [5.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.0.0...nestjs-cls@5.0.1) "nestjs-cls" (2025-01-28)<a name="5.0.1"></a>
 
 ### Bug Fixes
