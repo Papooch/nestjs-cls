@@ -1,6 +1,7 @@
 import {
     CanActivate,
     DynamicModule,
+    Global,
     Logger,
     MiddlewareConsumer,
     Module,
@@ -8,7 +9,6 @@ import {
     NestModule,
     Provider,
     Type,
-    ValueProvider,
 } from '@nestjs/common';
 import {
     APP_GUARD,
@@ -16,58 +16,42 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { ClsGuard } from './cls-initializers/cls.guard';
-import { ClsInterceptor } from './cls-initializers/cls.interceptor';
-import { ClsMiddleware } from './cls-initializers/cls.middleware';
-import { ClsServiceManager } from './cls-service-manager';
+import { ClsGuard } from '../cls-initializers/cls.guard';
+import { ClsInterceptor } from '../cls-initializers/cls.interceptor';
+import { ClsMiddleware } from '../cls-initializers/cls.middleware';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
     CLS_MIDDLEWARE_OPTIONS,
     CLS_MODULE_OPTIONS,
-    CLS_REQ,
-    CLS_RES,
-} from './cls.constants';
+} from '../cls.constants';
 import {
     ClsGuardOptions,
     ClsInterceptorOptions,
     ClsMiddlewareOptions,
     ClsModuleAsyncOptions,
     ClsModuleOptions,
-} from './cls.options';
-import { ClsService } from './cls.service';
-import { ClsPluginManager } from './plugin/cls-plugin-manager';
+} from '../cls.options';
+import { ClsPluginManager } from '../plugin/cls-plugin-manager';
+import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
+import { ClsCommonModule } from './cls-common.module';
 
-import { ProxyProviderManager } from './proxy-provider/proxy-provider-manager';
-import { ClsModuleProxyProviderOptions } from './proxy-provider/proxy-provider.interfaces';
-import { ClsPlugin } from './plugin/cls-plugin.interface';
-
-const clsServiceProvider: ValueProvider<ClsService> = {
-    provide: ClsService,
-    useValue: ClsServiceManager.getClsService(),
-};
-
-const commonProviders = [
-    clsServiceProvider,
-    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ),
-    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES),
-];
-
+/**
+ * This module contains logic for configuring the CLS module in the root.
+ */
+@Global()
 @Module({
-    providers: [...commonProviders],
-    exports: [...commonProviders],
+    imports: [ClsCommonModule],
 })
-export class ClsModule implements NestModule {
+export class ClsRootModule implements NestModule {
+    private static logger = new Logger('ClsModule');
+
     constructor(
         private readonly adapterHost: HttpAdapterHost,
         private readonly moduleRef: ModuleRef,
     ) {}
 
-    private static logger = new Logger(ClsModule.name);
-
     configure(consumer: MiddlewareConsumer) {
-        if (!this.isForRootImport()) return;
-
         const options = this.moduleRef.get(CLS_MIDDLEWARE_OPTIONS);
         const adapter = this.adapterHost.httpAdapter;
         let mountPoint = '/';
@@ -76,25 +60,17 @@ export class ClsModule implements NestModule {
         }
 
         if (options.mount) {
-            ClsModule.logger.debug('Mounting ClsMiddleware to ' + mountPoint);
+            ClsRootModule.logger.debug(
+                'Mounting ClsMiddleware to ' + mountPoint,
+            );
             consumer.apply(ClsMiddleware).forRoutes(mountPoint);
         }
     }
 
-    private isForRootImport() {
-        // CLS_MODULE_OPTIONS is only available if the module is imported with `forRoot/Async`
-        try {
-            this.moduleRef.get(CLS_MODULE_OPTIONS);
-            return true;
-        } catch (_e) {
-            return false;
-        }
-    }
-
     /**
-     * Configures the CLS module in the root.
+     * @internal
+     * Called by ClsModule.forRoot.
      *
-     * Provides the `ClsService` for injection.
      */
     static forRoot(options?: ClsModuleOptions): DynamicModule {
         options = { ...new ClsModuleOptions(), ...options };
@@ -105,7 +81,7 @@ export class ClsModule implements NestModule {
         );
 
         return {
-            module: ClsModule,
+            module: ClsRootModule,
             imports: ClsPluginManager.registerPlugins(options.plugins),
             providers: [
                 {
@@ -116,14 +92,13 @@ export class ClsModule implements NestModule {
                 ...proxyProviders,
             ],
             exports: [...exports, ...proxyProviders.map((p) => p.provide)],
-            global: options.global,
+            global: false,
         };
     }
 
     /**
-     * Configures the CLS module in the root with asynchronously provided configuration.
-     *
-     * Provides the `ClsService` for injection.
+     * @internal
+     * Called by ClsModule.forRootAsync.
      */
     static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
         const { providers, exports } = this.getProviders();
@@ -133,7 +108,7 @@ export class ClsModule implements NestModule {
         );
 
         return {
-            module: ClsModule,
+            module: ClsRootModule,
             imports: [
                 ...(asyncOptions.imports ?? []),
                 ...ClsPluginManager.registerPlugins(asyncOptions.plugins),
@@ -148,66 +123,15 @@ export class ClsModule implements NestModule {
                 ...proxyProviders,
             ],
             exports: [...exports, ...proxyProviders.map((p) => p.provide)],
-            global: asyncOptions.global,
+            global: false,
         };
     }
 
     /**
-     * Registers the `ClsService` provider in the module
+     * @internal
+     * Called by this modules's forRoot/Async abd ClsModule.forFeature
      */
-    static forFeature(): DynamicModule;
-    /**
-     * Registers the given Class proxy providers in the module along with `ClsService`.
-     */
-    static forFeature(...proxyProviderClasses: Array<Type>): DynamicModule;
-    static forFeature(...proxyProviderClasses: Array<Type>): DynamicModule {
-        const proxyProviders =
-            this.createProxyClassProviders(proxyProviderClasses);
-        const providers = [...commonProviders];
-        return {
-            module: ClsModule,
-            providers: [...providers, ...proxyProviders],
-            exports: [...providers, ...proxyProviders.map((p) => p.provide)],
-        };
-    }
-
-    /**
-     * Registers the given Class or Factory proxy providers in the module along with `ClsService`.
-     *
-     * If used with `global: true`, makes the proxy provider available globally.
-     */
-    static forFeatureAsync(
-        options: ClsModuleProxyProviderOptions,
-    ): DynamicModule {
-        const proxyProvider = ProxyProviderManager.createProxyProvider(options);
-        const providers = [
-            ...commonProviders,
-            ...(options.extraProviders ?? []),
-        ];
-        return {
-            module: ClsModule,
-            imports: options.imports ?? [],
-            providers: [...providers, proxyProvider],
-            exports: [...commonProviders, proxyProvider.provide],
-            global: options.global,
-        };
-    }
-
-    /**
-     * Registers the given Plugins the module along with `ClsService`.
-     */
-    static registerPlugins(plugins: ClsPlugin[]): DynamicModule {
-        return {
-            module: ClsModule,
-            imports: ClsPluginManager.registerPlugins(plugins),
-            providers: commonProviders,
-            exports: commonProviders,
-        };
-    }
-
-    private static createProxyClassProviders(
-        proxyProviderClasses?: Array<Type>,
-    ) {
+    static createProxyClassProviders(proxyProviderClasses?: Array<Type>) {
         return (
             proxyProviderClasses?.map((providerClass) =>
                 ProxyProviderManager.createProxyProvider({
@@ -219,7 +143,6 @@ export class ClsModule implements NestModule {
 
     private static getProviders() {
         const providers: Provider[] = [
-            ...commonProviders,
             {
                 provide: CLS_MIDDLEWARE_OPTIONS,
                 inject: [CLS_MODULE_OPTIONS],
@@ -287,7 +210,9 @@ export class ClsModule implements NestModule {
 
     private static clsGuardFactory(options: ClsGuardOptions): CanActivate {
         if (options.mount) {
-            ClsModule.logger.debug('ClsGuard will be automatically mounted');
+            ClsRootModule.logger.debug(
+                'ClsGuard will be automatically mounted',
+            );
             return new ClsGuard(options);
         }
         return {
@@ -299,7 +224,7 @@ export class ClsModule implements NestModule {
         options: ClsInterceptorOptions,
     ): NestInterceptor {
         if (options.mount) {
-            ClsModule.logger.debug(
+            ClsRootModule.logger.debug(
                 'ClsInterceptor will be automatically mounted',
             );
             return new ClsInterceptor(options);

@@ -5,7 +5,7 @@ export * from './lib/cls-initializers/use-cls.decorator';
 export * from './lib/cls-initializers/utils/context-cls-store-map';
 export * from './lib/cls-service-manager';
 export * from './lib/cls.constants';
-export * from './lib/cls.module';
+export * from './lib/cls-module/cls.module';
 export * from './lib/cls.options';
 export * from './lib/cls.service';
 export * from './lib/inject-cls.decorator';
