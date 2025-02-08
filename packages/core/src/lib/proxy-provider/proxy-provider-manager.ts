@@ -89,8 +89,11 @@ export class ProxyProviderManager {
         return proxyProvider;
     }
 
-    static createProxyProviderFromExistingKey(providerKey: symbol | string) {
-        const proxy = this.createProxy(providerKey);
+    static createProxyProviderFromExistingKey(
+        providerKey: symbol | string,
+        options?: ProxyOptions,
+    ) {
+        const proxy = this.createProxy(providerKey, options);
         const proxyProvider: ValueProvider = {
             provide: providerKey,
             useValue: proxy,

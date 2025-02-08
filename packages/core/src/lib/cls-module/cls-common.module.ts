@@ -1,6 +1,6 @@
 import { Module, ValueProvider } from '@nestjs/common';
 import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_REQ, CLS_RES } from '../cls.constants';
+import { CLS_CTX, CLS_REQ, CLS_RES } from '../cls.constants';
 import { ClsService } from '../cls.service';
 
 import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
@@ -12,8 +12,15 @@ const clsServiceProvider: ValueProvider<ClsService> = {
 
 const commonProviders = [
     clsServiceProvider,
-    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ),
-    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES),
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_REQ, {
+        strict: true,
+    }),
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_RES, {
+        strict: true,
+    }),
+    ProxyProviderManager.createProxyProviderFromExistingKey(CLS_CTX, {
+        strict: true,
+    }),
 ];
 
 /**

@@ -1,13 +1,9 @@
 import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
 import { ClsServiceManager } from '../cls-service-manager';
-import {
-    CLS_ID,
-    CLS_MIDDLEWARE_OPTIONS,
-    CLS_REQ,
-    CLS_RES,
-} from '../cls.constants';
+import { CLS_ID, CLS_REQ, CLS_RES } from '../cls.constants';
 import { ClsMiddlewareOptions } from '../cls.options';
 import { ContextClsStoreMap } from './utils/context-cls-store-map';
+import { CLS_MIDDLEWARE_OPTIONS } from '../cls.internal-constants';
 
 @Injectable()
 export class ClsMiddleware implements NestMiddleware {

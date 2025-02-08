@@ -71,7 +71,7 @@ export class UserInterceptor implements NestInterceptor {
 
 It is also possible to inject other providers into the Proxy Provider to avoid having to do this in a separate component.
 
-For the convenience, the `CLS_REQ` and `CLS_RES` are also made into Proxy Providers and are exported from the `ClsModule`.
+For the convenience, the `CLS_REQ` and `CLS_RES` (if enabled) and `CLS_CTX` (when an enhancer is used) are also made into Proxy Providers and are exported from the `ClsModule`.
 
 ```ts title=user-with-rile.proxy.ts
 @InjectableProxy()
@@ -104,6 +104,8 @@ ClsModule.forFeatureAsync({
 :::tip
 
 Using `@Inject(CLS_REQ)`, you can entirely replace `@Inject(REQUEST)` in REQUEST-SCOPED providers to turn them into CLS-enabled singletons without changing the implementation.
+
+Also `@INJECT(CLS_CTX)` can be used to replace `@Inject(CONTEXT)`.
 
 :::
 
@@ -305,6 +307,6 @@ In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider
 
 ### Limited support for injecting Proxy Providers into each other
 
-Apart from the built-in `CLS_REQ` and `CLS_RES` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
+Apart from the built-in `CLS_REQ` and `CLS_RES` and `CLS_CTX` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
 
 There is an open [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming, but until then, refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique. You can also leverage the [strict](#strict-proxy-providers) mode to find out which Proxy Providers are not yet resolved.
