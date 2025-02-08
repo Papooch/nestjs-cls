@@ -5,7 +5,8 @@ import {
     Injectable,
 } from '@nestjs/common';
 import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_GUARD_OPTIONS, CLS_ID } from '../cls.constants';
+import { CLS_ID } from '../cls.constants';
+import { CLS_GUARD_OPTIONS } from '../cls.internal-constants';
 import { ClsGuardOptions } from '../cls.options';
 import { ContextClsStoreMap } from './utils/context-cls-store-map';
 

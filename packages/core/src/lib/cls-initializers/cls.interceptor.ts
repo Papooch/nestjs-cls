@@ -7,7 +7,8 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_ID, CLS_INTERCEPTOR_OPTIONS } from '../cls.constants';
+import { CLS_ID } from '../cls.constants';
+import { CLS_INTERCEPTOR_OPTIONS } from '../cls.internal-constants';
 import { ClsInterceptorOptions } from '../cls.options';
 import { ContextClsStoreMap } from './utils/context-cls-store-map';
 

@@ -24,7 +24,7 @@ import {
     CLS_INTERCEPTOR_OPTIONS,
     CLS_MIDDLEWARE_OPTIONS,
     CLS_MODULE_OPTIONS,
-} from '../cls.constants';
+} from '../cls.internal-constants';
 import {
     ClsGuardOptions,
     ClsInterceptorOptions,
