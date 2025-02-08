@@ -215,6 +215,8 @@ export class ProxyProviderManager {
 }
 
 const allowedPropertyAccess = new Set([
+    // used by various libraries that scan existing providers (e.g. GraphQL)
+    'constructor',
     // used by Nest to check for async providers
     'then',
     // checked by Nest to trigger lifecycle hooks
