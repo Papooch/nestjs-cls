@@ -3,6 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
 import { globalClsService } from '../cls-service.globals';
 import { getProxyProviderSymbol } from './get-proxy-provider-symbol';
+import { InjectableProxyMetadata } from './injectable-proxy.decorator';
 import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
     ProxyProviderNotDecoratedException,
@@ -23,7 +24,6 @@ import {
     ProxyFactoryProvider,
     ProxyProvider,
 } from './proxy-provider.interfaces';
-import { InjectableProxyMetadata } from './injectable-proxy.decorator';
 
 type ProxyOptions = {
     type?: ClsProxyFactoryReturnType;
@@ -60,32 +60,38 @@ export class ProxyProviderManager {
             strict,
             type: (options as ClsModuleProxyFactoryProviderOptions).type,
         });
-        const proxyProvider: FactoryProvider = {
+
+        let proxyProvider: FactoryProvider;
+        if (isProxyClassProviderOptions(options)) {
+            proxyProvider = {
             provide: providerToken,
-            inject: [
-                ModuleRef,
-                ...((options as ClsModuleProxyFactoryProviderOptions).inject ??
-                    []),
-            ],
-            useFactory: (moduleRef: ModuleRef, ...injected: any[]) => {
-                let providerOptions: ProxyProvider;
-                if (isProxyClassProviderOptions(options)) {
-                    providerOptions = {
+                inject: [ModuleRef],
+                useFactory: (moduleRef: ModuleRef) => {
+                    const providerOptions: ProxyClassProvider = {
                         moduleRef,
                         token: options.provide,
                         useClass: options.useClass,
                     };
+
+                    this.proxyProviderMap.set(providerSymbol, providerOptions);
+                    return proxy;
+                },
+                    };
                 } else {
-                    providerOptions = {
+            proxyProvider = {
+                provide: providerToken,
+                inject: options.inject ?? [],
+                useFactory: (...injected: any[]) => {
+                    const providerOptions: ProxyFactoryProvider = {
                         injected,
                         token: options.provide,
                         useFactory: options.useFactory,
                     };
-                }
                 this.proxyProviderMap.set(providerSymbol, providerOptions);
                 return proxy;
             },
         };
+        }
         return proxyProvider;
     }
 
