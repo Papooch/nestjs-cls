@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-kysely",
-    "version": "1.2.10",
+    "version": "1.2.11",
     "description": "A Kysely adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
@@ -46,9 +46,9 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^2.4.8",
+        "@nestjs-cls/transactional": "workspace:^2.4.9",
         "kysely": "^0.27",
-        "nestjs-cls": "workspace:^5.1.1"
+        "nestjs-cls": "workspace:^5.1.2"
     },
     "devDependencies": {
         "@nestjs/cli": "^11.0.2",

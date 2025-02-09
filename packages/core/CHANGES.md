@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.1.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.1.1...nestjs-cls@5.1.2) "nestjs-cls" (2025-02-09)<a name="5.1.2"></a>
+
+### Bug Fixes
+
+* **core**: allow all Object.prototype key access on strict providers (#214) ([e938c6d](https://github.com/Papooch/nestjs-cls/commits/e938c6d))
+
+
+
+
 ## [5.1.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.1.0...nestjs-cls@5.1.1) "nestjs-cls" (2025-02-09)<a name="5.1.1"></a>
 
 ### Bug Fixes
