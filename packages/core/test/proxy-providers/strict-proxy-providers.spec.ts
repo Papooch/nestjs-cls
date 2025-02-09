@@ -73,7 +73,7 @@ describe('resolveProxyProviders - strict mode', () => {
 
                 await cls.run(async () => {
                     expect(() => app.get(ProviderToken).something).toThrowError(
-                        `Cannot access the property \"something\" on the proxy provider ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call \"await cls.resolveProxyProviders()\" before accessing the proxy provider`,
+                        `Cannot access the property \"something\" on the Proxy provider ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call \"await cls.resolveProxyProviders()\" before accessing the Proxy provider`,
                     );
                 });
             });
@@ -106,7 +106,7 @@ describe('resolveProxyProviders - strict mode', () => {
 
             await cls.run(async () => {
                 expect(() => app.get(FunctionProxyToken)()).toThrowError(
-                    `Cannot call the proxy provider ${FunctionProxyToken.description} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the proxy provider.`,
+                    `Cannot call the Proxy provider ${FunctionProxyToken.description} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the Proxy provider.`,
                 );
             });
         });

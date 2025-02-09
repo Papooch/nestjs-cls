@@ -1,5 +1,6 @@
 import { Type } from '@nestjs/common';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
+import { defaultProxyProviderTokens } from './proxy-provider.constants';
 
 export class UnknownProxyDependenciesException extends Error {
     name = UnknownProxyDependenciesException.name;
@@ -72,17 +73,29 @@ export class ProxyProviderNotResolvedException extends Error {
     name = ProxyProviderNotResolvedException.name;
 
     static create(providerSymbol: symbol | string, propName?: string) {
+        const isDefaultProxyProvider = defaultProxyProviderTokens.has(
+            providerSymbol as any,
+        );
         const providerName =
             typeof providerSymbol == 'string'
                 ? providerSymbol
-                : providerSymbol.description;
+                : (providerSymbol.description ?? 'unknown');
         let message: string;
         if (propName) {
-            message = `Cannot access the property "${propName}" on the proxy provider`;
+            message = `Cannot access the property "${propName}" on the Proxy provider`;
         } else {
-            message = 'Cannot call the proxy provider';
+            message = 'Cannot call the Proxy provider';
         }
-        message += ` ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the proxy provider.`;
+        if (isDefaultProxyProvider) {
+            message += ` ${providerName} because because the value for ${providerName} does not exist in the CLS. Make sure to enable the "${this.formatEnableOptionName(providerName)}" option in the enhancer options in the "ClsModule.forRoot()" method.`;
+        } else {
+            message += ` ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the Proxy provider.`;
+        }
         return new this(message);
+    }
+
+    private static formatEnableOptionName(providerName: string) {
+        const name = providerName.replace('CLS_', '').toLowerCase();
+        return 'save' + name.charAt(0).toUpperCase() + name.slice(1);
     }
 }
