@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.1.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.1.0...nestjs-cls@5.1.1) "nestjs-cls" (2025-02-09)<a name="5.1.1"></a>
+
+### Bug Fixes
+
+* **core**: clarify error message for default proxy providers ([29ed8a4](https://github.com/Papooch/nestjs-cls/commits/29ed8a4))
+
+
+
+
 ## [5.1.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.0.1...nestjs-cls@5.1.0) "nestjs-cls" (2025-02-08)<a name="5.1.0"></a>
 
 ### Bug Fixes
