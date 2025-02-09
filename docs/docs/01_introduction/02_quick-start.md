@@ -40,8 +40,8 @@ export class AppModule {}
 
 Create an interceptor that
 
--   injects the `ClsService` to get access to the current shared CLS context,
--   extract the users's IP address from the request and stores it into the CLS context,
+- injects the `ClsService` to get access to the current shared CLS context,
+- extract the users's IP address from the request and stores it into the CLS context,
 
 ```ts title="user-ip.interceptor.ts"
 @Injectable()
@@ -108,6 +108,8 @@ This is pretty much all there is to it. This library further provides more quali
 
 :::info
 
-If your use-case is really simple, you can instead consider [creating a custom implementation with `AsyncLocalStorage`](https://docs.nestjs.com/recipes/async-local-storage#custom-implementation). Limiting the number of dependencies in your application is always a good idea!
+If your use-case is really simple, you can instead consider [creating a custom implementation with `AsyncLocalStorage`](https://docs.nestjs.com/recipes/async-local-storage#custom-implementation).
+
+While `nestjs-cls` doesn't depend on any extra 3rd party packages (other than `@nestjs/*`), limiting the number of dependencies in your application is always a good idea!
 
 :::

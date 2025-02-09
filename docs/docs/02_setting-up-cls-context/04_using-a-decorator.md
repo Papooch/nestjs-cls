@@ -8,7 +8,7 @@ Please keep in mind, that since the CLS context initialization _can_ be async, t
 
 :::
 
-Since there is no request, the `setup` function will not receive a `Request` object. Instead, it will receive the `this` context of the class instance (this also applies to the `idGenerator`), the `ClsService` reference and all the arguments passed to the decorated method.
+Since there is no request, the `setup` function will not receive the `Request` (or `ExecutionContext`) object. Instead, it will receive the `this` context of the class instance (this also applies to the `idGenerator`), the `ClsService` reference and all the arguments passed to the decorated method.
 
 ```ts
 @Injectable()

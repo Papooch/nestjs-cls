@@ -6,7 +6,7 @@ This feature was inspired by how REQUEST-scoped providers (_"beans"_) work in th
 
 Using this technique, NestJS does not need to re-create a whole DI-subtree on each request (which has [certain implications which disallows the use of REQUEST-scoped providers in certain situations](https://docs.nestjs.com/fundamentals/injection-scopes#scope-hierarchy)).
 
-Rather, it injects a _SINGLETON_ [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) instance, which delegates access and calls to the actual instance, which is created for each request when the CLS context is set up.
+Rather, it injects a _SINGLETON_ [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) instance, which delegates access and calls to the actual instance, which is created for each request when the CLS context is set up, but this does not affect the scope of any provider that the Proxy is injected into.
 
 There are two kinds of Proxy providers - [_Class_](#class-proxy-providers) and [_Factory_](#factory-proxy-providers).
 
@@ -37,7 +37,7 @@ which exposes it an injectable provider in the parent module.
 ClsModule.forFeature(User);
 ```
 
-It can be then injected using the class name.
+It can be then injected as usual using the class reference.
 
 However, what will be actually injected _is not_ the instance of the class, but rather the Proxy which redirects all access to an unique instance stored in the CLS context.
 
@@ -71,7 +71,13 @@ export class UserInterceptor implements NestInterceptor {
 
 It is also possible to inject other providers into the Proxy Provider to avoid having to do this in a separate component.
 
+:::tip
+
 For the convenience, the `CLS_REQ` and `CLS_RES` (if enabled) and `CLS_CTX` (when an enhancer is used) are also made into Proxy Providers and are exported from the `ClsModule`.
+
+To prevent silent failures, they're marked as [`strict`](#strict-proxy-providers).
+
+:::
 
 ```ts title=user-with-rile.proxy.ts
 @InjectableProxy()
@@ -96,7 +102,7 @@ If you need to inject a provider from an external module, use the `ClsModule.for
 ```ts
 ClsModule.forFeatureAsync({
     // make RoleService available to the Proxy provider
-    import: [RoleModule],
+    imports: [RoleModule],
     useClass: UserWithRole,
 });
 ```
@@ -120,7 +126,7 @@ Here's an example of a hypothetical factory provider that dynamically resolves t
 ```ts
 ClsModule.forFeatureAsync({
     provide: TENANT_CONNECTION,
-    import: [DatabaseConnectionModule],
+    imports: [DatabaseConnectionModule],
     inject: [CLS_REQ, DatabaseConnectionService],
     useFactory: async (req: Request, dbService: DatabaseConnectionService) => {
         const tenantId = req.params['tenantId'];
@@ -168,6 +174,33 @@ ClsModule.forRoot({
 
 await this.cls.resolveProxyProviders();
 ```
+
+:::tip
+
+If you want to use proxy providers that depend on `CLS_CTX`, but still want to perform some setup in `middleware`, you have to disable the resolution of Proxy Providers in the middleware and delay it until the interceptor.
+
+```ts
+ClsModule.forRoot({
+    middleware: {
+        generateId: true,
+        setup: (cls) => {
+            /* some setup */
+        },
+        // highlight-start
+        resolveProxyProviders: false,
+        // highlight-end
+    },
+    interceptor: {
+        generateId: false,
+        // highlight-start
+        saveCtx: true,
+        resolveProxyProviders: true,
+        // highlight-end
+    },
+});
+```
+
+:::
 
 ### Outside web request
 
@@ -307,6 +340,6 @@ In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider
 
 ### Limited support for injecting Proxy Providers into each other
 
-Apart from the built-in `CLS_REQ` and `CLS_RES` and `CLS_CTX` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
+Apart from the built-in `CLS_REQ`, `CLS_RES` and `CLS_CTX` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
 
 There is an open [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming, but until then, refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique. You can also leverage the [strict](#strict-proxy-providers) mode to find out which Proxy Providers are not yet resolved.
