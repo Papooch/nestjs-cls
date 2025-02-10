@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.4.10](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.9...@nestjs-cls/transactional@2.4.10) "@nestjs-cls/transactional" (2025-02-10)<a name="2.4.10"></a>
+
+### Dependencies
+
+* allow nestjs 10 as peer dependency ([b7057cb](https://github.com/Papooch/nestjs-cls/commits/b7057cb))
+
+
+
+
 ## [2.4.5](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.4...@nestjs-cls/transactional@2.4.5) "@nestjs-cls/transactional" (2025-01-21)<a name="2.4.5"></a>
 
 ### Dependencies

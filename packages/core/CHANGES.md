@@ -2,6 +2,19 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.2.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.1.2...nestjs-cls@5.2.0) "nestjs-cls" (2025-02-10)<a name="5.2.0"></a>
+
+### Dependencies
+
+* allow nestjs 10 as peer dependency ([b7057cb](https://github.com/Papooch/nestjs-cls/commits/b7057cb))
+
+### Features
+
+* **core**: automatically detect fastify and express versions ([45a1be3](https://github.com/Papooch/nestjs-cls/commits/45a1be3))
+
+
+
+
 ## [5.1.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.1.1...nestjs-cls@5.1.2) "nestjs-cls" (2025-02-09)<a name="5.1.2"></a>
 
 ### Bug Fixes
