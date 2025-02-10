@@ -35,6 +35,7 @@ import {
 import { ClsPluginManager } from '../plugin/cls-plugin-manager';
 import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
 import { ClsCommonModule } from './cls-common.module';
+import { getMiddlewareMountPoint } from './middleware.utils';
 
 /**
  * This module contains logic for configuring the CLS module in the root.
@@ -53,13 +54,10 @@ export class ClsRootModule implements NestModule {
 
     configure(consumer: MiddlewareConsumer) {
         const options = this.moduleRef.get(CLS_MIDDLEWARE_OPTIONS);
-        const adapter = this.adapterHost.httpAdapter;
-        let mountPoint = '/';
-        if (adapter.constructor.name === 'FastifyAdapter') {
-            mountPoint = '{*path}';
-        }
 
         if (options.mount) {
+            const adapter = this.adapterHost.httpAdapter;
+            const mountPoint = getMiddlewareMountPoint(adapter);
             ClsRootModule.logger.debug(
                 'Mounting ClsMiddleware to ' + mountPoint,
             );
