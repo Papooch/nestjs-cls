@@ -6556,8 +6556,8 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.7.3"
   peerDependencies:
-    "@nestjs/common": ">= 11 < 12"
-    "@nestjs/core": ">= 11 < 12"
+    "@nestjs/common": ">= 10 < 12"
+    "@nestjs/core": ">= 10 < 12"
     nestjs-cls: "workspace:^5.1.2"
     reflect-metadata: "*"
     rxjs: ">= 7"
@@ -19508,8 +19508,8 @@ __metadata:
     typescript: "npm:5.7.3"
     ws: "npm:^8.18.0"
   peerDependencies:
-    "@nestjs/common": ">= 11 < 12"
-    "@nestjs/core": ">= 11 < 12"
+    "@nestjs/common": ">= 10 < 12"
+    "@nestjs/core": ">= 10 < 12"
     reflect-metadata: "*"
     rxjs: ">= 7"
   languageName: unknown
