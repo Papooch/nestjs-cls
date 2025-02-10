@@ -41,8 +41,8 @@
     "test:cov": "jest --coverage"
   },
   "peerDependencies": {
-    "@nestjs/common": ">= 11 < 12",
-    "@nestjs/core": ">= 11 < 12",
+    "@nestjs/common": ">= 10 < 12",
+    "@nestjs/core": ">= 10 < 12",
     "reflect-metadata": "*",
     "rxjs": ">= 7"
   },
