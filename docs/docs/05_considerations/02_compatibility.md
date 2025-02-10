@@ -4,27 +4,27 @@
 
 This table lists the compatibility of major versions of `nestjs-cls` with versions of NestJS and other related packages.
 
-|        `nestjs-cls`        | `<= 4.x`  |   `5.x`   |
-| :------------------------: | :-------: | :-------: |
-|   `@nestjs/core,common`    | `<= 10.x` |  `>= 11`  |
-| `@nestjs/platform-express` | `<= 10.x` |  `>= 11`  |
-| `@nestjs/platform-fastify` | `<= 10.x` |  `>= 11`  |
-|     `@nestjs/graphql`      | `<= 12.x` |  `>= 13`  |
-|         `graphql`          | `<= 16.x` | `>= 16.x` |
-|      `@nestjs/apollo`      | `<= 12.x` | `>= 13.x` |
-|      `@apollo/server`      | `<= 4.x`  | `>= 4.x`  |
-|    `@nestjs/mercurius`     | `<= 12.x` | `>= 13.x` |
-|        `mercurius`         | `<= 13.x` | `>= 16.x` |
-|    `@nestjs/websockets`    | `<= 10.x` | `>= 11.x` |
-|   `@nestjs/platform-ws`    | `<= 10.x` | `>= 11.x` |
+|        `nestjs-cls`        | `<= 4.x` | `>= 5.0 <= 5.1` | `>= 5.2` |
+| :------------------------: | :------: | :-------------: | :------: |
+|   `@nestjs/core,common`    | `<= 10`  |     `>= 11`     | `>= 10`  |
+| `@nestjs/platform-express` | `<= 10`  |     `>= 11`     | `>= 10`  |
+| `@nestjs/platform-fastify` | `<= 10`  |     `>= 11`     | `>= 10`  |
+|     `@nestjs/graphql`      | `<= 12`  |     `>= 13`     | `>= 12`  |
+|         `graphql`          | `<= 16`  |     `>= 16`     | `>= 16`  |
+|      `@nestjs/apollo`      | `<= 12`  |     `>= 13`     | `<= 12`  |
+|      `@apollo/server`      |  `<= 4`  |     `>= 4`      |  `>= 4`  |
+|    `@nestjs/mercurius`     | `<= 12`  |     `>= 13`     | `>= 12`  |
+|        `mercurius`         | `<= 13`  |     `>= 16`     | `>= 10`  |
+|    `@nestjs/websockets`    | `<= 10`  |     `>= 11`     | `>= 10`  |
+|   `@nestjs/platform-ws`    | `<= 10`  |     `>= 11`     | `>= 10`  |
 
 The table below outlines the compatibility of different ways of initializing the CLS context with various transports:
 
 |                                                                                                | REST | GQL | WS[\*](#websockets) | Microservices |
 | :--------------------------------------------------------------------------------------------: | :--: | :-: | :-----------------: | :-----------: |
-|                                       **ClsMiddleware**                                        |  ✔   |  ✔  |          ✖          |       ✖       |
-|                              **ClsGuard** <br/>(uses `enterWith`)                              |  ✔   |  ✔  |          ✔          |       ✔       |
-| **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_ and<br/> in _Exception Filters_) |  ✔   |  ✔  |          ✔          |       ✔       |
+|                                       **ClsMiddleware**                                        |  ✔  | ✔  |         ✖          |      ✖       |
+|                              **ClsGuard** <br/>(uses `enterWith`)                              |  ✔  | ✔  |         ✔          |      ✔       |
+| **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_ and<br/> in _Exception Filters_) |  ✔  | ✔  |         ✔          |      ✔       |
 
 ## REST
 
@@ -32,13 +32,13 @@ This package is compatible with Nest-supported REST controllers and the preferre
 
 Tested with:
 
--   ✔ Express
--   ✔ Fastify
+- ✔ Express
+- ✔ Fastify
 
 Known issues:
 
--   In case API versioning is used, the automatic mounting of the `ClsMiddleware` does not work and it needs to be mounted manually. See issue [#67](https://github.com/Papooch/nestjs-cls/issues/67) for details.
--   Some existing Express middlewares may cause context loss, if that happens, mount the `ClsMiddleware` manually _after_ those offending ones ([#50](https://github.com/Papooch/nestjs-cls/issues/50#issuecomment-1368162870))
+- In case API versioning is used, the automatic mounting of the `ClsMiddleware` does not work and it needs to be mounted manually. See issue [#67](https://github.com/Papooch/nestjs-cls/issues/67) for details.
+- Some existing Express middlewares may cause context loss, if that happens, mount the `ClsMiddleware` manually _after_ those offending ones ([#50](https://github.com/Papooch/nestjs-cls/issues/50#issuecomment-1368162870))
 
 ## GraphQL
 
@@ -48,8 +48,8 @@ Due to this, you should ensure that any operation on the CLS store within enhanc
 
 Tested with:
 
--   ✔ Apollo (Express)
--   ✔ Mercurius (Fastify)
+- ✔ Apollo (Express)
+- ✔ Mercurius (Fastify)
 
 ### `@nestjs/graphql >= 10`
 
