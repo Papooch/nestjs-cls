@@ -1,28 +1,28 @@
-import { FactoryProvider, Type, ValueProvider } from '@nestjs/common';
+import {
+    FactoryProvider,
+    InjectionToken,
+    Type,
+    ValueProvider,
+} from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
 import { globalClsService } from '../cls-service.globals';
 import { getProxyProviderSymbol } from './get-proxy-provider-symbol';
 import { InjectableProxyMetadata } from './injectable-proxy.decorator';
+import { ProxyProvidersResolver } from './proxy-provider-resolver';
 import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
 import {
     ProxyProviderNotDecoratedException,
-    ProxyProviderNotRegisteredException,
     ProxyProviderNotResolvedException,
-    UnknownProxyDependenciesException,
 } from './proxy-provider.exceptions';
-import {
-    isProxyClassProvider,
-    isProxyClassProviderOptions,
-} from './proxy-provider.functions';
+import { isProxyClassProviderOptions } from './proxy-provider.functions';
 import {
     ClsModuleProxyClassProviderOptions,
     ClsModuleProxyFactoryProviderOptions,
     ClsModuleProxyProviderOptions,
     ClsProxyFactoryReturnType,
-    ProxyClassProvider,
-    ProxyFactoryProvider,
-    ProxyProvider,
+    ProxyClassProviderDefinition,
+    ProxyFactoryProviderDefinition,
+    ProxyProviderDefinition,
 } from './proxy-provider.interfaces';
 
 type ProxyOptions = {
@@ -32,17 +32,39 @@ type ProxyOptions = {
 
 export class ProxyProviderManager {
     private static clsService = globalClsService;
-    private static proxyProviderMap = new Map<symbol, ProxyProvider>();
+    private static proxyProviderMap = new Map<
+        symbol,
+        ProxyProviderDefinition
+    >();
+    private static proxyProviderResolver?: ProxyProvidersResolver;
 
     /**
-     * Init method called by the ClsModule#forRoot/Async
+     * Reset method called by the ClsModule#forRoot/Async before the init method is called.
      *
      * It ensures that the internal state is reset to support testing multiple setups in the same process.
      *
      * Otherwise the proxy provider map would leak from one test to the next.
+     *
+     * FUTURE:
+     * A better approach would be to store the proxy provider map in a local instance, instead of a global static variable.
      */
     static reset() {
-        this.proxyProviderMap = new Map();
+        this.proxyProviderMap.clear();
+    }
+
+    /**
+     * Init method called by the ClsRootModule#onModuleInit after it is certain
+     * that all Proxy Providers have been registered.
+     */
+    static init() {
+        // If there are no proxy providers, there is no need to set up the resolver.
+        if (this.proxyProviderMap.size === 0) {
+            return;
+        }
+        this.proxyProviderResolver = new ProxyProvidersResolver(
+            this.clsService,
+            this.proxyProviderMap,
+        );
     }
 
     static createProxyProvider(options: ClsModuleProxyProviderOptions) {
@@ -64,33 +86,35 @@ export class ProxyProviderManager {
         let proxyProvider: FactoryProvider;
         if (isProxyClassProviderOptions(options)) {
             proxyProvider = {
-            provide: providerToken,
+                provide: providerToken,
                 inject: [ModuleRef],
                 useFactory: (moduleRef: ModuleRef) => {
-                    const providerOptions: ProxyClassProvider = {
+                    const providerOptions: ProxyClassProviderDefinition = {
+                        symbol: providerSymbol,
                         moduleRef,
-                        token: options.provide,
+                        provide: options.provide,
                         useClass: options.useClass,
                     };
 
                     this.proxyProviderMap.set(providerSymbol, providerOptions);
                     return proxy;
                 },
-                    };
-                } else {
+            };
+        } else {
             proxyProvider = {
                 provide: providerToken,
                 inject: options.inject ?? [],
                 useFactory: (...injected: any[]) => {
-                    const providerOptions: ProxyFactoryProvider = {
+                    const providerOptions: ProxyFactoryProviderDefinition = {
+                        symbol: providerSymbol,
                         injected,
-                        token: options.provide,
+                        provide: options.provide,
                         useFactory: options.useFactory,
                     };
-                this.proxyProviderMap.set(providerSymbol, providerOptions);
-                return proxy;
-            },
-        };
+                    this.proxyProviderMap.set(providerSymbol, providerOptions);
+                    return proxy;
+                },
+            };
         }
         return proxyProvider;
     }
@@ -119,7 +143,7 @@ export class ProxyProviderManager {
 
     private static getProxyProviderToken(
         options: ClsModuleProxyProviderOptions,
-    ) {
+    ): InjectionToken {
         return (
             options.provide ??
             (options as ClsModuleProxyClassProviderOptions).useClass
@@ -172,54 +196,7 @@ export class ProxyProviderManager {
     }
 
     static async resolveProxyProviders(providerSymbols?: symbol[]) {
-        const providerSymbolsToResolve = providerSymbols?.length
-            ? providerSymbols
-            : Array.from(this.proxyProviderMap.keys());
-        const promises = providerSymbolsToResolve.map((providerSymbol) =>
-            this.resolveProxyProvider(providerSymbol),
-        );
-        await Promise.all(promises);
-    }
-
-    private static async resolveProxyProvider(providerSymbol: symbol) {
-        if (this.clsService.get(providerSymbol)) {
-            // skip resolution if the provider already exists in the CLS
-            return;
-        }
-        const provider = this.proxyProviderMap.get(providerSymbol);
-        if (!provider) {
-            throw ProxyProviderNotRegisteredException.create(providerSymbol);
-        }
-        if (isProxyClassProvider(provider)) {
-            await this.resolveProxyClassProvider(providerSymbol, provider);
-        } else {
-            await this.resolveProxyFactoryProvider(providerSymbol, provider);
-        }
-    }
-
-    private static async resolveProxyClassProvider(
-        providerSymbol: symbol,
-        provider: ProxyClassProvider,
-    ) {
-        const moduleRef = provider.moduleRef;
-        const Provider = provider.useClass;
-
-        try {
-            const proxyProvider = await moduleRef.create(Provider);
-            this.clsService.set(providerSymbol, proxyProvider);
-        } catch (error: unknown) {
-            if (!(error instanceof UnknownDependenciesException)) throw error;
-            throw UnknownProxyDependenciesException.create(error, Provider);
-        }
-    }
-
-    private static async resolveProxyFactoryProvider(
-        providerSymbol: symbol,
-        provider: ProxyFactoryProvider,
-    ) {
-        const injected = provider.injected;
-        const proxyProvider = await provider.useFactory.apply(null, injected);
-        this.clsService.set(providerSymbol, proxyProvider);
+        await this.proxyProviderResolver?.resolve(providerSymbols);
     }
 }
 

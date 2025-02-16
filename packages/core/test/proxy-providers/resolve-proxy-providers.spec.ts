@@ -1,10 +1,27 @@
-import { INestApplication, ModuleMetadata } from '@nestjs/common';
+import {
+    Global,
+    INestApplication,
+    Module,
+    ModuleMetadata,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule, ClsServiceManager, InjectableProxy } from '../../src';
+
+class ProxyCreationCounter {
+    proxyA = 0;
+    proxyB = 0;
+}
+@Global()
+@Module({
+    providers: [ProxyCreationCounter],
+    exports: [ProxyCreationCounter],
+})
+class CounterModule {}
 
 async function createAndInitTestingApp(imports: ModuleMetadata['imports']) {
     const moduleFixture: TestingModule = await Test.createTestingModule({
         imports: [
+            CounterModule,
             ClsModule.forRoot({ middleware: { mount: true } }),
             ...(imports ?? []),
         ],
@@ -21,11 +38,17 @@ describe('resolveProxyProviders', () => {
     @InjectableProxy()
     class ProxyClassA {
         something = 'something';
+        constructor(private readonly counter: ProxyCreationCounter) {
+            this.counter.proxyA++;
+        }
     }
 
     @InjectableProxy()
     class ProxyClassB {
         somethingElse = 'somethingElse';
+        constructor(private readonly counter: ProxyCreationCounter) {
+            this.counter.proxyB++;
+        }
     }
 
     it('resolves all registered proxy providers when called without arguments', async () => {
@@ -36,6 +59,10 @@ describe('resolveProxyProviders', () => {
             await cls.resolveProxyProviders();
             expect(app.get(ProxyClassA).something).toBe('something');
             expect(app.get(ProxyClassB).somethingElse).toBe('somethingElse');
+            expect(app.get(ProxyCreationCounter)).toEqual({
+                proxyA: 1,
+                proxyB: 1,
+            });
         });
     });
 
@@ -46,6 +73,10 @@ describe('resolveProxyProviders', () => {
         await cls.run(async () => {
             expect(app.get(ProxyClassA).something).toBeUndefined();
             expect(app.get(ProxyClassB).somethingElse).toBeUndefined();
+            expect(app.get(ProxyCreationCounter)).toEqual({
+                proxyA: 0,
+                proxyB: 0,
+            });
         });
     });
 
@@ -57,6 +88,10 @@ describe('resolveProxyProviders', () => {
             await cls.resolveProxyProviders([ProxyClassA]);
             expect(app.get(ProxyClassA).something).toBe('something');
             expect(app.get(ProxyClassB).somethingElse).toBeUndefined();
+            expect(app.get(ProxyCreationCounter)).toEqual({
+                proxyA: 1,
+                proxyB: 0,
+            });
         });
     });
 
@@ -83,6 +118,30 @@ describe('resolveProxyProviders', () => {
             await cls.resolveProxyProviders();
             expect(app.get(ProxyClassB).somethingElse).toBe('somethingElse');
             expect(app.get(ProxyClassA).something).toBe('somethingEdited');
+            expect(app.get(ProxyCreationCounter)).toEqual({
+                proxyA: 1,
+                proxyB: 1,
+            });
+        });
+    });
+
+    it('resolves proxy providers once per CLS context initialization', async () => {
+        app = await createAndInitTestingApp([
+            ClsModule.forFeature(ProxyClassA, ProxyClassB),
+        ]);
+        await cls.run(async () => {
+            await cls.resolveProxyProviders();
+        });
+        await cls.run(async () => {
+            await cls.resolveProxyProviders();
+            await cls.resolveProxyProviders();
+        });
+        await cls.run(async () => {
+            await cls.resolveProxyProviders([ProxyClassA]);
+        });
+        expect(app.get(ProxyCreationCounter)).toEqual({
+            proxyA: 3,
+            proxyB: 2,
         });
     });
 });

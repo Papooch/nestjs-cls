@@ -7,6 +7,7 @@ import {
     Module,
     NestInterceptor,
     NestModule,
+    OnModuleInit,
     Provider,
     Type,
 } from '@nestjs/common';
@@ -44,7 +45,7 @@ import { getMiddlewareMountPoint } from './middleware.utils';
 @Module({
     imports: [ClsCommonModule],
 })
-export class ClsRootModule implements NestModule {
+export class ClsRootModule implements NestModule, OnModuleInit {
     private static logger = new Logger('ClsModule');
 
     constructor(
@@ -63,6 +64,10 @@ export class ClsRootModule implements NestModule {
             );
             consumer.apply(ClsMiddleware).forRoutes(mountPoint);
         }
+    }
+
+    onModuleInit() {
+        ProxyProviderManager.init();
     }
 
     /**

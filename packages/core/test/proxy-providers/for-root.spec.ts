@@ -16,6 +16,7 @@ import {
     CLS_REQ,
     CLS_RES,
     InjectableProxy,
+    CLS_CTX,
 } from '../../src';
 import { ProxyProviderNotDecoratedException } from '../../src/lib/proxy-provider/proxy-provider.exceptions';
 
@@ -73,9 +74,12 @@ describe('ClsModule', () => {
             });
         });
 
-        it('provides a class proxy that injects CLS_REQ and CLS_RES', async () => {
+        it('provides a class proxy that injects CLS_REQ and CLS_RES and CLS_CTX', async () => {
             @InjectableProxy()
             class ProxyClass {
+                @Inject(CLS_CTX)
+                context: any;
+
                 constructor(
                     @Inject(CLS_REQ) private req: any,
                     @Inject(CLS_RES) private res: any,
@@ -162,6 +166,26 @@ describe('ClsModule', () => {
             @InjectableProxy()
             class ProxyClass {
                 constructor(private some: SomeClass) {}
+            }
+
+            app = await createAndInitTestingApp([ProxyClass]);
+            await cls.run(async () => {
+                await expect(cls.resolveProxyProviders()).rejects.toThrowError(
+                    'Cannot create Proxy provider ProxyClass (?). The argument SomeClass at index [0] was not found in the ClsModule Context.',
+                );
+            });
+        });
+
+        it('throws if class proxy injects provider (using @Inject) that is not part of the module', async () => {
+            @Injectable()
+            class SomeClass {}
+
+            @InjectableProxy()
+            class ProxyClass {
+                constructor(
+                    @Inject(SomeClass)
+                    private some: any,
+                ) {}
             }
 
             app = await createAndInitTestingApp([ProxyClass]);

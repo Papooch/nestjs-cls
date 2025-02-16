@@ -1,27 +1,21 @@
 import { Type } from '@nestjs/common';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
 import { defaultProxyProviderTokens } from './proxy-provider.constants';
+import { reflectClassConstructorParams } from './proxy-provider.utils';
 
 export class UnknownProxyDependenciesException extends Error {
     name = UnknownProxyDependenciesException.name;
 
     static create(error: UnknownDependenciesException, Provider: Type) {
-        const expectedParams = Reflect.getMetadata(
-            'design:paramtypes',
-            Provider,
-        );
+        const expectedParams = reflectClassConstructorParams(Provider);
         const foundParams = this.extractDependencyParams(error);
         const notFoundParamIndex = foundParams.findIndex((it) => it == '?');
         let notFoundParamName = expectedParams[notFoundParamIndex]?.name;
-        if (!notFoundParamName) {
-            notFoundParamName = Reflect.getMetadata('self:paramtypes', Provider)
-                ?.find((param: any) => param?.index == notFoundParamIndex)
-                .param.toString();
-        }
+
         const message = this.composeMessage(
             Provider.name,
             foundParams.join(', '),
-            notFoundParamName,
+            notFoundParamName ?? 'Unknown',
             notFoundParamIndex,
         );
         return new this(message);

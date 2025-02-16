@@ -1,8 +1,8 @@
 import {
     ClsModuleProxyClassProviderOptions,
     ClsModuleProxyProviderOptions,
-    ProxyClassProvider,
-    ProxyProvider,
+    ProxyClassProviderDefinition,
+    ProxyProviderDefinition,
 } from './proxy-provider.interfaces';
 
 export const isProxyClassProviderOptions = (
@@ -11,5 +11,6 @@ export const isProxyClassProviderOptions = (
     Reflect.has(provider, 'useClass');
 
 export const isProxyClassProvider = (
-    provider: ProxyProvider,
-): provider is ProxyClassProvider => Reflect.has(provider, 'useClass');
+    provider: ProxyProviderDefinition,
+): provider is ProxyClassProviderDefinition =>
+    Reflect.has(provider, 'useClass');
