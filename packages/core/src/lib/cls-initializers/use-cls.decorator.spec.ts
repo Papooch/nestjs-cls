@@ -49,9 +49,10 @@ describe('@UseCls', () => {
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
-            imports: [ClsModule],
+            imports: [ClsModule.forRoot()],
             providers: [TestClass],
         }).compile();
+        await module.init();
 
         testClass = module.get(TestClass);
     });
