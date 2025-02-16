@@ -144,4 +144,23 @@ describe('resolveProxyProviders', () => {
             proxyB: 2,
         });
     });
+
+    it('resolves proxy providers only once even with concurrent calls to resolveProxyProviders', async () => {
+        app = await createAndInitTestingApp([
+            ClsModule.forFeature(ProxyClassA, ProxyClassB),
+        ]);
+        await cls.run(async () => {
+            await Promise.all([
+                cls.resolveProxyProviders(),
+                cls.resolveProxyProviders(),
+                cls.resolveProxyProviders(),
+            ]);
+            expect(app.get(ProxyClassA).something).toBe('something');
+            expect(app.get(ProxyClassB).somethingElse).toBe('somethingElse');
+            expect(app.get(ProxyCreationCounter)).toEqual({
+                proxyA: 1,
+                proxyB: 1,
+            });
+        });
+    });
 });
