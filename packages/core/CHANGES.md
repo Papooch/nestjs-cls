@@ -2,6 +2,19 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.3.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.2.0...nestjs-cls@5.3.0) "nestjs-cls" (2025-02-16)<a name="5.3.0"></a>
+
+### Bug Fixes
+
+* **core**: add timeout to Proxy Provider resolution ([100d277](https://github.com/Papooch/nestjs-cls/commits/100d277))
+
+### Features
+
+* **core**: allow Proxy Providers to depend on each other ([90a7ee3](https://github.com/Papooch/nestjs-cls/commits/90a7ee3))
+
+
+
+
 ## [5.2.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.1.2...nestjs-cls@5.2.0) "nestjs-cls" (2025-02-10)<a name="5.2.0"></a>
 
 ### Dependencies
