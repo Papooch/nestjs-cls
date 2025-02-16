@@ -338,8 +338,16 @@ In versions prior to `v4.0`, calling `typeof` on an instance of a Proxy provider
 
 :::
 
-### Limited support for injecting Proxy Providers into each other
+### Support for injecting Proxy Providers into each other
 
-Apart from the built-in `CLS_REQ`, `CLS_RES` and `CLS_CTX` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there is no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
+> Since `v5.3`
 
-There is an open [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming, but until then, refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique. You can also leverage the [strict](#strict-proxy-providers) mode to find out which Proxy Providers are not yet resolved.
+Proxy Providers can be injected into other Proxy Providers and will be resolved in the correct order. They can be mixed and matched with regular providers, too.
+
+Please note that there is **no support for circular dependencies** between Proxy Providers, even with `forwardRef`. There is a timeout of 10 seconds to resolve the Proxy Providers, after which an error is thrown. The most common cause of this is a circular dependency, because two providers wait before the other is resolved, causing a deadlock.
+
+> Before `v5.3`
+
+Apart from the built-in `CLS_REQ`, `CLS_RES` and `CLS_CTX` proxy providers, custom Proxy Providers cannot be _reliably_ injected into other Proxy Providers, because there was no system in place to resolve them in the correct order (as far as Nest is concerned, all of them have already been bootstrapped, so it can't help us here), so it may happen, that during the proxy provider resolution phase, a Proxy Provider that is injected into another Proxy Provider is not yet resolved and falls back to an empty object.
+
+If can't update to the latest version, but you need this feature, see the original [feature request](https://github.com/Papooch/nestjs-cls/issues/169) to address this shortcoming and refer to the manual [Selective resolution of Proxy Providers](#selective-resolution-of-proxy-providers) technique. You can also leverage the [strict](#strict-proxy-providers) mode to find out which Proxy Providers are not yet resolved.

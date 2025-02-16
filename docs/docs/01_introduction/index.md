@@ -14,12 +14,14 @@ A continuation-local\* storage module compatible with [NestJS](https://nestjs.co
 
 Some common use cases that this library enables include:
 
--   Tracking the Request ID and other metadata for logging purposes
--   Keeping track of the user throughout the whole request
--   Making the dynamic Tenant database connection available everywhere in multi-tenant apps
--   Propagating the authentication level or role to restrict access to resources
--   Seamlessly propagating database transaction across services without breaking encapsulation and isolation by explicitly passing it around (**Now available with the [Transactional plugin](../06_plugins/01_available-plugins/01-transactional/index.md)**)
--   Using "request" context in cases where actual REQUEST-scoped providers are not supported (passport strategies, cron controllers, websocket gateways, ...)
+- Tracking the Request ID and other metadata for logging purposes
+- Keeping track of the user throughout the whole request
+- Making the dynamic Tenant database connection available everywhere in multi-tenant apps
+- Propagating the authentication level or role to restrict access to resources
+- Seamlessly propagating database transaction across services without breaking encapsulation and isolation by explicitly passing it around
+    - **Pluggable an existing solution with the [Transactional plugin](../06_plugins/01_available-plugins/01-transactional/index.md).**
+- Using "request" context in cases where actual REQUEST-scoped providers are not supported (passport strategies, cron controllers, websocket gateways, queue consumers, ...)
+    - **Replace REQUEST-scoped providers with [Proxy Providers](../03_features-and-use-cases/06_proxy-providers.md).**
 
 Most of these are to some extent solvable using _REQUEST-scoped_ providers or passing the context as a parameter, but these solutions are often clunky and come with a whole lot of other issues.
 
@@ -39,7 +41,7 @@ _`AsyncLocalStorage` is still fairly new and not many people know of its existen
 
 _While the use of `async_hooks` is sometimes criticized for [making Node run slower](https://gist.github.com/Aschen/5cc1f3f3b58f1e284b670b83bb53da7d), in my experience, the introduced overhead is negligible compared to any IO operation (like a DB or external API call). If you want speed, use a compiled language._
 
-_Also, if you use some tracing library (like `otel`), it most likely already uses `async_hooks` under the hood, so you might as well use it to your advantage._
+_Also, if you use some tracing solution (like OTEL, Sentry, NewRelic, ...), it most likely already uses `async_hooks` under the hood, the performance tax has already been paid and you might as well use it to your advantage._
 
 ## Highlights
 
