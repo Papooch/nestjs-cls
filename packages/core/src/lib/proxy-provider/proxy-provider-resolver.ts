@@ -8,6 +8,7 @@ import {
 } from './proxy-provider.interfaces';
 import {
     ProxyProviderNotRegisteredException,
+    ProxyProvidersResolutionTimeoutException,
     UnknownProxyDependenciesException,
 } from './proxy-provider.exceptions';
 import { defaultProxyProviderTokens } from './proxy-provider.constants';
@@ -78,7 +79,21 @@ export class ProxyProvidersResolver {
             );
         }
 
-        await Promise.all(resolutionPromisesMap.values());
+        const timeout = 10_000;
+        const timeoutPromise = Promise_withResolvers();
+        const timeoutHandle = setTimeout(() => {
+            timeoutPromise.reject(
+                ProxyProvidersResolutionTimeoutException.create(timeout),
+            );
+        }, timeout);
+        try {
+            await Promise.race([
+                timeoutPromise.promise,
+                Promise.all(resolutionPromisesMap.values()),
+            ]);
+        } finally {
+            clearTimeout(timeoutHandle);
+        }
     }
 
     /**
