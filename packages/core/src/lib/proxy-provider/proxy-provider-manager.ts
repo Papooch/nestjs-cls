@@ -24,6 +24,7 @@ import {
     ProxyFactoryProviderDefinition,
     ProxyProviderDefinition,
 } from './proxy-provider.interfaces';
+import { reflectAllClassDependencies } from './proxy-provider.utils';
 
 type ProxyOptions = {
     type?: ClsProxyFactoryReturnType;
@@ -85,6 +86,7 @@ export class ProxyProviderManager {
 
         let proxyProvider: FactoryProvider;
         if (isProxyClassProviderOptions(options)) {
+            const dependencies = reflectAllClassDependencies(options.useClass);
             proxyProvider = {
                 provide: providerToken,
                 inject: [ModuleRef],
@@ -92,6 +94,7 @@ export class ProxyProviderManager {
                     const providerOptions: ProxyClassProviderDefinition = {
                         symbol: providerSymbol,
                         moduleRef,
+                        dependencies,
                         provide: options.provide,
                         useClass: options.useClass,
                     };
@@ -101,6 +104,7 @@ export class ProxyProviderManager {
                 },
             };
         } else {
+            const dependencies = options.inject ?? [];
             proxyProvider = {
                 provide: providerToken,
                 inject: options.inject ?? [],
@@ -108,6 +112,7 @@ export class ProxyProviderManager {
                     const providerOptions: ProxyFactoryProviderDefinition = {
                         symbol: providerSymbol,
                         injected,
+                        dependencies,
                         provide: options.provide,
                         useFactory: options.useFactory,
                     };

@@ -1,4 +1,4 @@
-import { Provider, Type } from '@nestjs/common';
+import { InjectionToken, Provider, Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
 interface ClsModuleProxyProviderCommonOptions {
@@ -51,12 +51,12 @@ export interface ClsModuleProxyFactoryProviderOptions
      * this parameter is optional, as the class reference passed to `useClass` will
      * be used by default.
      */
-    provide: any;
+    provide: InjectionToken;
 
     /**
      * An array of injection tokens for providers used in the `useFactory`.
      */
-    inject?: any[];
+    inject?: InjectionToken[];
 
     /**
      * Factory function that accepts an array of providers in the order of the according tokens in the `inject` array.
@@ -88,16 +88,22 @@ export type ClsModuleProxyProviderOptions =
     | ClsModuleProxyClassProviderOptions
     | ClsModuleProxyFactoryProviderOptions;
 
-export interface ProxyClassProvider {
-    token?: any;
+export interface ProxyClassProviderDefinition {
+    provide?: InjectionToken;
+    symbol: symbol;
     moduleRef: ModuleRef;
+    dependencies: InjectionToken[];
     useClass: Type;
 }
 
-export interface ProxyFactoryProvider {
-    token: any;
+export interface ProxyFactoryProviderDefinition {
+    provide: InjectionToken;
+    symbol: symbol;
     injected: any[];
+    dependencies: InjectionToken[];
     useFactory: (...args: any[]) => any | Promise<any>;
 }
 
-export type ProxyProvider = ProxyClassProvider | ProxyFactoryProvider;
+export type ProxyProviderDefinition =
+    | ProxyClassProviderDefinition
+    | ProxyFactoryProviderDefinition;
