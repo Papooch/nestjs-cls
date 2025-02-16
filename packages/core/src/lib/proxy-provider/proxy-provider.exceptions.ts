@@ -3,9 +3,11 @@ import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unk
 import { defaultProxyProviderTokens } from './proxy-provider.constants';
 import { reflectClassConstructorParams } from './proxy-provider.utils';
 
-export class UnknownProxyDependenciesException extends Error {
-    name = UnknownProxyDependenciesException.name;
+export class ProxyProviderError extends Error {
+    name = this.constructor.name;
+}
 
+export class UnknownProxyDependenciesException extends ProxyProviderError {
     static create(error: UnknownDependenciesException, Provider: Type) {
         const expectedParams = reflectClassConstructorParams(Provider);
         const foundParams = this.extractDependencyParams(error);
@@ -45,27 +47,21 @@ export class UnknownProxyDependenciesException extends Error {
     }
 }
 
-export class ProxyProviderNotDecoratedException extends Error {
-    name = ProxyProviderNotDecoratedException.name;
-
+export class ProxyProviderNotDecoratedException extends ProxyProviderError {
     static create(Provider: Type) {
         const message = `Cannot create a Proxy provider for ${Provider.name}. The class must be explicitly decorated with the @InjectableProxy() decorator to distinguish it from a regular provider.`;
         return new this(message);
     }
 }
 
-export class ProxyProviderNotRegisteredException extends Error {
-    name = ProxyProviderNotRegisteredException.name;
-
+export class ProxyProviderNotRegisteredException extends ProxyProviderError {
     static create(providerSymbol: symbol) {
         const message = `Cannot resolve a Proxy provider for symbol "${providerSymbol.description}", because it was not registered using "ClsModule.forFeature()" or "ClsModule.forFeatureAsync()".`;
         return new this(message);
     }
 }
 
-export class ProxyProviderNotResolvedException extends Error {
-    name = ProxyProviderNotResolvedException.name;
-
+export class ProxyProviderNotResolvedException extends ProxyProviderError {
     static create(providerSymbol: symbol | string, propName?: string) {
         const isDefaultProxyProvider = defaultProxyProviderTokens.has(
             providerSymbol as any,
@@ -91,5 +87,12 @@ export class ProxyProviderNotResolvedException extends Error {
     private static formatEnableOptionName(providerName: string) {
         const name = providerName.replace('CLS_', '').toLowerCase();
         return 'save' + name.charAt(0).toUpperCase() + name.slice(1);
+    }
+}
+
+export class ProxyProvidersResolutionTimeoutException extends ProxyProviderError {
+    static create(timeout: number) {
+        const message = `Proxy Providers could not be resolved within the specified timeout of ${timeout}ms, possibly due to a circular dependency. Make sure to avoid circular dependencies in your Proxy Providers.`;
+        return new this(message);
     }
 }
