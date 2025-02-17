@@ -236,6 +236,13 @@ export class ClsService<S extends ClsStore = ClsStore> {
         await ProxyProviderManager.resolveProxyProviders(proxySymbols);
     }
 
+    /**
+     * @deprecated This method will be removed in a future release and replaced
+     * with a different mechanism for plugin initialization.
+     *
+     * Since the plugin API is still experimental, this method will become a np-op
+     * and will be eventually removed, possibly in a minor release.
+     */
     async initializePlugins() {
         const { ClsPluginManager } = await import(
             './plugin/cls-plugin-manager'
