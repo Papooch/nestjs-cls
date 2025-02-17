@@ -1,4 +1,4 @@
-import { DynamicModule, Module, Type } from '@nestjs/common';
+import { DynamicModule, Logger, Module, Type } from '@nestjs/common';
 import { ClsModuleAsyncOptions, ClsModuleOptions } from '../cls.options';
 import { ClsPluginManager } from '../plugin/cls-plugin-manager';
 
@@ -83,8 +83,18 @@ export class ClsModule {
 
     /**
      * Registers the given Plugins the module along with `ClsService`.
+     * @deprecated
+     * All plugins must be registered in the `ClsModule.forRoot` or `ClsModule.forRootAsync` options.
+     *
+     * Since the plugin API is still experimental, this method will print a warning, throw error
+     * and will be eventually removed, possibly in a minor release.
      */
     static registerPlugins(plugins: ClsPlugin[]): DynamicModule {
+        const logger = new Logger('ClsModule');
+        logger.warn(
+            'The `ClsModule.registerPlugins` method is deprecated and will be removed in a future release. ' +
+                'All plugins must be registered in the `ClsModule.forRoot` or `ClsModule.forRootAsync` options.',
+        );
         return {
             module: ClsModule,
             imports: ClsPluginManager.registerPlugins(plugins),

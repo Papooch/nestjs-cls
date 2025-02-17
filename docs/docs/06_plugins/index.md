@@ -8,7 +8,7 @@ Plugins can hook into the lifecycle of the `ClsModule` and the CLS context setup
 
 ## Usage
 
-To use a plugin, pass it to the `forRoot` method of the `ClsModule`:
+To use a plugin, pass it to the `forRoot` or `forRootAsync` method of the `ClsModule`:
 
 ```ts
 ClsModule.forRoot({
@@ -18,11 +18,25 @@ ClsModule.forRoot({
 });
 ```
 
-If you need to inject Plugins from an external module, use the `ClsModule.registerPlugins()` registration to import the containing module.
+```ts
+ClsModule.forRootAsync({
+    // highlight-start
+    plugins: [new MyPlugin()],
+    // highlight-end
+});
+```
+
+~~If you need to inject Plugins from an external module, use the `ClsModule.registerPlugins()` registration to import the containing module.~~
 
 ```ts
 ClsModule.registerPlugins([new MyPlugin()]);
 ```
+
+:::warning
+
+The `ClsModule.registerPlugins` method is deprecated and will be removed in a future release due to a major refactor of the plugin architecture. All plugins must be registered via the root method.
+
+:::
 
 ## Available plugins
 

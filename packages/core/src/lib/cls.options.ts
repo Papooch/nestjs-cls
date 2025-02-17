@@ -97,8 +97,8 @@ export class ClsInitializerCommonOptions {
     resolveProxyProviders? = true;
 
     /**
-     * Whether to run the onClsInit hook for plugins as a part
-     * of the CLS context registration (runs before `resolveProxyProviders` just after `setup`)
+     * Whether to run the initialization hooks for plugins as a part
+     * of the CLS context registration in this initializer
      *
      * Default: `true`
      */

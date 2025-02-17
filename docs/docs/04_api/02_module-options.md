@@ -83,7 +83,7 @@ All of the **`Cls{Middleware,Guard,Interceptor}Options`** take the following par
   Whether to automatically resolve Proxy Providers in the enhancer (if any are registered).
 
 - **_`initializePlugins?:`_**`boolean` (default _`true`_)  
-  Whether to run the `onClsInit` hook for plugins as a part of the CLS context registration (runs before `resolveProxyProviders` just after `setup`).
+  Whether to run the initialization hooks for plugins as a part of the CLS context registration.
 
 The `ClsMiddlewareOptions` additionally takes the following parameters:
 
