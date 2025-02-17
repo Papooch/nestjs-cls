@@ -9,6 +9,8 @@ import { CLS_CTX, CLS_ID } from '../cls.constants';
 import { CLS_GUARD_OPTIONS } from '../cls.internal-constants';
 import { ClsGuardOptions } from '../cls.options';
 import { ContextClsStoreMap } from './utils/context-cls-store-map';
+import { ClsPluginsHooksHost } from '../plugin/cls-plugins.module';
+import { ClsEnhancerInitContext } from '../plugin/cls-plugin.interface';
 
 @Injectable()
 export class ClsGuard implements CanActivate {
@@ -16,7 +18,8 @@ export class ClsGuard implements CanActivate {
 
     constructor(
         @Inject(CLS_GUARD_OPTIONS)
-        options: Omit<ClsGuardOptions, 'mount'>,
+        options: Omit<ClsGuardOptions, 'mount'> | undefined,
+        private readonly pluginHost: ClsPluginsHooksHost,
     ) {
         this.options = { ...new ClsGuardOptions(), ...options };
     }
@@ -30,6 +33,13 @@ export class ClsGuard implements CanActivate {
             cls.enterWith({});
             ContextClsStoreMap.set(context, cls.get());
         }
+        const pluginCtx: ClsEnhancerInitContext = {
+            kind: 'guard',
+            ctx: context,
+        };
+        if (this.options.initializePlugins) {
+            this.pluginHost?.beforeSetup(pluginCtx);
+        }
         if (this.options.generateId) {
             const id = await this.options.idGenerator?.(context);
             cls.setIfUndefined<any>(CLS_ID, id);
@@ -41,7 +51,7 @@ export class ClsGuard implements CanActivate {
             await this.options.setup(cls, context);
         }
         if (this.options.initializePlugins) {
-            await cls.initializePlugins();
+            await this.pluginHost?.afterSetup(pluginCtx);
         }
         if (this.options.resolveProxyProviders) {
             await cls.resolveProxyProviders();

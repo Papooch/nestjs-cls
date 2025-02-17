@@ -1,10 +1,10 @@
-import { Global } from '@nestjs/common';
+import { DynamicModule, Global } from '@nestjs/common';
 import { ClsPlugin } from './cls-plugin.interface';
 
-export function createClsPluginModule(plugin: ClsPlugin) {
+export function createClsPluginModule(plugin: ClsPlugin): DynamicModule {
     @Global()
     class ClsPluginModule {
-        static forRoot() {
+        static forRoot(): DynamicModule {
             return {
                 module: ClsPluginModule,
                 imports: plugin.imports,

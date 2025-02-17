@@ -1,15 +1,25 @@
-import { Test } from '@nestjs/testing';
-import { ClsModule, ClsPlugin, ClsService } from '../../src';
-import { NestFactory } from '@nestjs/core';
 import { Controller, Get, Module } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { Test } from '@nestjs/testing';
 import supertest from 'supertest';
+import {
+    ClsInitContext,
+    ClsModule,
+    ClsService,
+    getPluginHooksToken,
+    ClsPlugin,
+    UseCls,
+} from '../../src';
 
 function providerToken(name: string) {
     return `${name}ProviderToken`;
 }
 
-function pluginInitializedToken(name: string) {
-    return `${name.toLocaleUpperCase()}_PLUGIN_INITIALIZED`;
+function pluginBeforeSetupKey(name: string) {
+    return `${name.toLocaleUpperCase()}_PLUGIN_BEFORE_SETUP`;
+}
+function pluginAfterSetupKey(name: string) {
+    return `${name.toLocaleUpperCase()}_PLUGIN_AFTER_SETUP`;
 }
 
 function createDummyPlugin(name: string) {
@@ -25,15 +35,24 @@ function createDummyPlugin(name: string) {
         onModuleDestroy: () => {
             watchers.destroyHasRun = true;
         },
-        onClsInit: (cls) => {
-            cls.set(pluginInitializedToken(name), true);
-        },
         providers: [
             {
                 provide: providerToken(name),
                 useValue: 'valueFromPlugin',
             },
+            {
+                provide: getPluginHooksToken(name),
+                useValue: {
+                    beforeSetup(cls: ClsService, ctx: ClsInitContext) {
+                        cls.set(pluginBeforeSetupKey(name), ctx.kind);
+                    },
+                    afterSetup(cls: ClsService, ctx: ClsInitContext) {
+                        cls.set(pluginAfterSetupKey(name), ctx.kind);
+                    },
+                },
+            },
         ],
+        exports: [getPluginHooksToken(name)],
     };
     return {
         plugin,
@@ -56,7 +75,7 @@ describe('Plugins', () => {
         }).compile();
         expect(watchers.initHasRun).toBe(false);
 
-        await module.init();
+        await module.createNestApplication().init();
 
         expect(watchers.initHasRun).toBe(true);
         expect(module.get(providerToken('forRoot'))).toBe('valueFromPlugin');
@@ -97,16 +116,19 @@ describe('Plugins', () => {
     });
 
     it.each(['middleware', 'guard', 'interceptor'] as const)(
-        'should run onClsInit method for plugin with %s enhancer',
+        'should run init hooks for plugin with %s enhancer',
         async (enhancerName) => {
-            const { plugin } = createDummyPlugin('onClsInit');
+            const { plugin } = createDummyPlugin('initHooks');
 
             @Controller()
             class TestController {
                 constructor(private readonly cls: ClsService) {}
                 @Get()
                 get() {
-                    return this.cls.get(pluginInitializedToken('onClsInit'));
+                    return {
+                        before: this.cls.get(pluginBeforeSetupKey('initHooks')),
+                        after: this.cls.get(pluginAfterSetupKey('initHooks')),
+                    };
                 }
             }
 
@@ -129,35 +151,35 @@ describe('Plugins', () => {
             await supertest(module.getHttpServer())
                 .get('/')
                 .expect(200)
-                .expect('true');
+                .expect({
+                    before: enhancerName,
+                    after: enhancerName,
+                });
             await module.close();
         },
     );
 
-    it('should register plugin and run module lifecycle and onClsInit methods (registerPlugins)', async () => {
-        const root = createDummyPlugin('root');
-        const feature = createDummyPlugin('feature');
+    it('should run init hooks method for plugin with UseCls', async () => {
+        const { plugin } = createDummyPlugin('UseCls');
 
         @Controller()
         class TestController {
             constructor(private readonly cls: ClsService) {}
+            @UseCls()
             @Get()
-            get() {
-                return (
-                    this.cls.get(pluginInitializedToken('root')) &&
-                    this.cls.get(pluginInitializedToken('feature'))
-                );
+            async get() {
+                return {
+                    before: this.cls.get(pluginBeforeSetupKey('UseCls')),
+                    after: this.cls.get(pluginAfterSetupKey('UseCls')),
+                };
             }
         }
+
         @Module({
             imports: [
                 ClsModule.forRoot({
-                    middleware: {
-                        mount: true,
-                    },
-                    plugins: [root.plugin],
+                    plugins: [plugin],
                 }),
-                ClsModule.registerPlugins([feature.plugin]),
             ],
             controllers: [TestController],
         })
@@ -165,28 +187,11 @@ describe('Plugins', () => {
 
         const module = await NestFactory.create(TestAppModule);
 
-        expect(root.watchers.initHasRun).toBe(false);
-        expect(feature.watchers.initHasRun).toBe(false);
-
         await module.init();
-
-        expect(root.watchers.initHasRun).toBe(true);
-        expect(feature.watchers.initHasRun).toBe(true);
-
-        expect(module.get(providerToken('root'))).toBe('valueFromPlugin');
-        expect(module.get(providerToken('feature'))).toBe('valueFromPlugin');
-
-        expect(root.watchers.destroyHasRun).toBe(false);
-        expect(feature.watchers.destroyHasRun).toBe(false);
-
-        await supertest(module.getHttpServer())
-            .get('/')
-            .expect(200)
-            .expect('true');
-
+        await supertest(module.getHttpServer()).get('/').expect(200).expect({
+            before: 'decorator',
+            after: 'decorator',
+        });
         await module.close();
-
-        expect(root.watchers.destroyHasRun).toBe(true);
-        expect(feature.watchers.destroyHasRun).toBe(true);
     });
 });

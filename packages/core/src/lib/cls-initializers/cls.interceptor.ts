@@ -10,6 +10,8 @@ import { ClsServiceManager } from '../cls-service-manager';
 import { CLS_CTX, CLS_ID } from '../cls.constants';
 import { CLS_INTERCEPTOR_OPTIONS } from '../cls.internal-constants';
 import { ClsInterceptorOptions } from '../cls.options';
+import { ClsEnhancerInitContext } from '../plugin/cls-plugin.interface';
+import { ClsPluginsHooksHost } from '../plugin/cls-plugins.module';
 import { ContextClsStoreMap } from './utils/context-cls-store-map';
 
 @Injectable()
@@ -18,7 +20,8 @@ export class ClsInterceptor implements NestInterceptor {
 
     constructor(
         @Inject(CLS_INTERCEPTOR_OPTIONS)
-        options?: Omit<ClsInterceptorOptions, 'mount'>,
+        options: Omit<ClsInterceptorOptions, 'mount'> | undefined,
+        private readonly pluginHost: ClsPluginsHooksHost,
     ) {
         this.options = { ...new ClsInterceptorOptions(), ...options };
     }
@@ -29,6 +32,13 @@ export class ClsInterceptor implements NestInterceptor {
         ContextClsStoreMap.set(context, clsStore);
         return new Observable((subscriber) => {
             cls.runWith(clsStore, async () => {
+                const pluginCtx: ClsEnhancerInitContext = {
+                    kind: 'interceptor',
+                    ctx: context,
+                };
+                if (this.options.initializePlugins) {
+                    await this.pluginHost?.beforeSetup(pluginCtx);
+                }
                 if (this.options.generateId) {
                     const id = await this.options.idGenerator?.(context);
                     cls.setIfUndefined<any>(CLS_ID, id);
@@ -40,7 +50,7 @@ export class ClsInterceptor implements NestInterceptor {
                     await this.options.setup(cls, context);
                 }
                 if (this.options.initializePlugins) {
-                    await cls.initializePlugins();
+                    await this.pluginHost?.afterSetup(pluginCtx);
                 }
                 if (this.options.resolveProxyProviders) {
                     await cls.resolveProxyProviders();

@@ -17,6 +17,7 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
+import { isNonNullable } from '../../utils/is-non-nullable';
 import { ClsGuard } from '../cls-initializers/cls.guard';
 import { ClsInterceptor } from '../cls-initializers/cls.interceptor';
 import { ClsMiddleware } from '../cls-initializers/cls.middleware';
@@ -33,7 +34,10 @@ import {
     ClsModuleAsyncOptions,
     ClsModuleOptions,
 } from '../cls.options';
-import { ClsPluginManager } from '../plugin/cls-plugin-manager';
+import {
+    ClsPluginsHooksHost,
+    ClsPluginsModule,
+} from '../plugin/cls-plugins.module';
 import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
 import { ClsCommonModule } from './cls-common.module';
 import { getMiddlewareMountPoint } from './middleware.utils';
@@ -85,7 +89,7 @@ export class ClsRootModule implements NestModule, OnModuleInit {
 
         return {
             module: ClsRootModule,
-            imports: ClsPluginManager.registerPlugins(options.plugins),
+            imports: [ClsPluginsModule.register(options.plugins ?? [])],
             providers: [
                 {
                     provide: CLS_MODULE_OPTIONS,
@@ -94,7 +98,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
                 ...providers,
                 ...proxyProviders,
             ],
-            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
+            exports: [
+                ...exports,
+                ...proxyProviders.map((p) => p.provide),
+                options.plugins && ClsPluginsModule,
+            ].filter(isNonNullable),
             global: false,
         };
     }
@@ -114,7 +122,7 @@ export class ClsRootModule implements NestModule, OnModuleInit {
             module: ClsRootModule,
             imports: [
                 ...(asyncOptions.imports ?? []),
-                ...ClsPluginManager.registerPlugins(asyncOptions.plugins),
+                ClsPluginsModule.register(asyncOptions.plugins ?? []),
             ],
             providers: [
                 {
@@ -125,7 +133,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
                 ...providers,
                 ...proxyProviders,
             ],
-            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
+            exports: [
+                ...exports,
+                ...proxyProviders.map((p) => p.provide),
+                ClsPluginsModule,
+            ],
             global: false,
         };
     }
@@ -165,12 +177,12 @@ export class ClsRootModule implements NestModule, OnModuleInit {
         const enhancerArr: Provider[] = [
             {
                 provide: APP_GUARD,
-                inject: [CLS_GUARD_OPTIONS],
+                inject: [CLS_GUARD_OPTIONS, ClsPluginsHooksHost],
                 useFactory: this.clsGuardFactory,
             },
             {
                 provide: APP_INTERCEPTOR,
-                inject: [CLS_INTERCEPTOR_OPTIONS],
+                inject: [CLS_INTERCEPTOR_OPTIONS, ClsPluginsHooksHost],
                 useFactory: this.clsInterceptorFactory,
             },
         ];
@@ -211,12 +223,15 @@ export class ClsRootModule implements NestModule, OnModuleInit {
         return clsInterceptorOptions;
     }
 
-    private static clsGuardFactory(options: ClsGuardOptions): CanActivate {
+    private static clsGuardFactory(
+        options: ClsGuardOptions,
+        hooksHost: ClsPluginsHooksHost,
+    ): CanActivate {
         if (options.mount) {
             ClsRootModule.logger.debug(
                 'ClsGuard will be automatically mounted',
             );
-            return new ClsGuard(options);
+            return new ClsGuard(options, hooksHost);
         }
         return {
             canActivate: () => true,
@@ -225,12 +240,13 @@ export class ClsRootModule implements NestModule, OnModuleInit {
 
     private static clsInterceptorFactory(
         options: ClsInterceptorOptions,
+        hooksHost: ClsPluginsHooksHost,
     ): NestInterceptor {
         if (options.mount) {
             ClsRootModule.logger.debug(
                 'ClsInterceptor will be automatically mounted',
             );
-            return new ClsInterceptor(options);
+            return new ClsInterceptor(options, hooksHost);
         }
         return {
             intercept: (_, next) => next.handle(),
