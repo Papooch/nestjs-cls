@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-mongoose",
-    "version": "1.1.12",
+    "version": "1.1.13",
     "description": "A mongoose adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
@@ -46,9 +46,9 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^2.4.11",
+        "@nestjs-cls/transactional": "workspace:^2.4.12",
         "mongoose": "> 8",
-        "nestjs-cls": "workspace:^5.3.0"
+        "nestjs-cls": "workspace:^5.4.0"
     },
     "devDependencies": {
         "@nestjs/cli": "^11.0.2",
