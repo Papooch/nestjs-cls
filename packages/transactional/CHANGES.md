@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.5.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.12...@nestjs-cls/transactional@2.5.0) "@nestjs-cls/transactional" (2025-02-28)<a name="2.5.0"></a>
+
+### Features
+
+* **transactional**: adds supports propagation mode (#219) ([95b1fdb](https://github.com/Papooch/nestjs-cls/commits/95b1fdb))
+
+
+
+
 ## [2.4.10](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.9...@nestjs-cls/transactional@2.4.10) "@nestjs-cls/transactional" (2025-02-10)<a name="2.4.10"></a>
 
 ### Dependencies

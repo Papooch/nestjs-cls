@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-typeorm",
-    "version": "1.2.14",
+    "version": "1.2.15",
     "description": "A typeorm adapter for @nestjs-cls/transactional",
     "author": "Giosuè Delgado S.Z. - Relybytes Srl <info@relybytes.com>",
     "license": "MIT",
@@ -42,7 +42,7 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^2.4.12",
+        "@nestjs-cls/transactional": "workspace:^2.5.0",
         "nestjs-cls": "workspace:^5.4.0",
         "typeorm": "0.3.20"
     },
