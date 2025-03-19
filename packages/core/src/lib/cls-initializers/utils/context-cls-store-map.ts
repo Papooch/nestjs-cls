@@ -36,7 +36,12 @@ export class ContextClsStoreMap {
     private static getContextByType(context: ExecutionContext): any {
         switch (context.getType() as ContextType | 'graphql') {
             case 'http':
-                return context.switchToHttp().getRequest();
+                const request = context.switchToHttp().getRequest();
+                // Workaround for Fastify
+                // When setting the request from ClsMiddleware, we only have access to the "raw" request
+                // But when accessing it from other enhancers, we receive the "full" request. Therefore,
+                // we have to reach into the "raw" property to be able to compare the identity of the request.
+                return request.raw ?? request;
             case 'ws':
                 return context.switchToWs();
             case 'rpc':
