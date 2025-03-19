@@ -12,6 +12,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClsMiddleware, ClsModule } from '../../src';
 import { expectErrorIdsRest, expectOkIdsRest } from './expect-ids-rest';
 import { TestHttpController, TestHttpService } from './http.app';
+import { TestMiddleware } from '../common/test.middleware';
 
 let app: INestApplication;
 describe('Http Fastify App - Auto bound Middleware', () => {
@@ -24,7 +25,11 @@ describe('Http Fastify App - Auto bound Middleware', () => {
         providers: [TestHttpService],
         controllers: [TestHttpController],
     })
-    class TestAppWithAutoBoundMiddleware {}
+    class TestAppWithAutoBoundMiddleware implements NestModule {
+        configure(consumer: MiddlewareConsumer) {
+            consumer.apply(TestMiddleware).forRoutes('/');
+        }
+    }
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -56,7 +61,11 @@ describe('Http Fastify App - Auto bound Middleware + global prefix', () => {
         providers: [TestHttpService],
         controllers: [TestHttpController],
     })
-    class TestAppWithAutoBoundMiddleware {}
+    class TestAppWithAutoBoundMiddleware implements NestModule {
+        configure(consumer: MiddlewareConsumer) {
+            consumer.apply(TestMiddleware).forRoutes('/');
+        }
+    }
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -87,7 +96,11 @@ describe('Http Fastify App - Manually bound Middleware in AppModule', () => {
     })
     class TestAppWithManuallyBoundMiddleware implements NestModule {
         configure(consumer: MiddlewareConsumer) {
-            consumer.apply(ClsMiddleware).forRoutes('*');
+            consumer
+                .apply(ClsMiddleware)
+                .forRoutes('*')
+                .apply(TestMiddleware)
+                .forRoutes('*');
         }
     }
 
@@ -119,7 +132,11 @@ describe('Http Fastify App - Manually bound Middleware in AppModule + global pre
     })
     class TestAppWithManuallyBoundMiddleware implements NestModule {
         configure(consumer: MiddlewareConsumer) {
-            consumer.apply(ClsMiddleware).forRoutes('*');
+            consumer
+                .apply(ClsMiddleware)
+                .forRoutes('*')
+                .apply(TestMiddleware)
+                .forRoutes('*');
         }
     }
 
@@ -209,6 +226,56 @@ describe('Http Fastify App - Auto bound Interceptor', () => {
     });
 
     it('does not leak context', () => {
-        return Promise.all(Array(10).fill(app).map(expectOkIdsRest));
+        return Promise.all(
+            Array(10)
+                .fill(app)
+                .map(() => expectOkIdsRest('hello')),
+        );
+    });
+});
+
+describe('Http Fastify App - All enhancers auto-bound', () => {
+    @Module({
+        imports: [
+            ClsModule.forRoot({
+                middleware: {
+                    mount: true,
+                    generateId: true,
+                    idGenerator: () => 'middleware',
+                },
+                guard: {
+                    mount: true,
+                    generateId: true,
+                    idGenerator: () => 'guard',
+                },
+                interceptor: {
+                    mount: true,
+                    generateId: true,
+                    idGenerator: () => 'interceptor',
+                },
+            }),
+        ],
+        providers: [TestHttpService],
+        controllers: [TestHttpController],
+    })
+    class TestAppWithAllAutoBoundEnhancers implements NestModule {
+        configure(consumer: MiddlewareConsumer) {
+            consumer.apply(TestMiddleware).forRoutes('/');
+        }
+    }
+
+    beforeAll(async () => {
+        const moduleFixture: TestingModule = await Test.createTestingModule({
+            imports: [TestAppWithAllAutoBoundEnhancers],
+        }).compile();
+        app = moduleFixture.createNestApplication<NestFastifyApplication>(
+            new FastifyAdapter(),
+        );
+        await app.init();
+        await app.getHttpAdapter().getInstance().ready();
+    });
+
+    it('should use context from the first enhancer with OK response', () => {
+        return expectOkIdsRest('/hello', 'middleware')(app);
     });
 });

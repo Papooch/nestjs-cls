@@ -2,14 +2,19 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
 export const expectOkIdsRest =
-    (path = '/hello') =>
+    (path = '/hello', expectedId?: string) =>
     (app: INestApplication) =>
         request(app.getHttpServer())
             .get(path)
             .expect(200)
             .then((r) => {
                 const body = r.body;
-                const id = body.fromGuard ?? body.fromInterceptor;
+                // try to get the first possible id
+                const id =
+                    expectedId ??
+                    body.fromMiddleware ??
+                    body.fromGuard ??
+                    body.fromInterceptor;
                 expect(body.fromInterceptor).toEqual(id);
                 expect(body.fromInterceptorAfter).toEqual(id);
                 expect(body.fromController).toEqual(id);
@@ -24,7 +29,11 @@ export const expectErrorIdsRest =
             .expect(500)
             .then((r) => {
                 const body = r.body;
-                const id = body.fromGuard ?? body.fromInterceptor;
+                // try to get the first possible id
+                const id =
+                    body.fromMiddleware ??
+                    body.fromGuard ??
+                    body.fromInterceptor;
                 expect(body.fromInterceptor).toEqual(id);
                 expect(body.fromController).toEqual(id);
                 expect(body.fromService).toEqual(id);
