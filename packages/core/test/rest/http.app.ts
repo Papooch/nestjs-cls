@@ -18,6 +18,7 @@ export class TestHttpService {
 
     async hello() {
         return {
+            fromMiddleware: this.cls.get('FROM_MIDDLEWARE'),
             fromGuard: this.cls.get('FROM_GUARD'),
             fromInterceptor: this.cls.get('FROM_INTERCEPTOR'),
             fromInterceptorAfter: this.cls.get('FROM_INTERCEPTOR'),
