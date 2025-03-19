@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.4.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.0...nestjs-cls@5.4.1) "nestjs-cls" (2025-03-19)<a name="5.4.1"></a>
+
+### Bug Fixes
+
+* **core**: fix context loss when multiple enhancers are used with Fastify 5 ([b3d38c3](https://github.com/Papooch/nestjs-cls/commits/b3d38c3))
+* **core**: reuse context when other Cls-enhancers are used together with ClsMiddleware with Fastify 5 (#223) ([b3d38c3](https://github.com/Papooch/nestjs-cls/commits/b3d38c3))
+
+
+
+
 ## [5.4.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.3.0...nestjs-cls@5.4.0) "nestjs-cls" (2025-02-17)<a name="5.4.0"></a>
 
 ### Features
