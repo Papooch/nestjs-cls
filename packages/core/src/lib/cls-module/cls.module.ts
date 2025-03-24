@@ -1,8 +1,8 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ClsModuleAsyncOptions, ClsModuleOptions } from '../cls.options';
-import { ClsPluginManager } from '../plugin/cls-plugin-manager';
 
 import { ClsPlugin } from '../plugin/cls-plugin.interface';
+import { ClsPluginsModule } from '../plugin/cls-plugins.module';
 import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
 import { ClsModuleProxyProviderOptions } from '../proxy-provider/proxy-provider.interfaces';
 import { ClsCommonModule } from './cls-common.module';
@@ -24,7 +24,10 @@ export class ClsModule {
     static forRoot(options?: ClsModuleOptions): DynamicModule {
         return {
             module: ClsModule,
-            imports: [ClsRootModule.forRoot(options)],
+            imports: [
+                ClsRootModule.forRoot(options),
+                ...ClsPluginsModule.createPluginModules(options?.plugins),
+            ],
             global: options?.global,
         };
     }
@@ -37,7 +40,10 @@ export class ClsModule {
     static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
         return {
             module: ClsModule,
-            imports: [ClsRootModule.forRootAsync(asyncOptions)],
+            imports: [
+                ClsRootModule.forRootAsync(asyncOptions),
+                ...ClsPluginsModule.createPluginModules(asyncOptions.plugins),
+            ],
             global: asyncOptions?.global,
         };
     }
@@ -87,7 +93,7 @@ export class ClsModule {
     static registerPlugins(plugins: ClsPlugin[]): DynamicModule {
         return {
             module: ClsModule,
-            imports: ClsPluginManager.registerPlugins(plugins),
+            imports: ClsPluginsModule.createPluginModules(plugins),
         };
     }
 }
