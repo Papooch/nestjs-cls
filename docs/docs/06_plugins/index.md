@@ -26,17 +26,11 @@ ClsModule.forRootAsync({
 });
 ```
 
-~~If you need to inject Plugins from an external module, use the `ClsModule.registerPlugins()` registration to import the containing module.~~
+If you need to inject Plugins from an external module, use the `ClsModule.registerPlugins()` registration to import the containing module.
 
 ```ts
 ClsModule.registerPlugins([new MyPlugin()]);
 ```
-
-:::warning
-
-The `ClsModule.registerPlugins` method is deprecated and will be removed in a future release due to a major refactor of the plugin architecture. All plugins must be registered via the root method.
-
-:::
 
 ## Available plugins
 

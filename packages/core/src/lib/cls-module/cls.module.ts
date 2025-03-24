@@ -1,8 +1,8 @@
-import { DynamicModule, Logger, Module, Type } from '@nestjs/common';
+import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ClsModuleAsyncOptions, ClsModuleOptions } from '../cls.options';
-import { ClsPluginManager } from '../plugin/cls-plugin-manager';
 
 import { ClsPlugin } from '../plugin/cls-plugin.interface';
+import { ClsPluginsModule } from '../plugin/cls-plugins.module';
 import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
 import { ClsModuleProxyProviderOptions } from '../proxy-provider/proxy-provider.interfaces';
 import { ClsCommonModule } from './cls-common.module';
@@ -24,7 +24,10 @@ export class ClsModule {
     static forRoot(options?: ClsModuleOptions): DynamicModule {
         return {
             module: ClsModule,
-            imports: [ClsRootModule.forRoot(options)],
+            imports: [
+                ClsRootModule.forRoot(options),
+                ...ClsPluginsModule.createPluginModules(options?.plugins),
+            ],
             global: options?.global,
         };
     }
@@ -37,7 +40,10 @@ export class ClsModule {
     static forRootAsync(asyncOptions: ClsModuleAsyncOptions): DynamicModule {
         return {
             module: ClsModule,
-            imports: [ClsRootModule.forRootAsync(asyncOptions)],
+            imports: [
+                ClsRootModule.forRootAsync(asyncOptions),
+                ...ClsPluginsModule.createPluginModules(asyncOptions.plugins),
+            ],
             global: asyncOptions?.global,
         };
     }
@@ -83,21 +89,11 @@ export class ClsModule {
 
     /**
      * Registers the given Plugins the module along with `ClsService`.
-     * @deprecated
-     * All plugins must be registered in the `ClsModule.forRoot` or `ClsModule.forRootAsync` options.
-     *
-     * Since the plugin API is still experimental, this method will print a warning, throw error
-     * and will be eventually removed, possibly in a minor release.
      */
     static registerPlugins(plugins: ClsPlugin[]): DynamicModule {
-        const logger = new Logger('ClsModule');
-        logger.warn(
-            'The `ClsModule.registerPlugins` method is deprecated and will be removed in a future release. ' +
-                'All plugins must be registered in the `ClsModule.forRoot` or `ClsModule.forRootAsync` options.',
-        );
         return {
             module: ClsModule,
-            imports: ClsPluginManager.registerPlugins(plugins),
+            imports: ClsPluginsModule.createPluginModules(plugins),
         };
     }
 }

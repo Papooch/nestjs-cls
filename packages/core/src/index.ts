@@ -10,6 +10,7 @@ export * from './lib/cls.options';
 export * from './lib/cls.service';
 export * from './lib/inject-cls.decorator';
 export * from './lib/plugin/cls-plugin.interface';
+export * from './lib/plugin/cls-plugin-base';
 export * from './lib/proxy-provider/injectable-proxy.decorator';
 export * from './lib/proxy-provider/proxy-provider.exceptions';
 export * from './lib/proxy-provider/proxy-provider.interfaces';

@@ -1,0 +1,66 @@
+{
+  "name": "@nestjs-cls/auth",
+  "version": "0.0.1",
+  "description": "A nestjs-cls plugin for authentication",
+  "author": "papooch",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Papooch/nestjs-cls.git"
+  },
+  "homepage": "https://papooch.github.io/nestjs-cls/",
+  "keywords": [
+    "nest",
+    "nestjs",
+    "cls",
+    "continuation-local-storage",
+    "als",
+    "AsyncLocalStorage",
+    "async_hooks",
+    "request context",
+    "async context",
+    "auth",
+    "authentication",
+    "authorization"
+  ],
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src/**/!(*.spec).d.ts",
+    "dist/src/**/!(*.spec).js"
+  ],
+  "scripts": {
+    "prepack": "cp ../../../LICENSE ./LICENSE",
+    "prebuild": "rimraf dist",
+    "build": "tsc",
+    "test": "exit 0",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
+  },
+  "peerDependencies": {
+    "nestjs-cls": "workspace:^5.2.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.2",
+    "@nestjs/common": "^11.0.6",
+    "@nestjs/core": "^11.0.6",
+    "@nestjs/testing": "^11.0.6",
+    "@types/jest": "^28.1.2",
+    "@types/node": "^18.0.0",
+    "jest": "^29.7.0",
+    "reflect-metadata": "^0.2.2",
+    "rimraf": "^6.0.1",
+    "rxjs": "^7.8.1",
+    "ts-jest": "^29.2.5",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "5.7.3"
+  }
+}

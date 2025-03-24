@@ -17,6 +17,7 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
+import { isNonNullable } from '../../utils/is-non-nullable';
 import { ClsGuard } from '../cls-initializers/cls.guard';
 import { ClsInterceptor } from '../cls-initializers/cls.interceptor';
 import { ClsMiddleware } from '../cls-initializers/cls.middleware';
@@ -33,7 +34,7 @@ import {
     ClsModuleAsyncOptions,
     ClsModuleOptions,
 } from '../cls.options';
-import { ClsPluginManager } from '../plugin/cls-plugin-manager';
+import { ClsPluginsModule } from '../plugin/cls-plugins.module';
 import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
 import { ClsCommonModule } from './cls-common.module';
 import { getMiddlewareMountPoint } from './middleware.utils';
@@ -85,7 +86,7 @@ export class ClsRootModule implements NestModule, OnModuleInit {
 
         return {
             module: ClsRootModule,
-            imports: ClsPluginManager.registerPlugins(options.plugins),
+            imports: [ClsPluginsModule.registerPluginHooks()],
             providers: [
                 {
                     provide: CLS_MODULE_OPTIONS,
@@ -94,7 +95,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
                 ...providers,
                 ...proxyProviders,
             ],
-            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
+            exports: [
+                ...exports,
+                ...proxyProviders.map((p) => p.provide),
+                ClsPluginsModule,
+            ].filter(isNonNullable),
             global: false,
         };
     }
@@ -114,7 +119,7 @@ export class ClsRootModule implements NestModule, OnModuleInit {
             module: ClsRootModule,
             imports: [
                 ...(asyncOptions.imports ?? []),
-                ...ClsPluginManager.registerPlugins(asyncOptions.plugins),
+                ClsPluginsModule.registerPluginHooks(),
             ],
             providers: [
                 {
@@ -125,7 +130,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
                 ...providers,
                 ...proxyProviders,
             ],
-            exports: [...exports, ...proxyProviders.map((p) => p.provide)],
+            exports: [
+                ...exports,
+                ...proxyProviders.map((p) => p.provide),
+                ClsPluginsModule,
+            ],
             global: false,
         };
     }
