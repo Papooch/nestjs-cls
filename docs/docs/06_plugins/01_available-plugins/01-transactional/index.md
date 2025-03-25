@@ -40,18 +40,18 @@ The plugin works in conjunction with various adapters that provide the actual tr
 
 Adapters for the following libraries are available:
 
--   Prisma (see [@nestjs-cls/transactional-adapter-prisma](./01-prisma-adapter.md))
--   Knex (see [@nestjs-cls/transactional-adapter-knex](./02-knex-adapter.md))
--   Kysely (see [@nestjs-cls/transactional-adapter-knex](./03-kysely-adapter.md))
--   Pg-promise (see [@nestjs-cls/transactional-adapter-pg-promise](./04-pg-promise-adapter.md))
--   TypeORM (see [@nestjs-cls/transactional-adapter-typeorm](./05-typeorm-adapter.md))
--   MongoDB (see [@nestjs-cls/transactional-adapter-mongodb](./06-mongodb-adapter.md))
--   MongoDB (see [@nestjs-cls/transactional-adapter-mongoose](./07-mongoose-adapter.md))
--   Drizzle ORM (see [@nestjs-cls/transactional-adapter-drizzle-orm](./08-drizzle-orm-adapter.md))
+- Prisma (see [@nestjs-cls/transactional-adapter-prisma](./01-prisma-adapter.md))
+- Knex (see [@nestjs-cls/transactional-adapter-knex](./02-knex-adapter.md))
+- Kysely (see [@nestjs-cls/transactional-adapter-knex](./03-kysely-adapter.md))
+- Pg-promise (see [@nestjs-cls/transactional-adapter-pg-promise](./04-pg-promise-adapter.md))
+- TypeORM (see [@nestjs-cls/transactional-adapter-typeorm](./05-typeorm-adapter.md))
+- MongoDB (see [@nestjs-cls/transactional-adapter-mongodb](./06-mongodb-adapter.md))
+- MongoDB (see [@nestjs-cls/transactional-adapter-mongoose](./07-mongoose-adapter.md))
+- Drizzle ORM (see [@nestjs-cls/transactional-adapter-drizzle-orm](./08-drizzle-orm-adapter.md))
 
 Adapters _will not_ be implemented for the following libraries (unless there is a serious demand):
 
--   Sequelize (since it already includes a [built-in CLS-enabled transaction support](https://sequelize.org/docs/v6/other-topics/transactions/#automatically-pass-transactions-to-all-queries))
+- Sequelize (since it already includes a [built-in CLS-enabled transaction support](https://sequelize.org/docs/v6/other-topics/transactions/#automatically-pass-transactions-to-all-queries))
 
 ## Example
 
@@ -286,23 +286,23 @@ This option is directly inspired by a similar feature of the [Spring](https://do
 
 The propagation option is controlled by the `Propagation` enum, which has the following values:
 
--   **_`Required`_**:
-    (**default**) Reuse the existing transaction or create a new one if none exists.
+- **_`Required`_**:
+  (**default**) Reuse the existing transaction or create a new one if none exists.
 
--   **_`RequiresNew`_**:
-    Create a new transaction even if one already exists. The new transaction is committed independently of the existing one.
+- **_`RequiresNew`_**:
+  Create a new transaction even if one already exists. The new transaction is committed independently of the existing one.
 
--   **_`NotSupported`_**:
-    Run without a transaction even if one exists. The existing transaction is resumed once the callback completes.
+- **_`NotSupported`_**:
+  Run without a transaction even if one exists. The existing transaction is resumed once the callback completes.
 
--   **_`Mandatory`_**:
-    Reuse an existing transaction, throw an exception otherwise.
+- **_`Mandatory`_**:
+  Reuse an existing transaction, throw an exception otherwise.
 
--   **_`Never`_**:
-    Run without a transaction, throw an exception if one already exists.
+- **_`Never`_**:
+  Run without a transaction, throw an exception if one already exists.
 
--   **_`Supports`_**:
-    Reuse the existing transaction or continue without a transaction if none exists.
+- **_`Supports`_**:
+  Reuse the existing transaction or continue without a transaction if none exists.
 
 This parameter comes _before_ the `TransactionOptions` object, if one is provided. The default behavior when a nested transaction decorator is encountered if no propagation option is provided, is to reuse the existing transaction or create a new one if none exists, which is the same as the `Required` propagation option.
 
@@ -364,46 +364,49 @@ class AccountService {
 
 The `ClsPluginTransactional` constructor takes an options object with the following properties:
 
--   **_`imports`_**`: any[]`  
-    An array of NestJS modules that should be imported for the plugin to work. If the dependencies are available in the global context, this is not necessary.
+- **_`imports`_**`: any[]`  
+  An array of NestJS modules that should be imported for the plugin to work. If the dependencies are available in the global context, this is not necessary.
 
--   **_`adapter`_**`: TransactionalAdapter`  
-     An instance of the adapter that should be used for the plugin.
+- **_`adapter`_**`: TransactionalAdapter`  
+   An instance of the adapter that should be used for the plugin.
 
--   **_`enableTransactionProxy`_**`: boolean` (default: `false`)  
-     Whether to enable injecting the Transaction instance directly using [`@InjectTransaction()`](#using-the-injecttransaction-decorator)
+- **_`enableTransactionProxy`_**`: boolean` (default: `false`)  
+   Whether to enable injecting the Transaction instance directly using [`@InjectTransaction()`](#using-the-injecttransaction-decorator)
 
 ### `TransactionHost` Interface
 
 The `TransactionHost` interface is the main working interface of the plugin. It provides the following API:
 
--   **_`tx`_**`: Transaction`  
-    Reference to the currently active transaction. Depending on the adapter implementation for the underlying database library, this can be either a transaction client instance, a transaction object or a transaction ID. If no transaction is active, refers to the default non-transactional client instance (or undefined transaction ID).
+- **_`tx`_**`: Transaction`  
+  Reference to the currently active transaction. Depending on the adapter implementation for the underlying database library, this can be either a transaction client instance, a transaction object or a transaction ID. If no transaction is active, refers to the default non-transactional client instance (or undefined transaction ID).
 
--   **_`withTransaction`_**`(callback): Promise`\
-    **_`withTransaction`_**`(options, callback): Promise`  
-    **_`withTransaction`_**`(propagation, callback): Promise`  
-    **_`withTransaction`_**`(propagation, options, callback): Promise`  
-    Runs the callback in a transaction. Optionally takes `Propagation` and `TransactionOptions` as the first one or two parameters.
+- **_`withTransaction`_**`(callback): Promise`\
+  **_`withTransaction`_**`(options, callback): Promise`  
+  **_`withTransaction`_**`(propagation, callback): Promise`  
+  **_`withTransaction`_**`(propagation, options, callback): Promise`  
+  Runs the callback in a transaction. Optionally takes `Propagation` and `TransactionOptions` as the first one or two parameters.
 
--   **_`withoutTransaction`_**`(callback): Promise`  
-    Runs the callback without a transaction (even if one is active in the parent scope). This is analogous to using the `Propagation.NotSupported` mode.
+- **_`withoutTransaction`_**`(callback): Promise`  
+  Runs the callback without a transaction (even if one is active in the parent scope). This is analogous to using the `Propagation.NotSupported` mode.
 
--   **_`isTransactionActive`_**`(): boolean`  
-    Returns whether a CLS-managed transaction is active in the current scope.
+- **_`isTransactionActive`_**`(): boolean`  
+  Returns whether a CLS-managed transaction is active in the current scope.
+
+- **_static `TransactionHost.getInstance`_**`(connectionName): TransactionHost`  
+  Returns the singleton instance of the TransactionHost for the given connection name. Useful when DI is not available.
 
 ### `@Transactional` decorator interface
 
 The `@Transactional` decorator can be used to wrap a method call in the `withTransaction` call implicitly. It has the following call signatures:
 
--   **_`@Transactional`_**`()`
--   **_`@Transactional`_**`(propagation)`
--   **_`@Transactional`_**`(options)`
--   **_`@Transactional`_**`(propagation, options)`
+- **_`@Transactional`_**`()`
+- **_`@Transactional`_**`(propagation)`
+- **_`@Transactional`_**`(options)`
+- **_`@Transactional`_**`(propagation, options)`
 
 Or when using named connections:
 
--   **_`@Transactional`_**`(connectionName, propagation?, options?)`
+- **_`@Transactional`_**`(connectionName, propagation?, options?)`
 
 ## Multiple databases
 

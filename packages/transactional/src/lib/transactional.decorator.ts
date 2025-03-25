@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Inject } from '@nestjs/common';
 import { copyMethodMetadata } from 'nestjs-cls';
 import { TOptionsFromAdapter } from './interfaces';
 import { Propagation } from './propagation';
-import { getTransactionHostToken, TransactionHost } from './transaction-host';
+import { TransactionHost } from './transaction-host';
 
 /**
  * Run the decorated method in a transaction.
@@ -94,19 +93,12 @@ export function Transactional(
             options = firstParam;
         }
     }
-    const transactionHostProperty =
-        getTransactionHostPropertyName(connectionName);
-    const injectTransactionHost = Inject(
-        getTransactionHostToken(connectionName),
-    );
+
     return ((
         target: any,
         propertyKey: string | symbol,
         descriptor: TypedPropertyDescriptor<(...args: any) => Promise<any>>,
     ) => {
-        if (!target[transactionHostProperty]) {
-            injectTransactionHost(target, transactionHostProperty);
-        }
         const original = descriptor.value;
         if (typeof original !== 'function') {
             throw new Error(
@@ -115,14 +107,9 @@ export function Transactional(
         }
         descriptor.value = new Proxy(original, {
             apply: function (_, outerThis, args: any[]) {
-                if (!outerThis[transactionHostProperty]) {
-                    throw new Error(
-                        `Failed to inject transaction host into ${target.constructor.name}`,
-                    );
-                }
-                return (
-                    outerThis[transactionHostProperty] as TransactionHost
-                ).withTransaction(
+                const transactionHost =
+                    TransactionHost.getInstance(connectionName);
+                return transactionHost.withTransaction(
                     propagation as Propagation,
                     options as never,
                     original.bind(outerThis, ...args),
@@ -131,10 +118,6 @@ export function Transactional(
         });
         copyMethodMetadata(original, descriptor.value);
     }) as MethodDecorator;
-}
-
-function getTransactionHostPropertyName(connectionName?: string) {
-    return `__transactionHost${connectionName ? `_${connectionName}` : ''}`;
 }
 
 function paramIsPropagationMode(param: any): param is Propagation {
