@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.6.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.5.1...@nestjs-cls/transactional@2.6.0) "@nestjs-cls/transactional" (2025-03-25)<a name="2.6.0"></a>
+
+### Features
+
+* **transactional**: make Transactional decorator not depend on DI (#225) ([471ab7d](https://github.com/Papooch/nestjs-cls/commits/471ab7d))
+
+
+
+
 ## [2.5.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.4.12...@nestjs-cls/transactional@2.5.0) "@nestjs-cls/transactional" (2025-02-28)<a name="2.5.0"></a>
 
 ### Features
