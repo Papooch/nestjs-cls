@@ -20,6 +20,26 @@ export class TransactionHost<TAdapter = never> {
     private readonly logger = new Logger(TransactionHost.name);
     private readonly transactionInstanceSymbol: symbol;
 
+    private static _instanceMap = new Map<symbol, TransactionHost>();
+
+    /**
+     * Get a singleton instance of the TransactionHost outside of DI.
+     *
+     * @param connectionName The name of the connection. If omitted, the default instance is used.
+     */
+    static getInstance<TAdapter = never>(
+        connectionName?: string,
+    ): TransactionHost<TAdapter> {
+        const instanceSymbol = getTransactionClsKey(connectionName);
+        const instance = this._instanceMap.get(instanceSymbol);
+        if (!instance) {
+            throw new Error(
+                'TransactionHost not initialized, Make sure that the `ClsPluginTransactional` is properly registered and that the correct `connectionName` is used.',
+            );
+        }
+        return instance;
+    }
+
     constructor(
         @Inject(TRANSACTIONAL_ADAPTER_OPTIONS)
         private readonly _options: MergedTransactionalAdapterOptions<
@@ -30,6 +50,7 @@ export class TransactionHost<TAdapter = never> {
         this.transactionInstanceSymbol = getTransactionClsKey(
             this._options.connectionName,
         );
+        TransactionHost._instanceMap.set(this.transactionInstanceSymbol, this);
     }
 
     /**
