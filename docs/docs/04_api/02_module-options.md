@@ -19,6 +19,9 @@ The `ClsModule.forRoot()` method takes the following **`ClsModuleOptions`**:
 - **_`proxyProviders?:`_**`Type[]`  
   Array of [Proxy Providers](../03_features-and-use-cases/06_proxy-providers.md) that should be registered in the root module. Currently only accepts sync class Proxy providers, use `ClsModule.forFeatureAsync()` for more complex use-cases.
 
+- **_`plugins?`:_** `ClsPlugin[]`  
+  Array of registered plugins, see [Plugins](../06_plugins/index.md).
+
 `ClsModule.forRootAsync()` is also available. You can supply the usual `imports`, `inject` and `useFactory` parameters as usual.
 
 :::info
@@ -26,6 +29,10 @@ The `ClsModule.forRoot()` method takes the following **`ClsModuleOptions`**:
 **Please note**: If you intend to use multiple enhancers at the same time (e.g. initialize the CLS context in a middleware and then set some additional CLS variables in an interceptor), be aware that the only the first one in the chain will set the Request ID.
 
 :::
+
+## registerPlugins
+
+The `registerPlugins` static method accepts an array of plugins. see [Plugins](../06_plugins/index.md).
 
 ## forFeature(Async)
 
@@ -83,7 +90,7 @@ All of the **`Cls{Middleware,Guard,Interceptor}Options`** take the following par
   Whether to automatically resolve Proxy Providers in the enhancer (if any are registered).
 
 - **_`initializePlugins?:`_**`boolean` (default _`true`_)  
-  Whether to run the initialization hooks for plugins as a part of the CLS context registration.
+  Whether to run the `onClsInit` hook for plugins as a part of the CLS context registration (runs before `resolveProxyProviders` just after `setup`).
 
 The `ClsMiddlewareOptions` additionally takes the following parameters:
 
