@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.4.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.1...nestjs-cls@5.4.2) "nestjs-cls" (2025-03-26)<a name="5.4.2"></a>
+
+### Bug Fixes
+
+* **core**: un-deprecate wrongly deprecated parts of the plugin API (#228) ([11ca429](https://github.com/Papooch/nestjs-cls/commits/11ca429))
+
+
+
+
 ## [5.4.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.0...nestjs-cls@5.4.1) "nestjs-cls" (2025-03-19)<a name="5.4.1"></a>
 
 ### Bug Fixes
