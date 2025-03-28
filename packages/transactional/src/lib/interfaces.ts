@@ -40,7 +40,14 @@ export interface TransactionalAdapter<TConnection, TTx, TOptions>
      * Token used to inject the `connection` into the adapter.
      * It is later used to create transactions.
      */
-    connectionToken: any;
+    connectionToken?: any;
+
+    /**
+     * An instance of the `connection`.
+     *
+     * Only used when `connectionToken` is not provided.
+     */
+    connection?: TConnection;
 
     /**
      * Default options for all transactions
