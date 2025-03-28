@@ -30,7 +30,9 @@ export class ClsPluginTransactional implements ClsPlugin {
         this.providers = [
             {
                 provide: TRANSACTION_CONNECTION,
-                useExisting: options.adapter.connectionToken,
+                ...(options.adapter.connectionToken
+                    ? { useExisting: options.adapter.connectionToken }
+                    : { useValue: options.adapter.connection }),
             },
             {
                 provide: TRANSACTIONAL_ADAPTER_OPTIONS,

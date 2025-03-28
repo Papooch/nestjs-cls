@@ -10,3 +10,4 @@ export {
     TransactionalPluginOptions,
     Transaction,
 } from './lib/interfaces';
+export * from './lib/no-op-transactional-adapter';
