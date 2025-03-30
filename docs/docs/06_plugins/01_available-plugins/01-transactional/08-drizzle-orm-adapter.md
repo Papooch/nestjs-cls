@@ -130,7 +130,7 @@ class UserRepository {
     async getUserById(id: number) {
         // highlight-start
         // txHost.tx is typed as DrizzleClient
-        return this.tx.query.users.findFirst({
+        return this.txHost.tx.query.users.findFirst({
             where: eq(users.id, id),
         });
         // highlight-end
