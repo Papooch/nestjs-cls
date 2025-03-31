@@ -52,10 +52,10 @@
         "nestjs-cls": "workspace:^5.4.2"
     },
     "devDependencies": {
-        "@nestjs/cli": "^11.0.2",
-        "@nestjs/common": "^11.0.6",
-        "@nestjs/core": "^11.0.6",
-        "@nestjs/testing": "^11.0.6",
+        "@nestjs/cli": "^11.0.5",
+        "@nestjs/common": "^11.0.12",
+        "@nestjs/core": "^11.0.12",
+        "@nestjs/testing": "^11.0.12",
         "@types/jest": "^28.1.2",
         "@types/node": "^18.0.0",
         "@types/pg": "^8",
@@ -64,7 +64,7 @@
         "pg": "^8.11.3",
         "reflect-metadata": "^0.2.2",
         "rimraf": "^6.0.1",
-        "rxjs": "^7.8.1",
+        "rxjs": "^7.8.2",
         "ts-jest": "^29.2.5",
         "ts-loader": "^9.5.2",
         "ts-node": "^10.9.2",
