@@ -65,7 +65,7 @@
     "@nestjs/testing": "^11.0.12",
     "@nestjs/testing10": "npm:@nestjs/testing@10.4.15",
     "@nestjs/websockets": "^11.0.12",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.1",
     "@types/jest": "^28.1.2",
     "@types/node": "^18.0.0",
     "@types/supertest": "^2.0.12",
