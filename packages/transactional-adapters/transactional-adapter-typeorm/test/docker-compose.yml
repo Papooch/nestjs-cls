@@ -1,5 +1,5 @@
 services:
-  db:
+  typeorm-test-db:
     image: postgres:15
     ports:
       - 5446:5432

@@ -1,5 +1,5 @@
 services:
-  db:
+  pg-promise-test-db:
     image: postgres:15
     ports:
       - 5444:5432
