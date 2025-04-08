@@ -6578,7 +6578,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-drizzle-orm@workspace:packages/transactional-adapters/transactional-adapter-drizzle-orm"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/jest": "npm:^29.5.14"
@@ -6607,7 +6607,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-knex@workspace:packages/transactional-adapters/transactional-adapter-knex"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/jest": "npm:^29.5.14"
@@ -6635,7 +6635,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-kysely@workspace:packages/transactional-adapters/transactional-adapter-kysely"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/better-sqlite3": "npm:^7.6.12"
@@ -6665,7 +6665,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-mongodb@workspace:packages/transactional-adapters/transactional-adapter-mongodb"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/jest": "npm:^29.5.14"
@@ -6694,7 +6694,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-mongoose@workspace:packages/transactional-adapters/transactional-adapter-mongoose"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/jest": "npm:^29.5.14"
@@ -6723,7 +6723,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-pg-promise@workspace:packages/transactional-adapters/transactional-adapter-pg-promise"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/jest": "npm:^29.5.14"
@@ -6750,7 +6750,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-prisma@workspace:packages/transactional-adapters/transactional-adapter-prisma"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@prisma/client": "npm:^6.5.0"
@@ -6779,7 +6779,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-typeorm@workspace:packages/transactional-adapters/transactional-adapter-typeorm"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/testing": "npm:^11.0.12"
     "@types/jest": "npm:^29.5.14"
@@ -6806,7 +6806,7 @@ __metadata:
   resolution: "@nestjs-cls/transactional@workspace:packages/transactional"
   dependencies:
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/schematics": "npm:^11.0.2"
     "@nestjs/testing": "npm:^11.0.12"
@@ -6916,9 +6916,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^11.0.12":
-  version: 11.0.12
-  resolution: "@nestjs/common@npm:11.0.12"
+"@nestjs/common@npm:^11.0.13":
+  version: 11.0.13
+  resolution: "@nestjs/common@npm:11.0.13"
   dependencies:
     iterare: "npm:1.2.1"
     tslib: "npm:2.8.1"
@@ -6933,7 +6933,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/cf8976279dfd04e6a6c2f909e36dcfb4d06207e8dc0eafffcd966fc2d7a147ce511f0ca616c9157fe7c1a316e81241b372d569ab8b8b0aa587cd42283ce0f0f2
+  checksum: 10c0/306a35a22789dd6e73bf3926a17bff4ead51cf6ac4ed20d7122bf8cd32d42fd30de06a877d72e6b3f7e3babded7b09420bd30528d964bd2274d5f22d77df714e
   languageName: node
   linkType: hard
 
@@ -13611,12 +13611,11 @@ __metadata:
   linkType: hard
 
 "estree-util-value-to-estree@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "estree-util-value-to-estree@npm:3.0.1"
+  version: 3.3.3
+  resolution: "estree-util-value-to-estree@npm:3.3.3"
   dependencies:
     "@types/estree": "npm:^1.0.0"
-    is-plain-obj: "npm:^4.0.0"
-  checksum: 10c0/3b32154b783fb18582d41147793f4f8262cc00846c2264cddec8b5e2a2653218dd863fe55d1832daed2fb1d1b33ba2cfeeb880a2f50b59f8b86b45692038ff09
+  checksum: 10c0/cc90e277bff949f49d08dbca28237821506839ab729cafc93105a5a1b02af1a308c1d1f6221ade840351f60ef03faedd2197be454318a16a9e1a7c5af0480c69
   languageName: node
   linkType: hard
 
@@ -19470,7 +19469,7 @@ __metadata:
     "@apollo/server": "npm:^4.11.3"
     "@nestjs/apollo": "npm:^13.0.4"
     "@nestjs/cli": "npm:^11.0.5"
-    "@nestjs/common": "npm:^11.0.12"
+    "@nestjs/common": "npm:^11.0.13"
     "@nestjs/common10": "npm:@nestjs/common@10.4.15"
     "@nestjs/core": "npm:^11.0.12"
     "@nestjs/core10": "npm:@nestjs/core@10.4.15"
