@@ -34,7 +34,8 @@
   "types": "dist/src/index.d.ts",
   "files": [
     "dist/src/**/!(*.spec).d.ts",
-    "dist/src/**/!(*.spec).js"
+    "dist/src/**/!(*.spec).js",
+    "dist/src/**/!(*.spec).js.map"
   ],
   "scripts": {
     "prepack": "cp ../../LICENSE ./LICENSE",
