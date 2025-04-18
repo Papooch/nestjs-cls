@@ -18,11 +18,11 @@ jobs:
       matrix:
         node: [20, 22]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}.x
-          cache: npm
+          cache: yarn
       - run: yarn
       - run: yarn build
       - run: yarn lint
