@@ -2,6 +2,19 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [5.4.3](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.2...nestjs-cls@5.4.3) "nestjs-cls" (2025-04-18)<a name="5.4.3"></a>
+
+### Dependencies
+
+* update nestjs-related deps ([a10e589](https://github.com/Papooch/nestjs-cls/commits/a10e589))
+* update database deps ([4cb30aa](https://github.com/Papooch/nestjs-cls/commits/4cb30aa))
+* update testing deps ([d92a42d](https://github.com/Papooch/nestjs-cls/commits/d92a42d))
+* update dev deps ([f22b578](https://github.com/Papooch/nestjs-cls/commits/f22b578))
+* update dev deps ([58874d3](https://github.com/Papooch/nestjs-cls/commits/58874d3))
+
+
+
+
 ## [5.4.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.1...nestjs-cls@5.4.2) "nestjs-cls" (2025-03-26)<a name="5.4.2"></a>
 
 ### Bug Fixes

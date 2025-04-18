@@ -2,6 +2,22 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [2.7.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.6.1...@nestjs-cls/transactional@2.7.0) "@nestjs-cls/transactional" (2025-04-18)<a name="2.7.0"></a>
+
+### Dependencies
+
+* update nestjs-related deps ([a10e589](https://github.com/Papooch/nestjs-cls/commits/a10e589))
+* update testing deps ([d92a42d](https://github.com/Papooch/nestjs-cls/commits/d92a42d))
+* update dev deps ([f22b578](https://github.com/Papooch/nestjs-cls/commits/f22b578))
+* update dev deps ([58874d3](https://github.com/Papooch/nestjs-cls/commits/58874d3))
+
+### Features
+
+* **transactional**: introduce no-op adapter for testing ([0f9a374](https://github.com/Papooch/nestjs-cls/commits/0f9a374))
+
+
+
+
 ## [2.6.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.5.1...@nestjs-cls/transactional@2.6.0) "@nestjs-cls/transactional" (2025-03-25)<a name="2.6.0"></a>
 
 ### Features
