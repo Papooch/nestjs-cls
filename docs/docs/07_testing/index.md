@@ -4,6 +4,12 @@
 
 Since the `ClsService` and any created Proxy providers are just another injectable providers, they can be entirely mocked out in unit tests using standard techniques.
 
+:::note
+
+Some [Plugins](../06_plugins/index.md) might require additional setup for unit tests. Please refer to the documentation for those plugins for more information.
+
+:::
+
 ## E2E testing
 
 In E2E tests, you should use the real `ClsService` implementation to test the entire application in a real-world scenario. Unless you're using any plugins that require special handling, you should not need to do anything special to set up E2E tests.

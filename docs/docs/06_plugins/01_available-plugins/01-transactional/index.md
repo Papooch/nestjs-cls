@@ -487,3 +487,95 @@ async createUser(name: string): Promise<User> {
     return user;
 }
 ```
+
+## Testing
+
+Setting up unit tests that don't depend on the `@Transactional` decorator is straightforward. You simply need to override the `TransactionHost` provider and use your own mock implementation.
+
+But up unit tests that use the `@Transactional` decorator requires a bit of extra work, since the decorator relies on the `TransactionHost` implicitly, and it needs to be properly initialized via registering a database-specific transactional adapter in the `ClsPluginTransactional`. But usually, we don't want to depend on any database library in our unit tests, and we want to test the application logic in isolation.
+
+There are two ways to set up unit tests:
+
+### Mocking the decorator import
+
+This method only works if your testing/mocking framework supports mocking module imports. For example, _Jest_ can do this via the `jest.mock` function, which will be used as an example.
+
+```ts
+jest.mock('@nestjs-cls/transactional', () => ({
+    // Import everything else from the original module
+    ...jest.requireActual('@nestjs-cls/transactional'),
+    // But override the Transactional decorator with a no-op
+    Transactional: () => jest.fn(),
+}));
+```
+
+This will replace the `@Transactional` decorator with a no-op, any method decorated with it will be treated as a normal method, and the `TransactionHost` won't be needed.
+
+If you also need the `TransactionHost` in your tests, mock it like a regular provider:
+
+```ts
+const transactionHostMock = {
+    tx: { query: jest.fn() },
+};
+
+const module = Test.createTestingModule({
+    providers: [
+        ServiceUnderTest,
+        // highlight-start
+        {
+            // Provide the mock of the TransactionHost
+            provide: TransactionHost,
+            useValue: transactionHostMock,
+        },
+        // highlight-end
+    ],
+});
+```
+
+### Using a No-op adapter
+
+If the above method cannot be used, the `@nestjs-cls/transactional` package exports No-op transactional adapter for convenience.
+
+This adapter _does not start any transactions_, but enables you to provide an implementation (mock) for the transactional client, which will be propagated normally via the `TransactionHost` and referenced in the `tx` property, and be compatible with the `@Transactional` decorator.
+
+```ts
+const clientMock = {
+    query: jest.fn(),
+};
+
+const module = Test.createTestingModule({
+    imports: [
+        ClsModule.registerPlugins([
+            new ClsPluginTransactional({
+                // highlight-start
+                adapter: new NoOpTransactionalAdapter({
+                    tx: clientMock,
+                }),
+                // highlight-end
+            }),
+        ]),
+    ],
+    providers: [ServiceUnderTest],
+});
+```
+
+The client mock can be either provided as a value (above) via the `tx` options, or via the `txToken` option, which will be used to resolve the client from the DI container.
+
+```ts
+ClsModule.registerPlugins([
+    new ClsPluginTransactional({
+        // highlight-start
+        imports: [MocksModule],
+        adapter: new NoOpTransactionalAdapter({
+            txToken: 'MOCK_CLIENT',
+        }),
+        // highlight-end
+    }),
+]);
+```
+
+:::tip
+
+Actual examples can be found on GitHub in the tests folder next to the source (`packages/transactional/test`)
+
+:::
