@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.2.20](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.2.19...@nestjs-cls/transactional-adapter-kysely@1.2.20) "@nestjs-cls/transactional-adapter-kysely" (2025-04-23)<a name="1.2.20"></a>
+
+### Bug Fixes
+
+* **kysely**: fix isolationLevel option not percolating through transaction execution ([cc48aad](https://github.com/Papooch/nestjs-cls/commits/cc48aad))
+
+
+
+
 ## [1.2.19](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.2.18...@nestjs-cls/transactional-adapter-kysely@1.2.19) "@nestjs-cls/transactional-adapter-kysely" (2025-04-18)<a name="1.2.19"></a>
 
 ### Dependencies
