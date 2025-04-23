@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.6",
-    "@nestjs/common": "^11.0.20",
+    "@nestjs/common": "^11.1.0",
     "@nestjs/core": "^11.0.20",
     "@nestjs/testing": "^11.0.20",
     "@prisma/client": "^6.6.0",
