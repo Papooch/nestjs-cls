@@ -265,7 +265,7 @@ describe('Transactional', () => {
                     })
                     .returningAll()
                     .executeTakeFirstOrThrow();
-                console.log(`userA: ${userA.id}`);
+
                 userB = await kyselyDb
                     .insertInto('user')
                     .values({

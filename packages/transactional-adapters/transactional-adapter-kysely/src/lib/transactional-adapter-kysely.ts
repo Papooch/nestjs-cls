@@ -39,9 +39,9 @@ export class TransactionalAdapterKysely<DB = any>
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Kysely<DB>) => void,
         ) => {
-            const transaction = kyselyDb.transaction();
+            let transaction = kyselyDb.transaction();
             if (options?.isolationLevel) {
-                transaction.setIsolationLevel(options.isolationLevel);
+                transaction = transaction.setIsolationLevel(options.isolationLevel);
             }
             return transaction.execute(async (trx) => {
                 setClient(trx);
