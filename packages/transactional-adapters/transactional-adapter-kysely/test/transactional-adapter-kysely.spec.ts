@@ -1,6 +1,7 @@
 import {
     ClsPluginTransactional,
     InjectTransaction,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -123,6 +124,7 @@ const kyselyDb = new Kysely<Database>({
             max: 2,
         }),
     }),
+    log: ['query', 'error'],
 });
 
 @Module({
@@ -134,15 +136,15 @@ const kyselyDb = new Kysely<Database>({
     ],
     exports: [KYSELY],
 })
-class KnexModule {}
+class KyselyModule {}
 
 @Module({
     imports: [
-        KnexModule,
+        KyselyModule,
         ClsModule.forRoot({
             plugins: [
                 new ClsPluginTransactional({
-                    imports: [KnexModule],
+                    imports: [KyselyModule],
                     adapter: new TransactionalAdapterKysely({
                         kyselyInstanceToken: KYSELY,
                     }),
@@ -247,6 +249,71 @@ describe('Transactional', () => {
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
+        });
+
+        describe('Isolation Level', () => {
+            let userA;
+            let userB;
+            let txHost: TransactionHost<TransactionalAdapterKysely<Database>>;
+
+            beforeEach(async () => {
+                userA = await kyselyDb
+                    .insertInto('user')
+                    .values({
+                        name: 'User~A',
+                        email: 'User~A@email.com',
+                    })
+                    .returningAll()
+                    .executeTakeFirstOrThrow();
+                console.log(`userA: ${userA.id}`);
+                userB = await kyselyDb
+                    .insertInto('user')
+                    .values({
+                        name: 'User~B',
+                        email: 'User~B@email.com',
+                    })
+                    .returningAll()
+                    .executeTakeFirstOrThrow();
+                txHost = module.get(TransactionHost);
+            });
+
+            it('should abort a transaction on serialization anomaly', async () => {
+                await expect(
+                    txHost.withTransaction(
+                        { isolationLevel: 'serializable' },
+                        async () => {
+                            const { name: userAname } = await txHost.tx
+                                .selectFrom('user')
+                                .where('id', '=', userA.id)
+                                .select('name')
+                                .executeTakeFirstOrThrow();
+
+                            await txHost.withTransaction(
+                                Propagation.RequiresNew,
+                                { isolationLevel: 'serializable' },
+                                async () => {
+                                    const { name: userBname } = await txHost.tx
+                                        .selectFrom('user')
+                                        .where('id', '=', userB.id)
+                                        .select('name')
+                                        .executeTakeFirstOrThrow();
+
+                                    await txHost.tx
+                                        .updateTable('user')
+                                        .set('name', userBname)
+                                        .where('id', '=', userA.id)
+                                        .execute();
+                                },
+                            );
+
+                            await txHost.tx
+                                .updateTable('user')
+                                .set('name', userAname)
+                                .where('id', '=', userB.id)
+                                .execute();
+                        },
+                    )).rejects.toThrow(new Error('could not serialize access due to read/write dependencies among transactions'));
+            });
         });
     });
 });
