@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/docs"
+      - "/packages/**/*"
+    schedule:
+      interval: "weekly"
+    groups:
+      nestjs:
+        patterns:
+          - "@nestjs/*"
+      graphql:
+        patterns:
+          - "@apollo/*"
+          - "mercurius"
+          - "graphql"
+      documentation:
+        patterns:
+          - "@docusaurus/*"
+          - "docusaurus*"
+          - "*react*"
+  
