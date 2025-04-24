@@ -41,7 +41,7 @@
         "@tophat/conventional-changelog-config": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "^8.29.0",
         "@typescript-eslint/parser": "^8.29.0",
-        "dependency-cruiser": "^11.18.0",
+        "dependency-cruiser": "^16.10.1",
         "eslint": "^9.23.0",
         "eslint-config-prettier": "^10.1.1",
         "eslint-plugin-prettier": "^5.2.5",
