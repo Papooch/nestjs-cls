@@ -6736,7 +6736,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^18.19.84"
     jest: "npm:^29.7.0"
-    mongodb: "npm:^6.15.0"
+    mongodb: "npm:^6.16.0"
     mongodb-memory-server: "npm:^10.1.4"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
@@ -19293,7 +19293,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:^6.15.0, mongodb@npm:^6.9.0, mongodb@npm:~6.15.0":
+"mongodb@npm:^6.16.0":
+  version: 6.16.0
+  resolution: "mongodb@npm:6.16.0"
+  dependencies:
+    "@mongodb-js/saslprep": "npm:^1.1.9"
+    bson: "npm:^6.10.3"
+    mongodb-connection-string-url: "npm:^3.0.0"
+  peerDependencies:
+    "@aws-sdk/credential-providers": ^3.188.0
+    "@mongodb-js/zstd": ^1.1.0 || ^2.0.0
+    gcp-metadata: ^5.2.0
+    kerberos: ^2.0.1
+    mongodb-client-encryption: ">=6.0.0 <7"
+    snappy: ^7.2.2
+    socks: ^2.7.1
+  peerDependenciesMeta:
+    "@aws-sdk/credential-providers":
+      optional: true
+    "@mongodb-js/zstd":
+      optional: true
+    gcp-metadata:
+      optional: true
+    kerberos:
+      optional: true
+    mongodb-client-encryption:
+      optional: true
+    snappy:
+      optional: true
+    socks:
+      optional: true
+  checksum: 10c0/daf54347181d50ff6207a78f545bd1bea856505efa61a1bb29fc200b412fad84971c49e7d8a57e96a09bb6eab9625a6d6ad1d84884afa3a16041d5dba1b18b38
+  languageName: node
+  linkType: hard
+
+"mongodb@npm:^6.9.0, mongodb@npm:~6.15.0":
   version: 6.15.0
   resolution: "mongodb@npm:6.15.0"
   dependencies:
