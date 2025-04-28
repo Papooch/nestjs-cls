@@ -40,7 +40,7 @@
         "@monodeploy/plugin-github": "^2.0.2",
         "@tophat/conventional-changelog-config": "^1.0.1",
         "@typescript-eslint/eslint-plugin": "^8.29.0",
-        "@typescript-eslint/parser": "^8.29.0",
+        "@typescript-eslint/parser": "^8.31.1",
         "dependency-cruiser": "^16.10.1",
         "eslint": "^9.23.0",
         "eslint-config-prettier": "^10.1.2",
