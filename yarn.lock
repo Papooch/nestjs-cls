@@ -15161,10 +15161,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.10.0":
-  version: 16.10.0
-  resolution: "graphql@npm:16.10.0"
-  checksum: 10c0/303730675538c8bd6c76b447dc6f03e61242e2d2596b408c34759666ec4877409e5593a7a0467d590ac5407b8c663b093b599556a77f24f281abea69ddc53de6
+"graphql@npm:^16.11.0":
+  version: 16.11.0
+  resolution: "graphql@npm:16.11.0"
+  checksum: 10c0/124da7860a2292e9acf2fed0c71fc0f6a9b9ca865d390d112bdd563c1f474357141501c12891f4164fe984315764736ad67f705219c62f7580681d431a85db88
   languageName: node
   linkType: hard
 
@@ -19619,7 +19619,7 @@ __metadata:
     "@types/node": "npm:^18.19.84"
     "@types/supertest": "npm:^6.0.3"
     "@types/ws": "npm:^8.18.1"
-    graphql: "npm:^16.10.0"
+    graphql: "npm:^16.11.0"
     jest: "npm:^29.7.0"
     mercurius: "npm:^16.1.0"
     reflect-metadata: "npm:^0.2.2"
