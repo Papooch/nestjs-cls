@@ -58,7 +58,7 @@
         "@types/jest": "^29.5.14",
         "@types/node": "^18.19.84",
         "jest": "^29.7.0",
-        "mongodb-memory-server": "^9.5.0",
+        "mongodb-memory-server": "^10.1.4",
         "mongoose": "^8.13.2",
         "reflect-metadata": "^0.2.2",
         "rimraf": "^6.0.1",
