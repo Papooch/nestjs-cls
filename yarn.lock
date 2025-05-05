@@ -6818,7 +6818,7 @@ __metadata:
     "@nestjs/common": "npm:^11.1.0"
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
-    "@prisma/client": "npm:^6.6.0"
+    "@prisma/client": "npm:^6.7.0"
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^18.19.84"
     jest: "npm:^29.7.0"
@@ -7564,9 +7564,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/client@npm:^6.6.0":
-  version: 6.6.0
-  resolution: "@prisma/client@npm:6.6.0"
+"@prisma/client@npm:^6.7.0":
+  version: 6.7.0
+  resolution: "@prisma/client@npm:6.7.0"
   peerDependencies:
     prisma: "*"
     typescript: ">=5.1.0"
@@ -7575,7 +7575,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10c0/174e4f445ae671dc16af272743b33312f36be34d8d5c0ab92eba8c81d74dc86967fa316bd4db082f1aa0970abf31899a8305e09a6717cb285bdc700aa9273f70
+  checksum: 10c0/863a8085800c8ada3247bc8b3f8a7056e341045f7f6fd73c7cd133b91298c8603f783869e5a7357d62394fa2ddac8c09ee27d7325bbb803a870edca5b914d33f
   languageName: node
   linkType: hard
 
