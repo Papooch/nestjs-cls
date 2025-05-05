@@ -6647,7 +6647,7 @@ __metadata:
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     "@types/pg": "npm:^8.11.14"
     drizzle-orm: "npm:^0.42.0"
     jest: "npm:^29.7.0"
@@ -6676,7 +6676,7 @@ __metadata:
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     knex: "npm:^3.1.0"
     reflect-metadata: "npm:^0.2.2"
@@ -6705,7 +6705,7 @@ __metadata:
     "@nestjs/testing": "npm:^11.1.0"
     "@types/better-sqlite3": "npm:^7.6.13"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     "@types/pg": "npm:^8.11.14"
     jest: "npm:^29.7.0"
     kysely: "npm:^0.28.0"
@@ -6734,7 +6734,7 @@ __metadata:
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     mongodb: "npm:^6.16.0"
     mongodb-memory-server: "npm:^10.1.4"
@@ -6763,7 +6763,7 @@ __metadata:
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     mongodb-memory-server: "npm:^10.1.4"
     mongoose: "npm:^8.13.2"
@@ -6792,7 +6792,7 @@ __metadata:
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     pg-promise: "npm:^11.13.0"
     reflect-metadata: "npm:^0.2.2"
@@ -6820,7 +6820,7 @@ __metadata:
     "@nestjs/testing": "npm:^11.1.0"
     "@prisma/client": "npm:^6.6.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     prisma: "npm:^6.6.0"
     reflect-metadata: "npm:^0.2.2"
@@ -6848,7 +6848,7 @@ __metadata:
     "@nestjs/core": "npm:^11.1.0"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
@@ -6876,7 +6876,7 @@ __metadata:
     "@nestjs/schematics": "npm:^11.0.5"
     "@nestjs/testing": "npm:^11.1.0"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     jest: "npm:^29.7.0"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
@@ -8539,12 +8539,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18.19.84":
-  version: 18.19.84
-  resolution: "@types/node@npm:18.19.84"
+"@types/node@npm:^22.15.3":
+  version: 22.15.3
+  resolution: "@types/node@npm:22.15.3"
   dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10c0/c54c6d0b62e65c9d34e18aa1663b36482a791a3d7457b820df92383bfa065d3bb82e48c28643e6d0262a0f8cfb5049febfa88d606a43fa338af82d216dcb1d22
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/2879f012d1aeba0bfdb5fed80d165f4f2cb3d1f2e1f98a24b18d4a211b4ace7d64bf2622784c78355982ffc1081ba79d0934efc2fb8353913e5871a63609661f
   languageName: node
   linkType: hard
 
@@ -19555,7 +19555,7 @@ __metadata:
     "@nestjs/websockets": "npm:^11.1.0"
     "@types/express": "npm:^5.0.1"
     "@types/jest": "npm:^29.5.14"
-    "@types/node": "npm:^18.19.84"
+    "@types/node": "npm:^22.15.3"
     "@types/supertest": "npm:^6.0.3"
     "@types/ws": "npm:^8.18.1"
     graphql: "npm:^16.11.0"
@@ -25226,6 +25226,13 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 
