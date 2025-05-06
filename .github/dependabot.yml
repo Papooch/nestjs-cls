@@ -12,6 +12,10 @@ updates:
       nestjs:
         patterns:
           - "@nestjs/*"
+      prisma:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
       graphql:
         patterns:
           - "@apollo/*"
