@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { ClsModule, ClsPlugin } from 'nestjs-cls';
+import { ClsModule, ClsPluginBase } from 'nestjs-cls';
 import { getTransactionToken } from './inject-transaction.decorator';
 import {
     MergedTransactionalAdapterOptions,
@@ -13,16 +13,15 @@ import {
 } from './symbols';
 import { getTransactionHostToken, TransactionHost } from './transaction-host';
 
-export class ClsPluginTransactional implements ClsPlugin {
-    name: string;
+export class ClsPluginTransactional extends ClsPluginBase {
     providers: Provider[];
-    imports: any[] = [];
-    exports: any[] = [];
 
     constructor(options: TransactionalPluginOptions<any, any, any>) {
-        this.name = options.connectionName
-            ? `cls-plugin-transactional-${options.connectionName}`
-            : 'cls-plugin-transactional';
+        super(
+            options.connectionName
+                ? `cls-plugin-transactional-${options.connectionName}`
+                : 'cls-plugin-transactional',
+        );
         this.imports.push(...(options.imports ?? []));
         const transactionHostToken = getTransactionHostToken(
             options.connectionName,
