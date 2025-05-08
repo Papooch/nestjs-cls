@@ -3,6 +3,8 @@ import { copyMethodMetadata } from '../../utils/copy-method-metadata';
 import { ClsServiceManager } from '../cls-service-manager';
 import { CLS_ID } from '../cls.constants';
 import { ClsDecoratorOptions } from '../cls.options';
+import { ClsDecoratorInitContext } from '../plugin/cls-plugin.interface';
+import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host';
 
 /**
  * Wraps the decorated method in a CLS context.
@@ -42,24 +44,37 @@ export function UseCls<TArgs extends any[]>(
                 `The @UseCls decorator can be only used on functions, but ${propertyKey.toString()} is not a function.`,
             );
         }
-        descriptor.value = function (...args: TArgs) {
-            return cls.run(options.runOptions ?? {}, async () => {
-                if (options.generateId) {
-                    const id = await options.idGenerator?.apply(this, args);
-                    cls.set<string>(CLS_ID, id);
-                }
-                if (options.setup) {
-                    await options.setup.apply(this, [cls, ...args]);
-                }
-                if (options.initializePlugins) {
-                    await cls.initializePlugins();
-                }
-                if (options.resolveProxyProviders) {
-                    await cls.resolveProxyProviders();
-                }
-                return original.apply(this, args);
-            });
-        };
+        descriptor.value = new Proxy(original, {
+            apply: function (_, outerThis, args: TArgs[]) {
+                const pluginHooks = ClsPluginsHooksHost.getInstance();
+                return cls.run(options.runOptions ?? {}, async () => {
+                    const pluginCtx: ClsDecoratorInitContext = {
+                        kind: 'decorator',
+                        args,
+                    };
+                    if (options.initializePlugins) {
+                        await pluginHooks.beforeSetup(pluginCtx);
+                    }
+                    if (options.generateId) {
+                        const id = await options.idGenerator?.apply(
+                            outerThis,
+                            args,
+                        );
+                        cls.set<string>(CLS_ID, id);
+                    }
+                    if (options.setup) {
+                        await options.setup.apply(outerThis, [cls, ...args]);
+                    }
+                    if (options.initializePlugins) {
+                        await pluginHooks.afterSetup(pluginCtx);
+                    }
+                    if (options.resolveProxyProviders) {
+                        await cls.resolveProxyProviders();
+                    }
+                    return original.apply(outerThis, args);
+                });
+            },
+        });
         copyMethodMetadata(original, descriptor.value);
     };
 }
