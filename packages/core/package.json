@@ -35,7 +35,7 @@
   "scripts": {
     "prepack": "cp ../../LICENSE ./LICENSE && cp ../../README.md ./README.md && yarn build",
     "prebuild": "rimraf dist",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
