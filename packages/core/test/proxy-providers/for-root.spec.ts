@@ -70,7 +70,7 @@ describe('ClsModule', () => {
             app = await createAndInitTestingApp([ProxyClass]);
             expect(() => app.get(ProxyClass)).not.toThrow();
             await cls.run(async () => {
-                await cls.resolveProxyProviders();
+                await cls.proxy.resolve();
             });
         });
 
@@ -89,7 +89,7 @@ describe('ClsModule', () => {
             app = await createAndInitTestingApp([ProxyClass]);
             expect(() => app.get(ProxyClass)).not.toThrow();
             await cls.run(async () => {
-                await cls.resolveProxyProviders();
+                await cls.proxy.resolve();
             });
         });
 
@@ -116,9 +116,7 @@ describe('ClsModule', () => {
 
             app = await createAndInitTestingApp([ProxyClass], [SomeClass]);
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
             });
         });
 
@@ -141,9 +139,7 @@ describe('ClsModule', () => {
                 true,
             );
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
             });
         });
 
@@ -170,7 +166,7 @@ describe('ClsModule', () => {
 
             app = await createAndInitTestingApp([ProxyClass]);
             await cls.run(async () => {
-                await expect(cls.resolveProxyProviders()).rejects.toThrowError(
+                await expect(cls.proxy.resolve()).rejects.toThrowError(
                     'Cannot create Proxy provider ProxyClass (?). The argument SomeClass at index [0] was not found in the ClsModule Context.',
                 );
             });
@@ -190,7 +186,7 @@ describe('ClsModule', () => {
 
             app = await createAndInitTestingApp([ProxyClass]);
             await cls.run(async () => {
-                await expect(cls.resolveProxyProviders()).rejects.toThrowError(
+                await expect(cls.proxy.resolve()).rejects.toThrowError(
                     'Cannot create Proxy provider ProxyClass (?). The argument SomeClass at index [0] was not found in the ClsModule Context.',
                 );
             });
@@ -220,9 +216,7 @@ describe('ClsModule', () => {
                 true,
             );
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
                 expect(app.get(SomeClass).proxy).toBeInstanceOf(ProxyClass);
             });
         });
@@ -253,9 +247,7 @@ describe('ClsModule', () => {
                 true,
             );
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
             });
         });
     });

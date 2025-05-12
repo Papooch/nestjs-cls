@@ -73,7 +73,7 @@ describe('resolveProxyProviders - strict mode', () => {
 
                 await cls.run(async () => {
                     expect(() => app.get(ProviderToken).something).toThrowError(
-                        `Cannot access the property \"something\" on the Proxy provider ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call \"await cls.resolveProxyProviders()\" before accessing the Proxy provider`,
+                        `Cannot access the property \"something\" on the Proxy provider ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call \"await cls.proxy.resolve()\" before accessing the Proxy provider`,
                     );
                 });
             });
@@ -82,7 +82,7 @@ describe('resolveProxyProviders - strict mode', () => {
                 app = await createAndInitTestingApp([module]);
 
                 await cls.run(async () => {
-                    await cls.resolveProxyProviders();
+                    await cls.proxy.resolve();
                     expect(app.get(ProviderToken).something).toEqual(
                         'something',
                     );
@@ -106,7 +106,7 @@ describe('resolveProxyProviders - strict mode', () => {
 
             await cls.run(async () => {
                 expect(() => app.get(FunctionProxyToken)()).toThrowError(
-                    `Cannot call the Proxy provider ${FunctionProxyToken.description} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the Proxy provider.`,
+                    `Cannot call the Proxy provider ${FunctionProxyToken.description} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.proxy.resolve()" before accessing the Proxy provider.`,
                 );
             });
         });
@@ -115,7 +115,7 @@ describe('resolveProxyProviders - strict mode', () => {
             app = await createAndInitTestingApp([module]);
 
             await cls.run(async () => {
-                await cls.resolveProxyProviders();
+                await cls.proxy.resolve();
                 expect(app.get(FunctionProxyToken)()).toEqual('something');
             });
         });

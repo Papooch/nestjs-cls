@@ -56,7 +56,7 @@ describe('resolveProxyProviders', () => {
             ClsModule.forFeature(ProxyClassA, ProxyClassB),
         ]);
         await cls.run(async () => {
-            await cls.resolveProxyProviders();
+            await cls.proxy.resolve();
             expect(app.get(ProxyClassA).something).toBe('something');
             expect(app.get(ProxyClassB).somethingElse).toBe('somethingElse');
             expect(app.get(ProxyCreationCounter)).toEqual({
@@ -85,7 +85,7 @@ describe('resolveProxyProviders', () => {
             ClsModule.forFeature(ProxyClassA, ProxyClassB),
         ]);
         await cls.run(async () => {
-            await cls.resolveProxyProviders([ProxyClassA]);
+            await cls.proxy.resolve([ProxyClassA]);
             expect(app.get(ProxyClassA).something).toBe('something');
             expect(app.get(ProxyClassB).somethingElse).toBeUndefined();
             expect(app.get(ProxyCreationCounter)).toEqual({
@@ -100,9 +100,7 @@ describe('resolveProxyProviders', () => {
             ClsModule.forFeature(ProxyClassA /* ProxyClassB */),
         ]);
         await cls.run(async () => {
-            await expect(
-                cls.resolveProxyProviders([ProxyClassB]),
-            ).rejects.toThrowError(
+            await expect(cls.proxy.resolve([ProxyClassB])).rejects.toThrowError(
                 'Cannot resolve a Proxy provider for symbol "ProxyClassB", because it was not registered using "ClsModule.forFeature()" or "ClsModule.forFeatureAsync()".',
             );
         });
@@ -113,9 +111,9 @@ describe('resolveProxyProviders', () => {
             ClsModule.forFeature(ProxyClassA, ProxyClassB),
         ]);
         await cls.run(async () => {
-            await cls.resolveProxyProviders([ProxyClassA]);
+            await cls.proxy.resolve([ProxyClassA]);
             app.get(ProxyClassA).something = 'somethingEdited';
-            await cls.resolveProxyProviders();
+            await cls.proxy.resolve();
             expect(app.get(ProxyClassB).somethingElse).toBe('somethingElse');
             expect(app.get(ProxyClassA).something).toBe('somethingEdited');
             expect(app.get(ProxyCreationCounter)).toEqual({
@@ -130,14 +128,14 @@ describe('resolveProxyProviders', () => {
             ClsModule.forFeature(ProxyClassA, ProxyClassB),
         ]);
         await cls.run(async () => {
-            await cls.resolveProxyProviders();
+            await cls.proxy.resolve();
         });
         await cls.run(async () => {
-            await cls.resolveProxyProviders();
-            await cls.resolveProxyProviders();
+            await cls.proxy.resolve();
+            await cls.proxy.resolve();
         });
         await cls.run(async () => {
-            await cls.resolveProxyProviders([ProxyClassA]);
+            await cls.proxy.resolve([ProxyClassA]);
         });
         expect(app.get(ProxyCreationCounter)).toEqual({
             proxyA: 3,
@@ -151,9 +149,9 @@ describe('resolveProxyProviders', () => {
         ]);
         await cls.run(async () => {
             await Promise.all([
-                cls.resolveProxyProviders(),
-                cls.resolveProxyProviders(),
-                cls.resolveProxyProviders(),
+                cls.proxy.resolve(),
+                cls.proxy.resolve(),
+                cls.proxy.resolve(),
             ]);
             expect(app.get(ProxyClassA).something).toBe('something');
             expect(app.get(ProxyClassB).somethingElse).toBe('somethingElse');

@@ -114,7 +114,7 @@ describe('ClsModule', () => {
                 ClsModule.forFeature(ProxyClass),
             ]);
             await cls.run(async () => {
-                await expect(cls.resolveProxyProviders()).rejects.toThrowError(
+                await expect(cls.proxy.resolve()).rejects.toThrowError(
                     'Cannot create Proxy provider ProxyClass (?). The argument SomeClass at index [0] was not found in the ClsModule Context.',
                 );
             });
@@ -138,9 +138,7 @@ describe('ClsModule', () => {
                 }),
             ]);
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
             });
         });
 
@@ -166,9 +164,7 @@ describe('ClsModule', () => {
                 }),
             ]);
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
                 expect(app.get(ProxyClass).some).toBeInstanceOf(SomeClass);
             });
         });
@@ -232,9 +228,7 @@ describe('ClsModule', () => {
                 }),
             ]);
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
                 expect(app.get(TOKEN).some).toBeInstanceOf(SomeClass);
             });
         });
@@ -255,9 +249,7 @@ describe('ClsModule', () => {
                 }),
             ]);
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
                 expect(app.get(TOKEN).some).toBeInstanceOf(SomeClass);
             });
         });
@@ -277,9 +269,7 @@ describe('ClsModule', () => {
                 }),
             ]);
             await cls.run(async () => {
-                await expect(
-                    cls.resolveProxyProviders(),
-                ).resolves.not.toThrow();
+                await expect(cls.proxy.resolve()).resolves.not.toThrow();
                 expect(typeof app.get(TOKEN)).toBe('function');
                 expect(app.get(TOKEN)()).toBeInstanceOf(SomeClass);
             });
