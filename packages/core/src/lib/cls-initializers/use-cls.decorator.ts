@@ -69,7 +69,7 @@ export function UseCls<TArgs extends any[]>(
                         await pluginHooks.afterSetup(pluginCtx);
                     }
                     if (options.resolveProxyProviders) {
-                        await cls.resolveProxyProviders();
+                        await cls.proxy.resolve();
                     }
                     return original.apply(outerThis, args);
                 });

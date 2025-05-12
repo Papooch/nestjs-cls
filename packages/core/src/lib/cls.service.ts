@@ -198,23 +198,32 @@ export class ClsService<S extends ClsStore = ClsStore> {
     }
 
     /**
+     * Accessors for getting or setting instances of Proxy providers
+     * in the CLS context.
+     */
+    readonly proxy = new ClsProxyAccessors(this);
+}
+
+class ClsProxyAccessors {
+    constructor(private readonly cls: ClsService) {}
+    /**
      * Retrieve a Proxy provider from the CLS context
      * based on its injection token.
      */
-    getProxy<T = any>(proxyToken: string | symbol): T;
-    getProxy<T>(proxyToken: new (...args: any) => T): T;
-    getProxy(proxyToken: any) {
-        return this.get(getProxyProviderSymbol(proxyToken));
+    get<T = any>(proxyToken: string | symbol): T;
+    get<T>(proxyToken: new (...args: any) => T): T;
+    get(proxyToken: any) {
+        return this.cls.get(getProxyProviderSymbol(proxyToken));
     }
 
     /**
      * Replace an instance of a Proxy provider in the CLS context
      * based on its injection token.
      */
-    setProxy<T = any>(proxyToken: string | symbol, value: T): void;
-    setProxy<T>(proxyToken: new (...args: any) => T, value: T): void;
-    setProxy(proxyToken: any, value: any) {
-        return this.set(getProxyProviderSymbol(proxyToken), value);
+    set<T = any>(proxyToken: string | symbol, value: T): void;
+    set<T>(proxyToken: new (...args: any) => T, value: T): void;
+    set(proxyToken: any, value: any) {
+        return this.cls.set(getProxyProviderSymbol(proxyToken), value);
     }
 
     /**
@@ -224,7 +233,7 @@ export class ClsService<S extends ClsStore = ClsStore> {
      * @param proxyTokens An optional array of Proxy Provider injection tokens
      * to resolve. If not supplied, resolves all registered proxy providers.
      */
-    async resolveProxyProviders(proxyTokens?: any[]) {
+    async resolve(proxyTokens?: any[]) {
         // Workaround for a circular dep
         // TODO: This should be untangled and cleaned up
         const { ProxyProviderManager } = await import(

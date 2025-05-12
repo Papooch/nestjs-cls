@@ -159,7 +159,7 @@ class DogsService {
 
 By default, proxy providers are resolved as soon as the `setup` function in an enhancer (middleware/guard/interceptor) finishes. For some use cases, it might be required that the resolution is delayed until some later point in the request lifecycle once more information is present in the CLS .
 
-To achieve that, set `resolveProxyProviders` to `false` in the enhancer options and call (and await) `ClsService#resolveProxyProviders()` manually at any time.
+To achieve that, set `resolveProxyProviders` to `false` in the enhancer options and call (and await) `ClsService#proxy.resolve()` manually at any time.
 
 ```ts
 ClsModule.forRoot({
@@ -172,7 +172,7 @@ ClsModule.forRoot({
 
 //... later
 
-await this.cls.resolveProxyProviders();
+await this.cls.proxy.resolve();
 ```
 
 :::tip
@@ -208,7 +208,7 @@ This might also be necessary [outside the context of web request](./04_usage-out
 
 #### With cls.run()
 
-If you set up the context with `cls.run()` to wrap any subsequent code thar relies on Proxy Providers, you _must_ call `ClsService#resolveProxyProviders()` before accessing them, otherwise access to any property of the injected Proxy Provider will return `undefined`, that is because an unresolved Proxy Provider falls back to an _empty object_.
+If you set up the context with `cls.run()` to wrap any subsequent code thar relies on Proxy Providers, you _must_ call `ClsService#proxy.resolve()` before accessing them, otherwise access to any property of the injected Proxy Provider will return `undefined`, that is because an unresolved Proxy Provider falls back to an _empty object_.
 
 ```ts title=cron.controller.ts
 @Injectable()
@@ -225,7 +225,7 @@ export class CronController {
             this.cls.set('some-key', 'some-value');
             // highlight-start
             // trigger Proxy Provider resolution
-            await this.cls.resolveProxyProviders();
+            await this.cls.proxy.resolve();
             // highlight-end
             await this.someService.doTheThing();
         });
@@ -260,16 +260,16 @@ export class CronController {
 
 ### Selective resolution of Proxy Providers
 
-You can also selectively resolve a subset of Proxy Providers, by passing a list of their injection tokens to `ClsService#resolveProxyProviders(tokens)`. This is useful if the providers need to be resolved in a specific order or when some part of the application does not need all of them.
+You can also selectively resolve a subset of Proxy Providers, by passing a list of their injection tokens to `ClsService#proxy.resolve(tokens)`. This is useful if the providers need to be resolved in a specific order or when some part of the application does not need all of them.
 
 ```ts
 // resolves ProviderA and ProviderB only
-await this.cls.resolveProxyProviders([ProviderA, ProviderB]);
+await this.cls.proxy.resolve([ProviderA, ProviderB]);
 
 // ... later
 
 // resolves the rest of the providers that have not been resolved yet
-await this.cls.resolveProxyProviders();
+await this.cls.proxy.resolve();
 ```
 
 ## Strict Proxy Providers

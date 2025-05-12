@@ -250,7 +250,7 @@ export class TransactionHost<TAdapter = never> {
     private setTxInstance(txInstance?: TTxFromAdapter<TAdapter>) {
         this.cls.set(this.transactionInstanceSymbol, txInstance);
         if (this._options.enableTransactionProxy) {
-            this.cls.setProxy(
+            this.cls.proxy.set(
                 getTransactionToken(this._options.connectionName),
                 txInstance,
             );

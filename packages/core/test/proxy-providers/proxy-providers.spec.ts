@@ -158,8 +158,8 @@ describe('Proxy providers from CLS', () => {
         const cls = app.get(ClsService);
         const id = randomString();
         await cls.runWith({ [CLS_ID]: id }, async () => {
-            await cls.resolveProxyProviders();
-            const rsc = cls.getProxy(RequestScopedClass);
+            await cls.proxy.resolve();
+            const rsc = cls.proxy.get(RequestScopedClass);
             expect(rsc.id).toEqual(id);
         });
     });
@@ -169,9 +169,9 @@ describe('Proxy providers from CLS', () => {
         const cls = app.get(ClsService);
         const id = randomString();
         await cls.runWith({ [CLS_ID]: id }, async () => {
-            await cls.resolveProxyProviders();
+            await cls.proxy.resolve();
             const rsc =
-                cls.getProxy<RequestScopedFactoryResult>(FACTORY_PROVIDER);
+                cls.proxy.get<RequestScopedFactoryResult>(FACTORY_PROVIDER);
             expect(rsc.id).toEqual(id);
         });
     });
@@ -181,10 +181,10 @@ describe('Proxy providers from CLS', () => {
         const cls = app.get(ClsService);
         const id = randomString();
         await cls.runWith({ [CLS_ID]: id }, async () => {
-            await cls.resolveProxyProviders();
+            await cls.proxy.resolve();
             const rsc = new RequestScopedClass(cls, new InjectedClass());
-            cls.setProxy(RequestScopedClass, rsc);
-            const rscFromCls = cls.getProxy(RequestScopedClass);
+            cls.proxy.set(RequestScopedClass, rsc);
+            const rscFromCls = cls.proxy.get(RequestScopedClass);
             expect(rscFromCls).toEqual(rsc);
         });
     });
@@ -203,7 +203,7 @@ describe('Edge cases', () => {
         });
         const proxy = proxyProvider.useFactory();
         await clsService.run(async () => {
-            await clsService.resolveProxyProviders();
+            await clsService.proxy.resolve();
             expect(proxy.booleanTest).toBe(true);
             proxy.booleanTest = false;
             expect(proxy.booleanTest).toBe(false);

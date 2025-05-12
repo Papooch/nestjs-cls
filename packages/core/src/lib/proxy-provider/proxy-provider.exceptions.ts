@@ -79,7 +79,7 @@ export class ProxyProviderNotResolvedException extends ProxyProviderError {
         if (isDefaultProxyProvider) {
             message += ` ${providerName} because because the value for ${providerName} does not exist in the CLS. Make sure to enable the "${this.formatEnableOptionName(providerName)}" option in the enhancer options in the "ClsModule.forRoot()" method.`;
         } else {
-            message += ` ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.resolveProxyProviders()" before accessing the Proxy provider.`;
+            message += ` ${providerName} because is has not been resolved yet and has been registered with the "strict: true" option. Make sure to call "await cls.proxy.resolve()" before accessing the Proxy provider.`;
         }
         return new this(message);
     }

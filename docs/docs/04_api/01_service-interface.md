@@ -46,14 +46,14 @@ The `S` type parameter is used as the type of custom `ClsStore`.
 
 The following methods only apply to the [Proxy](../03_features-and-use-cases/06_proxy-providers.md) feature:
 
-- **_`getProxy`_**`(proxyToken: any): any`  
-  Retrieve a Proxy provider from the CLS context based on its injection token.
-
-- **_`setProxy`_**`(proxyToken: any, value? any): any`  
-  Replace an instance of a Proxy provider in the CLS context based on its injection token.
-
-- **_`resolveProxyProviders`_**`(proxyTokens?: any[]): Promise<void>`  
-  Manually trigger resolution of registered Proxy Providers. If an array of injection tokens is provided, resolves only those Proxy Providers.
+- **_`proxy`_**`ClsProxyAccessors`  
+  An interface for accessing instances of Proxy providers with the following methods:
+    - **_`get`_**`(proxyToken: any): any`  
+      Retrieve a Proxy provider from the CLS context based on its injection token.
+    - **_`set`_**`(proxyToken: any, value?: any): any`  
+       Replace an instance of a Proxy provider in the CLS context based on its injection token.
+    - **_`resolve`_**`(proxyTokens?: any[]): Promise<void>`  
+      Manually trigger resolution of registered Proxy Providers. If an array of injection tokens is provided, resolves only those Proxy Providers.
 
 ## ClsContextOptions
 
