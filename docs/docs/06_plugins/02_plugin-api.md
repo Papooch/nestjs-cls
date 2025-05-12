@@ -1,54 +1,170 @@
 # Plugin API
 
-:::warning
+:::info
 
-The Plugin API is still experimental and might change in the future, you should not rely on it in production.
+The Plugin API is stable since `v6.0.0` and should only change between major versions.
 
-Using any of the "official" plugins is safe since they are maintained by the same author and compatibility of new versions is ensured. If you want to create your own plugin, you should be aware that the API might change between minor versions.
+Any of the "official" plugins will always be kept in sync and updated to be compatible with any new version of the Plugin API.
 
 :::
 
-A plugin is, in its core, a NestJS module with some extra options and should implement the following interface:
+## Overview
+
+A plugin provides a way to hook into the lifecycle of the `setup` phase of Cls-initializers (middleware, interceptor, guard, decorator) and modify/extend the contents of CLS Store.
+
+Every plugin must implement the `ClsPlugin` interface and have a **globally unique name** that is used to identify its components in the DI system.
+
+A plugin is, it its essence, just a NestJS module that can register its own providers and standard NestJS lifecycle hooks. These providers will be available in the DI system everywhere that `ClsService` is available.
+
+## Plugin interface
 
 ```ts
-export interface ClsPlugin {
-    /**
-     * The name of the plugin, used for logging and debugging
-     */
-    name: string;
+interface ClsPlugin {
+    readonly name: string;
 
-    /**
-     * Function that is called within a Cls initializer (middleware, interceptor, guard, etc.)
-     * right after `setup`.
-     */
-    onClsInit?: (cls: ClsService) => void | Promise<void>;
-
-    /**
-     * A lifecycle method called when the `ClsModule` is initialized
-     */
-    onModuleInit?: () => void | Promise<void>;
-
-    /**
-     * A lifecycle method called when the `ClsModule` is destroyed
-     * (only when shutdown hooks are enabled)
-     */
-    onModuleDestroy?: () => void | Promise<void>;
-
-    /**
-     * An array of external modules that should be imported for the plugin to work.
-     */
     imports?: any[];
-
-    /**
-     * An array of providers that the plugin provides.
-     */
     providers?: Provider[];
-
-    /**
-     * An array of providers that the plugin provides that should be exported.
-     */
     exports?: any[];
+
+    onModuleInit?: () => void | Promise<void>;
+    onModuleDestroy?: () => void | Promise<void>;
+    onApplicationBootstrap?: () => void | Promise<void>;
+    onApplicationShutdown?: (signal?: string) => void | Promise<void>;
+    beforeApplicationShutdown?: (signal?: string) => void | Promise<void>;
 }
 ```
 
-Each plugin creates a new instance of a _global_ `ClsPluginModule` and the exposed providers can be used for injection by other plugin-related code.
+## CLS Hooks
+
+As mentioned above, a plugin can register a special provider that implements the `ClsPluginHooks` interface. This provider should be registered under the `getPluginHooksToken(<pluginName>)` token, where `pluginName` is the name of the plugin.
+
+```ts
+interface ClsPluginHooks {
+    beforeSetup?: (
+        cls: ClsService,
+        context: ClsInitContext,
+    ) => void | Promise<void>;
+
+    afterSetup?: (
+        cls: ClsService,
+        context: ClsInitContext,
+    ) => void | Promise<void>;
+}
+```
+
+This interface can contain two methods: `beforeSetup` and `afterSetup`. These methods are called before and after the `setup` phase of the Cls-initializers and have access to the `ClsService` and the `ClsInitContext` object.
+
+Since the plugin cannot know which Cls-initializer is being used, it is up to the plugin to check the `ClsInitContext` object and decide what to do. The `ClsInitContext` will always contain the `kind` property, with a value of either `middleware`, `interceptor`, `guard`, `decorator` or `custom`. and other properties depending on the kind of Cls-initializer.
+
+A plugin author should indicate in the documentation which Cls-initializers are supported by the plugin, if there are any limitations. Otherwise, the plugin should be able to work with any Cls-initializer.
+
+## Creating a plugin
+
+Implementing the aforementioned interface and supplying the (optional) hooks provider is all that is needed to create a plugin. And instance of the plugin can be passed to the `plugins` array of the `ClsModule` options.
+
+However, the `nestjs-cls` package exports a `ClsPluginBase` class, that can be extended to easily create a plugin.
+
+In this example, we will implement a plugin that extracts the `user` property from the request and registers wraps it in a custom [Proxy provider](../03_features-and-use-cases/06_proxy-providers.md) for injection.
+
+The plugin will work in the following way:
+
+1. First, check if the `user` property is already set in the CLS Store. If it is, do nothing.
+2. Determine the kind of Cls-initializer that is being used and add the `user` property to the CLS Store.
+3. Register a custom `ClsUserHost` proxy provider that hosts the `user` property for injection anywhere in the application.
+
+```ts
+// Define a symbol to be used as a key in the CLS Store
+export const USER_CLS_SYMBOL = Symbol('user');
+
+// Define a custom proxy provider that will be used to inject the user property
+@InjectableProxy()
+export class ClsUserHost {
+    public readonly user: MyUserType;
+
+    constructor(private readonly cls: ClsService) {
+        this.user = this.cls.get(USER_CLS_SYMBOL);
+    }
+}
+
+// To Create the plugin, extend the ClsPluginBase class
+export class UserPlugin extends ClsPluginBase {
+    constructor() {
+        // Specify a unique name for the plugin
+        super('user-plugin');
+
+        // Register the plugin hooks using the convenience method
+        this.registerHooks({
+            useFactory: () => ({
+                afterSetup(cls, context) {
+                    // This hook will be called after the setup phase of every Cls-initializer
+                    // so we check if the user property is already set and do nothing
+                    if (cls.has(USER_CLS_SYMBOL)) {
+                        return;
+                    }
+
+                    // If the user property is not set, we check the kind of Cls-initializer
+                    switch (context.kind) {
+                        case 'middleware':
+                            cls.set(USER_CLS_SYMBOL, context.req.user);
+                            break;
+                        case 'interceptor':
+                            cls.set(
+                                USER_CLS_SYMBOL,
+                                context.ctx.switchToHttp().getRequest().user,
+                            );
+                            break;
+                        case 'guard':
+                            cls.set(
+                                USER_CLS_SYMBOL,
+                                context.ctx.switchToHttp().getRequest().user,
+                            );
+                            break;
+                        default:
+                            // If the kind is not supported (decorator or custom), we throw an error,
+                            // because there is no request.
+                            // If the user wants to use the plugin in a decorator or a custom
+                            // Cls-initializer, they should set the user property manually
+                            // in the `setup` method of the Decorator
+                            throw new Error(
+                                `Unsupported context kind: ${context.kind}`,
+                            );
+                    }
+                },
+            }),
+        });
+
+        // Register the custom Proxy provider
+        this.imports.push(ClsModule.forFeature(ClsUserHost));
+    }
+}
+```
+
+:::info
+
+It is also possible to expose the User itself as Proxy provider without the need of the plugin. This is only for demonstration purposes.
+
+:::
+
+## Using plugin options
+
+If we wanted to customize the plugin and allow the user to be retrieved from a custom property name from the request, we could do it by adding some options to the plugin constructor.
+
+```ts
+export class UserPlugin extends ClsPluginBase {
+    // highlight-start
+    constructor(userPropertyName: string) {
+    // highlight-end
+        // Specify a unique name for the plugin
+        super('user-plugin');
+
+// [...]
+
+                    switch (context.kind) {
+                        case 'middleware':
+                            // highlight-start
+                            cls.set(USER_CLS_SYMBOL, context.req[userPropertyName]);
+                            // highlight-end
+                            break;
+```
+
+A more advanced use-case would be to allow passing the options asynchronously. For that, we can use the `imports` array and the `inject` method on the `this.registerHooks` method. An example can be found in the implementation of the existing plugins.
