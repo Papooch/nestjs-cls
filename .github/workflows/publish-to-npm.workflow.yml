@@ -30,7 +30,7 @@ jobs:
           git config --local user.email 'github-action[bot]@github.com'
 
       - run: yarn
-      - run: yarn build
+      - run: yarn build:release
       - run: yarn test
       - run: yarn monodeploy
         env:
