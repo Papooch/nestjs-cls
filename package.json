@@ -30,6 +30,7 @@
     "scripts": {
         "test": "yarn workspaces foreach --all --topological-dev run test",
         "build": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build",
+        "build:release": "yarn build --sourceMap false",
         "format": "prettier --write \"packages/**/*.ts\"",
         "lint": "eslint \"packages/**/*.ts\"",
         "lint:fix": "eslint \"packages/**/*.ts\" --fix",
