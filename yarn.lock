@@ -515,9 +515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:^4.12.0":
-  version: 4.12.0
-  resolution: "@apollo/server@npm:4.12.0"
+"@apollo/server@npm:^4.12.1":
+  version: 4.12.1
+  resolution: "@apollo/server@npm:4.12.1"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^1.1.1"
@@ -545,7 +545,7 @@ __metadata:
     whatwg-mimetype: "npm:^3.0.0"
   peerDependencies:
     graphql: ^16.6.0
-  checksum: 10c0/96d07e82ebabbd1634413499cfbbe84199840433e2197e383cb5a711791ac7d01d804d6516c22b19a949ab3660456061e421b44e4c63130ebfaa7bd32806dee3
+  checksum: 10c0/0bbdebd863a6a051929fa5c01a8eef4fce867002f6485c4681d4a9fdadc6677a25475aceaab7d0fca9bb4a713e1ee559ec9469b897bb08bcacb343b69995923d
   languageName: node
   linkType: hard
 
@@ -19547,7 +19547,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nestjs-cls@workspace:packages/core"
   dependencies:
-    "@apollo/server": "npm:^4.12.0"
+    "@apollo/server": "npm:^4.12.1"
     "@nestjs/apollo": "npm:^13.1.0"
     "@nestjs/cli": "npm:^11.0.7"
     "@nestjs/common": "npm:^11.1.0"
