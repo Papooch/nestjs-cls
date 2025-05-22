@@ -80,6 +80,7 @@ class UserService {
 
     @Transactional<TransactionalAdapterKysely>({
         isolationLevel: 'serializable',
+        accessMode: 'read write',
     })
     async transactionWithDecoratorWithOptions() {
         const r1 = await this.userRepository.createUser('James');
@@ -92,10 +93,18 @@ class UserService {
         return { r1, r2, r3 };
     }
 
+    @Transactional<TransactionalAdapterKysely>({
+        accessMode: 'read only',
+    })
+    async transactionWithDecoratorWithReadOnlyOptionError() {
+        await this.userRepository.createUser('James');
+    }
+
     async transactionWithFunctionWrapper() {
         return this.txHost.withTransaction(
             {
                 isolationLevel: 'serializable',
+                accessMode: 'read write',
             },
             async () => {
                 const r1 = await this.userRepository.createUser('Joe');
@@ -106,6 +115,18 @@ class UserService {
                     .executeTakeFirst();
                 const r3 = await this.userRepository.getUserById(r1.id);
                 return { r1, r2, r3 };
+            },
+        );
+    }
+
+    async transactionWithWrapperFunctionWithReadOnlyOptionError() {
+        return this.txHost.withTransaction(
+            {
+                isolationLevel: 'serializable',
+                accessMode: 'read only',
+            },
+            async () => {
+                await this.userRepository.createUser('Joe');
             },
         );
     }
@@ -251,6 +272,18 @@ describe('Transactional', () => {
             );
         });
 
+        it('should rollback a transaction with access mode read only from decorator', async () => {
+            await expect(
+                callingService.transactionWithDecoratorWithReadOnlyOptionError(),
+            ).rejects.toThrow(new Error('cannot execute INSERT in a read-only transaction'));
+        });
+
+        it('should rollback a transaction with access mode read only with a wrapper function', async () => {
+            await expect(
+                callingService.transactionWithWrapperFunctionWithReadOnlyOptionError(),
+            ).rejects.toThrow(new Error('cannot execute INSERT in a read-only transaction'));
+        });
+
         describe('Isolation Level', () => {
             let userA;
             let userB;
@@ -324,11 +357,13 @@ describe('Default options', () => {
             kyselyInstanceToken: KYSELY,
             defaultTxOptions: {
                 isolationLevel: 'repeatable read',
+                accessMode: 'read write',
             },
         });
 
         expect(adapter.defaultTxOptions).toEqual({
             isolationLevel: 'repeatable read',
+            accessMode: 'read write',
         });
     });
 });

@@ -18,6 +18,9 @@ export interface KyselyTransactionOptions {
     isolationLevel?: Parameters<
         TransactionBuilder<any>['setIsolationLevel']
     >[0];
+    accessMode?: Parameters<
+        TransactionBuilder<any>['setAccessMode']
+    >[0];
 }
 
 export class TransactionalAdapterKysely<DB = any>
@@ -42,6 +45,9 @@ export class TransactionalAdapterKysely<DB = any>
             let transaction = kyselyDb.transaction();
             if (options?.isolationLevel) {
                 transaction = transaction.setIsolationLevel(options.isolationLevel);
+            }
+            if (options?.accessMode) {
+                transaction = transaction.setAccessMode(options.accessMode);
             }
             return transaction.execute(async (trx) => {
                 setClient(trx);
