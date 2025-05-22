@@ -47,7 +47,7 @@
     },
     "peerDependencies": {
         "@nestjs-cls/transactional": "workspace:^2.7.0",
-        "kysely": "^0.27",
+        "kysely": "^0.28",
         "nestjs-cls": "workspace:^5.4.3"
     },
     "devDependencies": {
@@ -60,7 +60,7 @@
         "@types/node": "^22.15.12",
         "@types/pg": "^8.11.14",
         "jest": "^29.7.0",
-        "kysely": "^0.28.0",
+        "kysely": "^0.28.2",
         "pg": "^8.15.6",
         "reflect-metadata": "^0.2.2",
         "rimraf": "^6.0.1",
