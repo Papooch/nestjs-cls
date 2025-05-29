@@ -2,6 +2,20 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [3.0.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.7.0...@nestjs-cls/transactional@3.0.0) "@nestjs-cls/transactional" (2025-05-29)<a name="3.0.0"></a>
+
+### Breaking Changes
+
+* Access to Proxy providers moved to a dedicated `proxy` property on the ClsService ([82cdeef](https://github.com/Papooch/nestjs-cls/commits/82cdeef))
+* Use Plugin API from `nestjs-cls@6` ([043e59b](https://github.com/Papooch/nestjs-cls/commits/043e59b))
+
+### Features
+
+* **transactional**: use new Plugin API (#284) ([043e59b](https://github.com/Papooch/nestjs-cls/commits/043e59b))
+
+
+
+
 ## [2.7.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.6.1...@nestjs-cls/transactional@2.7.0) "@nestjs-cls/transactional" (2025-04-18)<a name="2.7.0"></a>
 
 ### Dependencies

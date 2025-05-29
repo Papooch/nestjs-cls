@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.2.20...@nestjs-cls/transactional-adapter-kysely@1.3.0) "@nestjs-cls/transactional-adapter-kysely" (2025-05-29)<a name="1.3.0"></a>
+
+### Features
+
+* **transactional-adapter-kysely**: support kysely access mode ([b13b3f8](https://github.com/Papooch/nestjs-cls/commits/b13b3f8))
+
+
+
+
 ## [1.2.20](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.2.19...@nestjs-cls/transactional-adapter-kysely@1.2.20) "@nestjs-cls/transactional-adapter-kysely" (2025-04-23)<a name="1.2.20"></a>
 
 ### Bug Fixes

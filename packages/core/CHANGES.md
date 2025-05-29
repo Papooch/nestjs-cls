@@ -2,6 +2,20 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [6.0.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.3...nestjs-cls@6.0.0) "nestjs-cls" (2025-05-29)<a name="6.0.0"></a>
+
+### Breaking Changes
+
+* The experimental Plugin API has been changed ([4623607](https://github.com/Papooch/nestjs-cls/commits/4623607))
+* Access to Proxy providers moved to a dedicated `proxy` property on the ClsService ([82cdeef](https://github.com/Papooch/nestjs-cls/commits/82cdeef))
+
+### Features
+
+* **core**: introduce hooks for the Plugin API (#283) ([4623607](https://github.com/Papooch/nestjs-cls/commits/4623607))
+
+
+
+
 ## [5.4.3](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.2...nestjs-cls@5.4.3) "nestjs-cls" (2025-04-18)<a name="5.4.3"></a>
 
 ### Dependencies
