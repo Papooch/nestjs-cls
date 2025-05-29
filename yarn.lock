@@ -6591,7 +6591,7 @@ __metadata:
     "@types/node": "npm:^22.15.24"
     jest: "npm:^29.7.0"
     mongodb-memory-server: "npm:^10.1.4"
-    mongoose: "npm:^8.13.2"
+    mongoose: "npm:^8.15.1"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
     rxjs: "npm:^7.8.2"
@@ -18975,7 +18975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:^6.16.0":
+"mongodb@npm:^6.16.0, mongodb@npm:~6.16.0":
   version: 6.16.0
   resolution: "mongodb@npm:6.16.0"
   dependencies:
@@ -19009,7 +19009,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:^6.9.0, mongodb@npm:~6.15.0":
+"mongodb@npm:^6.9.0":
   version: 6.15.0
   resolution: "mongodb@npm:6.15.0"
   dependencies:
@@ -19043,18 +19043,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.13.2":
-  version: 8.13.2
-  resolution: "mongoose@npm:8.13.2"
+"mongoose@npm:^8.15.1":
+  version: 8.15.1
+  resolution: "mongoose@npm:8.15.1"
   dependencies:
     bson: "npm:^6.10.3"
     kareem: "npm:2.6.3"
-    mongodb: "npm:~6.15.0"
+    mongodb: "npm:~6.16.0"
     mpath: "npm:0.9.0"
     mquery: "npm:5.0.0"
     ms: "npm:2.1.3"
     sift: "npm:17.1.3"
-  checksum: 10c0/a454085fbc19147f7d886be10cbe6aa2b35d3ba4f4b09a144a7f71d2a66c7c6148cdfbbec9bb493806a78cf6b199c8ed934df916554e59183c6de3327816f751
+  checksum: 10c0/200699aecc40ec68c0d521ba61a8447e0d5b2799e146a1c61bbfbfd6895d9fddd17e593859b322a8f04ec02893276bf06edfd21a2f150444f7507ecb3a6cc920
   languageName: node
   linkType: hard
 
