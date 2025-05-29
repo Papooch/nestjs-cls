@@ -1,6 +1,6 @@
 # Plugins
 
-<small>**Since `v4.0`**</small>
+<small>**Since `v4.0`, stable since `v6.0`**</small>
 
 Plugins are a way to enable pre-built integrations with other libraries and frameworks. They are a convenient way to enable many real-world use-cases without having to write much boilerplate code.
 

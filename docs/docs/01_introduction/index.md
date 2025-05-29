@@ -45,10 +45,12 @@ _Also, if you use some tracing solution (like OTEL, Sentry, NewRelic, ...), it m
 
 ## Highlights
 
-> **New** Version `5.0` adds support for NestJS v11 (See [5.x Migration guide](../10_migration-guide/01_v4x-v5x.md) for breaking changes and the [Version compatibility matrix](../05_considerations/02_compatibility.md#nestjs-related-versions-compatibility-matrix) when performing an update).
+> **New** Version `6.0` stabilizes the previously experimental [Plugin API](../06_plugins/index.md). (See [6.x Migration guide](../10_migration-guide/01_v5x-v6x.md) for breaking changes)
 
-> Version `4.0` brings support for [Plugins](../06_plugins/index.md) which enable pre-built integrations with other libraries and frameworks. (See [4.x Migration guide](../10_migration-guide/02_v3x-v4x.md) for breaking changes).
+> Version `5.0` adds support for NestJS v11 (See [5.x Migration guide](../10_migration-guide/02_v4x-v5x.md) for breaking changes and the [Version compatibility matrix](../05_considerations/02_compatibility.md#nestjs-related-versions-compatibility-matrix) when performing an update).
 
-> Version `3.0` introduces [_Proxy Providers_](../03_features-and-use-cases/06_proxy-providers.md) as an alternative to the imperative API. (Minor breaking changes were introduced, see [3.x Migration guide](../10_migration-guide/03_v2x-v3x.md)).
+> Version `4.0` brings support for [Plugins](../06_plugins/index.md) which enable pre-built integrations with other libraries and frameworks. (See [4.x Migration guide](../10_migration-guide/03_v3x-v4x.md) for breaking changes).
+
+> Version `3.0` introduces [_Proxy Providers_](../03_features-and-use-cases/06_proxy-providers.md) as an alternative to the imperative API. (Minor breaking changes were introduced, see [3.x Migration guide](../10_migration-guide/04_v2x-v3x.md)).
 
 > Version `2.0` brings advanced [type safety and type inference](../03_features-and-use-cases/05_type-safety-and-type-inference.md). However, it requires features from `typescript >= 4.4` - Namely allowing `symbol` members in interfaces. If you can't upgrade but still want to use this library, install version `1.6.2`, which lacks the typing features.
