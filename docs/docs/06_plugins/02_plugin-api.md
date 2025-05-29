@@ -64,25 +64,25 @@ Implementing the aforementioned interface and supplying the (optional) hooks pro
 
 However, the `nestjs-cls` package exports a `ClsPluginBase` class, that can be extended to easily create a plugin.
 
-In this example, we will implement a plugin that extracts the `user` property from the request and registers wraps it in a custom [Proxy provider](../03_features-and-use-cases/06_proxy-providers.md) for injection.
+In this example, we will implement a plugin that extracts the `user` property from the request and wraps it in a custom [Proxy provider](../03_features-and-use-cases/06_proxy-providers.md) for injection.
 
 The plugin will work in the following way:
 
-1. First, check if the `user` property is already set in the CLS Store. If it is, do nothing.
+1. First, check if the `user` property is already set in the CLS Store. If it is, do nothing (in case the user registers multiple initializers).
 2. Determine the kind of Cls-initializer that is being used and add the `user` property to the CLS Store.
 3. Register a custom `ClsUserHost` proxy provider that hosts the `user` property for injection anywhere in the application.
 
 ```ts
-// Define a symbol to be used as a key in the CLS Store
+// Define a symbol as a key in the CLS Store
 export const USER_CLS_SYMBOL = Symbol('user');
 
-// Define a custom proxy provider that will be used to inject the user property
+// Define a custom proxy provider that hosts the user property
 @InjectableProxy()
 export class ClsUserHost {
     public readonly user: MyUserType;
 
     constructor(private readonly cls: ClsService) {
-        this.user = this.cls.get(USER_CLS_SYMBOL);
+        this.user = this.cls.get<MyUserType>(USER_CLS_SYMBOL);
     }
 }
 
@@ -158,6 +158,7 @@ export class UserPlugin extends ClsPluginBase {
         super('user-plugin');
 
 // [...]
+                afterSetup(cls, context) {
 
                     switch (context.kind) {
                         case 'middleware':
