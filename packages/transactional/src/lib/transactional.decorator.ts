@@ -57,6 +57,16 @@ export function Transactional<TAdapter>(
  * Run the decorated method in a transaction.
  *
  * @param propagation The propagation mode to use, @see{Propagation}.
+ * @param options Transaction options depending on the adapter. */
+export function Transactional<TAdapter>(
+    propagation: Propagation,
+    options?: TOptionsFromAdapter<TAdapter>,
+): MethodDecorator
+
+/**
+ * Run the decorated method in a transaction.
+ *
+ * @param propagation The propagation mode to use, @see{Propagation}.
  * @param options Transaction options depending on the adapter.
  */
 export function Transactional<TAdapter>(

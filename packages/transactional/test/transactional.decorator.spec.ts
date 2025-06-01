@@ -61,15 +61,16 @@ class CallingService {
         await this.calledService.doOtherWork(2);
     }
 
-    @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
-    async transactionWithConnectionNameAndPropagation() {
+
+    @Transactional<TransactionAdapterMock>( Propagation.RequiresNew,{ serializable: true })
+    async transactionWithConnectionPropagationAndOptions() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
-        this.transactionWithConnectionNameAndPropagationNested()
+        await this.transactionWithConnectionPropagationAndOptionsNested()
     }
 
-    @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
-    async transactionWithConnectionNameAndPropagationNested() {
+    @Transactional<TransactionAdapterMock>(Propagation.RequiresNew,{ serializable: true })
+    async transactionWithConnectionPropagationAndOptionsNested() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
     }
@@ -143,6 +144,27 @@ describe('Transactional with other decorators', () => {
             ).toEqual('testvalue');
         });
     });
+
+    describe('should pass propagation, when propagation and options are set in decorator', () =>{
+        it('when propagation is RequiresNew  should run separated transactions', async () => {
+            await callingService.transactionWithConnectionPropagationAndOptions();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                [
+                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
+                    'SELECT 1',
+                    'SELECT 2',
+                    'COMMIT TRANSACTION;',
+                ],
+                [
+                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
+                    'SELECT 1',
+                    'SELECT 2',
+                    'COMMIT TRANSACTION;',
+                ],
+            ]);
+        });
+    })
 });
 
 describe('Transactional decorator options', () => {
@@ -178,6 +200,20 @@ describe('Transactional decorator options', () => {
             await this.calledService.doWork(1);
             await this.calledService.doOtherWork(2);
         }
+
+        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew, {serializable:true})
+        async transactionWithConnectionNameAndPropagationAndOptions() {
+            await this.calledService.doWork(1);
+            await this.calledService.doOtherWork(2);
+            await this.transactionWithConnectionNameAndPropagationAndOptionsNested()
+        }
+
+        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew,{serializable:true})
+        async transactionWithConnectionNameAndPropagationAndOptionsNested() {
+            await this.calledService.doWork(1);
+            await this.calledService.doOtherWork(2);
+        }
+
     }
 
     @Module({
@@ -225,8 +261,8 @@ describe('Transactional decorator options', () => {
         mockDbConnection = module.get(MockDbConnection);
     });
 
-    describe('propagation', () => {
-        it('connectionName, propagation', async () => {
+    describe('should keep propagation options', () => {
+        it('in case of connectionName,  propagation: RequiresNew,  should run separated transactions', async () => {
             await callingService.transactionWithConnectionNameAndPropagation();
             const queries = mockDbConnection.getClientsQueries();
             expect(queries).toEqual([
@@ -238,6 +274,25 @@ describe('Transactional decorator options', () => {
                 ],
                 [
                     'BEGIN TRANSACTION;',
+                    'SELECT 1',
+                    'SELECT 2',
+                    'COMMIT TRANSACTION;',
+                ],
+            ]);
+        });
+
+        it('in case of connectionName,  propagation: RequiresNew, options { serializable: true } should run separated serialized transactions', async () => {
+            await callingService.transactionWithConnectionNameAndPropagationAndOptions();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                [
+                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
+                    'SELECT 1',
+                    'SELECT 2',
+                    'COMMIT TRANSACTION;',
+                ],
+                [
+                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
                     'SELECT 1',
                     'SELECT 2',
                     'COMMIT TRANSACTION;',
