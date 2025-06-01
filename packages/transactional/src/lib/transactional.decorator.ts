@@ -73,6 +73,7 @@ export function Transactional(
     let connectionName: string | undefined;
     let options: any;
     let propagation: Propagation | undefined;
+
     if (thirdParam) {
         connectionName = firstParam;
         propagation = secondParam;
@@ -83,7 +84,12 @@ export function Transactional(
         } else {
             connectionName = firstParam;
         }
-        options = secondParam;
+        if(paramIsPropagationMode(secondParam)) {
+            propagation = secondParam;
+        }else {
+            options = secondParam;
+        }
+
     } else {
         if (paramIsPropagationMode(firstParam)) {
             propagation = firstParam;

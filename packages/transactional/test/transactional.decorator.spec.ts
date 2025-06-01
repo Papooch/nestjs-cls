@@ -1,7 +1,12 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
-import { ClsPluginTransactional, Transactional, TransactionHost } from '../src';
+import {
+    ClsPluginTransactional, InjectTransactionHost,
+    Propagation,
+    Transactional,
+    TransactionHost,
+} from '../src';
 import {
     MockDbConnection,
     TransactionAdapterMock,
@@ -52,6 +57,19 @@ class CallingService {
     @MetadataDefiningDecorator()
     @PropertyDefiningDecorator()
     async transactionWithDecoratorWithOptions() {
+        await this.calledService.doWork(1);
+        await this.calledService.doOtherWork(2);
+    }
+
+    @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
+    async transactionWithConnectionNameAndPropagation() {
+        await this.calledService.doWork(1);
+        await this.calledService.doOtherWork(2);
+        this.transactionWithConnectionNameAndPropagationNested()
+    }
+
+    @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
+    async transactionWithConnectionNameAndPropagationNested() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
     }
@@ -123,6 +141,108 @@ describe('Transactional with other decorators', () => {
                     'testproperty'
                 ],
             ).toEqual('testvalue');
+        });
+    });
+});
+
+describe('Transactional decorator options', () => {
+    @Injectable()
+    class MultipleConnectionCalledService {
+        constructor(
+            @InjectTransactionHost('default')
+            private readonly txHost: TransactionHost<TransactionAdapterMock>,
+        ) {}
+
+        async doWork(num: number) {
+            return this.txHost.tx.query(`SELECT ${num}`);
+        }
+
+        async doOtherWork(num: number) {
+            return this.txHost.tx.query(`SELECT ${num}`);
+        }
+    }
+
+    @Injectable()
+    class MultipleConnectionCallingService {
+        constructor(private readonly calledService: MultipleConnectionCalledService) {}
+
+        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
+        async transactionWithConnectionNameAndPropagation() {
+            await this.calledService.doWork(1);
+            await this.calledService.doOtherWork(2);
+            await this.transactionWithConnectionNameAndPropagationNested()
+        }
+
+        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
+        async transactionWithConnectionNameAndPropagationNested() {
+            await this.calledService.doWork(1);
+            await this.calledService.doOtherWork(2);
+        }
+    }
+
+    @Module({
+        providers: [MockDbConnection],
+        exports: [MockDbConnection],
+    })
+    class DbConnectionModule {}
+
+    @Module({
+        imports: [
+            ClsModule.forRoot({
+                plugins: [
+                    new ClsPluginTransactional({
+                        imports: [DbConnectionModule],
+                        connectionName: 'default',
+                        adapter: new TransactionAdapterMock({
+                            connectionToken: MockDbConnection,
+                        }),
+                    }),
+                    new ClsPluginTransactional({
+                        imports: [DbConnectionModule],
+                        connectionName: 'second',
+                        adapter: new TransactionAdapterMock({
+                            connectionToken: MockDbConnection,
+                        }),
+                    }),
+                ],
+            }),
+        ],
+        providers: [MultipleConnectionCallingService, MultipleConnectionCalledService],
+    })
+    class MultiPleConnectionAppModule {}
+
+    let module: TestingModule;
+    let callingService: MultipleConnectionCallingService;
+    let mockDbConnection: MockDbConnection;
+
+
+    beforeEach(async () => {
+        module = await Test.createTestingModule({
+            imports: [MultiPleConnectionAppModule],
+        }).compile();
+        await module.init();
+        callingService = module.get(MultipleConnectionCallingService);
+        mockDbConnection = module.get(MockDbConnection);
+    });
+
+    describe('propagation', () => {
+        it('connectionName, propagation', async () => {
+            await callingService.transactionWithConnectionNameAndPropagation();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                [
+                    'BEGIN TRANSACTION;',
+                    'SELECT 1',
+                    'SELECT 2',
+                    'COMMIT TRANSACTION;',
+                ],
+                [
+                    'BEGIN TRANSACTION;',
+                    'SELECT 1',
+                    'SELECT 2',
+                    'COMMIT TRANSACTION;',
+                ],
+            ]);
         });
     });
 });
