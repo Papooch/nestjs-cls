@@ -41,6 +41,7 @@ If you make a change in a package that other packages depend on, you need to run
 3. Create a branch for the feature
 4. If you add new features, make sure to also add tests - you can run tests with `yarn test`
 5. Make sure to update the documentation if it is related to the new feature
-6. If you're happy with your contribution, create a pull request from the branch against the upstream repo
-7. Wait for the review from the maintainer and fix any issues raised
-8. If you're contribution is accepted, it will be merged into the `main` branch and published to npm
+6. Run `yarn format` to format the codes.
+7. If you're happy with your contribution, create a pull request from the branch against the upstream repo
+8. Wait for the review from the maintainer and fix any issues raised
+9. If you're contribution is accepted, it will be merged into the `main` branch and published to npm
