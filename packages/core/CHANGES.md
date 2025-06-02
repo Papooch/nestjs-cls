@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [6.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.0.0...nestjs-cls@6.0.1) "nestjs-cls" (2025-06-02)<a name="6.0.1"></a>
+
+### Bug Fixes
+
+* **core**: remove unnecessary build step from prepack ([0d1e921](https://github.com/Papooch/nestjs-cls/commits/0d1e921))
+* **core**: do not publish source maps (#322) ([0d1e921](https://github.com/Papooch/nestjs-cls/commits/0d1e921))
+
+
+
+
 ## [6.0.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@5.4.3...nestjs-cls@6.0.0) "nestjs-cls" (2025-05-29)<a name="6.0.0"></a>
 
 ### Breaking Changes
