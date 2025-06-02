@@ -1,53 +1,54 @@
 {
-    "name": "nestjs-cls-root",
-    "version": "0.0.0",
-    "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
-    "author": "papooch",
-    "license": "MIT",
-    "engines": {
-        "node": ">=18"
-    },
-    "repository": "https://github.com/Papooch/nestjs-cls",
-    "private": true,
-    "homepage": "https://papooch.github.io/nestjs-cls/",
-    "keywords": [
-        "nest",
-        "nestjs",
-        "cls",
-        "continuation-local-storage",
-        "als",
-        "AsyncLocalStorage",
-        "async_hooks",
-        "request context",
-        "async context"
-    ],
-    "workspaces": [
-        "packages/*",
-        "packages/transactional-adapters/*",
-        "docs"
-    ],
-    "packageManager": "yarn@4.6.0",
-    "scripts": {
-        "test": "yarn workspaces foreach --all --topological-dev run test",
-        "build": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build",
-        "build:release": "yarn build --sourceMap false",
-        "format": "prettier --write \"packages/**/*.ts\"",
-        "lint": "eslint \"packages/**/*.ts\"",
-        "lint:fix": "eslint \"packages/**/*.ts\" --fix",
-        "depcruise": "yarn depcruise packages --include-only \"^packages/.*/src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | yarn depcruise-wrap-stream-in-html > dependency-graph.html"
-    },
-    "devDependencies": {
-        "@goldstack/utils-typescript-references": "^0.3.13",
-        "@monodeploy/plugin-github": "^2.0.2",
-        "@tophat/conventional-changelog-config": "^1.0.1",
-        "@typescript-eslint/eslint-plugin": "^8.32.1",
-        "@typescript-eslint/parser": "^8.31.1",
-        "dependency-cruiser": "^16.10.1",
-        "eslint": "^9.23.0",
-        "eslint-config-prettier": "^10.1.2",
-        "eslint-plugin-prettier": "^5.4.0",
-        "monodeploy": "^5.0.2",
-        "prettier": "^3.5.3",
-        "typescript": "5.8.3"
-    }
+  "name": "nestjs-cls-root",
+  "version": "0.0.0",
+  "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
+  "author": "papooch",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": "https://github.com/Papooch/nestjs-cls",
+  "private": true,
+  "homepage": "https://papooch.github.io/nestjs-cls/",
+  "keywords": [
+    "nest",
+    "nestjs",
+    "cls",
+    "continuation-local-storage",
+    "als",
+    "AsyncLocalStorage",
+    "async_hooks",
+    "request context",
+    "async context"
+  ],
+  "workspaces": [
+    "packages/*",
+    "packages/transactional-adapters/*",
+    "docs"
+  ],
+  "packageManager": "yarn@4.6.0",
+  "scripts": {
+    "test": "yarn workspaces foreach --all --topological-dev run test",
+    "build": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build",
+    "build:release": "yarn build --sourceMap false",
+    "format": "prettier --write \"packages/**/*.ts\"",
+    "format:check": "prettier --check \"packages/**/*.ts\"",
+    "lint": "eslint \"packages/**/*.ts\" --fix",
+    "lint:check": "eslint \"packages/**/*.ts\"",
+    "depcruise": "yarn depcruise packages --include-only \"^packages/.*/src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | yarn depcruise-wrap-stream-in-html > dependency-graph.html"
+  },
+  "devDependencies": {
+    "@goldstack/utils-typescript-references": "^0.3.13",
+    "@monodeploy/plugin-github": "^2.0.2",
+    "@tophat/conventional-changelog-config": "^1.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "dependency-cruiser": "^16.10.1",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.4.0",
+    "monodeploy": "^5.0.2",
+    "prettier": "^3.5.3",
+    "typescript": "5.8.3"
+  }
 }

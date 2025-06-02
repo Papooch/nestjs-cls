@@ -275,13 +275,17 @@ describe('Transactional', () => {
         it('should rollback a transaction with access mode read only from decorator', async () => {
             await expect(
                 callingService.transactionWithDecoratorWithReadOnlyOptionError(),
-            ).rejects.toThrow(new Error('cannot execute INSERT in a read-only transaction'));
+            ).rejects.toThrow(
+                new Error('cannot execute INSERT in a read-only transaction'),
+            );
         });
 
         it('should rollback a transaction with access mode read only with a wrapper function', async () => {
             await expect(
                 callingService.transactionWithWrapperFunctionWithReadOnlyOptionError(),
-            ).rejects.toThrow(new Error('cannot execute INSERT in a read-only transaction'));
+            ).rejects.toThrow(
+                new Error('cannot execute INSERT in a read-only transaction'),
+            );
         });
 
         describe('Isolation Level', () => {
@@ -345,7 +349,12 @@ describe('Transactional', () => {
                                 .where('id', '=', userB.id)
                                 .execute();
                         },
-                    )).rejects.toThrow(new Error('could not serialize access due to read/write dependencies among transactions'));
+                    ),
+                ).rejects.toThrow(
+                    new Error(
+                        'could not serialize access due to read/write dependencies among transactions',
+                    ),
+                );
             });
         });
     });
