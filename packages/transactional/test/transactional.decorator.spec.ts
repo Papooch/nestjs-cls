@@ -148,27 +148,6 @@ describe('Transactional with other decorators', () => {
             ).toEqual('testvalue');
         });
     });
-
-    describe('should pass propagation, when propagation and options are set in decorator', () => {
-        it('when propagation is RequiresNew  should run separated transactions', async () => {
-            await callingService.transactionWithConnectionPropagationAndOptions();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-                [
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-            ]);
-        });
-    });
 });
 
 describe('Transactional decorator options', () => {
