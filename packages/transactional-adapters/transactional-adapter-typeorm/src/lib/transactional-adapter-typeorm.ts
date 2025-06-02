@@ -42,6 +42,7 @@ export class TransactionalAdapterTypeOrm
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: EntityManager) => void,
         ) => {
+            // 여딕서 cls 필요.
             return dataSource.transaction(options?.isolationLevel, (trx) => {
                 setClient(trx);
                 return fn();

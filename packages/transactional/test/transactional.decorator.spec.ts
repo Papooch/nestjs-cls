@@ -2,7 +2,8 @@ import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import {
-    ClsPluginTransactional, InjectTransactionHost,
+    ClsPluginTransactional,
+    InjectTransactionHost,
     Propagation,
     Transactional,
     TransactionHost,
@@ -61,15 +62,18 @@ class CallingService {
         await this.calledService.doOtherWork(2);
     }
 
-
-    @Transactional<TransactionAdapterMock>( Propagation.RequiresNew,{ serializable: true })
+    @Transactional<TransactionAdapterMock>(Propagation.RequiresNew, {
+        serializable: true,
+    })
     async transactionWithConnectionPropagationAndOptions() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
-        await this.transactionWithConnectionPropagationAndOptionsNested()
+        await this.transactionWithConnectionPropagationAndOptionsNested();
     }
 
-    @Transactional<TransactionAdapterMock>(Propagation.RequiresNew,{ serializable: true })
+    @Transactional<TransactionAdapterMock>(Propagation.RequiresNew, {
+        serializable: true,
+    })
     async transactionWithConnectionPropagationAndOptionsNested() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
@@ -145,7 +149,7 @@ describe('Transactional with other decorators', () => {
         });
     });
 
-    describe('should pass propagation, when propagation and options are set in decorator', () =>{
+    describe('should pass propagation, when propagation and options are set in decorator', () => {
         it('when propagation is RequiresNew  should run separated transactions', async () => {
             await callingService.transactionWithConnectionPropagationAndOptions();
             const queries = mockDbConnection.getClientsQueries();
@@ -164,7 +168,7 @@ describe('Transactional with other decorators', () => {
                 ],
             ]);
         });
-    })
+    });
 });
 
 describe('Transactional decorator options', () => {
@@ -186,34 +190,49 @@ describe('Transactional decorator options', () => {
 
     @Injectable()
     class MultipleConnectionCallingService {
-        constructor(private readonly calledService: MultipleConnectionCalledService) {}
+        constructor(
+            private readonly calledService: MultipleConnectionCalledService,
+        ) {}
 
-        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
+        @Transactional<TransactionAdapterMock>(
+            'default',
+            Propagation.RequiresNew,
+        )
         async transactionWithConnectionNameAndPropagation() {
             await this.calledService.doWork(1);
             await this.calledService.doOtherWork(2);
-            await this.transactionWithConnectionNameAndPropagationNested()
+            await this.transactionWithConnectionNameAndPropagationNested();
         }
 
-        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew)
+        @Transactional<TransactionAdapterMock>(
+            'default',
+            Propagation.RequiresNew,
+        )
         async transactionWithConnectionNameAndPropagationNested() {
             await this.calledService.doWork(1);
             await this.calledService.doOtherWork(2);
         }
 
-        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew, {serializable:true})
+        @Transactional<TransactionAdapterMock>(
+            'default',
+            Propagation.RequiresNew,
+            { serializable: true },
+        )
         async transactionWithConnectionNameAndPropagationAndOptions() {
             await this.calledService.doWork(1);
             await this.calledService.doOtherWork(2);
-            await this.transactionWithConnectionNameAndPropagationAndOptionsNested()
+            await this.transactionWithConnectionNameAndPropagationAndOptionsNested();
         }
 
-        @Transactional<TransactionAdapterMock>('default', Propagation.RequiresNew,{serializable:true})
+        @Transactional<TransactionAdapterMock>(
+            'default',
+            Propagation.RequiresNew,
+            { serializable: true },
+        )
         async transactionWithConnectionNameAndPropagationAndOptionsNested() {
             await this.calledService.doWork(1);
             await this.calledService.doOtherWork(2);
         }
-
     }
 
     @Module({
@@ -243,14 +262,16 @@ describe('Transactional decorator options', () => {
                 ],
             }),
         ],
-        providers: [MultipleConnectionCallingService, MultipleConnectionCalledService],
+        providers: [
+            MultipleConnectionCallingService,
+            MultipleConnectionCalledService,
+        ],
     })
     class MultiPleConnectionAppModule {}
 
     let module: TestingModule;
     let callingService: MultipleConnectionCallingService;
     let mockDbConnection: MockDbConnection;
-
 
     beforeEach(async () => {
         module = await Test.createTestingModule({

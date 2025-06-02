@@ -61,7 +61,7 @@ export function Transactional<TAdapter>(
 export function Transactional<TAdapter>(
     propagation: Propagation,
     options?: TOptionsFromAdapter<TAdapter>,
-): MethodDecorator
+): MethodDecorator;
 
 /**
  * Run the decorated method in a transaction.
@@ -94,12 +94,11 @@ export function Transactional(
         } else {
             connectionName = firstParam;
         }
-        if(paramIsPropagationMode(secondParam)) {
+        if (paramIsPropagationMode(secondParam)) {
             propagation = secondParam;
-        }else {
+        } else {
             options = secondParam;
         }
-
     } else {
         if (paramIsPropagationMode(firstParam)) {
             propagation = firstParam;
