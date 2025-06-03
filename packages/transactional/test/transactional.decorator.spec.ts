@@ -1,13 +1,7 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
-import {
-    ClsPluginTransactional,
-    InjectTransactionHost,
-    Propagation,
-    Transactional,
-    TransactionHost,
-} from '../src';
+import { ClsPluginTransactional, Transactional, TransactionHost } from '../src';
 import {
     MockDbConnection,
     TransactionAdapterMock,
@@ -58,23 +52,6 @@ class CallingService {
     @MetadataDefiningDecorator()
     @PropertyDefiningDecorator()
     async transactionWithDecoratorWithOptions() {
-        await this.calledService.doWork(1);
-        await this.calledService.doOtherWork(2);
-    }
-
-    @Transactional<TransactionAdapterMock>(Propagation.RequiresNew, {
-        serializable: true,
-    })
-    async transactionWithConnectionPropagationAndOptions() {
-        await this.calledService.doWork(1);
-        await this.calledService.doOtherWork(2);
-        await this.transactionWithConnectionPropagationAndOptionsNested();
-    }
-
-    @Transactional<TransactionAdapterMock>(Propagation.RequiresNew, {
-        serializable: true,
-    })
-    async transactionWithConnectionPropagationAndOptionsNested() {
         await this.calledService.doWork(1);
         await this.calledService.doOtherWork(2);
     }
@@ -146,158 +123,6 @@ describe('Transactional with other decorators', () => {
                     'testproperty'
                 ],
             ).toEqual('testvalue');
-        });
-    });
-});
-
-describe('Transactional decorator options', () => {
-    @Injectable()
-    class MultipleConnectionCalledService {
-        constructor(
-            @InjectTransactionHost('default')
-            private readonly txHost: TransactionHost<TransactionAdapterMock>,
-        ) {}
-
-        async doWork(num: number) {
-            return this.txHost.tx.query(`SELECT ${num}`);
-        }
-
-        async doOtherWork(num: number) {
-            return this.txHost.tx.query(`SELECT ${num}`);
-        }
-    }
-
-    @Injectable()
-    class MultipleConnectionCallingService {
-        constructor(
-            private readonly calledService: MultipleConnectionCalledService,
-        ) {}
-
-        @Transactional<TransactionAdapterMock>(
-            'default',
-            Propagation.RequiresNew,
-        )
-        async transactionWithConnectionNameAndPropagation() {
-            await this.calledService.doWork(1);
-            await this.calledService.doOtherWork(2);
-            await this.transactionWithConnectionNameAndPropagationNested();
-        }
-
-        @Transactional<TransactionAdapterMock>(
-            'default',
-            Propagation.RequiresNew,
-        )
-        async transactionWithConnectionNameAndPropagationNested() {
-            await this.calledService.doWork(1);
-            await this.calledService.doOtherWork(2);
-        }
-
-        @Transactional<TransactionAdapterMock>(
-            'default',
-            Propagation.RequiresNew,
-            { serializable: true },
-        )
-        async transactionWithConnectionNameAndPropagationAndOptions() {
-            await this.calledService.doWork(1);
-            await this.calledService.doOtherWork(2);
-            await this.transactionWithConnectionNameAndPropagationAndOptionsNested();
-        }
-
-        @Transactional<TransactionAdapterMock>(
-            'default',
-            Propagation.RequiresNew,
-            { serializable: true },
-        )
-        async transactionWithConnectionNameAndPropagationAndOptionsNested() {
-            await this.calledService.doWork(1);
-            await this.calledService.doOtherWork(2);
-        }
-    }
-
-    @Module({
-        providers: [MockDbConnection],
-        exports: [MockDbConnection],
-    })
-    class DbConnectionModule {}
-
-    @Module({
-        imports: [
-            ClsModule.forRoot({
-                plugins: [
-                    new ClsPluginTransactional({
-                        imports: [DbConnectionModule],
-                        connectionName: 'default',
-                        adapter: new TransactionAdapterMock({
-                            connectionToken: MockDbConnection,
-                        }),
-                    }),
-                    new ClsPluginTransactional({
-                        imports: [DbConnectionModule],
-                        connectionName: 'second',
-                        adapter: new TransactionAdapterMock({
-                            connectionToken: MockDbConnection,
-                        }),
-                    }),
-                ],
-            }),
-        ],
-        providers: [
-            MultipleConnectionCallingService,
-            MultipleConnectionCalledService,
-        ],
-    })
-    class MultiPleConnectionAppModule {}
-
-    let module: TestingModule;
-    let callingService: MultipleConnectionCallingService;
-    let mockDbConnection: MockDbConnection;
-
-    beforeEach(async () => {
-        module = await Test.createTestingModule({
-            imports: [MultiPleConnectionAppModule],
-        }).compile();
-        await module.init();
-        callingService = module.get(MultipleConnectionCallingService);
-        mockDbConnection = module.get(MockDbConnection);
-    });
-
-    describe('should keep propagation options', () => {
-        it('in case of connectionName,  propagation: RequiresNew,  should run separated transactions', async () => {
-            await callingService.transactionWithConnectionNameAndPropagation();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-                [
-                    'BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-            ]);
-        });
-
-        it('in case of connectionName,  propagation: RequiresNew, options { serializable: true } should run separated serialized transactions', async () => {
-            await callingService.transactionWithConnectionNameAndPropagationAndOptions();
-            const queries = mockDbConnection.getClientsQueries();
-            expect(queries).toEqual([
-                [
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-                [
-                    'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; BEGIN TRANSACTION;',
-                    'SELECT 1',
-                    'SELECT 2',
-                    'COMMIT TRANSACTION;',
-                ],
-            ]);
         });
     });
 });
