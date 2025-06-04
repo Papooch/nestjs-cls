@@ -50,6 +50,7 @@ export class TransactionHost<TAdapter = never> {
         this.transactionInstanceSymbol = getTransactionClsKey(
             this._options.connectionName,
         );
+
         TransactionHost._instanceMap.set(this.transactionInstanceSymbol, this);
     }
 
