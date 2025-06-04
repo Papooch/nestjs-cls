@@ -6474,7 +6474,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^22.15.24"
     "@types/pg": "npm:^8.11.14"
-    drizzle-orm: "npm:^0.44.0"
+    drizzle-orm: "npm:^0.44.2"
     jest: "npm:^29.7.0"
     pg: "npm:^8.15.6"
     reflect-metadata: "npm:^0.2.2"
@@ -12793,9 +12793,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"drizzle-orm@npm:^0.44.0":
-  version: 0.44.0
-  resolution: "drizzle-orm@npm:0.44.0"
+"drizzle-orm@npm:^0.44.2":
+  version: 0.44.2
+  resolution: "drizzle-orm@npm:0.44.2"
   peerDependencies:
     "@aws-sdk/client-rds-data": ">=3"
     "@cloudflare/workers-types": ">=4"
@@ -12884,7 +12884,7 @@ __metadata:
       optional: true
     sqlite3:
       optional: true
-  checksum: 10c0/a5d0625f7e654b297c076320254f05fc18358f5570f1fe5723224ac98edf9041ef77173ed46176bbf2440825461aa85272d2c8a9e1239664b083ea230b0c0482
+  checksum: 10c0/29c88cb32fcd547b668184a7811a8be89f591ac9e53d5d1b8ab791dd5dd9eee991111d237a738545f5e475b83dbba8163c6b2a8231a59ec4e97e4f3356441bf5
   languageName: node
   linkType: hard
 
