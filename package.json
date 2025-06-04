@@ -41,7 +41,7 @@
     "@goldstack/utils-typescript-references": "^0.3.13",
     "@monodeploy/plugin-github": "^2.0.2",
     "@tophat/conventional-changelog-config": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.31.1",
     "dependency-cruiser": "^16.10.1",
     "eslint": "^9.28.0",
