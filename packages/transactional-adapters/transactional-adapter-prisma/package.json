@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-cls/transactional-adapter-prisma",
-  "version": "1.2.22",
+  "version": "1.2.23",
   "description": "A Prisma adapter for @nestjs-cls/transactional",
   "author": "papooch",
   "license": "MIT",
@@ -46,7 +46,7 @@
     "test:cov": "jest --coverage"
   },
   "peerDependencies": {
-    "@nestjs-cls/transactional": "workspace:^3.0.1",
+    "@nestjs-cls/transactional": "workspace:^3.0.2",
     "@prisma/client": "> 4 < 7",
     "nestjs-cls": "workspace:^6.0.1",
     "prisma": "> 4 < 7"
