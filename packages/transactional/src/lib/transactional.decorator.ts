@@ -57,6 +57,16 @@ export function Transactional<TAdapter>(
  * Run the decorated method in a transaction.
  *
  * @param propagation The propagation mode to use, @see{Propagation}.
+ * @param options Transaction options depending on the adapter. */
+export function Transactional<TAdapter>(
+    propagation: Propagation,
+    options?: TOptionsFromAdapter<TAdapter>,
+): MethodDecorator;
+
+/**
+ * Run the decorated method in a transaction.
+ * @param connectionName The name of the connection to use.
+ * @param propagation The propagation mode to use, @see{Propagation}.
  * @param options Transaction options depending on the adapter.
  */
 export function Transactional<TAdapter>(
@@ -73,6 +83,7 @@ export function Transactional(
     let connectionName: string | undefined;
     let options: any;
     let propagation: Propagation | undefined;
+
     if (thirdParam) {
         connectionName = firstParam;
         propagation = secondParam;
@@ -83,7 +94,11 @@ export function Transactional(
         } else {
             connectionName = firstParam;
         }
-        options = secondParam;
+        if (paramIsPropagationMode(secondParam)) {
+            propagation = secondParam;
+        } else {
+            options = secondParam;
+        }
     } else {
         if (paramIsPropagationMode(firstParam)) {
             propagation = firstParam;

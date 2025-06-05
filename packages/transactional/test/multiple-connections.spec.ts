@@ -4,6 +4,7 @@ import { ClsModule } from 'nestjs-cls';
 import {
     ClsPluginTransactional,
     InjectTransactionHost,
+    Propagation,
     Transactional,
     TransactionHost,
 } from '../src';
@@ -68,6 +69,15 @@ class CallingService {
 
     @Transactional('test2')
     private async nestedStartTransaction2(num: number) {
+        return this.calledService2.doWork(num);
+    }
+    @Transactional('test2', Propagation.Required)
+    async namedTransactionPropagationRequired(num: number) {
+        return this.namedTransactionPropagationRequiresNew(num);
+    }
+
+    @Transactional('test2', Propagation.RequiresNew)
+    private async namedTransactionPropagationRequiresNew(num: number) {
         return this.calledService2.doWork(num);
     }
 
@@ -192,6 +202,16 @@ describe('Transactional - multiple connections', () => {
             expect(queries2).toEqual([
                 ['SELECT 6'],
                 ['BEGIN TRANSACTION;', 'SELECT 7', 'COMMIT TRANSACTION;'],
+            ]);
+        });
+
+        it('should start new transactions for RequiresNew Propagation', async () => {
+            await callingService.namedTransactionPropagationRequired(1);
+
+            const queries = mockDbConnection2.getClientsQueries();
+            expect(queries).toEqual([
+                ['BEGIN TRANSACTION;', 'COMMIT TRANSACTION;'],
+                ['BEGIN TRANSACTION;', 'SELECT 1', 'COMMIT TRANSACTION;'],
             ]);
         });
     });

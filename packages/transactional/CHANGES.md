@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [3.0.2](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.0.1...@nestjs-cls/transactional@3.0.2) "@nestjs-cls/transactional" (2025-06-04)<a name="3.0.2"></a>
+
+### Bug Fixes
+
+* **transactional**: support missing Transactional decorator parameter combinations (#321) ([302a00d](https://github.com/Papooch/nestjs-cls/commits/302a00d))
+
+
+
+
 ## [3.0.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@2.7.0...@nestjs-cls/transactional@3.0.0) "@nestjs-cls/transactional" (2025-05-29)<a name="3.0.0"></a>
 
 ### Breaking Changes
