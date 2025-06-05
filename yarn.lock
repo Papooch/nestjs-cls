@@ -6687,7 +6687,7 @@ __metadata:
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^3.0.1"
     nestjs-cls: "workspace:^6.0.1"
-    typeorm: 0.3.20
+    typeorm: ^0.3.2
   languageName: unknown
   linkType: soft
 
