@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.2.23](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.2.22...@nestjs-cls/transactional-adapter-typeorm@1.2.23) "@nestjs-cls/transactional-adapter-typeorm" (2025-06-06)<a name="1.2.23"></a>
+
+### Bug Fixes
+
+* **transactional-adapter-typeorm**: relax typeorm peerDependency version (#332) ([592354b](https://github.com/Papooch/nestjs-cls/commits/592354b))
+
+
+
+
 ## [1.2.19](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.2.18...@nestjs-cls/transactional-adapter-typeorm@1.2.19) "@nestjs-cls/transactional-adapter-typeorm" (2025-04-18)<a name="1.2.19"></a>
 
 ### Dependencies
