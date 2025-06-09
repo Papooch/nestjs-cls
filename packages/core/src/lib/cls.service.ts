@@ -141,8 +141,6 @@ export class ClsService<S extends ClsStore = ClsStore> {
                 return callback();
             case 'override':
                 return this.runWith({} as S, callback);
-
-
         }
     }
 

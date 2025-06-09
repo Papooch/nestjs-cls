@@ -5333,6 +5333,65 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
+=======
+"@gring2/nestjs-cls-transactional-adapter-typeorm@workspace:packages/transactional-adapters/transactional-adapter-typeorm":
+  version: 0.0.0-use.local
+  resolution: "@gring2/nestjs-cls-transactional-adapter-typeorm@workspace:packages/transactional-adapters/transactional-adapter-typeorm"
+  dependencies:
+    "@nestjs/cli": "npm:^11.0.7"
+    "@nestjs/common": "npm:^11.1.2"
+    "@nestjs/core": "npm:^11.1.2"
+    "@nestjs/testing": "npm:^11.1.2"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^22.15.24"
+    jest: "npm:^29.7.0"
+    reflect-metadata: "npm:^0.2.2"
+    rimraf: "npm:^6.0.1"
+    rxjs: "npm:^7.8.2"
+    ts-jest: "npm:^29.3.2"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typeorm: "npm:0.3.24"
+    typescript: "npm:5.8.3"
+  peerDependencies:
+    "@gring2/nestjs-cls-transactional": "workspace:^3.0.2"
+    nestjs-cls: "workspace:^6.0.1"
+    typeorm: ^0.3.2
+  languageName: unknown
+  linkType: soft
+
+"@gring2/nestjs-cls-transactional@workspace:packages/transactional":
+  version: 0.0.0-use.local
+  resolution: "@gring2/nestjs-cls-transactional@workspace:packages/transactional"
+  dependencies:
+    "@nestjs/cli": "npm:^11.0.7"
+    "@nestjs/common": "npm:^11.1.2"
+    "@nestjs/core": "npm:^11.1.2"
+    "@nestjs/schematics": "npm:^11.0.5"
+    "@nestjs/testing": "npm:^11.1.2"
+    "@types/jest": "npm:^29.5.14"
+    "@types/node": "npm:^22.15.24"
+    jest: "npm:^29.7.0"
+    reflect-metadata: "npm:^0.2.2"
+    rimraf: "npm:^6.0.1"
+    rxjs: "npm:^7.8.2"
+    ts-jest: "npm:^29.3.2"
+    ts-loader: "npm:^9.5.2"
+    ts-node: "npm:^10.9.2"
+    tsconfig-paths: "npm:^4.2.0"
+    typescript: "npm:5.8.3"
+  peerDependencies:
+    "@nestjs/common": ">= 10 < 12"
+    "@nestjs/core": ">= 10 < 12"
+    nestjs-cls: "workspace:^6.0.1"
+    reflect-metadata: "*"
+    rxjs: ">= 7"
+  languageName: unknown
+  linkType: soft
+
+>>>>>>> 46b6fd7 (testcase)
 "@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
@@ -6657,7 +6716,11 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.8.3"
   peerDependencies:
+<<<<<<< HEAD
     "@nestjs-cls/transactional": "workspace:^3.0.3"
+=======
+    "@nestjs-cls/transactional": "workspace:^3.0.2"
+>>>>>>> 46b6fd7 (testcase)
     "@prisma/client": "> 4 < 7"
     nestjs-cls: "workspace:^6.0.1"
     prisma: "> 4 < 7"
@@ -11842,6 +11905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "core-js-compat@npm:^3.31.0":
   version: 3.31.1
   resolution: "core-js-compat@npm:3.31.1"
@@ -11866,20 +11930,40 @@ __metadata:
   dependencies:
     browserslist: "npm:^4.24.3"
   checksum: 10c0/44f6e88726fe266a5be9581a79766800478a8d5c492885f2d4c2a4e2babd9b06bc1689d5340d3a61ae7332f990aff2e83b6203ff8773137a627cfedfbeefabeb
+=======
+"core-js-compat@npm:^3.40.0":
+  version: 3.43.0
+  resolution: "core-js-compat@npm:3.43.0"
+  dependencies:
+    browserslist: "npm:^4.25.0"
+  checksum: 10c0/923804c16faf91bacb747a697640a907cb2a3e63078d467a75eb7ea4187d62d36347a94e5826d1b36739012e81a2ea435922cc8bd8e228fa68efaf00a9ce94af
+>>>>>>> 46b6fd7 (testcase)
   languageName: node
   linkType: hard
 
 "core-js-pure@npm:^3.30.2":
+<<<<<<< HEAD
   version: 3.31.1
   resolution: "core-js-pure@npm:3.31.1"
   checksum: 10c0/58e126c2fb3d2758f29f947edc9a561b367189d158f98bfdf6169a7fafbbafc61ae4a9c69df6ed48a7b3985727c60eead82b2072f66f5ca0d911b9b4c74cbb8c
+=======
+  version: 3.43.0
+  resolution: "core-js-pure@npm:3.43.0"
+  checksum: 10c0/b888513800543af7aac13b8e33eb5153d5a8304f11fe0ec7a331878df830dcb428c723ebd5266ae52b047ffb4a86750b384aed24de731b23bc5ebdbcf05aeec5
+>>>>>>> 46b6fd7 (testcase)
   languageName: node
   linkType: hard
 
 "core-js@npm:^3.31.1":
+<<<<<<< HEAD
   version: 3.35.1
   resolution: "core-js@npm:3.35.1"
   checksum: 10c0/ebc8e22c36d13bcf2140cbc1d8ad65d1b08192bff4c43ade70c72eac103cb4dcfbc521f2b1ad1c74881b0a4353e64986537893ae4f07888e49228340efa13ae6
+=======
+  version: 3.43.0
+  resolution: "core-js@npm:3.43.0"
+  checksum: 10c0/9d4ad66296e60380777de51d019b5c3e6cce023b7999750a5094f9a4b0ea53bf3600beb4ef11c56548f2c8791d43d4056e270d1cf55ba87273011aa7d4597871
+>>>>>>> 46b6fd7 (testcase)
   languageName: node
   linkType: hard
 
@@ -19591,9 +19675,15 @@ __metadata:
   linkType: hard
 
 "normalize-url@npm:^8.0.0":
+<<<<<<< HEAD
   version: 8.0.0
   resolution: "normalize-url@npm:8.0.0"
   checksum: 10c0/09582d56acd562d89849d9239852c2aff225c72be726556d6883ff36de50006803d32a023c10e917bcc1c55f73f3bb16434f67992fe9b61906a3db882192753c
+=======
+  version: 8.0.2
+  resolution: "normalize-url@npm:8.0.2"
+  checksum: 10c0/1c62eee6ce184ad4a463ff2984ce5e440a5058c9dd7c5ef80c0a7696bbb1d3638534e266afb14ef9678dfa07fb6c980ef4cde990c80eeee55900c378b7970584
+>>>>>>> 46b6fd7 (testcase)
   languageName: node
   linkType: hard
 

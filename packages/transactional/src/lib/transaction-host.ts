@@ -164,7 +164,7 @@ export class TransactionHost<TAdapter = never> {
         switch (propagation) {
             case Propagation.Nested:
                 if (this.isTransactionActive()) {
-                    return this.runInNestedTransaction(options,fn)
+                    return this.runInNestedTransaction(options, fn);
                 } else {
                     return this.runWithTransaction(options, fn);
                 }
@@ -234,23 +234,25 @@ export class TransactionHost<TAdapter = never> {
     private runInNestedTransaction(
         options: any,
         fn: (...args: any[]) => Promise<any>,
-    ){
-        return this.cls.run({ ifNested: 'nested', }, () =>
-            {
-                // only run with adapter which support nested transaction
-                if(this._options.hasOwnProperty('wrapWithNestedTransaction') && typeof this._options.wrapWithNestedTransaction === 'function') {
-                    return this._options
-                        .wrapWithNestedTransaction(options, fn,
-                            this.setTxInstance.bind(this),
-                            this.tx)
-                        .finally(() => this.setTxInstance(undefined))
-
-                }
-
-                return this.runWithTransaction(options,fn)
-
+    ) {
+        return this.cls.run({ ifNested: 'nested' }, () => {
+            // only run with adapter which support nested transaction
+            if (
+                this._options.hasOwnProperty('wrapWithNestedTransaction') &&
+                typeof this._options.wrapWithNestedTransaction === 'function'
+            ) {
+                return this._options
+                    .wrapWithNestedTransaction(
+                        options,
+                        fn,
+                        this.setTxInstance.bind(this),
+                        this.tx,
+                    )
+                    .finally(() => this.setTxInstance(undefined));
             }
-        );
+
+            return this.runWithTransaction(options, fn);
+        });
     }
 
     /**

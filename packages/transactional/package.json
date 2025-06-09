@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
   "name": "@nestjs-cls/transactional",
   "version": "3.0.3",
+=======
+  "name": "@gring2/nestjs-cls-transactional",
+  "version": "3.0.7",
+>>>>>>> 46b6fd7 (testcase)
   "description": "A nestjs-cls plugin for transactional decorators",
   "author": "papooch",
   "license": "MIT",

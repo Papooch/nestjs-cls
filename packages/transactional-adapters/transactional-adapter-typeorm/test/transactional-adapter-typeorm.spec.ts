@@ -114,21 +114,21 @@ class UserService {
     }
 
     @Transactional()
-    async transactionalHasNested() {
-        await this.nestedTransaction();
+    async transactionalHasNested(name?:string) {
+        await this.nestedTransaction(name);
         try {
-            await this.nestedTransactionError();
+            await this.nestedTransactionError(name);
         } catch (e: any) {}
     }
 
     @Transactional(Propagation.Nested)
-    async nestedTransaction() {
-        await this.userRepository.createUser('Nobody');
+    async nestedTransaction(name='Anybody') {
+        await this.userRepository.createUser(name);
     }
 
     @Transactional(Propagation.Nested)
-    async nestedTransactionError() {
-        await this.userRepository.createUser('Nobody');
+    async nestedTransactionError(name='Anybody') {
+        await this.userRepository.createUser(name);
         throw new Error();
     }
 }
@@ -149,16 +149,15 @@ class TypeOrmModule {}
 @Controller()
 class NewController {
     constructor(private readonly callingSvc: UserService) {}
-    @All()
+
+    @All('/')
     @Transactional(Propagation.Nested)
     async work() {
-        return this.callingSvc.transactionalHasNested()
+        return this.callingSvc.transactionalHasNested();
     }
 }
 @Module({
-    controllers: [
-        NewController
-    ],
+    controllers: [NewController],
     imports: [
         TypeOrmModule,
         ClsModule.forRoot({
@@ -199,7 +198,7 @@ describe('Transactional', () => {
         module = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
-
+        await module.init();
         callingService = module.get(UserService);
     });
 
@@ -211,15 +210,13 @@ describe('Transactional', () => {
     }, 60_000);
 
     describe('endpoint', () => {
-        // it('should work with in nested tx', async () => {
-        //     const app = module.createNestApplication({})
-        //     await request(app.getHttpServer())
-        //         .get('/')
-        //     const { r1, r2 } = await callingService.withoutTransaction();
-        //     expect(r1).toEqual(r2);
-        //     const users = await dataSource.manager.find(User);
-        //     expect(users).toEqual(expect.arrayContaining([r1]));
-        // });
+        it('should work with in nested tx', async () => {
+            const app = module.createNestApplication({});
+            await app.init();
+            await request(app.getHttpServer()).get('/').expect(200);
+            const users = await dataSource.manager.find(User);
+            expect(users).toHaveLength(1);
+        });
     });
 
     describe('TransactionalAdapterTypeOrmPromise', () => {
@@ -231,9 +228,13 @@ describe('Transactional', () => {
         });
 
         it('should work with in nested tx', async () => {
-            await callingService.transactionalHasNested();
+            await callingService.transactionalHasNested('Anybody2');
 
-            const users = await dataSource.manager.find(User);
+            const users = await dataSource.manager.find(User, {
+                where: {
+                    name: 'Anybody2',
+                },
+            });
 
             // partial rollback
             expect(users).toHaveLength(1);
