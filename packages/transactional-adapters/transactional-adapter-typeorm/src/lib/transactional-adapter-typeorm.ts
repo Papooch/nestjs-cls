@@ -19,6 +19,7 @@ export interface TypeOrmTransactionOptions {
     isolationLevel: IsolationLevel;
 }
 
+
 export class TransactionalAdapterTypeOrm
     implements
         TransactionalAdapter<
@@ -43,6 +44,18 @@ export class TransactionalAdapterTypeOrm
             setClient: (client?: EntityManager) => void,
         ) => {
             return dataSource.transaction(options?.isolationLevel, (trx) => {
+                setClient(trx);
+                return fn();
+            });
+        },
+        wrapWithNestedTransaction: async (
+            options: TypeOrmTransactionOptions,
+            fn: (...args: any[]) => Promise<any>,
+
+            setClient: (client?: EntityManager) => void,
+            client:EntityManager,
+        ) => {
+            return (client).transaction(options?.isolationLevel, (trx) => {
                 setClient(trx);
                 return fn();
             });
