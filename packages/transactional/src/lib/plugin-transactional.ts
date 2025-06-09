@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { ClsModule, ClsPluginBase } from 'nestjs-cls';
+import { ClsModule, ClsPluginBase } from '@gring2/nestjs-cls';
 import { getTransactionToken } from './inject-transaction.decorator';
 import {
     MergedTransactionalAdapterOptions,

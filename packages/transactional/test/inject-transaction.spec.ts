@@ -1,6 +1,6 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule, UseCls } from '@gring2/nestjs-cls';
 import {
     ClsPluginTransactional,
     InjectTransaction,

@@ -7,7 +7,7 @@ import {
     TransactionHost,
 } from '../src';
 import { TransactionAdapterMock } from './transaction-adapter-mock';
-import { ClsModule } from 'nestjs-cls';
+import { ClsModule } from '@gring2/nestjs-cls';
 
 @Injectable()
 class UnitTestableRepository {

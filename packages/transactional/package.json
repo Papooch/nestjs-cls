@@ -1,6 +1,6 @@
 {
   "name": "@gring2/nestjs-cls-transactional",
-  "version": "3.0.7",
+  "version": "3.0.9",
   "description": "A nestjs-cls plugin for transactional decorators",
   "author": "gring2",
   "license": "MIT",
@@ -45,9 +45,9 @@
     "test:cov": "jest --coverage"
   },
   "peerDependencies": {
+    "@gring2/nestjs-cls": "workspace:^6.0.1",
     "@nestjs/common": ">= 10 < 12",
     "@nestjs/core": ">= 10 < 12",
-    "nestjs-cls": "workspace:^6.0.1",
     "reflect-metadata": "*",
     "rxjs": ">= 7"
   },
