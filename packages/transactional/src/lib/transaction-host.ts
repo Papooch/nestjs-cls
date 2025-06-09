@@ -162,6 +162,12 @@ export class TransactionHost<TAdapter = never> {
     ) {
         const fnName = fn.name || 'anonymous';
         switch (propagation) {
+            case Propagation.Nested:
+                if (this.isTransactionActive()) {
+                    return this.runInNestedTransaction(options,fn)
+                } else {
+                    return this.runWithTransaction(options, fn);
+                }
             case Propagation.Required:
                 if (this.isTransactionActive()) {
                     if (isNotEmpty(options)) {
@@ -222,6 +228,28 @@ export class TransactionHost<TAdapter = never> {
             this._options
                 .wrapWithTransaction(options, fn, this.setTxInstance.bind(this))
                 .finally(() => this.setTxInstance(undefined)),
+        );
+    }
+
+    private runInNestedTransaction(
+        options: any,
+        fn: (...args: any[]) => Promise<any>,
+    ){
+        return this.cls.run({ ifNested: 'nested', }, () =>
+            {
+                // only run with adapter which support nested transaction
+                if(this._options.hasOwnProperty('wrapWithNestedTransaction') && typeof this._options.wrapWithNestedTransaction === 'function') {
+                    return this._options
+                        .wrapWithNestedTransaction(options, fn,
+                            this.setTxInstance.bind(this),
+                            this.tx)
+                        .finally(() => this.setTxInstance(undefined))
+
+                }
+
+                return this.runWithTransaction(options,fn)
+
+            }
         );
     }
 
