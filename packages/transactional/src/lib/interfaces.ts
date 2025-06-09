@@ -12,11 +12,11 @@ export interface TransactionalAdapterOptions<TTx, TOptions> {
         fn: (...args: any[]) => Promise<any>,
         setTx: (client?: TTx) => void,
     ) => Promise<any>;
-    wrapWithNestedTransaction?:(
+    wrapWithNestedTransaction?: (
         options: TOptions,
         fn: (...args: any[]) => Promise<any>,
         setTx: (client?: TTx) => void,
-        tx:TTx
+        tx: TTx,
     ) => Promise<any>;
     getFallbackInstance: () => TTx;
 }

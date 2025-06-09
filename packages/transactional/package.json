@@ -1,6 +1,6 @@
 {
   "name": "@gring2/nestjs-cls-transactional",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "A nestjs-cls plugin for transactional decorators",
   "author": "gring2",
   "license": "MIT",
