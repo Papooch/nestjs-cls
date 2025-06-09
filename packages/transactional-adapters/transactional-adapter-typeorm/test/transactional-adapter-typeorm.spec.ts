@@ -5,7 +5,7 @@ import {
     Transaction,
     Transactional,
     TransactionHost,
-} from '@nestjs-cls/transactional';
+} from '@gring2/nestjs-cls-transactional';
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
