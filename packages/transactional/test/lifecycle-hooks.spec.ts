@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { ClsModule } from 'nestjs-cls';
+import { ClsModule } from '@gring2/nestjs-cls';
 import { ClsPluginTransactional } from '../src';
 import {
     MockDbConnection,

@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClsServiceManager } from 'nestjs-cls';
+import { ClsServiceManager } from '@gring2/nestjs-cls';
 import { getTransactionToken } from './inject-transaction.decorator';
 import {
     TOptionsFromAdapter,
