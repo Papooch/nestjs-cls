@@ -1,6 +1,6 @@
 {
-    "name": "@nestjs-cls/transactional-adapter-typeorm",
-    "version": "1.2.22",
+    "name": "@gring2/nestjs-cls-transactional-adapter-typeorm",
+    "version": "1.2.24",
     "description": "A typeorm adapter for @nestjs-cls/transactional",
     "author": "Giosuè Delgado S.Z. - Relybytes Srl <info@relybytes.com>",
     "license": "MIT",
@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Papooch/nestjs-cls.git"
+        "url": "git+https://github.com/gring2/nestjs-cls.git"
     },
     "homepage": "https://papooch.github.io/nestjs-cls/",
     "keywords": [
@@ -42,9 +42,9 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^3.0.2",
+        "@gring2/nestjs-cls-transactional": "workspace:^3.0.2",
         "nestjs-cls": "workspace:^6.0.1",
-        "typeorm": "0.3.20"
+        "typeorm": "^0.3.2"
     },
     "devDependencies": {
         "@nestjs/cli": "^11.0.7",

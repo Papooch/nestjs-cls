@@ -1,8 +1,8 @@
 {
-  "name": "@nestjs-cls/transactional",
-  "version": "3.0.2",
+  "name": "@gring2/nestjs-cls-transactional",
+  "version": "3.0.6",
   "description": "A nestjs-cls plugin for transactional decorators",
-  "author": "papooch",
+  "author": "gring2",
   "license": "MIT",
   "engines": {
     "node": ">=18"
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Papooch/nestjs-cls.git"
+    "url": "git+https://github.com/gring2/nestjs-cls.git"
   },
   "homepage": "https://papooch.github.io/nestjs-cls/",
   "keywords": [
