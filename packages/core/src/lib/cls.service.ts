@@ -135,11 +135,14 @@ export class ClsService<S extends ClsStore = ClsStore> {
         if (!this.isActive()) return this.runWith({} as S, callback);
         switch (options.ifNested) {
             case 'inherit':
+            case 'nested':
                 return this.runWith({ ...this.get() }, callback);
             case 'reuse':
                 return callback();
             case 'override':
                 return this.runWith({} as S, callback);
+
+
         }
     }
 

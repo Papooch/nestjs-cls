@@ -1,6 +1,7 @@
 import {
     ClsPluginTransactional,
     InjectTransaction,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -33,6 +34,7 @@ const dataSource = new DataSource({
     database: 'postgres',
     entities: [User],
     synchronize: true,
+    logging:true
 });
 
 @Injectable()
@@ -111,6 +113,29 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
+
+    @Transactional()
+    async transactionalHasNested() {
+        await this.nestedTransaction()
+        try{
+            await this.nestedTransactionError()
+
+        }catch (e: any) {
+
+        }
+
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction() {
+        await this.userRepository.createUser('Nobody');
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError() {
+        await this.userRepository.createUser('Nobody');
+        throw new Error()
+    }
 }
 
 @Module({
@@ -179,11 +204,21 @@ describe('Transactional', () => {
     }, 60_000);
 
     describe('TransactionalAdapterTypeOrmPromise', () => {
-        it('should work without an active transaction', async () => {
+        it('should work with in nested tx', async () => {
             const { r1, r2 } = await callingService.withoutTransaction();
             expect(r1).toEqual(r2);
             const users = await dataSource.manager.find(User);
             expect(users).toEqual(expect.arrayContaining([r1]));
+        });
+
+        it('should work without an active transaction', async () => {
+
+             await callingService.transactionalHasNested();
+
+            const users = await dataSource.manager.find(User);
+
+            // partial rollback
+            expect(users).toHaveLength(1)
         });
 
         it('should run a transaction with the default options with a decorator', async () => {
