@@ -6,13 +6,13 @@ import {
     Transactional,
     TransactionHost,
 } from '@gring2/nestjs-cls-transactional';
-import { Injectable, Module } from '@nestjs/common';
+import { All, Controller, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
 import { Column, DataSource, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TransactionalAdapterTypeOrm } from '../src';
-
+import request from 'supertest';
 @Entity()
 class User {
     @PrimaryGeneratedColumn()
@@ -34,7 +34,7 @@ const dataSource = new DataSource({
     database: 'postgres',
     entities: [User],
     synchronize: true,
-    logging:true
+    logging: true,
 });
 
 @Injectable()
@@ -115,14 +115,10 @@ class UserService {
 
     @Transactional()
     async transactionalHasNested() {
-        await this.nestedTransaction()
-        try{
-            await this.nestedTransactionError()
-
-        }catch (e: any) {
-
-        }
-
+        await this.nestedTransaction();
+        try {
+            await this.nestedTransactionError();
+        } catch (e: any) {}
     }
 
     @Transactional(Propagation.Nested)
@@ -133,7 +129,7 @@ class UserService {
     @Transactional(Propagation.Nested)
     async nestedTransactionError() {
         await this.userRepository.createUser('Nobody');
-        throw new Error()
+        throw new Error();
     }
 }
 
@@ -150,7 +146,19 @@ class UserService {
 })
 class TypeOrmModule {}
 
+@Controller()
+class NewController {
+    constructor(private readonly callingSvc: UserService) {}
+    @All()
+    @Transactional(Propagation.Nested)
+    async work() {
+        return this.callingSvc.transactionalHasNested()
+    }
+}
 @Module({
+    controllers: [
+        NewController
+    ],
     imports: [
         TypeOrmModule,
         ClsModule.forRoot({
@@ -191,7 +199,7 @@ describe('Transactional', () => {
         module = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
-        await module.init();
+
         callingService = module.get(UserService);
     });
 
@@ -202,22 +210,33 @@ describe('Transactional', () => {
         });
     }, 60_000);
 
+    describe('endpoint', () => {
+        // it('should work with in nested tx', async () => {
+        //     const app = module.createNestApplication({})
+        //     await request(app.getHttpServer())
+        //         .get('/')
+        //     const { r1, r2 } = await callingService.withoutTransaction();
+        //     expect(r1).toEqual(r2);
+        //     const users = await dataSource.manager.find(User);
+        //     expect(users).toEqual(expect.arrayContaining([r1]));
+        // });
+    });
+
     describe('TransactionalAdapterTypeOrmPromise', () => {
-        it('should work with in nested tx', async () => {
+        it('should work without an active transaction', async () => {
             const { r1, r2 } = await callingService.withoutTransaction();
             expect(r1).toEqual(r2);
             const users = await dataSource.manager.find(User);
             expect(users).toEqual(expect.arrayContaining([r1]));
         });
 
-        it('should work without an active transaction', async () => {
-
-             await callingService.transactionalHasNested();
+        it('should work with in nested tx', async () => {
+            await callingService.transactionalHasNested();
 
             const users = await dataSource.manager.find(User);
 
             // partial rollback
-            expect(users).toHaveLength(1)
+            expect(users).toHaveLength(1);
         });
 
         it('should run a transaction with the default options with a decorator', async () => {
