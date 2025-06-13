@@ -8,7 +8,7 @@ import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongoClient, ObjectId, WriteConcern } from 'mongodb';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterMongoDB } from '../src';
 
 const MONGO_CLIENT = 'MONGO_CLIENT';
@@ -51,7 +51,6 @@ class UserService {
         private readonly mongo: MongoClient,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1!._id);

@@ -9,7 +9,7 @@ import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
 
 process.env.DATA_SOURCE_URL = 'file:../tmp/test.db';
@@ -40,7 +40,6 @@ class UserService {
         private readonly prisma: PrismaClient,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1.id);

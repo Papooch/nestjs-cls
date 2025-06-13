@@ -8,7 +8,7 @@ import {
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import Knex from 'knex';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterKnex } from '../src';
 
 const KNEX = 'KNEX';
@@ -41,7 +41,6 @@ class UserService {
         private readonly knex: Knex.Knex,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1.id);

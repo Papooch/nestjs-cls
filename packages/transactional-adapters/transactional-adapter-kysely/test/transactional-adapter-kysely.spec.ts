@@ -10,7 +10,7 @@ import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { execSync } from 'child_process';
 import { Generated, Kysely, PostgresDialect } from 'kysely';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { Pool } from 'pg';
 import { TransactionalAdapterKysely } from '../src';
 
@@ -64,7 +64,6 @@ class UserService {
         private readonly kysely: Kysely<Database>,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1.id);
@@ -145,7 +144,6 @@ const kyselyDb = new Kysely<Database>({
             max: 2,
         }),
     }),
-    log: ['query', 'error'],
 });
 
 @Module({
