@@ -1,6 +1,6 @@
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import {
     ClsPluginTransactional,
     InjectTransaction,
@@ -54,7 +54,6 @@ class CallingService {
         private readonly txHost2: TransactionHost<TransactionAdapterMock>,
     ) {}
 
-    @UseCls()
     async twoUnrelatedTransactionsWithDecorators() {
         const [q1, q2] = await Promise.all([
             this.nestedStartTransaction1(1),
@@ -68,13 +67,11 @@ class CallingService {
         return this.calledService1.doWork(num);
     }
 
-    // @UseCls()
     @Transactional()
     private async nestedStartTransaction2(num: number) {
         return this.calledService2.doWork(num);
     }
 
-    // @UseCls()
     async twoUnrelatedTransactionsWithStartTransaction() {
         const [q1, q2] = await Promise.all([
             this.txHost1.withTransaction(() => this.calledService1.doWork(3)),
@@ -83,7 +80,6 @@ class CallingService {
         return { q1, q2 };
     }
 
-    @UseCls()
     @Transactional('named-connection')
     async namedTransactionWithinAnotherNamedTransaction() {
         const q1 = await this.calledService1.doWork(5);

@@ -3,7 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import {
     ClsPluginTransactional,
+    InjectTransaction,
     InjectTransactionHost,
+    Transaction,
     Transactional,
     TransactionHost,
 } from '../src';
@@ -15,16 +17,16 @@ import {
 @Injectable()
 class CalledService {
     constructor(
-        @InjectTransactionHost('test')
-        private readonly txHost: TransactionHost<TransactionAdapterMock>,
+        @InjectTransaction('test')
+        private readonly tx: Transaction<TransactionAdapterMock>,
     ) {}
 
     async doWork(num: number) {
-        return this.txHost.tx.query(`SELECT ${num}`);
+        return this.tx.query(`SELECT ${num}`);
     }
 
     async doOtherWork(num: number) {
-        return this.txHost.tx.query(`SELECT ${num}`);
+        return this.tx.query(`SELECT ${num}`);
     }
 }
 
@@ -101,6 +103,7 @@ class DbConnectionModule {}
             plugins: [
                 new ClsPluginTransactional({
                     connectionName: 'test',
+                    enableTransactionProxy: true,
                     imports: [DbConnectionModule],
                     adapter: new TransactionAdapterMock({
                         connectionToken: MockDbConnection,
