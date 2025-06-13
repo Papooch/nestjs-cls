@@ -20,7 +20,7 @@ export class TransactionHost<TAdapter = never> {
     private readonly logger = new Logger(TransactionHost.name);
     private readonly transactionInstanceSymbol: symbol;
 
-    private static _instanceMap = new Map<symbol, TransactionHost>();
+    private static readonly _instanceMap = new Map<symbol, TransactionHost>();
 
     /**
      * Get a singleton instance of the TransactionHost outside of DI.

@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { ClsModule, ClsPluginBase } from 'nestjs-cls';
+import { ClsPluginBase } from 'nestjs-cls';
 import { getTransactionToken } from './inject-transaction.decorator';
 import {
     MergedTransactionalAdapterOptions,
@@ -8,8 +8,8 @@ import {
     TransactionalPluginOptions,
 } from './interfaces';
 import {
-    TRANSACTIONAL_ADAPTER_OPTIONS,
     TRANSACTION_CONNECTION,
+    TRANSACTIONAL_ADAPTER_OPTIONS,
 } from './symbols';
 import { getTransactionHostToken, TransactionHost } from './transaction-host';
 
@@ -39,10 +39,8 @@ export class ClsPluginTransactional extends ClsPluginBase {
                 useFactory: (
                     connection: any,
                 ): MergedTransactionalAdapterOptions<any, any> => {
-                    const adapterOptions = options.adapter.optionsFactory.call(
-                        options.adapter,
-                        connection,
-                    );
+                    const adapterOptions =
+                        options.adapter.optionsFactory(connection);
                     return {
                         ...adapterOptions,
                         ...this.bindLifecycleHooks(options),
@@ -68,15 +66,28 @@ export class ClsPluginTransactional extends ClsPluginBase {
             const transactionProxyToken = getTransactionToken(
                 options.connectionName,
             );
-            this.imports.push(
-                ClsModule.forFeatureAsync({
-                    provide: transactionProxyToken,
-                    inject: [transactionHostToken],
-                    useFactory: (txHost: TransactionHost) => txHost.tx,
-                    type: 'function',
-                    global: true,
-                }),
-            );
+            this.providers.push({
+                provide: transactionProxyToken,
+                inject: [transactionHostToken],
+                useFactory: (txHost: TransactionHost<unknown>) =>
+                    new Proxy(txHost.tx, {
+                        // Dynamically get the current tx instance at access time
+                        get: (_, propName) => {
+                            const tx = txHost.tx as any;
+                            const prop = tx[propName];
+                            if (typeof prop === 'function') {
+                                return prop.bind(tx);
+                            } else {
+                                return prop;
+                            }
+                        },
+                        apply: (_, __, args) => {
+                            const tx = txHost.tx as any;
+                            return tx.apply(tx, args);
+                        },
+                    }),
+            });
+            this.exports.push(transactionProxyToken);
         }
     }
 

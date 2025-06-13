@@ -190,7 +190,7 @@ class UserService {
 
 <small>since `v2.2.0`</small>
 
-The `@InjectTransaction` decorator can be used to inject a [Proxy Provider](../../../03_features-and-use-cases/06_proxy-providers.md) of the Transaction instance (the `tx` property of the `TransactionHost`) directly as a dependency.
+The `@InjectTransaction` decorator can be used to inject a [Proxy](../../../03_features-and-use-cases/06_proxy-providers.md) of the Transaction instance (the `tx` property of the `TransactionHost`) directly as a dependency.
 
 This is useful when you don't want to inject the entire `TransactionHost` and only need the transaction instance itself, or for example, when you're migrating an existing codebase and don't want to change all database calls to use `txHost.tx`.
 
@@ -221,13 +221,9 @@ class AccountService {
 
 :::important
 
-When a transaction is not active, the `Transaction` instance refers to the default non-transactional instance. However, if the CLS context is _not active_, the `Transaction` instance will be `undefined` instead, which could cause runtime errors.
+Some adapters do not support this feature due to the nature of how transactions work in the library they implement (notably [MongoDB](./06-mongodb-adapter.md) and [Mongoose](./07-mongoose-adapter.md) adapters).
 
-Therefore, this feature works reliably only when the CLS context is active _prior to accessing the transaction_.
-
-Additionally, _some adapters do not support this feature_ due to the nature of how transactions work in the library they implement (notably MongoDB and Mongoose).
-
-For these reasons, this is an opt-in feature that must be explicitly enabled with the `enableTransactionProxy: true` option of the `ClsPluginTransactional` constructor.
+For that reason, this is an opt-in feature that must be explicitly enabled with the `enableTransactionProxy: true` option of the `ClsPluginTransactional` constructor.
 
 ```ts
 new ClsPluginTransactional({
@@ -240,6 +236,12 @@ new ClsPluginTransactional({
     // highlight-end
 });
 ```
+
+:::
+
+:::note
+
+Before `@nestjs-cls/transactional@3.0.3`, referring to the `Transaction` instance when both the _CLS context_ AND any _transaction_ where _NOT_ active, it would resolve to `undefined`. This has been fixed, and in that case, the non-transactional instance is returned.
 
 :::
 
