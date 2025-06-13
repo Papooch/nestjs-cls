@@ -7,7 +7,7 @@ import {
 } from '@nestjs-cls/transactional';
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
 import { Column, DataSource, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TransactionalAdapterTypeOrm } from '../src';
@@ -62,7 +62,6 @@ class UserService {
         private readonly dataSource: DataSource,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1.id);

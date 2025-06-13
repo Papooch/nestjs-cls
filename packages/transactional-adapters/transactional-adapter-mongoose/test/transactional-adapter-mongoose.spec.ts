@@ -9,7 +9,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ObjectId, WriteConcern } from 'mongodb';
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose, { Connection, Schema } from 'mongoose';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterMongoose } from '../src';
 
 const MONGOOSE_CONNECTION = 'MONGOOSE_CONNECTION';
@@ -46,7 +46,6 @@ class UserService {
         private readonly txHost: TransactionHost<TransactionalAdapterMongoose>,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1!._id);

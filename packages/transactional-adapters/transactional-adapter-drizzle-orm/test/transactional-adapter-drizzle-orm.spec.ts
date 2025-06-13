@@ -9,13 +9,13 @@ import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { ClsModule, UseCls } from 'nestjs-cls';
+import { ClsModule } from 'nestjs-cls';
 import { Pool } from 'pg';
 
+import { execSync } from 'child_process';
 import { eq } from 'drizzle-orm';
 import { pgTable, serial, text } from 'drizzle-orm/pg-core';
 import { TransactionalAdapterDrizzleOrm } from '../src';
-import { execSync } from 'child_process';
 
 const users = pgTable('users', {
     id: serial('id').primaryKey(),
@@ -79,7 +79,6 @@ class UserService {
         private readonly drizzleClient: DrizzleClient,
     ) {}
 
-    @UseCls()
     async withoutTransaction() {
         const r1 = await this.userRepository.createUser('Jim');
         const r2 = await this.userRepository.getUserById(r1.id);
