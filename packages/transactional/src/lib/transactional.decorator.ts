@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { copyMethodMetadata } from '@gring2/nestjs-cls';
+import { copyMethodMetadata } from 'nestjs-cls';
 import { TOptionsFromAdapter } from './interfaces';
 import { Propagation } from './propagation';
 import { TransactionHost } from './transaction-host';

@@ -1,11 +1,12 @@
 import {
     ClsPluginTransactional,
-    InjectTransaction, InjectTransactionHost,
+    InjectTransaction,
+    InjectTransactionHost,
     Propagation,
     Transaction,
     Transactional,
     TransactionHost,
-} from '@gring2/nestjs-cls-transactional';
+} from '@nestjs-cls/transactional';
 import { All, Controller, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
@@ -60,9 +61,8 @@ class UserRepository {
 class UserService {
     constructor(
         private readonly userRepository: UserRepository,
-        @InjectTransactionHost(
-            'default'
-        )private readonly transactionHost: TransactionHost<TransactionalAdapterTypeOrm>,
+        @InjectTransactionHost('default')
+        private readonly transactionHost: TransactionHost<TransactionalAdapterTypeOrm>,
         private readonly dataSource: DataSource,
     ) {}
 
@@ -79,7 +79,7 @@ class UserService {
         return { r1, r2 };
     }
 
-    @Transactional<TransactionalAdapterTypeOrm>('default',{
+    @Transactional<TransactionalAdapterTypeOrm>('default', {
         isolationLevel: 'SERIALIZABLE',
     })
     async transactionWithDecoratorWithOptions() {
@@ -116,20 +116,20 @@ class UserService {
     }
 
     @Transactional('default')
-    async transactionalHasNested(name?:string) {
+    async transactionalHasNested(name?: string) {
         await this.nestedTransaction(name);
         try {
             await this.nestedTransactionError(name);
-        } catch (e: any) {}
+        } catch (_: any) {}
     }
 
-    @Transactional('default',Propagation.Nested)
-    async nestedTransaction(name='Anybody') {
+    @Transactional('default', Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
         await this.userRepository.createUser(name);
     }
 
-    @Transactional('default',Propagation.Nested)
-    async nestedTransactionError(name='Anybody') {
+    @Transactional('default', Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
         await this.userRepository.createUser(name);
         throw new Error();
     }
@@ -153,7 +153,7 @@ class NewController {
     constructor(private readonly callingSvc: UserService) {}
 
     @All('/')
-    @Transactional('default',Propagation.Nested)
+    @Transactional('default', Propagation.Nested)
     async work() {
         return this.callingSvc.transactionalHasNested();
     }
@@ -165,7 +165,7 @@ class NewController {
         ClsModule.forRoot({
             plugins: [
                 new ClsPluginTransactional({
-                    connectionName:'default',
+                    connectionName: 'default',
                     imports: [TypeOrmModule],
                     adapter: new TransactionalAdapterTypeOrm({
                         dataSourceToken: DataSource,

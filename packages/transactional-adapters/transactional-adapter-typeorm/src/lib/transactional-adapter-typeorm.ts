@@ -1,4 +1,4 @@
-import { TransactionalAdapter } from '@gring2/nestjs-cls-transactional';
+import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { DataSource, EntityManager } from 'typeorm';
 import type { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 

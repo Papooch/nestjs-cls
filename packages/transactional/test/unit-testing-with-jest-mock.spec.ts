@@ -4,7 +4,7 @@ import { Transactional, TransactionHost } from '../src';
 import { TransactionAdapterMock } from './transaction-adapter-mock';
 
 jest.mock('../src', () => ({
-    ...jest.requireActual('@gring2/nestjs-cls-transactional'),
+    ...jest.requireActual('@nestjs-cls/transactional'),
     // Override the Transactional decorator with a no-op
     Transactional: () => jest.fn(),
 }));

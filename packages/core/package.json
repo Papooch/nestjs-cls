@@ -1,6 +1,6 @@
 {
-  "name": "@gring2/nestjs-cls",
-  "version": "6.0.2",
+  "name": "nestjs-cls",
+  "version": "6.0.1",
   "description": "A continuation-local storage module compatible with NestJS's dependency injection.",
   "author": "papooch",
   "license": "MIT",
