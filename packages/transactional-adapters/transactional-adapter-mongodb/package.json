@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-mongodb",
-    "version": "1.1.22",
+    "version": "1.1.23",
     "description": "A mongodb adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
@@ -46,7 +46,7 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^3.0.2",
+        "@nestjs-cls/transactional": "workspace:^3.0.3",
         "mongodb": ">= 6",
         "nestjs-cls": "workspace:^6.0.1"
     },

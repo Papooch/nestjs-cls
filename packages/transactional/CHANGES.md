@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [3.0.3](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.0.2...@nestjs-cls/transactional@3.0.3) "@nestjs-cls/transactional" (2025-06-13)<a name="3.0.3"></a>
+
+### Bug Fixes
+
+* **transactional**: make `@InjectTransaction` work without `@UseCls` ([cd54f2d](https://github.com/Papooch/nestjs-cls/commits/cd54f2d))
+
+
+
+
 ## [3.0.2](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.0.1...@nestjs-cls/transactional@3.0.2) "@nestjs-cls/transactional" (2025-06-04)<a name="3.0.2"></a>
 
 ### Bug Fixes

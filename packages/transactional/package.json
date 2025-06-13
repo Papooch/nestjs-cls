@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-cls/transactional",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "A nestjs-cls plugin for transactional decorators",
   "author": "papooch",
   "license": "MIT",
