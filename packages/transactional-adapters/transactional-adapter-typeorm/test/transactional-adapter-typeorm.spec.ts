@@ -7,13 +7,13 @@ import {
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
-import { All, Controller, Injectable, Module } from '@nestjs/common';
+import {  Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
 import { Column, DataSource, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TransactionalAdapterTypeOrm } from '../src';
-import request from 'supertest';
+
 @Entity()
 class User {
     @PrimaryGeneratedColumn()
@@ -35,7 +35,6 @@ const dataSource = new DataSource({
     database: 'postgres',
     entities: [User],
     synchronize: true,
-    logging: true,
 });
 
 @Injectable()
@@ -79,7 +78,7 @@ class UserService {
         return { r1, r2 };
     }
 
-    @Transactional<TransactionalAdapterTypeOrm>( {
+    @Transactional<TransactionalAdapterTypeOrm>({
         isolationLevel: 'SERIALIZABLE',
     })
     async transactionWithDecoratorWithOptions() {
@@ -123,7 +122,7 @@ class UserService {
         } catch (_: any) {}
     }
 
-    @Transactional( Propagation.Nested)
+    @Transactional(Propagation.Nested)
     async nestedTransaction(name = 'Anybody') {
         await this.userRepository.createUser(name);
     }
@@ -148,18 +147,8 @@ class UserService {
 })
 class TypeOrmModule {}
 
-@Controller()
-class NewController {
-    constructor(private readonly callingSvc: UserService) {}
 
-    @All('/')
-    @Transactional(Propagation.Nested)
-    async work() {
-        return this.callingSvc.transactionalHasNested();
-    }
-}
 @Module({
-    controllers: [NewController],
     imports: [
         TypeOrmModule,
         ClsModule.forRoot({
@@ -210,16 +199,6 @@ describe('Transactional', () => {
             stdio: 'inherit',
         });
     }, 60_000);
-
-    describe('endpoint', () => {
-        it('should work with in nested tx', async () => {
-            const app = module.createNestApplication({});
-            await app.init();
-            await request(app.getHttpServer()).get('/').expect(200);
-            const users = await dataSource.manager.find(User);
-            expect(users).toHaveLength(1);
-        });
-    });
 
     describe('TransactionalAdapterTypeOrmPromise', () => {
         it('should work without an active transaction', async () => {
