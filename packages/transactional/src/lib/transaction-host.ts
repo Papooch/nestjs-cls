@@ -250,7 +250,9 @@ export class TransactionHost<TAdapter = never> {
                     )
                     .finally(() => this.setTxInstance(undefined));
             }
-
+            this.logger.warn(
+                `Nested Propagation option is ignored because an adapter does not support nested transactions (for method ${fn.name}).`,
+            );
             return this.runWithTransaction(options, fn);
         });
     }
