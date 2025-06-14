@@ -77,7 +77,7 @@ export class ClsContextOptions {
      * `override` - Run the callback with an new empty context.
      * Warning: No values from the parent context will be accessible.
      */
-    ifNested?: 'inherit' | 'nested' | 'reuse' | 'override' = 'inherit';
+    ifNested?: 'inherit' | 'reuse' | 'override' = 'inherit';
 }
 
 export class ClsInitializerCommonOptions {

@@ -235,7 +235,7 @@ export class TransactionHost<TAdapter = never> {
         options: any,
         fn: (...args: any[]) => Promise<any>,
     ) {
-        return this.cls.run({ ifNested: 'nested' }, () => {
+        return this.cls.run({ ifNested: 'inherit' }, () => {
             // only run with adapter which support nested transaction
             if (
                 this._options.hasOwnProperty('wrapWithNestedTransaction') &&
