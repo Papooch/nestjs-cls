@@ -207,6 +207,12 @@ export class TransactionHost<TAdapter = never> {
                     return fn();
                 }
                 return this.withoutTransaction(fn);
+            case Propagation.Nested:
+                if (this.isTransactionActive()) {
+                    return this.runInNestedTransaction(options, fn);
+                } else {
+                    return this.runWithTransaction(options, fn);
+                }
             default:
                 throw new TransactionPropagationError(
                     `Unknown propagation mode ${propagation}`,
@@ -223,6 +229,32 @@ export class TransactionHost<TAdapter = never> {
                 .wrapWithTransaction(options, fn, this.setTxInstance.bind(this))
                 .finally(() => this.setTxInstance(undefined)),
         );
+    }
+
+    private runInNestedTransaction(
+        options: any,
+        fn: (...args: any[]) => Promise<any>,
+    ) {
+        return this.cls.run({ ifNested: 'inherit' }, () => {
+            // only run with adapter which support nested transaction
+            if (
+                this._options.hasOwnProperty('wrapWithNestedTransaction') &&
+                typeof this._options.wrapWithNestedTransaction === 'function'
+            ) {
+                return this._options
+                    .wrapWithNestedTransaction(
+                        options,
+                        fn,
+                        this.setTxInstance.bind(this),
+                        this.tx,
+                    )
+                    .finally(() => this.setTxInstance(undefined));
+            }
+            this.logger.warn(
+                `Nested Propagation option is ignored because an adapter does not support nested transactions (for method ${fn.name}).`,
+            );
+            return this.runWithTransaction(options, fn);
+        });
     }
 
     /**

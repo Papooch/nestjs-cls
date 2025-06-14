@@ -1,11 +1,13 @@
 import {
     ClsPluginTransactional,
     InjectTransaction,
+    InjectTransactionHost,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
-import { Injectable, Module } from '@nestjs/common';
+import { All, Controller, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
@@ -58,6 +60,7 @@ class UserRepository {
 class UserService {
     constructor(
         private readonly userRepository: UserRepository,
+        @InjectTransactionHost()
         private readonly transactionHost: TransactionHost<TransactionalAdapterTypeOrm>,
         private readonly dataSource: DataSource,
     ) {}
@@ -110,6 +113,25 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
+
+    @Transactional()
+    async transactionalHasNested(name?: string) {
+        await this.nestedTransaction(name);
+        try {
+            await this.nestedTransactionError(name);
+        } catch (_: any) {}
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+        throw new Error();
+    }
 }
 
 @Module({
@@ -125,7 +147,18 @@ class UserService {
 })
 class TypeOrmModule {}
 
+@Controller()
+class NewController {
+    constructor(private readonly callingSvc: UserService) {}
+
+    @All('/')
+    @Transactional(Propagation.Nested)
+    async work() {
+        return this.callingSvc.transactionalHasNested();
+    }
+}
 @Module({
+    controllers: [NewController],
     imports: [
         TypeOrmModule,
         ClsModule.forRoot({
@@ -183,6 +216,19 @@ describe('Transactional', () => {
             expect(r1).toEqual(r2);
             const users = await dataSource.manager.find(User);
             expect(users).toEqual(expect.arrayContaining([r1]));
+        });
+
+        it('should work with in nested tx', async () => {
+            await callingService.transactionalHasNested('Anybody2');
+
+            const users = await dataSource.manager.find(User, {
+                where: {
+                    name: 'Anybody2',
+                },
+            });
+
+            // partial rollback
+            expect(users).toHaveLength(1);
         });
 
         it('should run a transaction with the default options with a decorator', async () => {
