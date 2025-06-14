@@ -162,12 +162,6 @@ export class TransactionHost<TAdapter = never> {
     ) {
         const fnName = fn.name || 'anonymous';
         switch (propagation) {
-            case Propagation.Nested:
-                if (this.isTransactionActive()) {
-                    return this.runInNestedTransaction(options, fn);
-                } else {
-                    return this.runWithTransaction(options, fn);
-                }
             case Propagation.Required:
                 if (this.isTransactionActive()) {
                     if (isNotEmpty(options)) {
@@ -213,6 +207,12 @@ export class TransactionHost<TAdapter = never> {
                     return fn();
                 }
                 return this.withoutTransaction(fn);
+            case Propagation.Nested:
+                if (this.isTransactionActive()) {
+                    return this.runInNestedTransaction(options, fn);
+                } else {
+                    return this.runWithTransaction(options, fn);
+                }
             default:
                 throw new TransactionPropagationError(
                     `Unknown propagation mode ${propagation}`,
