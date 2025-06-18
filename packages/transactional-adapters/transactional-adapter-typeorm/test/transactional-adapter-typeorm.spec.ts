@@ -1,13 +1,12 @@
 import {
     ClsPluginTransactional,
     InjectTransaction,
-    InjectTransactionHost,
     Propagation,
     Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
-import {  Injectable, Module } from '@nestjs/common';
+import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
 import { execSync } from 'node:child_process';
@@ -60,7 +59,6 @@ class UserRepository {
 class UserService {
     constructor(
         private readonly userRepository: UserRepository,
-        @InjectTransactionHost()
         private readonly transactionHost: TransactionHost<TransactionalAdapterTypeOrm>,
         private readonly dataSource: DataSource,
     ) {}
@@ -146,7 +144,6 @@ class UserService {
     exports: [DataSource],
 })
 class TypeOrmModule {}
-
 
 @Module({
     imports: [
