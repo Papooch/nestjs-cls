@@ -6,6 +6,7 @@ export enum Propagation {
      * (default) Reuse the existing transaction or create a new one if none exists.
      */
     Required = 'REQUIRED',
+
     /**
      * Create a new transaction even if one already exists. The new transaction is committed independently of the existing one.
      */
@@ -26,6 +27,11 @@ export enum Propagation {
      * Reuse the existing transaction or continue without a transaction if none exists.
      */
     Supports = 'SUPPORTS',
+
+    /**
+     * Create a subtransaction if supported; otherwise, reuse the existing transaction or create a new one if none exists.
+     */
+    Nested = 'NESTED',
 }
 
 /**
