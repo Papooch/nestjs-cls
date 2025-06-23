@@ -6619,7 +6619,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^22.15.24"
     jest: "npm:^29.7.0"
-    pg-promise: "npm:^11.13.0"
+    pg-promise: "npm:^11.14.0"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
     rxjs: "npm:^7.8.2"
@@ -10156,10 +10156,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"assert-options@npm:0.8.2":
-  version: 0.8.2
-  resolution: "assert-options@npm:0.8.2"
-  checksum: 10c0/4b2d8cfec9f132a2527454b5499d289fe70edffc59aa935be14c88eb9e885a06441ae67c2b03ff7b5fa2063a690e52a91c3a30f26e5cefc548b19ce3ddae84f8
+"assert-options@npm:0.8.3":
+  version: 0.8.3
+  resolution: "assert-options@npm:0.8.3"
+  checksum: 10c0/694d64be3e574352c5a1f0f762c6e5d43189f0dbb1817a0abbffe531058c4780a0411be8ef51a2fdda50009eaa2277962cbded5638887ce5314d8b8e098d9c18
   languageName: node
   linkType: hard
 
@@ -20272,17 +20272,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg-promise@npm:^11.13.0":
-  version: 11.13.0
-  resolution: "pg-promise@npm:11.13.0"
+"pg-promise@npm:^11.14.0":
+  version: 11.14.0
+  resolution: "pg-promise@npm:11.14.0"
   dependencies:
-    assert-options: "npm:0.8.2"
+    assert-options: "npm:0.8.3"
     pg: "npm:8.14.1"
     pg-minify: "npm:1.7.0"
-    spex: "npm:3.4.0"
+    spex: "npm:3.4.1"
   peerDependencies:
     pg-query-stream: 4.8.1
-  checksum: 10c0/cc77bd8b5e5873321ec31cc1b394ba1e24ed470990f6636f28901207103c12273449e45828fa41cd54d36281afa4a8c7af999b77194a8f95425ce1f016d523f6
+  checksum: 10c0/496a8921d0e533cd160692b1681d9a4ac63642ecae0892417591e7b0705d6c76d49dba206e0b676060e53ee5cdbc0b4177edfde5657cdac5ba691e3c34cafac9
   languageName: node
   linkType: hard
 
@@ -23551,10 +23551,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spex@npm:3.4.0":
-  version: 3.4.0
-  resolution: "spex@npm:3.4.0"
-  checksum: 10c0/ef39917ece5d5f127572d63733f0822ce20e688d77662b43788183a71a61f1566a8a306f0ea6b3a506ba481afd5bb2591f5df1c88ccf8c8073e2e88b595dcc13
+"spex@npm:3.4.1":
+  version: 3.4.1
+  resolution: "spex@npm:3.4.1"
+  checksum: 10c0/eb8be72c6d795c789b63a240167f731f6d1f6656c26efaacdae91340ac8607c22565cd7bd152ea8e8670f2fb3940ebd0ed01b7a4ab2b948b865ee18438f016ee
   languageName: node
   linkType: hard
 
