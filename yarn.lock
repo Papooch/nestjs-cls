@@ -515,9 +515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:^4.12.1":
-  version: 4.12.1
-  resolution: "@apollo/server@npm:4.12.1"
+"@apollo/server@npm:^4.12.2":
+  version: 4.12.2
+  resolution: "@apollo/server@npm:4.12.2"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^1.1.1"
@@ -545,7 +545,7 @@ __metadata:
     whatwg-mimetype: "npm:^3.0.0"
   peerDependencies:
     graphql: ^16.6.0
-  checksum: 10c0/0bbdebd863a6a051929fa5c01a8eef4fce867002f6485c4681d4a9fdadc6677a25475aceaab7d0fca9bb4a713e1ee559ec9469b897bb08bcacb343b69995923d
+  checksum: 10c0/c5ac01490adcc1f36787f6be2e0c698a3d7ffe9846bd6f70c18d788c5c60b528fc0f2d037ed5ac4a2ddf4d24e72335371e3e1bfc16c094cbb3e034b883ebffd4
   languageName: node
   linkType: hard
 
@@ -18021,27 +18021,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mercurius@npm:^16.1.0":
-  version: 16.1.0
-  resolution: "mercurius@npm:16.1.0"
+"mercurius@npm:^16.2.0":
+  version: 16.2.0
+  resolution: "mercurius@npm:16.2.0"
   dependencies:
     "@fastify/error": "npm:^4.0.0"
     "@fastify/static": "npm:^8.0.0"
     "@fastify/websocket": "npm:^11.0.0"
     fastify-plugin: "npm:^5.0.0"
     graphql-jit: "npm:0.8.7"
-    mqemitter: "npm:^6.0.0"
+    mqemitter: "npm:^7.0.0"
     p-map: "npm:^4.0.0"
     quick-lru: "npm:^7.0.0"
     readable-stream: "npm:^4.0.0"
     safe-stable-stringify: "npm:^2.3.0"
     secure-json-parse: "npm:^3.0.0"
-    single-user-cache: "npm:^1.0.0"
+    single-user-cache: "npm:^2.0.0"
     tiny-lru: "npm:^11.0.0"
     ws: "npm:^8.2.2"
   peerDependencies:
     graphql: ^16.0.0
-  checksum: 10c0/5cd52ae2ee55ca4bd7c363b25033356307c37fc41f9aff1adf3e5120eb35293e86f90b06f5366ff77da14fffb52ced6b7aee9b8b0aaa0878ee92f87b666f44d0
+  checksum: 10c0/efcb501a51525ab503b07d4a8ad7b2e0c34c1053acdbb1f2150f7197659d60ba9fda72d9d9f39bb13a2303563e5fb70ec15e1bd433494fe0adfe4ebb02748c1c
   languageName: node
   linkType: hard
 
@@ -19110,13 +19110,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mqemitter@npm:^6.0.0":
-  version: 6.0.2
-  resolution: "mqemitter@npm:6.0.2"
+"mqemitter@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "mqemitter@npm:7.0.0"
   dependencies:
     fastparallel: "npm:^2.4.1"
     qlobber: "npm:^8.0.1"
-  checksum: 10c0/11fa811d53b5cf7a7def3b9cc42c0bb11739da29bcde4b6df0e93395e605a98917847b99b50d709885af746f99060c0d6a327723bcc463ad79c2fa8575d526c8
+  checksum: 10c0/fca6262e758df2783d4a965301c0fd9e8ae95c8aafc5457d1f10fdd5081783667c3df3710e7e4e82fdc446ae61efaf1d3c8f8006eea656546409b19fe0d2acea
   languageName: node
   linkType: hard
 
@@ -19291,7 +19291,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nestjs-cls@workspace:packages/core"
   dependencies:
-    "@apollo/server": "npm:^4.12.1"
+    "@apollo/server": "npm:^4.12.2"
     "@nestjs/apollo": "npm:^13.1.0"
     "@nestjs/cli": "npm:^11.0.7"
     "@nestjs/common": "npm:^11.1.2"
@@ -19316,7 +19316,7 @@ __metadata:
     "@types/ws": "npm:^8.18.1"
     graphql: "npm:^16.11.0"
     jest: "npm:^29.7.0"
-    mercurius: "npm:^16.1.0"
+    mercurius: "npm:^16.2.0"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
     rxjs: "npm:^7.8.2"
@@ -23268,12 +23268,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"single-user-cache@npm:^1.0.0":
-  version: 1.0.1
-  resolution: "single-user-cache@npm:1.0.1"
+"single-user-cache@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "single-user-cache@npm:2.0.0"
   dependencies:
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10c0/1a1a564df1e900b6b31be270917eb39320160b02d1fc27f5d1ca21a684f8de7b7ff70533f8791cf14021818a73ecaa63cd1cc2df5f6745523511068ba9bbce4f
+  checksum: 10c0/64d10c3cdec6caf85cc65d5d2f2c299a0e2d61eda35a1154611a25733c406f64e9fd4385cbb264a43889f78e8c6b41ff4e6cae537b3d43e0d626b4ce12e8fea3
   languageName: node
   linkType: hard
 
