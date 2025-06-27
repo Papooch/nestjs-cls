@@ -1,4 +1,5 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
+import { EntityManager } from 'typeorm';
 
 type AnyDrizzleClient = {
     transaction: (
@@ -50,6 +51,17 @@ export class TransactionalAdapterDrizzleOrm<TClient extends AnyDrizzleClient>
             setClient: (client?: TClient) => void,
         ) => {
             return drizzleInstance.transaction(async (tx) => {
+                setClient(tx as TClient);
+                return fn();
+            }, options);
+        },
+        wrapWithNestedTransaction: async (
+            options: DrizzleTransactionOptions<TClient>,
+            fn: (...args: any[]) => Promise<any>,
+            setClient: (client?: TClient) => void,
+            client: TClient,
+        ) => {
+            return client.transaction(async (tx) => {
                 setClient(tx as TClient);
                 return fn();
             }, options);

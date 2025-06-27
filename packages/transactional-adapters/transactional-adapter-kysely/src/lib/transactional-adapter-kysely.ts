@@ -1,5 +1,6 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { Kysely, TransactionBuilder } from 'kysely';
+import { EntityManager } from 'typeorm';
 
 export interface KyselyTransactionalAdapterOptions {
     /**
@@ -54,6 +55,9 @@ export class TransactionalAdapterKysely<DB = any>
                 return fn();
             });
         },
+        // kysely orm does not support nested transaction. but support manual save point.
+        // https://kysely.dev/docs/examples/transactions/controlled-transaction-w-savepoints
+
         getFallbackInstance: () => kyselyDb,
     });
 }
