@@ -248,7 +248,7 @@ export class TransactionHost<TAdapter = never> {
                         this.setTxInstance.bind(this),
                         this.tx,
                     )
-                    .finally(() => this.setTxInstance(undefined));
+                    .finally(() => this.setTxInstance(this.tx));
             }
             this.logger.warn(
                 `Nested Propagation option is ignored because an adapter does not support nested transactions (for method ${fn.name}).`,

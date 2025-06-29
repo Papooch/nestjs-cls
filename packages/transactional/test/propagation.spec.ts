@@ -67,6 +67,17 @@ class NestedTransactionsService {
     async withSupportsPropagation(num: number) {
         return this.calledService.doWork(num);
     }
+
+    @Transactional(Propagation.Nested)
+    async withNestedPropagation(num: number) {
+        return this.calledService.doWork(num);
+    }
+
+    @Transactional(Propagation.Nested)
+    async withNestedPropagationThatThrows(num: number) {
+        await this.calledService.doWork(num);
+        throw new Error('This is a test error');
+    }
 }
 
 @Injectable()
@@ -109,6 +120,20 @@ class CallingServiceWithoutTransaction {
         await this.calledService.doWork(13);
         await this.nested.withSupportsPropagation(14);
     }
+    async nestedPropagation() {
+        await this.calledService.doWork(15);
+        await this.nested.withNestedPropagation(16);
+        await this.calledService.doOtherWork(17);
+    }
+    async nestedPropagationThatThrows() {
+        await this.calledService.doWork(18);
+        try {
+            await this.nested.withNestedPropagationThatThrows(19);
+        } catch (_) {
+            // Ignore the nested error
+        }
+        await this.calledService.doWork(20);
+    }
 }
 
 @Injectable()
@@ -140,6 +165,14 @@ class CallingServiceWithTransaction extends CallingServiceWithoutTransaction {
     @Transactional()
     supportsPropagation(): Promise<void> {
         return super.supportsPropagation();
+    }
+    @Transactional()
+    nestedPropagation(): Promise<void> {
+        return super.nestedPropagation();
+    }
+    @Transactional()
+    nestedPropagationThatThrows(): Promise<void> {
+        return super.nestedPropagationThatThrows();
     }
 
     @Transactional<TransactionAdapterMock>(Propagation.NotSupported, {
@@ -289,6 +322,15 @@ describe('Propagation', () => {
             const queries = mockDbConnection.getClientsQueries();
             expect(queries).toEqual([['SELECT 13'], ['SELECT 14']]);
         });
+        it('should create a new transaction in NESTED mode', async () => {
+            await withoutTx.nestedPropagation();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                ['SELECT 15'],
+                ['BEGIN TRANSACTION;', 'SELECT 16', 'COMMIT TRANSACTION;'],
+                ['SELECT 17'],
+            ]);
+        });
     });
 
     describe('when run in an existing transaction', () => {
@@ -361,6 +403,36 @@ describe('Propagation', () => {
                     'BEGIN TRANSACTION;',
                     'SELECT 13',
                     'SELECT 14',
+                    'COMMIT TRANSACTION;',
+                ],
+            ]);
+        });
+        it('should create a new transaction in NESTED mode', async () => {
+            await withTx.nestedPropagation();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                [
+                    'BEGIN TRANSACTION;',
+                    'SELECT 15',
+                    'SAVEPOINT nested_transaction;',
+                    'SELECT 16',
+                    'RELEASE SAVEPOINT nested_transaction;',
+                    'SELECT 17',
+                    'COMMIT TRANSACTION;',
+                ],
+            ]);
+        });
+        it('should rollback to the savepoint if a NESTED transaction throws', async () => {
+            await withTx.nestedPropagationThatThrows();
+            const queries = mockDbConnection.getClientsQueries();
+            expect(queries).toEqual([
+                [
+                    'BEGIN TRANSACTION;',
+                    'SELECT 18',
+                    'SAVEPOINT nested_transaction;',
+                    'SELECT 19',
+                    'ROLLBACK TO SAVEPOINT nested_transaction;',
+                    'SELECT 20',
                     'COMMIT TRANSACTION;',
                 ],
             ]);
