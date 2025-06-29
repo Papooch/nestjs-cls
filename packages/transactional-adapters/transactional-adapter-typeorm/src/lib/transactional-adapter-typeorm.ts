@@ -47,6 +47,18 @@ export class TransactionalAdapterTypeOrm
                 return fn();
             });
         },
+        wrapWithNestedTransaction: async (
+            options: TypeOrmTransactionOptions,
+            fn: (...args: any[]) => Promise<any>,
+
+            setClient: (client?: EntityManager) => void,
+            client: EntityManager,
+        ) => {
+            return client.transaction(options?.isolationLevel, (trx) => {
+                setClient(trx);
+                return fn();
+            });
+        },
         getFallbackInstance: () => dataSource.manager,
     });
 }

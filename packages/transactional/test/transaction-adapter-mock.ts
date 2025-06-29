@@ -96,6 +96,23 @@ export class TransactionAdapterMock
                 throw e;
             }
         },
+        wrapWithNestedTransaction: async (
+            _options: MockTransactionOptions | undefined,
+            fn: (...args: any[]) => Promise<any>,
+            setTxInstance: (client?: MockDbClient) => void,
+            tx: MockDbClient,
+        ) => {
+            setTxInstance(tx);
+            try {
+                await tx.query('SAVEPOINT nested_transaction;');
+                const result = await fn();
+                await tx.query('RELEASE SAVEPOINT nested_transaction;');
+                return result;
+            } catch (e) {
+                await tx.query('ROLLBACK TO SAVEPOINT nested_transaction;');
+                throw e;
+            }
+        },
         getFallbackInstance: () => {
             return connection.getClient();
         },
