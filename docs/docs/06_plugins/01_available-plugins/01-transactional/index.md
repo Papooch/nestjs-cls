@@ -305,9 +305,6 @@ The propagation option is controlled by the `Propagation` enum, which has the fo
 
 - **_`Supports`_**:
   Reuse the existing transaction or continue without a transaction if none exists.
-- 
-- **_`Nested`_**:
-  Create a subtransaction if supported; otherwise, reuse the existing transaction or create a new one if none exists.
 
 - **_`Nested`_**:
   Create a subtransaction if supported; otherwise, reuse the existing transaction or create a new one if none exists. (See specific adapter docs on nested transactions support)
