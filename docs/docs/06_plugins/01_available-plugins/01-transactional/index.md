@@ -305,9 +305,6 @@ The propagation option is controlled by the `Propagation` enum, which has the fo
 
 - **_`Supports`_**:
   Reuse the existing transaction or continue without a transaction if none exists.
-- 
-- **_`Nested`_**:
-  Create a subtransaction if supported; otherwise, reuse the existing transaction or create a new one if none exists.
 
 This parameter comes _before_ the `TransactionOptions` object, if one is provided. The default behavior when a nested transaction decorator is encountered if no propagation option is provided, is to reuse the existing transaction or create a new one if none exists, which is the same as the `Required` propagation option.
 
