@@ -1,6 +1,7 @@
 import {
     ClsPluginTransactional,
-    InjectTransaction, Propagation,
+    InjectTransaction,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -129,7 +130,6 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
-
 
     @Transactional()
     async transactionalHasNested(name?: string) {
@@ -263,12 +263,11 @@ describe('Transactional', () => {
             );
         });
 
-
         it('should work with in nested tx', async () => {
             await callingService.transactionalHasNested('Anybody2');
 
             const us = await drizzleClient.query.users.findMany({
-                where:eq(users.name, 'Anybody2')
+                where: eq(users.name, 'Anybody2'),
             });
 
             // partial rollback

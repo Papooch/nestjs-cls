@@ -1,5 +1,4 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
-import { EntityManager } from 'typeorm';
 
 type AnyDrizzleClient = {
     transaction: (
