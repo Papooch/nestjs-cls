@@ -1,6 +1,6 @@
 import {
     ClsPluginTransactional,
-    InjectTransaction,
+    InjectTransaction, Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -85,6 +85,26 @@ class UserService {
     async transactionWithDecoratorError() {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
+    }
+
+
+    @Transactional()
+    async transactionalHasNested(name?: string) {
+        await this.nestedTransaction(name);
+        try {
+            await this.nestedTransactionError(name);
+        } catch (_: any) {}
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+        throw new Error();
     }
 }
 
@@ -193,6 +213,17 @@ describe('Transactional', () => {
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
         });
+
+
+        it('should work with in nested tx', async () => {
+            await callingService.transactionalHasNested('Anybody2');
+
+            const users = await knex('user').where({name: 'Anybody2'});
+
+            // partial rollback
+            expect(users).toHaveLength(1);
+        });
+
     });
 });
 
