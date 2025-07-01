@@ -42,6 +42,8 @@ ClsModule.forRoot({
             adapter: new TransactionalAdapterPrisma({
                 // the injection token of the PrismaClient
                 prismaInjectionToken: PrismaService,
+                // specify the SQL flavor (if using SQL, see below)
+                sqlFlavor: 'postgresql'
             }),
         }),
     ],
@@ -51,6 +53,16 @@ ClsModule.forRoot({
 :::important
 
 The `prismaInjectionToken` is the token under which an instance of [`PrismaClient`](https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/introduction) provided. Usually, in Nest, this the custom `PrismaService` class which `extends PrismaClient` and is exported from a custom module.
+
+:::
+
+:::note
+
+The `sqlFlavor` option is needed to enable nested transaction support via [`Propagation.Nested`](../01-transactional/index.md#transaction-propagation).
+
+Since [Prisma _does not_ yet support nested transactions natively](https://github.com/prisma/prisma/issues/15212), the adapter implements a custom solution via raw queries and SQL _SAVEPOINTS_. But because different SQL flavors implement the syntax differently, and because Prisma also _does not provide a way to introspect the datasource provider name at runtime_, we need to specify it manually.
+
+Please note that if the datasource in your Prisma schema and the SQL flavor do not match, syntax errors might be thrown when attempting to use nested transactions.
 
 :::
 
