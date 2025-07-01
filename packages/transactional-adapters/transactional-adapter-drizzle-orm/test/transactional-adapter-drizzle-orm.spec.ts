@@ -1,6 +1,7 @@
 import {
     ClsPluginTransactional,
     InjectTransaction,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -129,6 +130,25 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
+
+    @Transactional()
+    async transactionalHasNested(name?: string) {
+        await this.nestedTransaction(name);
+        try {
+            await this.nestedTransactionError(name);
+        } catch (_: any) {}
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+        throw new Error();
+    }
 }
 
 @Module({
@@ -241,6 +261,17 @@ describe('Transactional', () => {
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
+        });
+
+        it('should work with in nested tx', async () => {
+            await callingService.transactionalHasNested('Anybody2');
+
+            const us = await drizzleClient.query.users.findMany({
+                where: eq(users.name, 'Anybody2'),
+            });
+
+            // partial rollback
+            expect(us).toHaveLength(1);
         });
     });
 });

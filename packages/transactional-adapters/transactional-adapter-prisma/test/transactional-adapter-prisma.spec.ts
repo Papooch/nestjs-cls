@@ -1,6 +1,7 @@
 import {
     ClsPluginTransactional,
     InjectTransaction,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -86,6 +87,25 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
+
+    @Transactional()
+    async transactionalHasNested(name?: string) {
+        await this.nestedTransaction(name);
+        try {
+            await this.nestedTransactionError(name);
+        } catch (_: any) {}
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+        throw new Error();
+    }
 }
 
 @Module({
@@ -103,6 +123,7 @@ class PrismaModule {}
                     imports: [PrismaModule],
                     adapter: new TransactionalAdapterPrisma({
                         prismaInjectionToken: PrismaClient,
+                        sqlFlavor: 'sqlite',
                     }),
                     enableTransactionProxy: true,
                 }),
@@ -137,6 +158,17 @@ describe('Transactional', () => {
             expect(r1).toEqual(r2);
             const users = await prisma.user.findMany();
             expect(users).toEqual(expect.arrayContaining([r1]));
+        });
+
+        it('should work with nested transaction', async () => {
+            await callingService.transactionalHasNested('Anybody');
+
+            const users = await prisma.user.findMany({
+                where: { name: 'Anybody' },
+            });
+
+            // partial rollback
+            expect(users).toHaveLength(1);
         });
 
         it('should run a transaction with the default options with a decorator', async () => {

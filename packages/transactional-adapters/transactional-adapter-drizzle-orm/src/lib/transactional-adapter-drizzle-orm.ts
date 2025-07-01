@@ -54,6 +54,17 @@ export class TransactionalAdapterDrizzleOrm<TClient extends AnyDrizzleClient>
                 return fn();
             }, options);
         },
+        wrapWithNestedTransaction: async (
+            options: DrizzleTransactionOptions<TClient>,
+            fn: (...args: any[]) => Promise<any>,
+            setClient: (client?: TClient) => void,
+            client: TClient,
+        ) => {
+            return client.transaction(async (tx) => {
+                setClient(tx as TClient);
+                return fn();
+            }, options);
+        },
         getFallbackInstance: () => drizzleInstance,
     });
 }

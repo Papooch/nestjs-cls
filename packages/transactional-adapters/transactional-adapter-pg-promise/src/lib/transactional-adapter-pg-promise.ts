@@ -41,6 +41,17 @@ export class TransactionalAdapterPgPromise
                 return fn();
             });
         },
+        wrapWithNestedTransaction: async (
+            options: PgPromiseTxOptions,
+            fn: (...args: any[]) => Promise<any>,
+            setClient: (client?: Database) => void,
+            client: Database,
+        ) => {
+            return client.tx(options, (tx) => {
+                setClient(tx as unknown as Database);
+                return fn();
+            });
+        },
         getFallbackInstance: () => pgPromiseDbInstance,
     });
 }
