@@ -41,12 +41,12 @@ export class TransactionalAdapterKnex
             options: Knex.TransactionConfig,
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Knex) => void,
-            client: Knex
+            client: Knex,
         ) => {
-          return client.transaction(async (trx) => {
-              setClient(trx);
-              return fn();
-          },options)
+            return client.transaction(async (trx) => {
+                setClient(trx);
+                return fn();
+            }, options);
         },
         getFallbackInstance: () => knexInstance,
     });

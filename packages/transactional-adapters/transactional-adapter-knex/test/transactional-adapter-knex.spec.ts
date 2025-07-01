@@ -1,6 +1,7 @@
 import {
     ClsPluginTransactional,
-    InjectTransaction, Propagation,
+    InjectTransaction,
+    Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -86,7 +87,6 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
-
 
     @Transactional()
     async transactionalHasNested(name?: string) {
@@ -214,16 +214,14 @@ describe('Transactional', () => {
             );
         });
 
-
         it('should work with in nested tx', async () => {
             await callingService.transactionalHasNested('Anybody2');
 
-            const users = await knex('user').where({name: 'Anybody2'});
+            const users = await knex('user').where({ name: 'Anybody2' });
 
             // partial rollback
             expect(users).toHaveLength(1);
         });
-
     });
 });
 
