@@ -1,6 +1,6 @@
 import {
     ClsPluginTransactional,
-    InjectTransaction,
+    InjectTransaction, Propagation,
     Transaction,
     Transactional,
     TransactionHost,
@@ -105,6 +105,25 @@ class UserService {
     async transactionWithDecoratorError() {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
+    }
+
+    @Transactional()
+    async transactionalHasNested(name?: string) {
+        await this.nestedTransaction(name);
+        try {
+            await this.nestedTransactionError(name);
+        } catch (_: any) {}
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+        throw new Error();
     }
 }
 
@@ -225,6 +244,14 @@ describe('Transactional', () => {
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
             );
+        });
+        it('should work with nested transaction', async () => {
+            await callingService.transactionalHasNested('Anybody');
+
+            const users = await db.many('SELECT * FROM public.user WHERE name = $1', 'Anybody');
+
+            // partial rollback
+            expect(users).toHaveLength(1);
         });
     });
 });
