@@ -41,22 +41,32 @@ export class TransactionalAdapterKysely<DB = any>
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Kysely<DB>) => void,
         ) => {
-            let transaction = kyselyDb.transaction();
+            let transaction = kyselyDb.startTransaction();
+
             if (options?.isolationLevel) {
                 transaction = transaction.setIsolationLevel(
                     options.isolationLevel,
                 );
             }
+
             if (options?.accessMode) {
                 transaction = transaction.setAccessMode(options.accessMode);
             }
-            return transaction.execute(async (trx) => {
+
+            const trx = await transaction.execute();
+            try {
                 setClient(trx);
-                return fn();
-            });
+
+                const result = await fn();
+
+                await trx.commit().execute();
+
+                return result;
+            } catch (e) {
+                await trx.rollback().execute();
+                throw e;
+            }
         },
-        // kysely orm does not support nested transaction. but support manual save point.
-        // https://kysely.dev/docs/examples/transactions/controlled-transaction-w-savepoints
 
         getFallbackInstance: () => kyselyDb,
     });
