@@ -40,20 +40,45 @@ export class TransactionalAdapterKysely<DB = any>
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Kysely<DB>) => void,
         ) => {
-            let transaction = kyselyDb.transaction();
-            if (options?.isolationLevel) {
-                transaction = transaction.setIsolationLevel(
-                    options.isolationLevel,
-                );
-            }
-            if (options?.accessMode) {
-                transaction = transaction.setAccessMode(options.accessMode);
-            }
-            return transaction.execute(async (trx) => {
+            const trx = await txBuilder(kyselyDb, options);
+            try {
                 setClient(trx);
-                return fn();
-            });
+
+                const result = await fn();
+
+                await trx.commit().execute();
+
+                return result;
+            } catch (e) {
+                await trx.rollback().execute();
+                throw e;
+            }
+        },
+        wrapWithNestedTransaction: async (
+            options: KyselyTransactionOptions,
+            fn: (...args: any[]) => Promise<any>,
+            setClient: (client?: Kysely<DB>) => void,
+            client: Kysely<DB>,
+        ) => {
+            return fn();
         },
         getFallbackInstance: () => kyselyDb,
     });
 }
+
+const txBuilder = async <DB>(
+    client: Kysely<DB>,
+    options: KyselyTransactionOptions,
+) => {
+    let transaction = client.startTransaction();
+
+    if (options?.isolationLevel) {
+        transaction = transaction.setIsolationLevel(options.isolationLevel);
+    }
+
+    if (options?.accessMode) {
+        transaction = transaction.setAccessMode(options.accessMode);
+    }
+
+    return transaction.execute();
+};
