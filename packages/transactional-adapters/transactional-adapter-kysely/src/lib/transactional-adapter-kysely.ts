@@ -1,6 +1,5 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { Kysely, TransactionBuilder } from 'kysely';
-import { EntityManager } from 'typeorm';
 
 export interface KyselyTransactionalAdapterOptions {
     /**
@@ -41,19 +40,7 @@ export class TransactionalAdapterKysely<DB = any>
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Kysely<DB>) => void,
         ) => {
-            let transaction = kyselyDb.startTransaction();
-
-            if (options?.isolationLevel) {
-                transaction = transaction.setIsolationLevel(
-                    options.isolationLevel,
-                );
-            }
-
-            if (options?.accessMode) {
-                transaction = transaction.setAccessMode(options.accessMode);
-            }
-
-            const trx = await transaction.execute();
+            const trx = await txBuilder(kyselyDb, options);
             try {
                 setClient(trx);
 
@@ -67,7 +54,31 @@ export class TransactionalAdapterKysely<DB = any>
                 throw e;
             }
         },
-
+        wrapWithNestedTransaction: async (
+            options: KyselyTransactionOptions,
+            fn: (...args: any[]) => Promise<any>,
+            setClient: (client?: Kysely<DB>) => void,
+            client: Kysely<DB>,
+        ) => {
+            return fn();
+        },
         getFallbackInstance: () => kyselyDb,
     });
 }
+
+const txBuilder = async <DB>(
+    client: Kysely<DB>,
+    options: KyselyTransactionOptions,
+) => {
+    let transaction = client.startTransaction();
+
+    if (options?.isolationLevel) {
+        transaction = transaction.setIsolationLevel(options.isolationLevel);
+    }
+
+    if (options?.accessMode) {
+        transaction = transaction.setAccessMode(options.accessMode);
+    }
+
+    return transaction.execute();
+};
