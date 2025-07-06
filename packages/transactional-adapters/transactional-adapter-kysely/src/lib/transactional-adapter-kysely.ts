@@ -1,6 +1,8 @@
-import { TransactionalAdapter } from '@nestjs-cls/transactional';
+import {
+    savePointIdGenerator,
+    TransactionalAdapter,
+} from '@nestjs-cls/transactional';
 import { ControlledTransaction, Kysely, TransactionBuilder } from 'kysely';
-import { randomUUID } from 'crypto';
 
 export interface KyselyTransactionalAdapterOptions {
     /**
@@ -85,7 +87,7 @@ export class TransactionalAdapterKysely<DB = any>
 }
 const nestedTxBuilder = async <DB>(client: Kysely<DB>) => {
     // need unique save point here
-    const savepointId = `savepoint_${randomUUID().replace(/-/g, '_')}`;
+    const savepointId = savePointIdGenerator();
 
     const stx = await (client as ControlledTransaction<DB, string[]>)
         .savepoint(savepointId)
