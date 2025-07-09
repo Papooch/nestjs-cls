@@ -11,4 +11,3 @@ export {
     Transaction,
 } from './lib/interfaces';
 export * from './lib/no-op-transactional-adapter';
-export * from './lib/savepoint-id-generator';

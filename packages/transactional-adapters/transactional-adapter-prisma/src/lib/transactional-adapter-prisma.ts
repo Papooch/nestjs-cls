@@ -1,9 +1,7 @@
-import {
-    savePointIdGenerator,
-    TransactionalAdapter,
-} from '@nestjs-cls/transactional';
+import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { PrismaClient } from '@prisma/client';
 import { getSavepointStatements, SQLFlavor } from './savepoint-syntax';
+import { randomUUID } from 'crypto';
 
 interface AnyTransactionClient {
     $transaction: (fn: (client: any) => Promise<any>, options?: any) => any;
@@ -87,7 +85,7 @@ export class TransactionalAdapterPrisma<
         tx: any, // use `any` to please TypeScript (or figure out a better type)
     ) => {
         const client = tx as PrismaClient;
-        const savepointId = savePointIdGenerator();
+        const savepointId = generateSavePointId();
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const statements = getSavepointStatements(this.sqlFlavor!, savepointId);
         setClient(client);
@@ -104,3 +102,6 @@ export class TransactionalAdapterPrisma<
         }
     };
 }
+
+const generateSavePointId = () =>
+    `savepoint_${randomUUID().replace(/-/g, '_')}`;
