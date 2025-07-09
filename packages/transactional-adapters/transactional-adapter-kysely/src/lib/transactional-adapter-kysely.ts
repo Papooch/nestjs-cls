@@ -103,3 +103,38 @@ const txBuilder = async <DB>(
 
     return transaction.execute();
 };
+
+class SavepointTransaction<DB> {
+    private constructor(
+        public readonly client: ControlledTransaction<DB, string[]>,
+        private readonly savepointId: string,
+    ) {}
+
+    static async initialize<DB>(
+        client: Kysely<DB>,
+        savepointId: string = generateSavePointId(),
+    ) {
+        const trx = await (client as ControlledTransaction<DB, string[]>)
+            .savepoint(savepointId)
+            .execute();
+
+        return new SavepointTransaction(trx, savepointId);
+    }
+
+    async runInSavePoint(fn: (...args: any[]) => Promise<any>) {
+        const result = await fn();
+
+        await this.client.releaseSavepoint(this.savepointId).execute();
+
+        return result;
+    }
+
+    async rollback() {
+        try {
+            await this.client.rollbackToSavepoint(this.savepointId).execute();
+        } catch (e) {
+            // Maybe it is needed to operate something for driver which does not support save point
+            throw e;
+        }
+    }
+}
