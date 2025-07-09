@@ -61,22 +61,15 @@ export class TransactionalAdapterKysely<DB = any>
             setClient: (client?: Kysely<DB>) => void,
             client: Kysely<DB>,
         ) => {
-            const { savepoint, trx } = await nestedTxBuilder(client);
+            const savepointTx = await SavepointTransaction.initialize(client);
+
             try {
-                setClient(trx);
-                const result = await fn();
+                setClient(savepointTx.client);
 
-                await trx.releaseSavepoint(savepoint).execute();
-
-                if (trx?.['isCommitable']) {
-                    await trx.commit().execute();
-                }
-                return result;
+                return await savepointTx.runInSavePoint(fn);
             } catch (e) {
-                await trx.rollbackToSavepoint(savepoint).execute();
-                if (trx?.['isCommitable']) {
-                    await trx.rollback().execute();
-                }
+                await savepointTx.rollback();
+
                 throw e;
             }
         },
