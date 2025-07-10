@@ -135,6 +135,25 @@ class UserService {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
     }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransaction(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+    }
+
+    @Transactional(Propagation.Nested)
+    async nestedTransactionError(name = 'Anybody') {
+        await this.userRepository.createUser(name);
+        throw new Error();
+    }
+
+    @Transactional(Propagation.Nested)
+    async transactionalHasNested(name?: string) {
+        await this.nestedTransaction(name);
+        try {
+            await this.nestedTransactionError(name);
+        } catch (_: any) {}
+    }
 }
 
 const kyselyDb = new Kysely<Database>({
@@ -354,6 +373,19 @@ describe('Transactional', () => {
                     ),
                 );
             });
+        });
+
+        it('should work with nested transaction', async () => {
+            await callingService.transactionalHasNested('Anybody');
+
+            const users = await kyselyDb
+                .selectFrom('user')
+                .where('name', '=', 'Anybody')
+                .selectAll()
+                .execute();
+
+            // partial rollback
+            expect(users).toHaveLength(1);
         });
     });
 });
