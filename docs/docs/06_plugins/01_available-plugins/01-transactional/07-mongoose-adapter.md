@@ -62,7 +62,13 @@ Queries are not executed using the `ClientSession` instance, but instead the `Cl
 
 The `TransactionalAdapterMongoose` _does not support_ the ["Transaction Proxy"](./index.md#using-the-injecttransaction-decorator) feature, because proxying a `null` value is not supported by the JavaScript Proxy.
 
-::::
+:::
+
+:::note
+
+MongoDB does not support savepoints or nested transactions. Using `Propagation.Nested` will re-use the existing transaction.
+
+:::
 
 ## Example
 
