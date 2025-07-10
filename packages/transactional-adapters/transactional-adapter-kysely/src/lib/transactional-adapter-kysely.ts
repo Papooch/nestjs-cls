@@ -1,6 +1,6 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
-import { ControlledTransaction, Kysely, TransactionBuilder } from 'kysely';
 import { randomUUID } from 'crypto';
+import { ControlledTransaction, Kysely, TransactionBuilder } from 'kysely';
 
 export interface KyselyTransactionalAdapterOptions {
     /**
@@ -41,35 +41,59 @@ export class TransactionalAdapterKysely<DB = any>
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Kysely<DB>) => void,
         ) => {
-            const trx = await txBuilder(kyselyDb, options);
+            let transaction = kyselyDb.startTransaction();
+            if (options?.isolationLevel) {
+                transaction = transaction.setIsolationLevel(
+                    options.isolationLevel,
+                );
+            }
+            if (options?.accessMode) {
+                transaction = transaction.setAccessMode(options.accessMode);
+            }
+
+            // Note: We can't use callback-style syntax, because it does not expose savepoint functionality
+            // which we need for nested transactions.
+            const tx = await transaction.execute();
+
             try {
-                setClient(trx);
-
+                setClient(tx);
                 const result = await fn();
-
-                await trx.commit().execute();
-
+                await tx.commit().execute();
                 return result;
             } catch (e) {
-                await trx.rollback().execute();
+                await tx.rollback().execute();
                 throw e;
             }
         },
         wrapWithNestedTransaction: async (
-            options: KyselyTransactionOptions,
+            _options: KyselyTransactionOptions,
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: Kysely<DB>) => void,
             client: Kysely<DB>,
         ) => {
-            const savepointTx = await SavepointTransaction.initialize(client);
+            const savepointId = generateSavePointId();
+            const savepointTx = await (client as ControlledTransaction<DB>)
+                .savepoint(savepointId)
+                .execute();
 
             try {
-                setClient(savepointTx.client);
-
-                return await savepointTx.runInSavePoint(fn);
+                setClient(savepointTx);
+                const result = await fn();
+                // Attempt to release the savepoint.
+                // If the driver does not support savepoint release, the only way to detect it is to match the error message.
+                // See: https://github.com/kysely-org/kysely/issues/1497
+                try {
+                    await savepointTx.releaseSavepoint(savepointId).execute();
+                } catch (e) {
+                    if ((e as Error).message?.includes('releaseSavepoint')) {
+                        return result;
+                    } else {
+                        throw e;
+                    }
+                }
+                return result;
             } catch (e) {
-                await savepointTx.rollback();
-
+                await savepointTx.rollbackToSavepoint(savepointId).execute();
                 throw e;
             }
         },
@@ -79,55 +103,3 @@ export class TransactionalAdapterKysely<DB = any>
 
 const generateSavePointId = () =>
     `savepoint_${randomUUID().replace(/-/g, '_')}`;
-
-const txBuilder = async <DB>(
-    client: Kysely<DB>,
-    options: KyselyTransactionOptions,
-) => {
-    let transaction = client.startTransaction();
-
-    if (options?.isolationLevel) {
-        transaction = transaction.setIsolationLevel(options.isolationLevel);
-    }
-
-    if (options?.accessMode) {
-        transaction = transaction.setAccessMode(options.accessMode);
-    }
-
-    return transaction.execute();
-};
-
-class SavepointTransaction<DB> {
-    private constructor(
-        public readonly client: ControlledTransaction<DB, string[]>,
-        private readonly savepointId: string,
-    ) {}
-
-    static async initialize<DB>(
-        client: Kysely<DB>,
-        savepointId: string = generateSavePointId(),
-    ) {
-        const trx = await (client as ControlledTransaction<DB, string[]>)
-            .savepoint(savepointId)
-            .execute();
-
-        return new SavepointTransaction(trx, savepointId);
-    }
-
-    async runInSavePoint(fn: (...args: any[]) => Promise<any>) {
-        const result = await fn();
-
-        await this.client.releaseSavepoint(this.savepointId).execute();
-
-        return result;
-    }
-
-    async rollback() {
-        try {
-            await this.client.rollbackToSavepoint(this.savepointId).execute();
-        } catch (e) {
-            // Maybe it is needed to operate something for driver which does not support save point
-            throw e;
-        }
-    }
-}
