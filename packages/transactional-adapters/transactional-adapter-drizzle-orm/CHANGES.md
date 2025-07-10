@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.1.20...@nestjs-cls/transactional-adapter-drizzle-orm@1.2.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2025-07-10)<a name="1.2.0"></a>
+
+### Features
+
+* **transactional**: support nested transaction propagation (#345) ([ef4df9d](https://github.com/Papooch/nestjs-cls/commits/ef4df9d))
+* **transactional-adapter-drizzle-orm**: add nested transaction support (#363) ([ef4df9d](https://github.com/Papooch/nestjs-cls/commits/ef4df9d))
+
+
+
+
 ## [1.1.16](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.1.15...@nestjs-cls/transactional-adapter-drizzle-orm@1.1.16) "@nestjs-cls/transactional-adapter-drizzle-orm" (2025-04-18)<a name="1.1.16"></a>
 
 ### Dependencies

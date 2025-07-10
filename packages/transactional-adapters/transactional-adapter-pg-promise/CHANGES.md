@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.3.23...@nestjs-cls/transactional-adapter-pg-promise@1.4.0) "@nestjs-cls/transactional-adapter-pg-promise" (2025-07-10)<a name="1.4.0"></a>
+
+### Features
+
+* **transactional-adapter-pg-promise**: support nested transaction propagation ([1f4c697](https://github.com/Papooch/nestjs-cls/commits/1f4c697))
+* **transactional-adapter-pg-promise**: add nested transcation support (#360) ([1f4c697](https://github.com/Papooch/nestjs-cls/commits/1f4c697))
+
+
+
+
 ## [1.3.19](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.3.18...@nestjs-cls/transactional-adapter-pg-promise@1.3.19) "@nestjs-cls/transactional-adapter-pg-promise" (2025-04-18)<a name="1.3.19"></a>
 
 ### Dependencies

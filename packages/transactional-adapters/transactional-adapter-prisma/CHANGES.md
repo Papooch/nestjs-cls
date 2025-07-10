@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.2.24...@nestjs-cls/transactional-adapter-prisma@1.3.0) "@nestjs-cls/transactional-adapter-prisma" (2025-07-10)<a name="1.3.0"></a>
+
+### Features
+
+* **transactional-adapter-prisma**: add support for nested transactions ([c49c766](https://github.com/Papooch/nestjs-cls/commits/c49c766))
+* **transactional-adapter-prisma**: add support for nested transactions (#353) ([c49c766](https://github.com/Papooch/nestjs-cls/commits/c49c766))
+
+
+
+
 ## [1.2.20](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.2.19...@nestjs-cls/transactional-adapter-prisma@1.2.20) "@nestjs-cls/transactional-adapter-prisma" (2025-04-18)<a name="1.2.20"></a>
 
 ### Dependencies

@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-knex@1.2.23...@nestjs-cls/transactional-adapter-knex@1.3.0) "@nestjs-cls/transactional-adapter-knex" (2025-07-10)<a name="1.3.0"></a>
+
+### Features
+
+* **transactional**: support nested transaction propagation (#345) ([f6deb12](https://github.com/Papooch/nestjs-cls/commits/f6deb12))
+* **transactional-adapter-knex**: add nested transcation support (#362) ([f6deb12](https://github.com/Papooch/nestjs-cls/commits/f6deb12))
+
+
+
+
 ## [1.2.19](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-knex@1.2.18...@nestjs-cls/transactional-adapter-knex@1.2.19) "@nestjs-cls/transactional-adapter-knex" (2025-04-18)<a name="1.2.19"></a>
 
 ### Dependencies

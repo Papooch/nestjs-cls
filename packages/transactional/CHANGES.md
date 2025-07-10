@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [3.1.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.0.3...@nestjs-cls/transactional@3.1.0) "@nestjs-cls/transactional" (2025-07-10)<a name="3.1.0"></a>
+
+### Features
+
+* **transactional**: support nested transaction propagation (#345) ([a8324ad](https://github.com/Papooch/nestjs-cls/commits/a8324ad))
+
+
+
+
 ## [3.0.3](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.0.2...@nestjs-cls/transactional@3.0.3) "@nestjs-cls/transactional" (2025-06-13)<a name="3.0.3"></a>
 
 ### Bug Fixes

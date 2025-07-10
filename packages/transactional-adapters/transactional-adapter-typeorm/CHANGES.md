@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.2.24...@nestjs-cls/transactional-adapter-typeorm@1.3.0) "@nestjs-cls/transactional-adapter-typeorm" (2025-07-10)<a name="1.3.0"></a>
+
+### Features
+
+* **transactional**: support nested transaction propagation (#345) ([a8324ad](https://github.com/Papooch/nestjs-cls/commits/a8324ad))
+
+
+
+
 ## [1.2.23](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.2.22...@nestjs-cls/transactional-adapter-typeorm@1.2.23) "@nestjs-cls/transactional-adapter-typeorm" (2025-06-06)<a name="1.2.23"></a>
 
 ### Bug Fixes

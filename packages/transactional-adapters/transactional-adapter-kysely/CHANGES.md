@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.3.3...@nestjs-cls/transactional-adapter-kysely@1.4.0) "@nestjs-cls/transactional-adapter-kysely" (2025-07-10)<a name="1.4.0"></a>
+
+### Features
+
+* **transactional-adapter-kysely**: add nested transaction support (#370) ([9900161](https://github.com/Papooch/nestjs-cls/commits/9900161))
+
+
+
+
 ## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.2.20...@nestjs-cls/transactional-adapter-kysely@1.3.0) "@nestjs-cls/transactional-adapter-kysely" (2025-05-29)<a name="1.3.0"></a>
 
 ### Features
