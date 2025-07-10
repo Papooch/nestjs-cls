@@ -31,16 +31,24 @@ interface TransactionalAdapterOptions<TTx, TOptions> {
         fn: (...args: any[]) => Promise<any>,
         setTx: (client: TTx) => void,
     ) => Promise<any>;
+    wrapWithNestedTransaction?: (
+        options: TOptions,
+        fn: (...args: any[]) => Promise<any>,
+        setTx: (client?: TTx) => void,
+        tx: TTx,
+    ) => Promise<any>;
     getFallbackInstance: () => TTx;
 }
 ```
 
-This object contains two methods:
+This object contains three methods:
 
--   `wrapWithTransaction` - a function that takes the method decorated with `@Transactional` (or a callback passed to `TransactionHost#withTransaction`) and wraps it with transaction handling logic. It should return a promise that resolves to the result of the decorated method.
-    The other parameter is the adapter-specific transaction `options` object (which contains the transaction-specific options merged with the default ones) and the `setTx` function which should be called with the transaction instance to make it available in the CLS context.
+- `wrapWithTransaction` - a function that takes the method decorated with `@Transactional` (or a callback passed to `TransactionHost#withTransaction`) and wraps it with transaction handling logic. It should return a promise that resolves to the result of the decorated method.
+  The other parameter is the adapter-specific transaction `options` object (which contains the transaction-specific options merged with the default ones) and the `setTx` function which should be called with the transaction instance to make it available in the CLS context.
 
--   `getFallbackInstance` - when a transactional context is not available, this method is used to return a "fallback" instance of the transaction object. This is needed for cases when the `tx` property on `TransactionHost` is accessed outside of a transactional context.
+- `wrapWithNestedTransaction` - an _optional_ function, similar to `wrapWithTransaction`, but this one is invoked only when an existing transaction is in progress, when starting a child transaction with [`Propagation.Nested`](./index.md#transaction-propagation). In SQL, this is where we can implement SAVEPOINT logic. If an adapter does not implement the method, nested transactions will instead re-use the existing parent transaction.
+
+- `getFallbackInstance` - when a transactional context is not available, this method is used to return a "fallback" instance of the transaction object. This is needed for cases when the `tx` property on `TransactionHost` is accessed outside of a transactional context.
 
 ## Typing
 
@@ -50,9 +58,9 @@ It is important to note that the `tx` property of `TransactionHost` must work bo
 
 For an adapter, we're going to need to define the following types:
 
--   `TConnection` - a type of the "connection" object. This can be anything that lets us create an instance of the transaction.
--   `TTx` - a type of the transaction instance. This is the type of the `tx` property on `TransactionHost`.
--   `TOptions` - a type for the options object that is passed to the underlying library's transaction handling method.
+- `TConnection` - a type of the "connection" object. This can be anything that lets us create an instance of the transaction.
+- `TTx` - a type of the transaction instance. This is the type of the `tx` property on `TransactionHost`.
+- `TOptions` - a type for the options object that is passed to the underlying library's transaction handling method.
 
 ## Step-by-step Guide
 
@@ -105,9 +113,9 @@ async function main() {
 
 As seen above, we'll need to define the following types:
 
--   `TConnection` - This can be typed as `Knex` itself, because it's the type of the `knex` instance that we'll use to start the transaction.
--   `TTx` - While the type of the `tx` instance passed to `knex.transaction` is typed as `Knex.Transaction`, it also exposes methods that are specific to the transactional context. Therefore, we'll use the base `Knex` type here as well, because issuing queries is all that is really needed.
--   `TOptions` - Knex provides an existing type called `Knex.TransactionConfig` for the transaction options, so we'll just use that.
+- `TConnection` - This can be typed as `Knex` itself, because it's the type of the `knex` instance that we'll use to start the transaction.
+- `TTx` - While the type of the `tx` instance passed to `knex.transaction` is typed as `Knex.Transaction`, it also exposes methods that are specific to the transactional context. Therefore, we'll use the base `Knex` type here as well, because issuing queries is all that is really needed.
+- `TOptions` - Knex provides an existing type called `Knex.TransactionConfig` for the transaction options, so we'll just use that.
 
 ### Putting it all together
 
@@ -172,6 +180,12 @@ export class MyTransactionalAdapterKnex
     }
 }
 ```
+
+:::note
+
+We will not be implementing the `wrapWithNestedTransaction` method. See existing adapters for inspiration.
+
+:::
 
 ### Using the custom adapter
 
