@@ -44,7 +44,7 @@
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.31.1",
     "dependency-cruiser": "^16.10.1",
-    "eslint": "^9.28.0",
+    "eslint": "^9.31.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.4.0",
     "monodeploy": "^5.0.2",
