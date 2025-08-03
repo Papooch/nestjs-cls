@@ -24,6 +24,9 @@
       "path": "docs"
     },
     {
+      "path": "packages/authorization"
+    },
+    {
       "path": "packages/core"
     },
     {
@@ -52,9 +55,6 @@
     },
     {
       "path": "packages/transactional-adapters/transactional-adapter-typeorm"
-    },
-    {
-      "path": "packages/transactional-adapters/transactional-adapter-drizzle-orm"
     }
   ]
 }
