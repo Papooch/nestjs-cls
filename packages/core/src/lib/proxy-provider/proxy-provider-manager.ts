@@ -173,7 +173,7 @@ export class ProxyProviderManager {
                 const provider = getProvider() ?? checkAccess(propName);
                 const prop = provider[propName];
                 if (typeof prop === 'function') {
-                    return prop.bind(provider);
+                    return Object.assign(prop.bind(provider), prop);
                 } else {
                     return prop;
                 }
