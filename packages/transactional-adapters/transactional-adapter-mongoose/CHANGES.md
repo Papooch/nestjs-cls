@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [1.1.24](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongoose@1.1.23...@nestjs-cls/transactional-adapter-mongoose@1.1.24) "@nestjs-cls/transactional-adapter-mongoose" (2025-11-04)<a name="1.1.24"></a>
+
+### Bug Fixes
+
+* **transactional-adapter-mongoose**: fix peer dependency range (#413) ([3e2007d](https://github.com/Papooch/nestjs-cls/commits/3e2007d))
+
+
+
+
 ## [1.1.18](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongoose@1.1.17...@nestjs-cls/transactional-adapter-mongoose@1.1.18) "@nestjs-cls/transactional-adapter-mongoose" (2025-04-18)<a name="1.1.18"></a>
 
 ### Dependencies
