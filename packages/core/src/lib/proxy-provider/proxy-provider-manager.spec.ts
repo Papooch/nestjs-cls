@@ -1,5 +1,4 @@
 import { globalClsService } from "../cls-service.globals";
-import { ClsService } from "../cls.service";
 import { ProxyProviderManager } from "./proxy-provider-manager";
 
 describe('ProxyProviderManager', () => {
