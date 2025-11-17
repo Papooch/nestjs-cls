@@ -2,6 +2,16 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [6.1.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.0.1...nestjs-cls@6.1.0) "nestjs-cls" (2025-11-17)<a name="6.1.0"></a>
+
+### Features
+
+* support proxying functions with explicit properties ([dec5c2c](https://github.com/Papooch/nestjs-cls/commits/dec5c2c))
+* **core**: support proxying functions with explicit properties (#389) ([dec5c2c](https://github.com/Papooch/nestjs-cls/commits/dec5c2c))
+
+
+
+
 ## [6.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.0.0...nestjs-cls@6.0.1) "nestjs-cls" (2025-06-02)<a name="6.0.1"></a>
 
 ### Bug Fixes
