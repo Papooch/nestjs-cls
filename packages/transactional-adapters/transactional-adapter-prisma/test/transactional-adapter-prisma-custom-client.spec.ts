@@ -10,10 +10,15 @@ import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 
 process.env.DATA_SOURCE_URL = 'file:../tmp/test-custom.db';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    adapter: new PrismaBetterSqlite3({
+        url: process.env.DATA_SOURCE_URL ?? '',
+    }),
+});
 const customPrismaClient = prisma.$extends({
     model: {
         user: {

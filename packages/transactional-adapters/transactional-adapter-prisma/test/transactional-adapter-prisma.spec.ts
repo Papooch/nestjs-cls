@@ -9,6 +9,7 @@ import {
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { execSync } from 'child_process';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
@@ -109,7 +110,17 @@ class UserService {
 }
 
 @Module({
-    providers: [PrismaClient],
+    providers: [
+        {
+            provide: PrismaClient,
+            useFactory: () =>
+                new PrismaClient({
+                    adapter: new PrismaBetterSqlite3({
+                        url: process.env.DATA_SOURCE_URL ?? '',
+                    }),
+                }),
+        },
+    ],
     exports: [PrismaClient],
 })
 class PrismaModule {}
@@ -186,6 +197,7 @@ describe('Transactional', () => {
             const users = await prisma.user.findMany();
             expect(users).toEqual(expect.arrayContaining([r1]));
         });
+
         it('should run a transaction with the specified options with a function wrapper', async () => {
             const { r1, r2, r3 } =
                 await callingService.transactionWithFunctionWrapper();
