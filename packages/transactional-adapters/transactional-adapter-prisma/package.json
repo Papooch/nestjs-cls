@@ -56,7 +56,7 @@
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "@nestjs/testing": "^11.1.6",
-    "@prisma/adapter-better-sqlite3": "^7.1.0",
+    "@prisma/adapter-pg": "^7.1.0",
     "@prisma/client": "^7.1.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.24",
