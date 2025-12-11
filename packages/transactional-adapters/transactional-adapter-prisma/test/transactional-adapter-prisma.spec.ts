@@ -9,12 +9,13 @@ import {
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { execSync } from 'child_process';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
 
-process.env.DATA_SOURCE_URL = 'file:../tmp/test.db';
+process.env.DATA_SOURCE_URL =
+    'postgres://postgres:postgres@localhost:5448/postgres';
 
 @Injectable()
 class UserRepository {
@@ -115,8 +116,8 @@ class UserService {
             provide: PrismaClient,
             useFactory: () =>
                 new PrismaClient({
-                    adapter: new PrismaBetterSqlite3({
-                        url: process.env.DATA_SOURCE_URL ?? '',
+                    adapter: new PrismaPg({
+                        connectionString: process.env.DATA_SOURCE_URL ?? '',
                     }),
                 }),
         },
@@ -134,7 +135,7 @@ class PrismaModule {}
                     imports: [PrismaModule],
                     adapter: new TransactionalAdapterPrisma({
                         prismaInjectionToken: PrismaClient,
-                        sqlFlavor: 'sqlite',
+                        sqlFlavor: 'postgresql',
                     }),
                     enableTransactionProxy: true,
                 }),
@@ -151,6 +152,14 @@ describe('Transactional', () => {
     let prisma: PrismaClient;
 
     beforeAll(async () => {
+        execSync(
+            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
+            {
+                stdio: 'inherit',
+                cwd: process.cwd(),
+            },
+        );
+
         execSync('yarn prisma migrate reset --force', { env: process.env });
     });
 

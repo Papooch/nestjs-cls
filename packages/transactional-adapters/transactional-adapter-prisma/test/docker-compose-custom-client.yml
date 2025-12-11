@@ -1,0 +1,14 @@
+services:
+  postgresql-test-db-custom-client:
+    image: postgres:15
+    ports:
+      - 5449:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 1s
+      timeout: 1s
+      retries: 5
