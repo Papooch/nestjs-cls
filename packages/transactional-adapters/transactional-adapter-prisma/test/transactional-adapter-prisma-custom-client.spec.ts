@@ -10,10 +10,16 @@ import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-process.env.DATA_SOURCE_URL = 'file:../tmp/test-custom.db';
+process.env.DATA_SOURCE_URL =
+    'postgres://postgres:postgres@localhost:5449/postgres';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+    adapter: new PrismaPg({
+        connectionString: process.env.DATA_SOURCE_URL ?? '',
+    }),
+});
 const customPrismaClient = prisma.$extends({
     model: {
         user: {
@@ -93,6 +99,14 @@ describe('Transactional', () => {
     let txHost: TransactionHost<TransactionalAdapterPrisma<CustomPrismaClient>>;
 
     beforeAll(async () => {
+        execSync(
+            'docker compose -f test/docker-compose-custom-client.yml up -d --quiet-pull --wait',
+            {
+                stdio: 'inherit',
+                cwd: process.cwd(),
+            },
+        );
+
         execSync('yarn prisma migrate reset --force', { env: process.env });
     });
 

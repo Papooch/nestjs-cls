@@ -9,11 +9,13 @@ import {
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { execSync } from 'child_process';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
 
-process.env.DATA_SOURCE_URL = 'file:../tmp/test.db';
+process.env.DATA_SOURCE_URL =
+    'postgres://postgres:postgres@localhost:5448/postgres';
 
 @Injectable()
 class UserRepository {
@@ -109,7 +111,17 @@ class UserService {
 }
 
 @Module({
-    providers: [PrismaClient],
+    providers: [
+        {
+            provide: PrismaClient,
+            useFactory: () =>
+                new PrismaClient({
+                    adapter: new PrismaPg({
+                        connectionString: process.env.DATA_SOURCE_URL ?? '',
+                    }),
+                }),
+        },
+    ],
     exports: [PrismaClient],
 })
 class PrismaModule {}
@@ -123,7 +135,7 @@ class PrismaModule {}
                     imports: [PrismaModule],
                     adapter: new TransactionalAdapterPrisma({
                         prismaInjectionToken: PrismaClient,
-                        sqlFlavor: 'sqlite',
+                        sqlFlavor: 'postgresql',
                     }),
                     enableTransactionProxy: true,
                 }),
@@ -140,6 +152,14 @@ describe('Transactional', () => {
     let prisma: PrismaClient;
 
     beforeAll(async () => {
+        execSync(
+            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
+            {
+                stdio: 'inherit',
+                cwd: process.cwd(),
+            },
+        );
+
         execSync('yarn prisma migrate reset --force', { env: process.env });
     });
 
@@ -186,6 +206,7 @@ describe('Transactional', () => {
             const users = await prisma.user.findMany();
             expect(users).toEqual(expect.arrayContaining([r1]));
         });
+
         it('should run a transaction with the specified options with a function wrapper', async () => {
             const { r1, r2, r3 } =
                 await callingService.transactionWithFunctionWrapper();
