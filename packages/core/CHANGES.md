@@ -2,6 +2,15 @@
 
 <!-- MONODEPLOY:BELOW -->
 
+## [6.2.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.1.0...nestjs-cls@6.2.0) "nestjs-cls" (2026-01-06)<a name="6.2.0"></a>
+
+### Features
+
+* **core**: add control over logging debug messages (#445) ([c09bdab](https://github.com/Papooch/nestjs-cls/commits/c09bdab))
+
+
+
+
 ## [6.1.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.0.1...nestjs-cls@6.1.0) "nestjs-cls" (2025-11-17)<a name="6.1.0"></a>
 
 ### Features
