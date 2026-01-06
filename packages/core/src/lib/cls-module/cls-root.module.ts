@@ -61,9 +61,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
         if (options.mount) {
             const adapter = this.adapterHost.httpAdapter;
             const mountPoint = getMiddlewareMountPoint(adapter);
-            ClsRootModule.logger.debug(
-                'Mounting ClsMiddleware to ' + mountPoint,
-            );
+            if (options.debug) {
+                ClsRootModule.logger.debug(
+                    'Mounting ClsMiddleware to ' + mountPoint,
+                );
+            }
             consumer.apply(ClsMiddleware).forRoutes(mountPoint);
         }
     }
@@ -215,9 +217,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
 
     private static clsGuardFactory(options: ClsGuardOptions): CanActivate {
         if (options.mount) {
-            ClsRootModule.logger.debug(
-                'ClsGuard will be automatically mounted',
-            );
+            if (options.debug) {
+                ClsRootModule.logger.debug(
+                    'ClsGuard will be automatically mounted',
+                );
+            }
             return new ClsGuard(options);
         }
         return {
@@ -229,9 +233,11 @@ export class ClsRootModule implements NestModule, OnModuleInit {
         options: ClsInterceptorOptions,
     ): NestInterceptor {
         if (options.mount) {
-            ClsRootModule.logger.debug(
-                'ClsInterceptor will be automatically mounted',
-            );
+            if (options.debug) {
+                ClsRootModule.logger.debug(
+                    'ClsInterceptor will be automatically mounted',
+                );
+            }
             return new ClsInterceptor(options);
         }
         return {

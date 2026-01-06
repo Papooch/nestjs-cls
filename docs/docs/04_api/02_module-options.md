@@ -75,6 +75,9 @@ All of the **`Cls{Middleware,Guard,Interceptor}Options`** take the following par
 - **_`mount?:`_**`boolean` (default _`false`_)  
   Whether to automatically mount the middleware/guard/interceptor to every route (not applicable when instantiating them manually)
 
+- **_`debug?:`_**`boolean` (default _`true`_)  
+  Enable logging of debug messages in the middleware/guard/interceptor.
+
 - **_`generateId?:`_**`boolean` (default _`false`_)  
   Whether to automatically generate a request ID. It will be available under the `CLS_ID` key.
 

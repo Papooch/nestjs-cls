@@ -114,6 +114,13 @@ export class ClsMiddlewareOptions extends ClsInitializerCommonOptions {
     mount? = false;
 
     /**
+     * enable logging of debug messages in the middleware
+     *
+     * Default: `true`
+     */
+    debug? = true;
+
+    /**
      * the function to generate request ids for the CLS context
      */
     idGenerator?: (req: any) => string | Promise<string> = getRandomString;
@@ -156,6 +163,13 @@ export class ClsGuardOptions extends ClsInitializerCommonOptions {
     mount? = false;
 
     /**
+     * enable logging of debug messages in guard
+     *
+     * Default: `true`
+     */
+    debug? = true;
+
+    /**
      * the function to generate request ids inside the guard
      */
     idGenerator?: (context: ExecutionContext) => string | Promise<string> =
@@ -186,6 +200,13 @@ export class ClsInterceptorOptions extends ClsInitializerCommonOptions {
      * Default: `false`
      */
     mount? = false;
+
+    /**
+     * enable logging of debug messages in the interceptor
+     *
+     * Default: `true`
+     */
+    debug? = true;
 
     /**
      * the function to generate request ids inside the interceptor
