@@ -52,7 +52,7 @@
     },
     "devDependencies": {
         "@nestjs/cli": "^11.0.10",
-        "@nestjs/common": "^11.1.6",
+        "@nestjs/common": "^11.1.12",
         "@nestjs/core": "^11.1.6",
         "@nestjs/testing": "^11.1.6",
         "@types/better-sqlite3": "^7.6.13",
