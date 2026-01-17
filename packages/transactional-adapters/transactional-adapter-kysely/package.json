@@ -59,7 +59,7 @@
         "@types/jest": "^30.0.0",
         "@types/node": "^22.19.7",
         "@types/pg": "^8.16.0",
-        "jest": "^29.7.0",
+        "jest": "^30.2.0",
         "kysely": "^0.28.9",
         "pg": "^8.17.1",
         "reflect-metadata": "^0.2.2",
