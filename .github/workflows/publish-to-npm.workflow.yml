@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write # Required for OIDC publish
 
 concurrency:
   cancel-in-progress: true
@@ -32,9 +33,10 @@ jobs:
       - run: yarn
       - run: yarn build:release
       - run: yarn test
+      # Uses npm publish with OIDC token for authentication
       - run: yarn monodeploy
         env:
-          # needed to publish to npm
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # needed to create a release
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # OIDC token automatically provided by actions/setup-node
+          NPM_CONFIG_PROVENANCE: true
