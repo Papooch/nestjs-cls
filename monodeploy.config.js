@@ -6,6 +6,5 @@ module.exports = {
     git: {
         push: true,
     },
-    registryUrl: 'https://registry.npmjs.org',
     plugins: ['@monodeploy/plugin-github'],
 };

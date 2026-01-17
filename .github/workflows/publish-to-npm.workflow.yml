@@ -22,7 +22,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          registry-url: 'https://registry.npmjs.org'
           cache: yarn
 
       - name: Configure git
@@ -30,13 +29,32 @@ jobs:
           git config --local user.name 'github-action[bot]'
           git config --local user.email 'github-action[bot]@github.com'
 
+      - name: Verify OIDC and registry setup
+        run: |
+          echo "=== Checking Yarn version ==="
+          yarn --version
+          echo ""
+          echo "=== Checking Yarn configuration ==="
+          echo "Registry: $(yarn config get npmRegistryServer)"
+          echo "Provenance: $(yarn config get npmPublishProvenance)"
+          echo ""
+          echo "=== Checking GitHub Actions OIDC environment ==="
+          if [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ] || [ -z "$ACTIONS_ID_TOKEN_REQUEST_TOKEN" ]; then
+            echo "✗ OIDC environment variables not set"
+            echo "This workflow requires 'id-token: write' permission"
+            exit 1
+          fi
+          echo "✓ ACTIONS_ID_TOKEN_REQUEST_URL is set"
+          echo "✓ ACTIONS_ID_TOKEN_REQUEST_TOKEN is set"
+          echo "✓ GITHUB_ACTIONS: ${GITHUB_ACTIONS}"
+          echo ""
+          echo "✓ Environment is ready for OIDC publishing"
+
       - run: yarn
       - run: yarn build:release
       # - run: yarn test
-      # Yarn 4.10+ supports OIDC publishing automatically on GitHub Actions
+      # Yarn 4.10+ automatically uses OIDC when running in GitHub Actions
       - run: yarn monodeploy
         env:
-          # needed to create a release
+          # Needed to create a release
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # OIDC token automatically provided by actions/setup-node
-          NPM_CONFIG_PROVENANCE: true
