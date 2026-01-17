@@ -33,11 +33,15 @@ jobs:
       - name: Debug authentication setup
         run: |
           echo "=== Checking .npmrc files ==="
-          cat ~/.npmrc 2>/dev/null || echo "No ~/.npmrc"
-          cat .npmrc 2>/dev/null || echo "No ./.npmrc"
-          echo "=== Environment variables ==="
-          env | grep -i npm || echo "No NPM env vars"
-          env | grep -i node || echo "No NODE env vars"
+          cat /home/runner/work/_temp/.npmrc 2>/dev/null || echo "No temp .npmrc"
+          echo "=== NODE_AUTH_TOKEN ==="
+          echo "Token is set: ${NODE_AUTH_TOKEN:+YES}"
+
+      - name: Configure Yarn to use npm registry with auth
+        run: |
+          yarn config set npmRegistryServer "https://registry.npmjs.org"
+          yarn config set npmAlwaysAuth true
+          yarn config set npmAuthToken "$NODE_AUTH_TOKEN"
 
       - run: yarn
       - run: yarn build:release
