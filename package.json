@@ -44,11 +44,11 @@
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.31.1",
     "dependency-cruiser": "^16.10.1",
-    "eslint": "^9.28.0",
-    "eslint-config-prettier": "^10.1.2",
-    "eslint-plugin-prettier": "^5.4.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
     "monodeploy": "^5.0.2",
-    "prettier": "^3.5.3",
-    "typescript": "5.8.3"
+    "prettier": "^3.8.0",
+    "typescript": "5.9.3"
   }
 }
