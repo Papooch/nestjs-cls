@@ -54,7 +54,7 @@ jobs:
       - run: yarn build:release
       # - run: yarn test
       # Yarn 4.10+ automatically uses OIDC when running in GitHub Actions
-      - run: yarn monodeploy
+      - run: yarn monoweave
         env:
           # Needed to create a release
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
