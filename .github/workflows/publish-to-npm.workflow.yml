@@ -30,6 +30,15 @@ jobs:
           git config --local user.name 'github-action[bot]'
           git config --local user.email 'github-action[bot]@github.com'
 
+      - name: Debug authentication setup
+        run: |
+          echo "=== Checking .npmrc files ==="
+          cat ~/.npmrc 2>/dev/null || echo "No ~/.npmrc"
+          cat .npmrc 2>/dev/null || echo "No ./.npmrc"
+          echo "=== Environment variables ==="
+          env | grep -i npm || echo "No NPM env vars"
+          env | grep -i node || echo "No NODE env vars"
+
       - run: yarn
       - run: yarn build:release
       - run: yarn test
