@@ -27,14 +27,11 @@ export interface MongoDBTransactionalAdapterOptions {
     defaultTxOptions?: Partial<MongoDBTransactionOptions>;
 }
 
-export class TransactionalAdapterMongoDB
-    implements
-        TransactionalAdapter<
-            MongoClient,
-            ClientSession | undefined,
-            MongoDBTransactionOptions
-        >
-{
+export class TransactionalAdapterMongoDB implements TransactionalAdapter<
+    MongoClient,
+    ClientSession | undefined,
+    MongoDBTransactionOptions
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<TransactionOptions>;

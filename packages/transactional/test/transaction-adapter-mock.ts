@@ -59,14 +59,11 @@ export interface MockTransactionOptions {
     sayHello?: boolean;
 }
 
-export class TransactionAdapterMock
-    implements
-        TransactionalAdapter<
-            MockDbConnection,
-            MockDbClient,
-            MockTransactionOptions
-        >
-{
+export class TransactionAdapterMock implements TransactionalAdapter<
+    MockDbConnection,
+    MockDbClient,
+    MockTransactionOptions
+> {
     connectionToken: any;
     defaultTxOptions: Partial<MockTransactionOptions>;
 

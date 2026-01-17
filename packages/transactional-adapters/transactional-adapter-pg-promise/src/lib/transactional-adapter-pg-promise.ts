@@ -18,9 +18,11 @@ export interface PgPromiseTransactionalAdapterOptions {
     defaultTxOptions?: PgPromiseTxOptions;
 }
 
-export class TransactionalAdapterPgPromise
-    implements TransactionalAdapter<Database, Database, PgPromiseTxOptions>
-{
+export class TransactionalAdapterPgPromise implements TransactionalAdapter<
+    Database,
+    Database,
+    PgPromiseTxOptions
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<PgPromiseTxOptions>;

@@ -174,7 +174,7 @@ describe('ClsService', () => {
         });
 
         it('throws error if trying to set a value without context', () => {
-            expect(() => service.set('key', 123)).toThrowError();
+            expect(() => service.set('key', 123)).toThrow();
         });
     });
 
@@ -255,7 +255,7 @@ describe('ClsService', () => {
 
     describe('manual creation', () => {
         it('should fail with error', () => {
-            expect(() => new ClsService(undefined as any)).toThrowError();
+            expect(() => new ClsService(undefined as any)).toThrow();
         });
     });
 

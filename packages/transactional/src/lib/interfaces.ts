@@ -21,8 +21,10 @@ export interface TransactionalAdapterOptions<TTx, TOptions> {
     getFallbackInstance: () => TTx;
 }
 
-export interface MergedTransactionalAdapterOptions<TTx, TOptions>
-    extends TransactionalAdapterOptions<TTx, TOptions> {
+export interface MergedTransactionalAdapterOptions<
+    TTx,
+    TOptions,
+> extends TransactionalAdapterOptions<TTx, TOptions> {
     connectionName: string | undefined;
     enableTransactionProxy: boolean;
     defaultTxOptions: Partial<TOptions>;
@@ -40,8 +42,11 @@ export type OptionalLifecycleHooks = Partial<
         OnApplicationShutdown
 >;
 
-export interface TransactionalAdapter<TConnection, TTx, TOptions>
-    extends OptionalLifecycleHooks {
+export interface TransactionalAdapter<
+    TConnection,
+    TTx,
+    TOptions,
+> extends OptionalLifecycleHooks {
     /**
      * Token used to inject the `connection` into the adapter.
      * It is later used to create transactions.

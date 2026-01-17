@@ -18,9 +18,11 @@ export interface NoOpTransactionalAdapterOptions {
  *
  * Useful for testing purposes or making sure that the TransactionHost is wired up correctly.
  */
-export class NoOpTransactionalAdapter
-    implements TransactionalAdapter<any, any, any>
-{
+export class NoOpTransactionalAdapter implements TransactionalAdapter<
+    any,
+    any,
+    any
+> {
     private readonly logger = new Logger(NoOpTransactionalAdapter.name);
     private disableWarning: boolean;
 

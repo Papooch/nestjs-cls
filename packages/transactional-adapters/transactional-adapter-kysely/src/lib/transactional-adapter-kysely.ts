@@ -22,10 +22,13 @@ export interface KyselyTransactionOptions {
     accessMode?: Parameters<TransactionBuilder<any>['setAccessMode']>[0];
 }
 
-export class TransactionalAdapterKysely<DB = any>
-    implements
-        TransactionalAdapter<Kysely<DB>, Kysely<DB>, KyselyTransactionOptions>
-{
+export class TransactionalAdapterKysely<
+    DB = any,
+> implements TransactionalAdapter<
+    Kysely<DB>,
+    Kysely<DB>,
+    KyselyTransactionOptions
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<KyselyTransactionOptions>;

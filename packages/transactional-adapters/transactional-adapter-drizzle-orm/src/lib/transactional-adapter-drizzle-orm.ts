@@ -26,14 +26,13 @@ export interface DrizzleOrmTransactionalAdapterOptions<
     defaultTxOptions?: Partial<DrizzleTransactionOptions<TClient>>;
 }
 
-export class TransactionalAdapterDrizzleOrm<TClient extends AnyDrizzleClient>
-    implements
-        TransactionalAdapter<
-            TClient,
-            TClient,
-            DrizzleTransactionOptions<TClient>
-        >
-{
+export class TransactionalAdapterDrizzleOrm<
+    TClient extends AnyDrizzleClient,
+> implements TransactionalAdapter<
+    TClient,
+    TClient,
+    DrizzleTransactionOptions<TClient>
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<DrizzleTransactionOptions<TClient>>;

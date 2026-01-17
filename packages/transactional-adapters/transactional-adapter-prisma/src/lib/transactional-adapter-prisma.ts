@@ -42,13 +42,11 @@ export interface PrismaTransactionalAdapterOptions<
 
 export class TransactionalAdapterPrisma<
     TClient extends AnyTransactionClient = PrismaClient,
-> implements
-        TransactionalAdapter<
-            TClient,
-            PrismaTransactionalClient<TClient>,
-            PrismaTransactionOptions<TClient>
-        >
-{
+> implements TransactionalAdapter<
+    TClient,
+    PrismaTransactionalClient<TClient>,
+    PrismaTransactionOptions<TClient>
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<PrismaTransactionOptions<TClient>>;

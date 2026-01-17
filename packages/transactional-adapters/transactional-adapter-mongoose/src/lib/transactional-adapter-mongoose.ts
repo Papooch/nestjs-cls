@@ -16,14 +16,11 @@ export interface MongoDBTransactionalAdapterOptions {
     defaultTxOptions?: Partial<MongooseTransactionOptions>;
 }
 
-export class TransactionalAdapterMongoose
-    implements
-        TransactionalAdapter<
-            Connection,
-            ClientSession | null,
-            MongooseTransactionOptions
-        >
-{
+export class TransactionalAdapterMongoose implements TransactionalAdapter<
+    Connection,
+    ClientSession | null,
+    MongooseTransactionOptions
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<MongooseTransactionOptions>;
