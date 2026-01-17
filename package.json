@@ -26,7 +26,7 @@
     "packages/transactional-adapters/*",
     "docs"
   ],
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "yarn@4.12.0",
   "scripts": {
     "test": "yarn workspaces foreach --all --topological-dev run test",
     "build": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build",
