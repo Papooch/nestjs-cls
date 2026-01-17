@@ -14,9 +14,11 @@ export interface KnexTransactionalAdapterOptions {
     defaultTxOptions?: Partial<Knex.TransactionConfig>;
 }
 
-export class TransactionalAdapterKnex
-    implements TransactionalAdapter<Knex, Knex, Knex.TransactionConfig>
-{
+export class TransactionalAdapterKnex implements TransactionalAdapter<
+    Knex,
+    Knex,
+    Knex.TransactionConfig
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<Knex.TransactionConfig>;

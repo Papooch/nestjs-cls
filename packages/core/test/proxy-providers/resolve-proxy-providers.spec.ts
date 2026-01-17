@@ -100,7 +100,7 @@ describe('resolveProxyProviders', () => {
             ClsModule.forFeature(ProxyClassA /* ProxyClassB */),
         ]);
         await cls.run(async () => {
-            await expect(cls.proxy.resolve([ProxyClassB])).rejects.toThrowError(
+            await expect(cls.proxy.resolve([ProxyClassB])).rejects.toThrow(
                 'Cannot resolve a Proxy provider for symbol "ProxyClassB", because it was not registered using "ClsModule.forFeature()" or "ClsModule.forFeatureAsync()".',
             );
         });

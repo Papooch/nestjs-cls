@@ -19,8 +19,7 @@ interface ClsModuleProxyProviderCommonOptions {
     global?: boolean;
 }
 
-export interface ClsModuleProxyClassProviderOptions
-    extends ClsModuleProxyProviderCommonOptions {
+export interface ClsModuleProxyClassProviderOptions extends ClsModuleProxyProviderCommonOptions {
     /**
      * Custom injection token to use for the provider. In case of a class provider,
      * this parameter is optional, as the class reference passed to `useClass` will
@@ -44,8 +43,7 @@ export interface ClsModuleProxyClassProviderOptions
 
     type?: never;
 }
-export interface ClsModuleProxyFactoryProviderOptions
-    extends ClsModuleProxyProviderCommonOptions {
+export interface ClsModuleProxyFactoryProviderOptions extends ClsModuleProxyProviderCommonOptions {
     /**
      * Custom injection token to use for the provider. In case of a class provider,
      * this parameter is optional, as the class reference passed to `useClass` will

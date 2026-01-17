@@ -62,7 +62,7 @@ describe('Nested transactions - edge cases', () => {
 
             await parentTransaction();
 
-            expect(childPromise).rejects.toThrowError(
+            expect(childPromise).rejects.toThrow(
                 'Transaction already finished',
             );
             expect(mockDbConnection.getClientsQueries()).toEqual([

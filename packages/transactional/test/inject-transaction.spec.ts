@@ -221,6 +221,6 @@ describe('Using enableTransactionProxy when the adapter does not support it', ()
                     }),
                 ],
             }).compile();
-        expect(modulePromise).toThrowError(TransactionProxyUnsupportedError);
+        expect(modulePromise).toThrow(TransactionProxyUnsupportedError);
     });
 });

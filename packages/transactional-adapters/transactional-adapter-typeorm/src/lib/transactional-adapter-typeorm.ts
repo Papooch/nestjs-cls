@@ -19,14 +19,11 @@ export interface TypeOrmTransactionOptions {
     isolationLevel: IsolationLevel;
 }
 
-export class TransactionalAdapterTypeOrm
-    implements
-        TransactionalAdapter<
-            DataSource,
-            EntityManager,
-            TypeOrmTransactionOptions
-        >
-{
+export class TransactionalAdapterTypeOrm implements TransactionalAdapter<
+    DataSource,
+    EntityManager,
+    TypeOrmTransactionOptions
+> {
     connectionToken: any;
 
     defaultTxOptions?: Partial<TypeOrmTransactionOptions>;

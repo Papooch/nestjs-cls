@@ -236,9 +236,8 @@ class ClsProxyAccessors {
     async resolve(proxyTokens?: any[]) {
         // Workaround for a circular dep
         // TODO: This should be untangled and cleaned up
-        const { ProxyProviderManager } = await import(
-            './proxy-provider/proxy-provider-manager'
-        );
+        const { ProxyProviderManager } =
+            await import('./proxy-provider/proxy-provider-manager');
         const proxySymbols = proxyTokens
             ? proxyTokens.map(getProxyProviderSymbol)
             : [];
