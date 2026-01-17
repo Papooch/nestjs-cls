@@ -134,7 +134,7 @@ describe('Transactional', () => {
 
     beforeAll(async () => {
         await replSet.start();
-    });
+    }, 30_000);
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
@@ -154,7 +154,7 @@ describe('Transactional', () => {
         await replSet.stop({ force: true });
     });
 
-    describe('TransactionalAdapterKnex', () => {
+    describe('TransactionalAdapterMongoose', () => {
         it('should work without an active transaction', async () => {
             const { r1, r2 } = await callingService.withoutTransaction();
             expect(r1).toEqual(r2);
