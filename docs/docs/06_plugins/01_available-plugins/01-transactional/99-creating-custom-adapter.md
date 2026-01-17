@@ -15,6 +15,7 @@ interface TransactionalAdapter<TConnection, TTx, TOptions> {
         TTx,
         TOptions
     >;
+    extraProviderTokens: any[];
 }
 ```
 
@@ -23,6 +24,8 @@ The `connectionToken` is an injection token under which the underlying database 
 The `defaultTxOptions` object is the default transaction options that are used when no options are passed to the `withTransaction` call.
 
 An `optionFactory` is a function that takes the injected connection object and returns the adapter options object of interface:
+
+The `extraProviderTokens` is an array of additional provider tokens which can be used to inject custom providers to the adapter and call additional custom code inside the transaction handling lifecycle.
 
 ```ts
 interface TransactionalAdapterOptions<TTx, TOptions> {
@@ -131,19 +134,26 @@ export class MyTransactionalAdapterKnex
     // implement default options feature
     defaultTxOptions?: Partial<Knex.TransactionConfig>;
 
+    // implement extra provider tokens property
+    extraProviderTokens?: any[];
+
     // We can decide on a custom API for the transactional adapter.
     // In this example, we just pass individual parameters, but
     // a custom interface is usually preferred.
     constructor(
         myKnexInstanceToken: any,
         defaultTxOptions: Partial<Knex.TransactionConfig>,
+        extraProviderTokens: any[],
     ) {
         this.connectionToken = myKnexInstanceToken;
         this.defaultTxOptions = defaultTxOptions;
     }
 
     //
-    optionsFactory(knexInstance: Knex) {
+    optionsFactory(
+        knexInstance: Knex,
+        [someExtraProvider]: [SomeExtraProvider],
+    ) {
         return {
             wrapWithTransaction: (
                 // the options object is the transaction-specific options merged with the default ones
@@ -164,6 +174,7 @@ export class MyTransactionalAdapterKnex
                         // highlight-start
                         // And then we'll call the original method.
                         // highlight-end
+                        someExtraProvider.performExtraLogic();
                         return fn();
                     },
                     // highlight-start
@@ -198,7 +209,11 @@ ClsModule.forRoot({
             // Don't forget to import the module which provides the knex instance
             imports: [KnexModule],
             // highlight-start
-            adapter: new MyTransactionalAdapterKnex(KNEX_TOKEN, { isolationLevel: 'serializable' }),
+            adapter: new MyTransactionalAdapterKnex({
+                connectionToken: KNEX_TOKEN,
+                defaultTxOptions: { isolationLevel: 'serializable' }
+                extraProviderTokens: [SomeExtraProvider]
+            }),
             // highlight-end
         }),
     ],

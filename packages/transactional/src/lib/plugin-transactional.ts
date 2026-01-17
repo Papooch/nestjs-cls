@@ -49,6 +49,8 @@ export class ClsPluginTransactional extends ClsPluginBase {
                             options.enableTransactionProxy ?? false,
                         defaultTxOptions:
                             options.adapter.defaultTxOptions ?? {},
+                        extraProviderTokens:
+                            options.adapter.extraProviderTokens ?? [],
                     };
                 },
             },

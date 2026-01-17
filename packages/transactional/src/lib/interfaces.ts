@@ -28,10 +28,12 @@ export interface MergedTransactionalAdapterOptions<
     connectionName: string | undefined;
     enableTransactionProxy: boolean;
     defaultTxOptions: Partial<TOptions>;
+    extraProviderTokens: any[];
 }
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
     connection: TConnection,
+    extraProviders?: any[],
 ) => TransactionalAdapterOptions<TTx, TOptions>;
 
 export type OptionalLifecycleHooks = Partial<
@@ -76,6 +78,14 @@ export interface TransactionalAdapter<
         TTx,
         TOptions
     >;
+
+    /**
+     * An array of extra tokens to be provided to the adapter.
+     * 
+     * To inject custom providers to the adapter 
+
+     */
+    extraProviderTokens?: any[];
 
     /**
      * Whether this adapter support the {@link TransactionalPluginOptions.enableTransactionProxy} option.
