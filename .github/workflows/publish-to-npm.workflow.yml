@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write # Required for OIDC publish
 
 concurrency:
   cancel-in-progress: true
@@ -21,7 +22,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          registry-url: 'https://registry.npmjs.org'
           cache: yarn
 
       - name: Configure git
@@ -32,9 +32,8 @@ jobs:
       - run: yarn
       - run: yarn build:release
       - run: yarn test
-      - run: yarn monodeploy
+      # Yarn 4.10+ automatically uses OIDC when running in GitHub Actions
+      - run: yarn monoweave
         env:
-          # needed to publish to npm
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # needed to create a release
+          # Needed to create a release
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
