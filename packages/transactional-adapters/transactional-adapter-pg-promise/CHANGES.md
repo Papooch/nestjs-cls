@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [1.4.3](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.4.2...@nestjs-cls/transactional-adapter-pg-promise@1.4.3) "@nestjs-cls/transactional-adapter-pg-promise" (2026-01-17)<a name="1.4.3"></a>
+
+### Bug Fixes
+
+* **transactional-adapter-pg-promise**: support pg-promise > 11 ([76bdd1c](https://github.com/Papooch/nestjs-cls/commits/76bdd1c))
+
+
+
 
 ## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.3.23...@nestjs-cls/transactional-adapter-pg-promise@1.4.0) "@nestjs-cls/transactional-adapter-pg-promise" (2025-07-10)<a name="1.4.0"></a>
 

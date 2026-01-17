@@ -7330,7 +7330,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.1.0"
     nestjs-cls: "workspace:^6.2.0"
     pg-promise: ">= 11"
   languageName: unknown
