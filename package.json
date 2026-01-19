@@ -38,7 +38,7 @@
     "depcruise": "yarn depcruise packages --include-only \"^packages/.*/src\" --exclude \"\\.spec\\.ts\" --config --output-type dot | dot -T svg | yarn depcruise-wrap-stream-in-html > dependency-graph.html"
   },
   "devDependencies": {
-    "@goldstack/utils-typescript-references": "^0.3.13",
+    "@goldstack/utils-typescript-references": "^0.3.27",
     "@monoweave/cli": "^2.2.0",
     "@monoweave/plugin-github": "^2.0.2",
     "@tophat/conventional-changelog-config": "^1.0.1",
