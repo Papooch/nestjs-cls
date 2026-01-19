@@ -5584,35 +5584,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@goldstack/utils-cli@npm:0.3.16":
-  version: 0.3.16
-  resolution: "@goldstack/utils-cli@npm:0.3.16"
+"@goldstack/utils-cli@npm:0.3.29":
+  version: 0.3.29
+  resolution: "@goldstack/utils-cli@npm:0.3.29"
   dependencies:
     pino: "npm:^9.4.0"
     pino-pretty: "npm:^11.2.2"
-  checksum: 10c0/aac40cf7f5c7c4f97a4f979fdb682a4e5013fe141111795e1f57eebd594f7be20ec4c9b9a4b44356cc5ce7c3ddf6024bc53d32c2cd96a721bcb88a844041979c
+  checksum: 10c0/2024c05e818d1208d8c59a3db46551779c242e7a790e7b4dce620a96de266082688cd442e864f9b602ec97f32a4ef6412dd692c80b0afc283810ac4f732274a2
   languageName: node
   linkType: hard
 
-"@goldstack/utils-log@npm:0.3.18":
-  version: 0.3.18
-  resolution: "@goldstack/utils-log@npm:0.3.18"
+"@goldstack/utils-log@npm:0.3.31":
+  version: 0.3.31
+  resolution: "@goldstack/utils-log@npm:0.3.31"
   dependencies:
-    "@goldstack/utils-cli": "npm:0.3.16"
-  checksum: 10c0/5d4b5218a6899e4efaabd78782d261cf2f34ef8ca2b41f53021e2bbc071389206ebca161fe3a66b66db116d23e8b945b98b0ac5212fd2d6dd6f1040b4e5e0948
+    "@goldstack/utils-cli": "npm:0.3.29"
+  checksum: 10c0/5044e96d40685887c046e0d29861f4a2fade6037f143c3e7bdd8aa79afc2ebd913a777095f44977cdfb6fd92c7c4b9c3bba4398d09ea3e63d3ff7f766489fe31
   languageName: node
   linkType: hard
 
-"@goldstack/utils-typescript-references@npm:^0.3.13":
-  version: 0.3.13
-  resolution: "@goldstack/utils-typescript-references@npm:0.3.13"
+"@goldstack/utils-typescript-references@npm:^0.3.27":
+  version: 0.3.27
+  resolution: "@goldstack/utils-typescript-references@npm:0.3.27"
   dependencies:
-    "@goldstack/utils-log": "npm:0.3.18"
+    "@goldstack/utils-log": "npm:0.3.31"
     source-map-support: "npm:^0.5.21"
-    yargs: "npm:^17.5.1"
+    yargs: "npm:^17"
   bin:
     utils-typescript-references: ./bin/utils-typescript-references
-  checksum: 10c0/dcf9bbc9dbaaa03a081873aa20b8eda656c92479010293ab65ec3318c71fe32878dfcfffb946e3a1037c0dbef4bea8993a229a816b0288c81287c1da696483d6
+  checksum: 10c0/9fc37b5c1cdce487879aaee26486913dad880a4018e57978f4c0d48ccf6396f637859969f331d5e01ae059ce835690dd4350caaa6f1d7673c7e9bfc9f4c50157
   languageName: node
   linkType: hard
 
@@ -21408,7 +21408,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nestjs-cls-root@workspace:."
   dependencies:
-    "@goldstack/utils-typescript-references": "npm:^0.3.13"
+    "@goldstack/utils-typescript-references": "npm:^0.3.27"
     "@monoweave/cli": "npm:^2.2.0"
     "@monoweave/plugin-github": "npm:^2.0.2"
     "@tophat/conventional-changelog-config": "npm:^1.0.1"
@@ -28817,7 +28817,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.5.1, yargs@npm:^17.7.2":
+"yargs@npm:^17, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
