@@ -60,7 +60,7 @@
         "@types/node": "^22.19.7",
         "@types/pg": "^8.16.0",
         "jest": "^30.2.0",
-        "kysely": "^0.28.9",
+        "kysely": "^0.28.10",
         "pg": "^8.17.1",
         "reflect-metadata": "^0.2.2",
         "rimraf": "^6.1.2",
