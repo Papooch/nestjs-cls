@@ -125,9 +125,11 @@ As seen above, we'll need to define the following types:
 While the adapter itself can be any object that implements the `TransactionalAdapter` interface, we'll create a class that implements it.
 
 ```ts
-export class MyTransactionalAdapterKnex
-    implements TransactionalAdapter<Knex, Knex, Knex.TransactionConfig>
-{
+export class MyTransactionalAdapterKnex implements TransactionalAdapter<
+    Knex,
+    Knex,
+    Knex.TransactionConfig
+> {
     // implement the property for the connection token
     connectionToken: any;
 
@@ -147,6 +149,7 @@ export class MyTransactionalAdapterKnex
     ) {
         this.connectionToken = myKnexInstanceToken;
         this.defaultTxOptions = defaultTxOptions;
+        this.extraProviderTokens = extraProviderTokens;
     }
 
     //
@@ -211,8 +214,8 @@ ClsModule.forRoot({
             // highlight-start
             adapter: new MyTransactionalAdapterKnex({
                 connectionToken: KNEX_TOKEN,
-                defaultTxOptions: { isolationLevel: 'serializable' }
-                extraProviderTokens: [SomeExtraProvider]
+                defaultTxOptions: { isolationLevel: 'serializable' },
+                extraProviderTokens: [SomeExtraProvider],
             }),
             // highlight-end
         }),

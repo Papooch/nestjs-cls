@@ -35,12 +35,18 @@ export class ClsPluginTransactional extends ClsPluginBase {
             },
             {
                 provide: TRANSACTIONAL_ADAPTER_OPTIONS,
-                inject: [TRANSACTION_CONNECTION],
+                inject: [
+                    TRANSACTION_CONNECTION,
+                    ...(options.adapter.extraProviderTokens ?? []),
+                ],
                 useFactory: (
                     connection: any,
+                    ...extraProviders: any[]
                 ): MergedTransactionalAdapterOptions<any, any> => {
-                    const adapterOptions =
-                        options.adapter.optionsFactory(connection);
+                    const adapterOptions = options.adapter.optionsFactory(
+                        connection,
+                        extraProviders,
+                    );
                     return {
                         ...adapterOptions,
                         ...this.bindLifecycleHooks(options),

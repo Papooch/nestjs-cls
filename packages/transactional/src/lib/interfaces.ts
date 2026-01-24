@@ -33,7 +33,7 @@ export interface MergedTransactionalAdapterOptions<
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
     connection: TConnection,
-    extraProviders?: any[],
+    extraProviders: any[],
 ) => TransactionalAdapterOptions<TTx, TOptions>;
 
 export type OptionalLifecycleHooks = Partial<
@@ -82,7 +82,8 @@ export interface TransactionalAdapter<
     /**
      * An array of extra tokens to be provided to the adapter.
      * 
-     * To inject custom providers to the adapter 
+     * To inject custom providers to a transactional adapter
+     * which can be used to perform additional logic within the transactions
 
      */
     extraProviderTokens?: any[];
