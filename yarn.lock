@@ -7187,7 +7187,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     drizzle-orm: ^0
     nestjs-cls: "workspace:^6.2.0"
   languageName: unknown
@@ -7215,7 +7215,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     knex: ^3
     nestjs-cls: "workspace:^6.2.0"
   languageName: unknown
@@ -7245,7 +7245,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     kysely: ^0.28
     nestjs-cls: "workspace:^6.2.0"
   languageName: unknown
@@ -7274,7 +7274,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     mongodb: ">= 6"
     nestjs-cls: "workspace:^6.2.0"
   languageName: unknown
@@ -7303,7 +7303,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     mongoose: ">= 8"
     nestjs-cls: "workspace:^6.2.0"
   languageName: unknown
@@ -7330,7 +7330,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.0"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     nestjs-cls: "workspace:^6.2.0"
     pg-promise: ">= 11"
   languageName: unknown
@@ -7359,7 +7359,7 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     "@prisma/client": "> 4 < 8"
     nestjs-cls: "workspace:^6.2.0"
     prisma: "> 4 < 8"
@@ -7387,7 +7387,7 @@ __metadata:
     typeorm: "npm:0.3.28"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.1.2"
+    "@nestjs-cls/transactional": "workspace:^3.2.0"
     nestjs-cls: "workspace:^6.2.0"
     typeorm: ^0.3.2
   languageName: unknown

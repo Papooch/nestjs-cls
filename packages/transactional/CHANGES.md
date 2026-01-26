@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [3.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.1.2...@nestjs-cls/transactional@3.2.0) "@nestjs-cls/transactional" (2026-01-26)<a name="3.2.0"></a>
+
+### Features
+
+* **transactional**: allows injecting custom providers into custom transaction adapter (#450) ([07e1585](https://github.com/Papooch/nestjs-cls/commits/07e1585))
+
+
+
 
 ## [3.1.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.0.3...@nestjs-cls/transactional@3.1.0) "@nestjs-cls/transactional" (2025-07-10)<a name="3.1.0"></a>
 

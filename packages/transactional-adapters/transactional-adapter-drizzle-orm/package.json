@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-drizzle-orm",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "description": "A Drizzle ORM adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
@@ -47,7 +47,7 @@
         "test:cov": "jest --coverage"
     },
     "peerDependencies": {
-        "@nestjs-cls/transactional": "workspace:^3.1.2",
+        "@nestjs-cls/transactional": "workspace:^3.2.0",
         "drizzle-orm": "^0",
         "nestjs-cls": "workspace:^6.2.0"
     },
