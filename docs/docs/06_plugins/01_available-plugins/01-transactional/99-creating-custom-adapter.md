@@ -25,7 +25,7 @@ The `defaultTxOptions` object is the default transaction options that are used w
 
 An `optionFactory` is a function that takes the injected connection object and returns the adapter options object of interface:
 
-The `extraProviderTokens` is an array of additional provider tokens which can be used to inject custom providers to the adapter and call additional custom code inside the transaction handling lifecycle.
+The `extraProviderTokens` is an (optional) array of additional provider tokens which can be used to inject custom providers to the adapter and call additional custom code inside the transaction handling lifecycle.
 
 ```ts
 interface TransactionalAdapterOptions<TTx, TOptions> {
@@ -147,7 +147,7 @@ export class MyTransactionalAdapterKnex implements TransactionalAdapter<
         this.defaultTxOptions = defaultTxOptions;
     }
 
-    //
+    // implement the options factory
     optionsFactory(knexInstance: Knex) {
         return {
             wrapWithTransaction: (
@@ -260,64 +260,49 @@ export class MyTransactionalAdapterKnex implements TransactionalAdapter<
         this.extraProviderTokens = extraProviderTokens;
     }
 
-    //
     optionsFactory(
         knexInstance: Knex,
         // highlight-start
         // the array of resolved extra providers' instances is passed
         // as the second argument to the optionsFactory
         [someExtraProvider]: [SomeExtraProvider],
-        // highlignt-end
+        // highlight-end
     ) {
         return {
             wrapWithTransaction: (
-                // the options object is the transaction-specific options merged with the default ones
                 options: Knex.TransactionConfig,
                 fn: (...args: any[]) => Promise<any>,
                 setTx: (client: Knex) => void,
             ) => {
-                // highlight-start
-                // We'll use the `knex.transaction` method to start a new transaction.
-                // highlight-end
-                return knexInstance.transaction(
-                    (tx) => {
-                        // highlight-start
-                        // We'll call the `setTx` function with the `tx` instance
-                        // to store it in the CLS context.
-                        // highlight-end
-                        setTx(tx);
-                        // highlight-start
-                        // We'll use the `someExtraProvider` to perform extra logic.
-                        // highlight-end
-                        someExtraProvider.performExtraLogic();
-                        // highlight-start
-                        // And then we'll call the original method.
-                        // highlight-end
-                        return fn();
-                    },
+                return knexInstance.transaction(async (tx) => {
+                    setTx(tx);
                     // highlight-start
-                    // Don't forget to pass the options object, too
+                    // Use the `someExtraProvider` to perform extra logic before...
+                    someExtraProvider.performExtraLogicBefore();
                     // highlight-end
-                    options,
-                );
+                    const result = await fn();
+                    // highlight-start
+                    // ...or after the wrapped transactional method
+                    someExtraProvider.performExtraLogicAfter();
+                    // highlight-end
+                    return result;
+                }, options);
             },
-            // highlight-start
-            // The fallback is the `knex` instance itself.
-            // highlight-end
             getFallbackInstance: () => knexInstance,
         };
     }
 }
 ```
 
-### Creating a custom provider service
+### Pass the extra provider tokens to the custom adapter while creating it's instance
 
-We'll create a custom provider service `SomeExtraProvider` to inject into the custom adapter.
+Suppose there is provider service `SomeExtraProvider` that you want to use inside the adapter.
 
 ```ts
 @Injectable()
 export class SomeExtraProvider {
-    performExtraLogic() {}
+    performExtraLogicBefore() {}
+    performExtraLogicAfter() {}
 }
 
 @Module({
@@ -327,23 +312,21 @@ export class SomeExtraProvider {
 export class SomeExtraProviderModule {}
 ```
 
-### Pass the extra provider tokens to the custom adapter while creating it's instance
-
 We will inject the `SomeExtraProvider` into the custom adapter by passing the token/instance to the `extraProviderTokens` property.
 
 ```ts
 ClsModule.forRoot({
     plugins: [
         new ClsPluginTransactional({
-            // Don't forget to import the modules which provide the extra provider tokens/instances
+            // Don't forget to import the modules which provide the extra provider instances
             imports: [KnexModule, SomeExtraProviderModule],
-            // highlight-start
             adapter: new MyTransactionalAdapterKnex({
                 connectionToken: KNEX_TOKEN,
                 defaultTxOptions: { isolationLevel: 'serializable' },
+                // highlight-start
                 extraProviderTokens: [SomeExtraProvider],
+                // highlight-end
             }),
-            // highlight-end
         }),
     ],
 });
