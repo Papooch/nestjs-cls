@@ -4,7 +4,7 @@ import {
     TransactionalAdapter,
     TransactionHost,
 } from '../src';
-import { Injectable, Module } from '@nestjs/common';
+import { Injectable, InjectionToken, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 const MOCK_TOKEN = 'MOCK_TOKEN';
@@ -31,7 +31,7 @@ export class MyProviderModule {}
 interface CustomTransactionalAdapterOptions {
     txToken: any;
     defaultTxOptions?: any;
-    extraProviderTokens?: any[];
+    extraProviderTokens?: InjectionToken<any>[];
 }
 
 export class MyCustomTransactionalAdapter implements TransactionalAdapter<
@@ -41,7 +41,7 @@ export class MyCustomTransactionalAdapter implements TransactionalAdapter<
 > {
     connectionToken: any;
     defaultTxOptions?: any;
-    extraProviderTokens?: any[];
+    extraProviderTokens?: InjectionToken<any>[];
 
     constructor(options: CustomTransactionalAdapterOptions) {
         this.connectionToken = options.txToken;
@@ -49,24 +49,21 @@ export class MyCustomTransactionalAdapter implements TransactionalAdapter<
         this.extraProviderTokens = options.extraProviderTokens;
     }
 
-    optionsFactory(
+    optionsFactory = (
         _connection: any,
         [extraProviders]: [MyProviderService] | any[],
-    ) {
-        return {
-            wrapWithTransaction: async (
-                _options: any,
-                fn: (...args: any[]) => Promise<any>,
-                _setTx: (tx?: any) => void,
-            ) => {
-                const result = await fn();
-                console.log('Accessing Extra Provider instance');
-                extraProviders.setValue('after test');
-                return result;
-            },
-            getFallbackInstance: () => null,
-        };
-    }
+    ) => ({
+        wrapWithTransaction: async (
+            _options: any,
+            fn: (...args: any[]) => Promise<any>,
+            _setTx: (tx?: any) => void,
+        ) => {
+            const result = await fn();
+            extraProviders.setValue('after test');
+            return result;
+        },
+        getFallbackInstance: () => null,
+    });
 }
 
 // --- APPLICATION LOGIC (REPO & SERVICE) ---
@@ -77,10 +74,7 @@ class CallingService {
     ) {}
 
     async mockTransaction() {
-        console.log('Before Transaction');
-        await this.txHost.withTransaction(async () => {
-            console.log('In Transaction');
-        });
+        await this.txHost.withTransaction(async () => {});
     }
 }
 

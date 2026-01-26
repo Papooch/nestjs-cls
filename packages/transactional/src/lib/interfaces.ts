@@ -1,5 +1,6 @@
 import {
     BeforeApplicationShutdown,
+    InjectionToken,
     OnApplicationBootstrap,
     OnApplicationShutdown,
     OnModuleDestroy,
@@ -28,7 +29,7 @@ export interface MergedTransactionalAdapterOptions<
     connectionName: string | undefined;
     enableTransactionProxy: boolean;
     defaultTxOptions: Partial<TOptions>;
-    extraProviderTokens: any[];
+    extraProviderTokens: InjectionToken<any>[];
 }
 
 export type TransactionalOptionsAdapterFactory<TConnection, TTx, TOptions> = (
@@ -86,7 +87,7 @@ export interface TransactionalAdapter<
      * which can be used to perform additional logic within the transactions
 
      */
-    extraProviderTokens?: any[];
+    extraProviderTokens?: InjectionToken<any>[];
 
     /**
      * Whether this adapter support the {@link TransactionalPluginOptions.enableTransactionProxy} option.
