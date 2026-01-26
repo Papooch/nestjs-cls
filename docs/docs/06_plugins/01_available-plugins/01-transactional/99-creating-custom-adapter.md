@@ -228,6 +228,7 @@ However, being created manually outside of Nest's control, it _can not_ inject a
 ## Injecting custom providers to the custom adapter
 
 If you need to inject custom providers to the custom adapter, you can do it via the `extraProviderTokens` property. This will allow implementing additional logic within the transactional lifecycle.
+For example: automatically updating an audit log or an outbox table within the same transaction.
 
 ### Implement the extra provider tokens in the custom adapter
 
@@ -262,7 +263,11 @@ export class MyTransactionalAdapterKnex implements TransactionalAdapter<
     //
     optionsFactory(
         knexInstance: Knex,
+        // highlight-start
+        // the array of resolved extra providers' instances is passed
+        // as the second argument to the optionsFactory
         [someExtraProvider]: [SomeExtraProvider],
+        // highlignt-end
     ) {
         return {
             wrapWithTransaction: (
