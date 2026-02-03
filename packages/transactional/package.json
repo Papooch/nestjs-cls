@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.16",
-    "@nestjs/common": "^11.1.12",
+    "@nestjs/common": "^11.1.13",
     "@nestjs/core": "^11.1.12",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.12",
