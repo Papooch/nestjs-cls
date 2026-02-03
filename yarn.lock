@@ -5402,14 +5402,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/ajv-compiler@npm:^4.0.0":
-  version: 4.0.2
-  resolution: "@fastify/ajv-compiler@npm:4.0.2"
+"@fastify/ajv-compiler@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "@fastify/ajv-compiler@npm:4.0.5"
   dependencies:
     ajv: "npm:^8.12.0"
     ajv-formats: "npm:^3.0.1"
     fast-uri: "npm:^3.0.0"
-  checksum: 10c0/ca048db219cc958fb1b962f5dfc141f29e067ecb28a8dbe782bbef80ae3c920021468009cad613f0ed68db410890bb09c773ba2f33cb13e055b48c9c338bd8fa
+  checksum: 10c0/b701602c5fad35d1327a6ebda530ca5ba2c7728223cd214b2b24af7cb2522c864b6cbbe77335ddd6a55d03f76899fb009386da783121b7ece136feb7ea937e13
   languageName: node
   linkType: hard
 
@@ -7726,14 +7726,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-fastify@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/platform-fastify@npm:11.1.12"
+"@nestjs/platform-fastify@npm:^11.1.13":
+  version: 11.1.13
+  resolution: "@nestjs/platform-fastify@npm:11.1.13"
   dependencies:
     "@fastify/cors": "npm:11.2.0"
     "@fastify/formbody": "npm:8.0.2"
     fast-querystring: "npm:1.1.2"
-    fastify: "npm:5.6.2"
+    fastify: "npm:5.7.4"
     fastify-plugin: "npm:5.1.0"
     find-my-way: "npm:9.4.0"
     light-my-request: "npm:6.6.0"
@@ -7750,7 +7750,7 @@ __metadata:
       optional: true
     "@fastify/view":
       optional: true
-  checksum: 10c0/57c5fa9580768e5d22988fee5bf54d76e0027432dcff566e11a8ce130f5cfe7ddb77e4854be8fe1210f73f52f30c4f6fbac429c6ccb4ac0ae9cd101a734b4cf6
+  checksum: 10c0/da4d0133364e95581dc33bae2ecb235fa6bada5e9cca8e40453b7fd990c3f1a28e9de1cb72a00e553ecdfb1233bc2abd8664d22b821a2d7a879820ee685c5c60
   languageName: node
   linkType: hard
 
@@ -15703,11 +15703,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:5.6.2":
-  version: 5.6.2
-  resolution: "fastify@npm:5.6.2"
+"fastify@npm:5.7.4":
+  version: 5.7.4
+  resolution: "fastify@npm:5.7.4"
   dependencies:
-    "@fastify/ajv-compiler": "npm:^4.0.0"
+    "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
     "@fastify/fast-json-stringify-compiler": "npm:^5.0.0"
     "@fastify/proxy-addr": "npm:^5.0.0"
@@ -15722,7 +15722,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/a3c31316ba5db03eb14a5dc46571fe0f888d0f4569befb8a0aedebc7b24fbd6139e7b16f2bf0dad793345ad66cd5952bdffe182ee2ab0d4e4cb5f331f74a7781
+  checksum: 10c0/87425737ad4973eac1cb8a2cc00771fae26ccf87f7142d6a100e4b03d92613b050ec2abbb9b54432dfee0bebc5b75f5658c0016e77970cb4fb9d8382729cfc6a
   languageName: node
   linkType: hard
 
@@ -21439,7 +21439,7 @@ __metadata:
     "@nestjs/mercurius": "npm:^13.2.3"
     "@nestjs/platform-express": "npm:^11.1.12"
     "@nestjs/platform-express10": "npm:@nestjs/platform-express@10.4.15"
-    "@nestjs/platform-fastify": "npm:^11.1.12"
+    "@nestjs/platform-fastify": "npm:^11.1.13"
     "@nestjs/platform-fastify10": "npm:@nestjs/platform-fastify@10.4.15"
     "@nestjs/platform-ws": "npm:^11.1.12"
     "@nestjs/schematics": "npm:^11.0.9"
