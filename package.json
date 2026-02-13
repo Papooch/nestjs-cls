@@ -40,7 +40,7 @@
   "devDependencies": {
     "@goldstack/utils-typescript-references": "^0.3.27",
     "@monoweave/cli": "^2.2.0",
-    "@monoweave/plugin-github": "^2.0.2",
+    "@monoweave/plugin-github": "^3.2.0",
     "@tophat/conventional-changelog-config": "^1.0.1",
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
