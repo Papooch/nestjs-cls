@@ -59,7 +59,7 @@
     "@nestjs/mercurius": "^13.2.3",
     "@nestjs/platform-express": "^11.1.12",
     "@nestjs/platform-express10": "npm:@nestjs/platform-express@10.4.15",
-    "@nestjs/platform-fastify": "^11.1.12",
+    "@nestjs/platform-fastify": "^11.1.14",
     "@nestjs/platform-fastify10": "npm:@nestjs/platform-fastify@10.4.15",
     "@nestjs/platform-ws": "^11.1.12",
     "@nestjs/schematics": "^11.0.9",
