@@ -5359,14 +5359,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/ajv-compiler@npm:^4.0.0":
-  version: 4.0.2
-  resolution: "@fastify/ajv-compiler@npm:4.0.2"
+"@fastify/ajv-compiler@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "@fastify/ajv-compiler@npm:4.0.5"
   dependencies:
     ajv: "npm:^8.12.0"
     ajv-formats: "npm:^3.0.1"
     fast-uri: "npm:^3.0.0"
-  checksum: 10c0/ca048db219cc958fb1b962f5dfc141f29e067ecb28a8dbe782bbef80ae3c920021468009cad613f0ed68db410890bb09c773ba2f33cb13e055b48c9c338bd8fa
+  checksum: 10c0/b701602c5fad35d1327a6ebda530ca5ba2c7728223cd214b2b24af7cb2522c864b6cbbe77335ddd6a55d03f76899fb009386da783121b7ece136feb7ea937e13
   languageName: node
   linkType: hard
 
@@ -5566,19 +5566,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:9.1.6":
-  version: 9.1.6
-  resolution: "@graphql-tools/merge@npm:9.1.6"
-  dependencies:
-    "@graphql-tools/utils": "npm:^10.11.0"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/4e51bc41101fa70c72393075d0fb419fcc92b0ecdf93bb7a749787f7cd699291af86e75c29a6447bec138d28ea79d4fba6bb27e5182ff2d33861d2af6fc759ff
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/merge@npm:^9.1.6, @graphql-tools/merge@npm:^9.1.7":
+"@graphql-tools/merge@npm:9.1.7, @graphql-tools/merge@npm:^9.1.7":
   version: 9.1.7
   resolution: "@graphql-tools/merge@npm:9.1.7"
   dependencies:
@@ -5590,20 +5578,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:10.0.30":
-  version: 10.0.30
-  resolution: "@graphql-tools/schema@npm:10.0.30"
-  dependencies:
-    "@graphql-tools/merge": "npm:^9.1.6"
-    "@graphql-tools/utils": "npm:^10.11.0"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/62252b535e5062e34a2fa39bbcc978396e0d514f5bd3d77cd072de2578fd2e1b43ca15952ead901cc96db31dce2d4d94fe5f51e59a60a57c3b5f84b2e2df3e26
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/schema@npm:^10.0.0":
+"@graphql-tools/schema@npm:10.0.31, @graphql-tools/schema@npm:^10.0.0":
   version: 10.0.31
   resolution: "@graphql-tools/schema@npm:10.0.31"
   dependencies:
@@ -5616,21 +5591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:10.11.0, @graphql-tools/utils@npm:^10.11.0":
-  version: 10.11.0
-  resolution: "@graphql-tools/utils@npm:10.11.0"
-  dependencies:
-    "@graphql-typed-document-node/core": "npm:^3.1.1"
-    "@whatwg-node/promise-helpers": "npm:^1.0.0"
-    cross-inspect: "npm:1.0.1"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/73459332c199d8f3aa698bdee4ac6ce802274dba95cc7eff1f0219b6fe6e3a8f314d2e824168e296df8f5ce18f6dbd23ca14406b71890a41ce80b7548e8ccd6d
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:^11.0.0":
+"@graphql-tools/utils@npm:11.0.0, @graphql-tools/utils@npm:^11.0.0":
   version: 11.0.0
   resolution: "@graphql-tools/utils@npm:11.0.0"
   dependencies:
@@ -7119,9 +7080,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-drizzle-orm@workspace:packages/transactional-adapters/transactional-adapter-drizzle-orm"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     "@types/pg": "npm:^8.16.0"
@@ -7148,9 +7109,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-knex@workspace:packages/transactional-adapters/transactional-adapter-knex"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     jest: "npm:^30.2.0"
@@ -7176,9 +7137,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-kysely@workspace:packages/transactional-adapters/transactional-adapter-kysely"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/better-sqlite3": "npm:^7.6.13"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
@@ -7206,9 +7167,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-mongodb@workspace:packages/transactional-adapters/transactional-adapter-mongodb"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     jest: "npm:^30.2.0"
@@ -7235,9 +7196,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-mongoose@workspace:packages/transactional-adapters/transactional-adapter-mongoose"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     jest: "npm:^30.2.0"
@@ -7264,9 +7225,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-pg-promise@workspace:packages/transactional-adapters/transactional-adapter-pg-promise"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     jest: "npm:^30.2.0"
@@ -7291,9 +7252,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-prisma@workspace:packages/transactional-adapters/transactional-adapter-prisma"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@prisma/adapter-pg": "npm:^7.4.0"
     "@prisma/client": "npm:^7.4.0"
     "@types/jest": "npm:^30.0.0"
@@ -7321,9 +7282,9 @@ __metadata:
   resolution: "@nestjs-cls/transactional-adapter-typeorm@workspace:packages/transactional-adapters/transactional-adapter-typeorm"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     jest: "npm:^30.2.0"
@@ -7348,10 +7309,10 @@ __metadata:
   resolution: "@nestjs-cls/transactional@workspace:packages/transactional"
   dependencies:
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
-    "@nestjs/core": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
+    "@nestjs/core": "npm:^11.1.14"
     "@nestjs/schematics": "npm:^11.0.9"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/testing": "npm:^11.1.14"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     jest: "npm:^30.2.0"
@@ -7372,9 +7333,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@nestjs/apollo@npm:^13.2.3":
-  version: 13.2.3
-  resolution: "@nestjs/apollo@npm:13.2.3"
+"@nestjs/apollo@npm:^13.2.4":
+  version: 13.2.4
+  resolution: "@nestjs/apollo@npm:13.2.4"
   dependencies:
     "@apollo/server-plugin-landing-page-graphql-playground": "npm:4.0.1"
     iterall: "npm:1.3.0"
@@ -7398,7 +7359,7 @@ __metadata:
       optional: true
     "@as-integrations/fastify":
       optional: true
-  checksum: 10c0/d1deea14c3e9613466fa6dde9eec2b36131e7a0f7968784205b1a241644018cb3f5aff0edceba44457c2cbb2b000c0bccfac18524e3ccec2fd16a09bc806c737
+  checksum: 10c0/6b63b8e9be8022109d9cd53f501d37ace61ca4ef9f28c6f624f7b845f05c4d3c48f34184487ecaaea7ba985863238fa99ef4dc1223fe872aa095fb61916d733b
   languageName: node
   linkType: hard
 
@@ -7459,9 +7420,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/common@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/common@npm:11.1.12"
+"@nestjs/common@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/common@npm:11.1.14"
   dependencies:
     file-type: "npm:21.3.0"
     iterare: "npm:1.2.1"
@@ -7478,7 +7439,7 @@ __metadata:
       optional: true
     class-validator:
       optional: true
-  checksum: 10c0/2ab28286ba7a3cdef74c11f9578f859e24d96828de5c271374cba2abc92c64b923bdcb46aa119d617bcac0557159c85ddf70aa30d773363ef4f57456c7cef100
+  checksum: 10c0/bba35fabdc350dfd362009e15a2cb6b660a53325ee6c1863f04667df0201b51b334226ace2985505969727aaf5b494396dd33f682ce75d0f3b1cab1d206a11e9
   languageName: node
   linkType: hard
 
@@ -7510,9 +7471,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/core@npm:11.1.12"
+"@nestjs/core@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/core@npm:11.1.14"
   dependencies:
     "@nuxt/opencollective": "npm:0.4.1"
     fast-safe-stringify: "npm:2.1.1"
@@ -7534,27 +7495,27 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/a07dd42cfecf88324fa9c029cec118ab54791edd72e00f0a2ccc48b364dc84e348514cabb26d3a18f52640a817a367c4a82b563871d2d2cd7898771cc7fe5ec9
+  checksum: 10c0/842c8048fb83bc6df70975d91ec357bacb6d2cc42791e709d122fda16c6343d279cf9f4ec88c5427b02de5c3f40f3271b9c62367c662c39cdad838b5962669e9
   languageName: node
   linkType: hard
 
-"@nestjs/graphql@npm:^13.2.3":
-  version: 13.2.3
-  resolution: "@nestjs/graphql@npm:13.2.3"
+"@nestjs/graphql@npm:^13.2.4":
+  version: 13.2.4
+  resolution: "@nestjs/graphql@npm:13.2.4"
   dependencies:
-    "@graphql-tools/merge": "npm:9.1.6"
-    "@graphql-tools/schema": "npm:10.0.30"
-    "@graphql-tools/utils": "npm:10.11.0"
+    "@graphql-tools/merge": "npm:9.1.7"
+    "@graphql-tools/schema": "npm:10.0.31"
+    "@graphql-tools/utils": "npm:11.0.0"
     "@nestjs/mapped-types": "npm:2.1.0"
     chokidar: "npm:4.0.3"
     fast-glob: "npm:3.3.3"
     graphql-tag: "npm:2.12.6"
-    graphql-ws: "npm:6.0.6"
-    lodash: "npm:4.17.21"
+    graphql-ws: "npm:6.0.7"
+    lodash: "npm:4.17.23"
     normalize-path: "npm:3.0.0"
     subscriptions-transport-ws: "npm:0.11.0"
     tslib: "npm:2.8.1"
-    ws: "npm:8.18.3"
+    ws: "npm:8.19.0"
   peerDependencies:
     "@apollo/subgraph": ^2.9.3
     "@nestjs/common": ^11.0.1
@@ -7573,7 +7534,7 @@ __metadata:
       optional: true
     ts-morph:
       optional: true
-  checksum: 10c0/2d301a1653b259a06862bab2aa484abf8e8600a349cf8f04ee533a360f32a0a724aead946cf10a3007eb0a3b48d9eba3fe5860672216287185704c0201c56447
+  checksum: 10c0/9cec4897f4bb7d6b649405497c7525270c68e7e59f220f1392c468cfc24b75887d9f9f037559ed52eef2cdd795377e34da87119ffb52f6d2911859026e10855d
   languageName: node
   linkType: hard
 
@@ -7594,9 +7555,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/mercurius@npm:^13.2.3":
-  version: 13.2.3
-  resolution: "@nestjs/mercurius@npm:13.2.3"
+"@nestjs/mercurius@npm:^13.2.4":
+  version: 13.2.4
+  resolution: "@nestjs/mercurius@npm:13.2.4"
   dependencies:
     tslib: "npm:2.8.1"
   peerDependencies:
@@ -7615,7 +7576,7 @@ __metadata:
       optional: true
     "@mercuriusjs/gateway":
       optional: true
-  checksum: 10c0/539ad1198ef2574c607914b74378c8607fc69d3e8c257a070143903b3f861b81ad29581b8d3218711d6319d3a8b1ccfd4085fa7e6a0714586b8a15fd07095204
+  checksum: 10c0/10e037b3cea0238440fe63e8aee54c62e3d2e355d7aaf1407661bdd273e035aef24cbaf2bf7676f553ed960c65cb79f88ca55294c4e1cba3d1d4be83ebafefe3
   languageName: node
   linkType: hard
 
@@ -7635,11 +7596,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-express@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/platform-express@npm:11.1.12"
+"@nestjs/platform-express@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/platform-express@npm:11.1.14"
   dependencies:
-    cors: "npm:2.8.5"
+    cors: "npm:2.8.6"
     express: "npm:5.2.1"
     multer: "npm:2.0.2"
     path-to-regexp: "npm:8.3.0"
@@ -7647,7 +7608,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ^11.0.0
     "@nestjs/core": ^11.0.0
-  checksum: 10c0/bd658d8225119140d059a80c10c296515845008d7a4d009b5489838f03dbbec06097054cc73cb13902ee3c8c357629b84ada663a61b8f821dbd5ccec9b5d7156
+  checksum: 10c0/52b12606cafae3fc25ef74cca785ba797b826cbdf56a8a989cb21402cba360d14299b3b49ed453515f3a0d43927ec4203416a30d980a1db9fcffdafe8d76e728
   languageName: node
   linkType: hard
 
@@ -7676,14 +7637,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-fastify@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/platform-fastify@npm:11.1.12"
+"@nestjs/platform-fastify@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/platform-fastify@npm:11.1.14"
   dependencies:
     "@fastify/cors": "npm:11.2.0"
     "@fastify/formbody": "npm:8.0.2"
     fast-querystring: "npm:1.1.2"
-    fastify: "npm:5.6.2"
+    fastify: "npm:5.7.4"
     fastify-plugin: "npm:5.1.0"
     find-my-way: "npm:9.4.0"
     light-my-request: "npm:6.6.0"
@@ -7700,13 +7661,13 @@ __metadata:
       optional: true
     "@fastify/view":
       optional: true
-  checksum: 10c0/57c5fa9580768e5d22988fee5bf54d76e0027432dcff566e11a8ce130f5cfe7ddb77e4854be8fe1210f73f52f30c4f6fbac429c6ccb4ac0ae9cd101a734b4cf6
+  checksum: 10c0/d8506f0bb027ac769c830c06fa17cc7fa269378dfa90ab3a4fb4b372dd5434871e6816992c6f98f6165c38070635ef1aceedcd8c715e1a484aeee6960a18ea69
   languageName: node
   linkType: hard
 
-"@nestjs/platform-ws@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/platform-ws@npm:11.1.12"
+"@nestjs/platform-ws@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/platform-ws@npm:11.1.14"
   dependencies:
     tslib: "npm:2.8.1"
     ws: "npm:8.19.0"
@@ -7714,7 +7675,7 @@ __metadata:
     "@nestjs/common": ^11.0.0
     "@nestjs/websockets": ^11.0.0
     rxjs: ^7.1.0
-  checksum: 10c0/680503f24569dc808f9169b3a7c93e29c85b914c83f31366cc01d3f72bf4b72a5af33efd2a91bad3be3c61afd895d9398973dc4b8d8349fd80fca2f2ea8a3a5c
+  checksum: 10c0/c73818f84699e09616030ac33221b8be5c5b40c55b8151c1e33205cd4359597c4ac4f0c91e6006bd5e35556cef6064ed7cf5797f8b71f5731d33852eab2f6a91
   languageName: node
   linkType: hard
 
@@ -7767,9 +7728,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/testing@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/testing@npm:11.1.12"
+"@nestjs/testing@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/testing@npm:11.1.14"
   dependencies:
     tslib: "npm:2.8.1"
   peerDependencies:
@@ -7782,13 +7743,13 @@ __metadata:
       optional: true
     "@nestjs/platform-express":
       optional: true
-  checksum: 10c0/7f65cc8d0fb7a654ecadf1d8f5a4c0d2112f43cc2a2b59454dcc34b6a25b6280af3ee5a189439e354212d5ba8afd29df67e099bc8387389eb2f93da5c783ad8a
+  checksum: 10c0/bde7b90fead08ca3a5a7f44331e5c4ccf2904bcba5b95bbfa4fe22fc278f3e22beadbe4c4408ec4ea2fcd6dea267faeef502ccc0d3276bd838f3723f0eba7148
   languageName: node
   linkType: hard
 
-"@nestjs/websockets@npm:^11.1.12":
-  version: 11.1.12
-  resolution: "@nestjs/websockets@npm:11.1.12"
+"@nestjs/websockets@npm:^11.1.14":
+  version: 11.1.14
+  resolution: "@nestjs/websockets@npm:11.1.14"
   dependencies:
     iterare: "npm:1.2.1"
     object-hash: "npm:3.0.0"
@@ -7802,7 +7763,7 @@ __metadata:
   peerDependenciesMeta:
     "@nestjs/platform-socket.io":
       optional: true
-  checksum: 10c0/3c0dc563cd4861e5317993d0dc97de9c2a15d8375f2c3311cda498c345dd019bd4c143a1ea2ff260797b7e669d28016959c1d3a32aa6b17dc226fe640fdbdfd2
+  checksum: 10c0/944d3272d1bab6cfa46a207f80b5947c5f73779e41c309b5daaa7c2e841552e197d136eb940b910bdb3fb5b8f4843dd68da2908a34a417a52bee2c317c9ade08
   languageName: node
   linkType: hard
 
@@ -13428,6 +13389,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cors@npm:2.8.6":
+  version: 2.8.6
+  resolution: "cors@npm:2.8.6"
+  dependencies:
+    object-assign: "npm:^4"
+    vary: "npm:^1"
+  checksum: 10c0/ab2bc57b8af8ef8476682a59647f7c55c1a7d406b559ac06119aa1c5f70b96d35036864d197b24cf86e228e4547231088f1f94ca05061dbb14d89cc0bc9d4cab
+  languageName: node
+  linkType: hard
+
 "cosmiconfig@npm:^8.1.3, cosmiconfig@npm:^8.2.0, cosmiconfig@npm:^8.3.5":
   version: 8.3.6
   resolution: "cosmiconfig@npm:8.3.6"
@@ -15545,11 +15516,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:5.6.2":
-  version: 5.6.2
-  resolution: "fastify@npm:5.6.2"
+"fastify@npm:5.7.4":
+  version: 5.7.4
+  resolution: "fastify@npm:5.7.4"
   dependencies:
-    "@fastify/ajv-compiler": "npm:^4.0.0"
+    "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
     "@fastify/fast-json-stringify-compiler": "npm:^5.0.0"
     "@fastify/proxy-addr": "npm:^5.0.0"
@@ -15564,7 +15535,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/a3c31316ba5db03eb14a5dc46571fe0f888d0f4569befb8a0aedebc7b24fbd6139e7b16f2bf0dad793345ad66cd5952bdffe182ee2ab0d4e4cb5f331f74a7781
+  checksum: 10c0/87425737ad4973eac1cb8a2cc00771fae26ccf87f7142d6a100e4b03d92613b050ec2abbb9b54432dfee0bebc5b75f5658c0016e77970cb4fb9d8382729cfc6a
   languageName: node
   linkType: hard
 
@@ -16594,25 +16565,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:6.0.6":
-  version: 6.0.6
-  resolution: "graphql-ws@npm:6.0.6"
+"graphql-ws@npm:6.0.7":
+  version: 6.0.7
+  resolution: "graphql-ws@npm:6.0.7"
   peerDependencies:
     "@fastify/websocket": ^10 || ^11
     crossws: ~0.3
     graphql: ^15.10.1 || ^16
-    uWebSockets.js: ^20
     ws: ^8
   peerDependenciesMeta:
     "@fastify/websocket":
       optional: true
     crossws:
       optional: true
-    uWebSockets.js:
-      optional: true
     ws:
       optional: true
-  checksum: 10c0/4d1f18245fd2c56670156d910bc45a6fd456291b6e9b96d98e3d7fd464e1b406cfb4e68b4aafeb875c366d63d8f204b488b57729d622cd8d97e0387d0cd38dcf
+  checksum: 10c0/3faba221334a96d3221fc49a8649554831f1504123f03857d1f62761eb5fc4f6f1a0f345dfb2442e871ea63009ed98d4dd995d74bcc671e7e3577ba1b4923953
   languageName: node
   linkType: hard
 
@@ -19213,6 +19181,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:4.17.23":
+  version: 4.17.23
+  resolution: "lodash@npm:4.17.23"
+  checksum: 10c0/1264a90469f5bb95d4739c43eb6277d15b6d9e186df4ac68c3620443160fc669e2f14c11e7d8b2ccf078b81d06147c01a8ccced9aab9f9f63d50dcf8cace6bf6
+  languageName: node
+  linkType: hard
+
 "log-symbols@npm:^4.1.0":
   version: 4.1.0
   resolution: "log-symbols@npm:4.1.0"
@@ -21155,23 +21130,23 @@ __metadata:
   dependencies:
     "@apollo/server": "npm:^5.3.0"
     "@as-integrations/express5": "npm:^1.1.2"
-    "@nestjs/apollo": "npm:^13.2.3"
+    "@nestjs/apollo": "npm:^13.2.4"
     "@nestjs/cli": "npm:^11.0.16"
-    "@nestjs/common": "npm:^11.1.12"
+    "@nestjs/common": "npm:^11.1.14"
     "@nestjs/common10": "npm:@nestjs/common@10.4.15"
-    "@nestjs/core": "npm:^11.1.12"
+    "@nestjs/core": "npm:^11.1.14"
     "@nestjs/core10": "npm:@nestjs/core@10.4.15"
-    "@nestjs/graphql": "npm:^13.2.3"
-    "@nestjs/mercurius": "npm:^13.2.3"
-    "@nestjs/platform-express": "npm:^11.1.12"
+    "@nestjs/graphql": "npm:^13.2.4"
+    "@nestjs/mercurius": "npm:^13.2.4"
+    "@nestjs/platform-express": "npm:^11.1.14"
     "@nestjs/platform-express10": "npm:@nestjs/platform-express@10.4.15"
-    "@nestjs/platform-fastify": "npm:^11.1.12"
+    "@nestjs/platform-fastify": "npm:^11.1.14"
     "@nestjs/platform-fastify10": "npm:@nestjs/platform-fastify@10.4.15"
-    "@nestjs/platform-ws": "npm:^11.1.12"
+    "@nestjs/platform-ws": "npm:^11.1.14"
     "@nestjs/schematics": "npm:^11.0.9"
-    "@nestjs/testing": "npm:^11.1.12"
+    "@nestjs/testing": "npm:^11.1.14"
     "@nestjs/testing10": "npm:@nestjs/testing@10.4.15"
-    "@nestjs/websockets": "npm:^11.1.12"
+    "@nestjs/websockets": "npm:^11.1.14"
     "@types/express": "npm:^5.0.6"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
@@ -28188,21 +28163,6 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10c0/25eb33aff17edcb90721ed6b0eb250976328533ad3cd1a28a274bd263682e7296a6591ff1436d6cbc50fa67463158b062f9d1122013b361cec99a05f84680e06
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.18.3":
-  version: 8.18.3
-  resolution: "ws@npm:8.18.3"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10c0/eac918213de265ef7cb3d4ca348b891a51a520d839aa51cdb8ca93d4fa7ff9f6ccb339ccee89e4075324097f0a55157c89fa3f7147bde9d8d7e90335dc087b53
   languageName: node
   linkType: hard
 
