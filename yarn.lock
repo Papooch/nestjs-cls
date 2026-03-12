@@ -19847,9 +19847,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mercurius@npm:^16.7.0":
-  version: 16.7.0
-  resolution: "mercurius@npm:16.7.0"
+"mercurius@npm:^16.8.0":
+  version: 16.8.0
+  resolution: "mercurius@npm:16.8.0"
   dependencies:
     "@fastify/error": "npm:^4.0.0"
     "@fastify/static": "npm:^9.0.0"
@@ -19867,7 +19867,7 @@ __metadata:
     ws: "npm:^8.2.2"
   peerDependencies:
     graphql: ^16.0.0
-  checksum: 10c0/401a525b9465d38dc2b4a91a9e6bf17a4a4a71cb516a3f8c51fd2ce05e744ec6dc992a1ce20e8850a980b95be2f65278657a8dc0673fb57d405fe1c829f7bf4c
+  checksum: 10c0/4406dc5e851f8a2d6ff32fa7d0d14712b5cbd3f4e2316a3cb7c1f2243801bbc14ff1d1fee34b1c1de432ca6f7e1277a6b05a8ab52facb513b1961e6c63a83cb7
   languageName: node
   linkType: hard
 
@@ -21154,7 +21154,7 @@ __metadata:
     "@types/ws": "npm:^8.18.1"
     graphql: "npm:^16.12.0"
     jest: "npm:^30.2.0"
-    mercurius: "npm:^16.7.0"
+    mercurius: "npm:^16.8.0"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.1.2"
     rxjs: "npm:^7.8.2"
