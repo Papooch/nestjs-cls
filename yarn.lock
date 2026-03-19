@@ -7145,7 +7145,7 @@ __metadata:
     "@types/node": "npm:^22.19.7"
     "@types/pg": "npm:^8.16.0"
     jest: "npm:^30.2.0"
-    kysely: "npm:^0.28.10"
+    kysely: "npm:^0.28.12"
     pg: "npm:^8.17.2"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.1.2"
@@ -18970,10 +18970,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:^0.28.10":
-  version: 0.28.10
-  resolution: "kysely@npm:0.28.10"
-  checksum: 10c0/46a42f7092035ccc2adbe5f447ff5377431e9aabd1c55ca2c9f79a11595b97cd446a0ffdcc3e14a993a23fbd7e2a7ab7e874f2b7388f42ddd7d76c6aee9a1241
+"kysely@npm:^0.28.12":
+  version: 0.28.13
+  resolution: "kysely@npm:0.28.13"
+  checksum: 10c0/83489627e8de61ec8bc6c0546b523396e4270fc771d2b0f9e63fda8d11048b2ebc32147e6e4e621d60f1f666182fcc9b220d20d53d372e3dcab2770ef2339e3b
   languageName: node
   linkType: hard
 
