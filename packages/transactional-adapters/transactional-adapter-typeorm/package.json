@@ -47,10 +47,10 @@
         "typeorm": "^0.3.2"
     },
     "devDependencies": {
-        "@nestjs/cli": "^11.0.16",
-        "@nestjs/common": "^11.1.16",
-        "@nestjs/core": "^11.1.14",
-        "@nestjs/testing": "^11.1.14",
+        "@nestjs/cli": "^11.0.17",
+        "@nestjs/common": "^11.1.18",
+        "@nestjs/core": "^11.1.18",
+        "@nestjs/testing": "^11.1.18",
         "@types/jest": "^30.0.0",
         "@types/node": "^22.19.7",
         "jest": "^30.2.0",
