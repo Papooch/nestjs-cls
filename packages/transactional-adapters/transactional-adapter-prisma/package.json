@@ -54,7 +54,7 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.16",
     "@nestjs/common": "^11.1.16",
-    "@nestjs/core": "^11.1.14",
+    "@nestjs/core": "^11.1.18",
     "@nestjs/testing": "^11.1.14",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
