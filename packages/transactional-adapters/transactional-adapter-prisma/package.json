@@ -52,10 +52,10 @@
     "prisma": "> 4 < 8"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.16",
-    "@nestjs/common": "^11.1.16",
-    "@nestjs/core": "^11.1.14",
-    "@nestjs/testing": "^11.1.14",
+    "@nestjs/cli": "^11.0.19",
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/core": "^11.1.19",
+    "@nestjs/testing": "^11.1.19",
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@types/jest": "^30.0.0",
