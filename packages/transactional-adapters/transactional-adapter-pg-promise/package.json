@@ -47,7 +47,7 @@
     },
     "devDependencies": {
         "@nestjs/cli": "^11.0.16",
-        "@nestjs/common": "^11.1.16",
+        "@nestjs/common": "^11.1.19",
         "@nestjs/core": "^11.1.14",
         "@nestjs/testing": "^11.1.14",
         "@types/jest": "^30.0.0",
