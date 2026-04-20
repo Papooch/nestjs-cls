@@ -587,9 +587,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:^5.3.0":
-  version: 5.3.0
-  resolution: "@apollo/server@npm:5.3.0"
+"@apollo/server@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "@apollo/server@npm:5.5.0"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^2.0.0"
@@ -604,6 +604,7 @@ __metadata:
     "@graphql-tools/schema": "npm:^10.0.0"
     async-retry: "npm:^1.2.1"
     body-parser: "npm:^2.2.2"
+    content-type: "npm:^1.0.5"
     cors: "npm:^2.8.5"
     finalhandler: "npm:^2.1.0"
     loglevel: "npm:^1.6.8"
@@ -613,7 +614,7 @@ __metadata:
     whatwg-mimetype: "npm:^4.0.0"
   peerDependencies:
     graphql: ^16.11.0
-  checksum: 10c0/39b90f09c598bef23010490e976b1a8935398fe9d4c388becb4693f0069d342e0d7cbec19cff27fce3136e058009dcc3d54b18e1c2c2939214360674825f2e92
+  checksum: 10c0/9eb98384ceff0c979e9a7b280445c94b91baa2cfb7b84038a156c05303d1b5ee6013350d02fa850a5f3102ed4c17a3c2d23dbb6546a08fac97f589ce74bf06eb
   languageName: node
   linkType: hard
 
@@ -16646,10 +16647,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.12.0":
-  version: 16.12.0
-  resolution: "graphql@npm:16.12.0"
-  checksum: 10c0/b6fffa4e8a4e4a9933ebe85e7470b346dbf49050c1a482fac5e03e4a1a7bed2ecd3a4c97e29f04457af929464bc5e4f2aac991090c2f320111eef26e902a5c75
+"graphql@npm:^16.13.2":
+  version: 16.13.2
+  resolution: "graphql@npm:16.13.2"
+  checksum: 10c0/64e822a0a0e4398781e4bc9765b88d370c08261498b517add4b878038ef7be2005b6b394a79a5102b9379d57052f60bc7f23fec8f39808d101984a74772ebd9d
   languageName: node
   linkType: hard
 
@@ -19909,9 +19910,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mercurius@npm:^16.8.0":
-  version: 16.8.0
-  resolution: "mercurius@npm:16.8.0"
+"mercurius@npm:^16.9.0":
+  version: 16.9.0
+  resolution: "mercurius@npm:16.9.0"
   dependencies:
     "@fastify/error": "npm:^4.0.0"
     "@fastify/static": "npm:^9.0.0"
@@ -19929,7 +19930,7 @@ __metadata:
     ws: "npm:^8.2.2"
   peerDependencies:
     graphql: ^16.0.0
-  checksum: 10c0/4406dc5e851f8a2d6ff32fa7d0d14712b5cbd3f4e2316a3cb7c1f2243801bbc14ff1d1fee34b1c1de432ca6f7e1277a6b05a8ab52facb513b1961e6c63a83cb7
+  checksum: 10c0/237d0ae852636db49114fefc16853a4dd4fcf96535dd85cd8d849c28cddc2bd206b611b49adb4449f693ae391d7b05df880bb94f9058f8e9b2d1121f5606c0f4
   languageName: node
   linkType: hard
 
@@ -21203,7 +21204,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nestjs-cls@workspace:packages/core"
   dependencies:
-    "@apollo/server": "npm:^5.3.0"
+    "@apollo/server": "npm:^5.5.0"
     "@as-integrations/express5": "npm:^1.1.2"
     "@nestjs/apollo": "npm:^13.2.5"
     "@nestjs/cli": "npm:^11.0.19"
@@ -21227,9 +21228,9 @@ __metadata:
     "@types/node": "npm:^22.19.7"
     "@types/supertest": "npm:^6.0.3"
     "@types/ws": "npm:^8.18.1"
-    graphql: "npm:^16.12.0"
+    graphql: "npm:^16.13.2"
     jest: "npm:^30.2.0"
-    mercurius: "npm:^16.8.0"
+    mercurius: "npm:^16.9.0"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.1.2"
     rxjs: "npm:^7.8.2"
