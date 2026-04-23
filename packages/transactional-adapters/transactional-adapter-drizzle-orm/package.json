@@ -59,7 +59,7 @@
         "@types/jest": "^30.0.0",
         "@types/node": "^22.19.7",
         "@types/pg": "^8.16.0",
-        "drizzle-orm": "^0.45.1",
+        "drizzle-orm": "^0.45.2",
         "jest": "^30.2.0",
         "pg": "^8.17.2",
         "reflect-metadata": "^0.2.2",
