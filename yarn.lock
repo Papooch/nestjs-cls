@@ -15502,17 +15502,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-uri@npm:^2.0.0":
+"fast-uri@npm:^2.0.0, fast-uri@npm:^2.1.0":
   version: 2.4.0
   resolution: "fast-uri@npm:2.4.0"
   checksum: 10c0/300453cfe2f7d5ec16be0f2c8dc5b280edbaca59440b2deb4ab56ac0f584637179e9ee7539d0b70ef0fce9608245ebfa75307c84fa4829b1065c3b7ef7dcf706
-  languageName: node
-  linkType: hard
-
-"fast-uri@npm:^2.1.0":
-  version: 2.2.0
-  resolution: "fast-uri@npm:2.2.0"
-  checksum: 10c0/2242463c97c187762a6212c59eb9d881832d15210f16923daf40ee66fba06a801f4da7d6f1010fb4da101069ec99aeb2700bbbb3eb89141b2701a54048989a9c
   languageName: node
   linkType: hard
 
