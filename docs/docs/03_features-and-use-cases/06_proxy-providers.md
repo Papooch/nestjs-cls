@@ -276,7 +276,7 @@ await this.cls.proxy.resolve();
 
 <small>since `v4.4.0`</small>
 
-By default, accessing an unresolved Proxy Provider behaves as if it was an _empty object_. In order to prevent silent failures, you can set the `strict` option to `true` in the proxy provider registration. In this case, any attempt to access a property or a method on an unresolved Proxy Provider will throw an error.
+By default, accessing an unresolved Proxy Provider behaves as if it was an _empty object_. In order to prevent silent failures, you can set the `strict` option to `true` in the proxy provider registration. In this case, any attempt to access a property or a method on an unresolved Proxy Provider will throw a `ProxyProviderNotResolvedException`.
 
 For Class Proxy Providers, you can use the according option on the `@InjectableProxy()` decorator.
 
@@ -312,7 +312,7 @@ ClsModule.forFeatureAsync({
 
 ### No primitive values
 
-Proxy Factory providers _cannot_ return a _primitive value_. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
+Proxy Factory providers _cannot_ return a _primitive value_ (`string`, `number`, `boolean`, `null`, or `undefined`). Doing so throws a `ProxyProviderInvalidReturnTypeException` at resolution time. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
 
 ### `function` Proxies must be explicitly enabled
 
