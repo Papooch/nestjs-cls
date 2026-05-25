@@ -27,17 +27,26 @@ export interface DrizzleOrmTransactionalAdapterOptions<
 
     /**
      * Whether the underlying Drizzle driver's `db.transaction(cb)` is
-     * synchronous (`better-sqlite3`) or asynchronous (`libsql`,
-     * `node-postgres`, `postgres-js`, `mysql2`). Defaults to `'async'`.
+     * synchronous or asynchronous.
      *
-     * In `'sync'` mode, the inner callback is invoked synchronously and the
-     * resulting value is wrapped in `Promise.resolve(...)` to satisfy the
-     * plugin's `wrapWithTransaction: Promise<T>` contract. The user-supplied
+     * - `'auto'` (default): detected from the Drizzle instance's internal
+     *   `resultKind` field. Drizzle sets `resultKind: 'sync'` on drivers whose
+     *   transaction callback is synchronous (`better-sqlite3`, `bun-sqlite`,
+     *   `expo-sqlite`, `sql-js`, `durable-sqlite`). All other drivers
+     *   (`libsql`, `node-postgres`, `postgres-js`, `mysql2`, `d1`, `op-sqlite`,
+     *   ...) resolve to async.
+     * - `'sync'`: force sync mode. Useful if auto-detection ever fails (e.g.
+     *   Drizzle renames the internal field, or a third-party driver opts into
+     *   sync semantics without exposing `resultKind`).
+     * - `'async'`: force async mode (the original behavior).
+     *
+     * In sync mode, the inner transaction callback runs synchronously and the
+     * result is wrapped in `Promise.resolve(...)`. The user-supplied
      * `@Transactional()` method must therefore be sync (no `await` inside) —
-     * this is the same constraint that `better-sqlite3` imposes on its own
-     * transaction callbacks.
+     * the same constraint sync Drizzle drivers impose on their own transaction
+     * callbacks.
      */
-    transactionMode?: 'async' | 'sync';
+    transactionMode?: 'auto' | 'sync' | 'async';
 }
 
 export class TransactionalAdapterDrizzleOrm<
@@ -51,15 +60,23 @@ export class TransactionalAdapterDrizzleOrm<
 
     defaultTxOptions?: Partial<DrizzleTransactionOptions<TClient>>;
 
-    private readonly transactionMode: 'async' | 'sync';
+    private readonly transactionMode: 'auto' | 'sync' | 'async';
 
     constructor(options: DrizzleOrmTransactionalAdapterOptions<TClient>) {
         this.connectionToken = options.drizzleInstanceToken;
         this.defaultTxOptions = options.defaultTxOptions;
-        this.transactionMode = options.transactionMode ?? 'async';
+        this.transactionMode = options.transactionMode ?? 'auto';
     }
 
     optionsFactory = (drizzleInstance: TClient) => {
+        const effectiveMode: 'sync' | 'async' =
+            this.transactionMode === 'auto'
+                ? (drizzleInstance as { resultKind?: unknown }).resultKind ===
+                  'sync'
+                    ? 'sync'
+                    : 'async'
+                : this.transactionMode;
+
         const wrapSync = (
             transactionFn: (cb: any, options?: any) => any,
             options: DrizzleTransactionOptions<TClient>,
@@ -79,7 +96,7 @@ export class TransactionalAdapterDrizzleOrm<
                 fn: (...args: any[]) => Promise<any>,
                 setClient: (client?: TClient) => void,
             ) => {
-                if (this.transactionMode === 'sync') {
+                if (effectiveMode === 'sync') {
                     return wrapSync(
                         drizzleInstance.transaction.bind(drizzleInstance),
                         options,
@@ -98,7 +115,7 @@ export class TransactionalAdapterDrizzleOrm<
                 setClient: (client?: TClient) => void,
                 client: TClient,
             ) => {
-                if (this.transactionMode === 'sync') {
+                if (effectiveMode === 'sync') {
                     return wrapSync(
                         client.transaction.bind(client),
                         options,

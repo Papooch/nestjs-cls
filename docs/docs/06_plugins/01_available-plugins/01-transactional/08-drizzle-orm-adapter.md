@@ -150,28 +150,27 @@ class UserRepository {
 }
 ```
 
-## `better-sqlite3` (synchronous mode)
+## Synchronous Drizzle drivers (`better-sqlite3`, `bun-sqlite`, …)
 
-Most Drizzle drivers — `libsql`, `node-postgres`, `postgres-js`, `mysql2` — expose `db.transaction(callback)` as an _asynchronous_ API that awaits the callback's returned promise. `better-sqlite3` is different: its `db.transaction(fn)` is **synchronous** and rejects any callback that returns a `Promise`. Passing an `async` callback to it throws `Transaction function cannot return a promise`.
+Most Drizzle drivers — `libsql`, `node-postgres`, `postgres-js`, `mysql2` — expose `db.transaction(callback)` as an _asynchronous_ API that awaits the callback's returned promise. A few sqlite-family drivers are **synchronous**: `better-sqlite3`, `bun-sqlite`, `expo-sqlite`, `sql-js`, and `durable-sqlite`. Their `db.transaction(fn)` rejects any callback that returns a `Promise`. Passing an `async` callback throws `Transaction function cannot return a promise`.
 
-To opt into the synchronous transaction wrapper, set `transactionMode: 'sync'` on the adapter:
+The adapter handles this automatically. By default it inspects the Drizzle instance and picks the right callback shape:
+
+- If Drizzle's internal `resultKind` field is `'sync'`, the adapter calls `db.transaction(fn)` with a **synchronous** callback and wraps the result in `Promise.resolve(...)` to satisfy the plugin's `wrapWithTransaction: Promise<T>` contract.
+- Otherwise it uses the original async-callback path.
+
+No extra configuration is needed for any first-party Drizzle driver:
 
 ```ts
-ClsModule.forRoot({
-    plugins: [
-        new ClsPluginTransactional({
-            imports: [DrizzleModule],
-            adapter: new TransactionalAdapterDrizzleOrm({
-                drizzleInstanceToken: DRIZZLE,
-                // highlight-next-line
-                transactionMode: 'sync',
-            }),
-        }),
-    ],
+new TransactionalAdapterDrizzleOrm({
+    drizzleInstanceToken: DRIZZLE,
+    // transactionMode defaults to 'auto' — auto-detected from the Drizzle client
 });
 ```
 
-In `'sync'` mode the inner transaction callback runs synchronously and the value it returns is wrapped in `Promise.resolve(...)` to satisfy the plugin's `wrapWithTransaction: Promise<T>` contract. The `@Transactional()`-decorated method **must itself be synchronous** — no `async`, no `await` inside — because `better-sqlite3` rejects any callback that returns a `Promise`.
+### Writing `@Transactional()` methods against sync drivers
+
+When the adapter resolves to sync mode (`better-sqlite3` et al.), the `@Transactional()`-decorated method **must itself be synchronous** — no `async`, no `await` inside the body — because the sync driver rejects any callback that returns a `Promise`:
 
 ```ts title="user.service.ts (better-sqlite3)"
 @Injectable()
@@ -190,6 +189,16 @@ class UserService {
 }
 ```
 
-The decorator itself still returns a `Promise<T>` to the caller (so consumers can `await runTransaction()` as usual). The synchronous constraint only applies _inside_ the method body, where `better-sqlite3` is driving the transaction.
+The decorator itself still returns a `Promise<T>` to the caller, so consumers can `await runTransaction()` as usual. The synchronous constraint only applies _inside_ the method body, where the sync driver is driving the transaction.
 
-`transactionMode` defaults to `'async'`, so existing setups using `libsql`, `node-postgres`, `postgres-js`, or `mysql2` keep working without any change.
+### Overriding auto-detection
+
+If auto-detection ever picks the wrong mode (e.g. Drizzle renames the internal field, or a third-party driver opts into sync semantics without exposing `resultKind`), set `transactionMode` explicitly:
+
+```ts
+new TransactionalAdapterDrizzleOrm({
+    drizzleInstanceToken: DRIZZLE,
+    // highlight-next-line
+    transactionMode: 'sync', // or 'async' — overrides auto-detection
+});
+```
