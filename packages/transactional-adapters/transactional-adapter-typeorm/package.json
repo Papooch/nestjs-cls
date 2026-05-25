@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-typeorm",
-    "version": "1.3.3",
+    "version": "1.3.4",
     "description": "A typeorm adapter for @nestjs-cls/transactional",
     "author": "Giosuè Delgado S.Z. - Relybytes Srl <info@relybytes.com>",
     "license": "MIT",
