@@ -1,6 +1,16 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [6.2.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.2.0...nestjs-cls@6.2.1) "nestjs-cls" (2026-05-25)<a name="6.2.1"></a>
+
+### Bug Fixes
+
+* **core**: establish ALS root context at init to mitigate enterWith leak on Node < 24 (#577) ([05b8fb0](https://github.com/Papooch/nestjs-cls/commits/05b8fb0))
+* **core**: improve ClsPluginsHooksHost error message and document app.init() requirement (#578) ([2a4e874](https://github.com/Papooch/nestjs-cls/commits/2a4e874))
+
+
+
 
 ## [6.2.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.1.0...nestjs-cls@6.2.0) "nestjs-cls" (2026-01-06)<a name="6.2.0"></a>
 

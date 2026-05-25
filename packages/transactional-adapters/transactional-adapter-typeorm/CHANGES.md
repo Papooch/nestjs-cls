@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [1.3.4](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.3.3...@nestjs-cls/transactional-adapter-typeorm@1.3.4) "@nestjs-cls/transactional-adapter-typeorm" (2026-05-25)<a name="1.3.4"></a>
+
+### Bug Fixes
+
+* **transactional-adapter-typeorm**: support TypeORM 1.0.0 (#576) ([a2db84a](https://github.com/Papooch/nestjs-cls/commits/a2db84a))
+
+
+
 
 ## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.2.24...@nestjs-cls/transactional-adapter-typeorm@1.3.0) "@nestjs-cls/transactional-adapter-typeorm" (2025-07-10)<a name="1.3.0"></a>
 

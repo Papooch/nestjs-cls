@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-kysely",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "description": "A Kysely adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",

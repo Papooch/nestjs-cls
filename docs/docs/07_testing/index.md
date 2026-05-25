@@ -91,3 +91,24 @@ describe('CatService', () => {
   })
 })
 ```
+
+## Testing with plugins or `@UseCls()`
+
+When your test uses CLS [plugins](../06_plugins/index.md) or the [`@UseCls()` decorator](../02_setting-up-cls-context/04_using-a-decorator.md), you must call `await module.init()` after compiling the test module. Without it, the plugin hooks host is not initialized and throws a `ClsPluginsHooksHost not initialized` error.
+
+```ts
+beforeEach(async () => {
+    const module = await Test.createTestingModule({
+        imports: [
+            ClsModule.forRoot({ plugins: [myPlugin] }),
+        ],
+    }).compile();
+
+    // highlight-start
+    // Required when using CLS plugins or @UseCls() — initializes plugin hooks.
+    await module.init();
+    // highlight-end
+
+    service = module.get(MyService);
+});
+```
