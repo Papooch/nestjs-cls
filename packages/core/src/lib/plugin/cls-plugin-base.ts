@@ -1,4 +1,8 @@
-import { InjectionToken, Provider } from '@nestjs/common';
+import {
+    InjectionToken,
+    OptionalFactoryDependency,
+    Provider,
+} from '@nestjs/common';
 import { ClsPlugin, ClsPluginHooks } from './cls-plugin.interface';
 
 /**
@@ -41,7 +45,7 @@ export abstract class ClsPluginBase implements ClsPlugin {
      * ```
      */
     protected registerHooks(opts: {
-        inject?: InjectionToken<any>[];
+        inject?: Array<InjectionToken | OptionalFactoryDependency>;
         useFactory: (...args: any[]) => ClsPluginHooks;
     }) {
         this.providers.push({
