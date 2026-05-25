@@ -19,7 +19,9 @@ export class ClsPluginsHooksHost implements OnModuleInit {
     private static _instance: ClsPluginsHooksHost;
     static getInstance(): ClsPluginsHooksHost {
         if (!this._instance) {
-            throw new Error('ClsPluginsHooksHost not initialized');
+            throw new Error(
+                "ClsPluginsHooksHost not initialized. Make sure to call `await app.init()` before using CLS plugins (e.g. in your test's `beforeAll`/`beforeEach`).",
+            );
         }
         return this._instance;
     }
