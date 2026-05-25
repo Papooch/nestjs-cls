@@ -151,7 +151,11 @@ export class ProxyProvidersResolver {
         const resolvedSet = this.getOrCreateCurrentResolvedSet();
         return new Set<symbol>(
             providerSymbols
-                .filter((providerSymbol) => !resolvedSet.has(providerSymbol))
+                .filter(
+                    (providerSymbol) =>
+                        !resolvedSet.has(providerSymbol) &&
+                        !this.cls.has(providerSymbol),
+                )
                 .map((providerSymbol) => {
                     const deps =
                         this.proxyProviderDependenciesMap.get(providerSymbol) ??
