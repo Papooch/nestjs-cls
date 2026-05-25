@@ -1,10 +1,7 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 
 type AnyDrizzleClient = {
-    transaction: (
-        fn: (tx: AnyDrizzleClient) => Promise<any>,
-        options?: any,
-    ) => Promise<any>;
+    transaction: (fn: (tx: AnyDrizzleClient) => any, options?: any) => any;
 };
 
 type DrizzleTransactionOptions<T> = T extends AnyDrizzleClient
@@ -77,57 +74,46 @@ export class TransactionalAdapterDrizzleOrm<
                     : 'async'
                 : this.transactionMode;
 
-        const wrapSync = (
-            transactionFn: (cb: any, options?: any) => any,
+        const runTx: (
+            client: TClient,
             options: DrizzleTransactionOptions<TClient>,
             fn: (...args: any[]) => any,
             setClient: (client?: TClient) => void,
-        ) =>
-            Promise.resolve(
-                transactionFn((tx: TClient) => {
-                    setClient(tx);
-                    return fn();
-                }, options),
-            );
+        ) => Promise<any> =
+            effectiveMode === 'sync'
+                ? (client, options, fn, setClient) => {
+                      // Sync drivers (better-sqlite3 et al.) throw synchronously
+                      // on rollback; convert to a rejected Promise to satisfy
+                      // the wrapWithTransaction: Promise<T> contract.
+                      try {
+                          return Promise.resolve(
+                              client.transaction((tx) => {
+                                  setClient(tx as TClient);
+                                  return fn();
+                              }, options),
+                          );
+                      } catch (err) {
+                          return Promise.reject(err);
+                      }
+                  }
+                : (client, options, fn, setClient) =>
+                      client.transaction(async (tx) => {
+                          setClient(tx as TClient);
+                          return fn();
+                      }, options);
 
         return {
-            wrapWithTransaction: async (
+            wrapWithTransaction: (
                 options: DrizzleTransactionOptions<TClient>,
                 fn: (...args: any[]) => Promise<any>,
                 setClient: (client?: TClient) => void,
-            ) => {
-                if (effectiveMode === 'sync') {
-                    return wrapSync(
-                        drizzleInstance.transaction.bind(drizzleInstance),
-                        options,
-                        fn,
-                        setClient,
-                    );
-                }
-                return drizzleInstance.transaction(async (tx) => {
-                    setClient(tx as TClient);
-                    return fn();
-                }, options);
-            },
-            wrapWithNestedTransaction: async (
+            ) => runTx(drizzleInstance, options, fn, setClient),
+            wrapWithNestedTransaction: (
                 options: DrizzleTransactionOptions<TClient>,
                 fn: (...args: any[]) => Promise<any>,
                 setClient: (client?: TClient) => void,
                 client: TClient,
-            ) => {
-                if (effectiveMode === 'sync') {
-                    return wrapSync(
-                        client.transaction.bind(client),
-                        options,
-                        fn,
-                        setClient,
-                    );
-                }
-                return client.transaction(async (tx) => {
-                    setClient(tx as TClient);
-                    return fn();
-                }, options);
-            },
+            ) => runTx(client, options, fn, setClient),
             getFallbackInstance: () => drizzleInstance,
         };
     };
