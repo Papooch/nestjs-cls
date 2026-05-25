@@ -1,3 +1,4 @@
+import { InjectionToken, OptionalFactoryDependency } from '@nestjs/common';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
 import { ClsService } from '../cls.service';
 import { isProxyClassProvider } from './proxy-provider.functions';
@@ -7,6 +8,7 @@ import {
     ProxyProviderDefinition,
 } from './proxy-provider.interfaces';
 import {
+    ProxyProviderInvalidReturnTypeException,
     ProxyProviderNotRegisteredException,
     ProxyProvidersResolutionTimeoutException,
     UnknownProxyDependenciesException,
@@ -25,6 +27,13 @@ type ProxyProviderPromisesMap = Map<symbol, Promise<unknown>>;
 
 const CLS_PROXY_PROVIDER_PROMISES_MAP = Symbol('CLS_PROVIDER_PROMISES_MAP');
 
+/**
+ * A Set stored in the CLS context that tracks which Proxy Providers have been
+ * resolved. Tracking resolution separately from the stored value allows
+ * distinguishing "not resolved yet" from "resolved to null or undefined".
+ */
+const CLS_PROXY_PROVIDER_RESOLVED_SET = Symbol('CLS_PROVIDER_RESOLVED_SET');
+
 export class ProxyProvidersResolver {
     private readonly proxyProviderDependenciesMap = new Map<symbol, symbol[]>();
 
@@ -38,6 +47,7 @@ export class ProxyProvidersResolver {
             this.proxyProviderDependenciesMap.set(
                 provider.symbol,
                 provider.dependencies
+                    .map(extractInjectionToken)
                     .map(getProxyProviderSymbol)
                     .filter((symbol) => !defaultProxyProviderTokens.has(symbol))
                     .filter((symbol) => proxyProviderMap.has(symbol)),
@@ -119,13 +129,29 @@ export class ProxyProvidersResolver {
     }
 
     /**
+     * ResolvedSet is a Set scoped to the current CLS context that tracks
+     * which Proxy Providers have been successfully resolved. Tracking this
+     * separately from the stored value allows distinguishing "not resolved yet"
+     * from "resolved to null or undefined" (which would be an error, but we
+     * use this set so the check is unambiguous regardless of the stored value).
+     */
+    private getOrCreateCurrentResolvedSet(): Set<symbol> {
+        const resolvedSet =
+            this.cls.get<Set<symbol>>(CLS_PROXY_PROVIDER_RESOLVED_SET) ??
+            new Set<symbol>();
+        this.cls.setIfUndefined(CLS_PROXY_PROVIDER_RESOLVED_SET, resolvedSet);
+        return resolvedSet;
+    }
+
+    /**
      * Gets a set of all Proxy Provider symbols that need to be resolved
      * and symbols of their dependencies (that have not been resolved yet)
      */
     private getAllNeededProviderSymbols(providerSymbols: symbol[]) {
+        const resolvedSet = this.getOrCreateCurrentResolvedSet();
         return new Set<symbol>(
             providerSymbols
-                .filter((providerSymbol) => !this.cls.get(providerSymbol))
+                .filter((providerSymbol) => !resolvedSet.has(providerSymbol))
                 .map((providerSymbol) => {
                     const deps =
                         this.proxyProviderDependenciesMap.get(providerSymbol) ??
@@ -160,7 +186,22 @@ export class ProxyProvidersResolver {
             await Promise.all(ownDependencyPromises);
             const providerInstance =
                 await this.resolveProxyProviderInstance(providerDefinition);
+
+            const instanceType = typeof providerInstance;
+            if (
+                providerInstance === null ||
+                providerInstance === undefined ||
+                (instanceType !== 'object' && instanceType !== 'function')
+            ) {
+                throw ProxyProviderInvalidReturnTypeException.create(
+                    providerSymbol,
+                    providerInstance,
+                );
+            }
+
             this.cls.set(providerSymbol, providerInstance);
+            const resolvedSet = this.getOrCreateCurrentResolvedSet();
+            resolvedSet.add(providerSymbol);
             return ownPromise.resolve();
         } catch (e) {
             return ownPromise.reject(e);
@@ -197,4 +238,13 @@ export class ProxyProvidersResolver {
         const injected = provider.injected;
         return await provider.useFactory.apply(null, injected);
     }
+}
+
+function extractInjectionToken(
+    dep: InjectionToken | OptionalFactoryDependency,
+): InjectionToken {
+    if (dep !== null && typeof dep === 'object' && 'token' in dep) {
+        return dep.token;
+    }
+    return dep as InjectionToken;
 }
