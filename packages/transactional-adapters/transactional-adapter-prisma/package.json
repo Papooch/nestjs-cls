@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-cls/transactional-adapter-prisma",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "A Prisma adapter for @nestjs-cls/transactional",
   "author": "papooch",
   "license": "MIT",
