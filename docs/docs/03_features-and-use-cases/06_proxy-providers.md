@@ -310,6 +310,69 @@ ClsModule.forFeatureAsync({
 
 ## Caveats
 
+### Proxy Providers require full application bootstrap
+
+The Proxy Provider resolver is initialized in `ClsRootModule.onModuleInit()`. Any code that runs before `app.init()` (or `app.listen()`) resolves may encounter an uninitialized resolver and will not be able to use Proxy Providers.
+
+It goes without saying that any access to any property on a Proxy provider **in the constructor** will always evaluate to `undefined` (or throw in strict mode).
+
+:::warning
+
+This is a common pitfall with background job processors such as **BullMQ workers**, which start consuming messages in `onModuleInit`. If the worker's `onModuleInit` runs before `ClsRootModule.onModuleInit()` (which depends on module initialization order), Proxy Providers will not yet be available.
+
+To avoid this, ensure the application is fully bootstrapped before your worker begins consuming. Either start consuming in `onApplicationBootstrap` (which is guaranteed to run after all `onModuleInit` hooks) or delay consumption until after `app.listen()` / `app.init()` resolves:
+
+```ts
+@Injectable()
+export class WorkerService implements OnApplicationBootstrap {
+    constructor(private readonly worker: Worker) {}
+
+    // Use onApplicationBootstrap instead of onModuleInit
+    // to ensure Proxy Providers are available.
+    onApplicationBootstrap() {
+        this.worker.run();
+    }
+}
+```
+
+:::
+
+### Do not mix REQUEST-scoped providers with Proxy Providers
+
+:::danger
+
+Never inject a real NestJS `Scope.REQUEST` (or `durable: true`) provider as a dependency of a Proxy Provider or any `ClsModule` plugin.
+
+:::
+
+Proxy Providers are **singletons** from NestJS's DI perspective. When NestJS detects that a singleton depends on a REQUEST-scoped provider, it changes the scope of the singleton to REQUEST as well. This means the Proxy wrapper itself is re-created on every request, which defeats the purpose of Proxy Providers and can cause **cross-request contamination** (e.g. tenant connections leaking between requests).
+
+```ts
+// ❌ Wrong: TENANT_CONNECTION depends on a real Scope.REQUEST provider
+{
+    provide: TENANT_CONNECTION,
+    scope: Scope.REQUEST,
+    durable: true,
+    inject: [REQUEST, TenantRegistry],
+    useFactory: (req: Request, registry: TenantRegistry) =>
+        registry.getConnection(req.headers['tenant-id']),
+}
+```
+
+Convert it to a `ClsModule.forFeatureAsync` Proxy Provider using `CLS_REQ` or `ClsService` instead:
+
+```ts
+// ✅ Correct: factory is a singleton; request data comes from CLS context
+ClsModule.forFeatureAsync({
+    provide: TENANT_CONNECTION,
+    inject: [CLS_REQ, TenantRegistry],
+    useFactory: (req: Request, registry: TenantRegistry) =>
+        registry.getConnection(req.headers['tenant-id']),
+});
+```
+
+`CLS_REQ` is itself a Proxy Provider (a singleton that delegates to the per-request value stored in CLS), so the factory above remains a singleton from NestJS's point of view while still resolving the correct request on each access.
+
 ### No primitive values
 
 Proxy Factory providers _cannot_ return a _primitive value_ (`string`, `number`, `boolean`, `null`, or `undefined`). Doing so throws a `ProxyProviderInvalidReturnTypeException` at resolution time. This is because the provider itself is the Proxy and it only delegates access once a property or a method is called on it (or if it itself is called in case the factory returns a function).
