@@ -7084,9 +7084,11 @@ __metadata:
     "@nestjs/common": "npm:^11.1.19"
     "@nestjs/core": "npm:^11.1.19"
     "@nestjs/testing": "npm:^11.1.19"
+    "@types/better-sqlite3": "npm:^7.6.13"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.19.7"
     "@types/pg": "npm:^8.16.0"
+    better-sqlite3: "npm:^12.10.0"
     drizzle-orm: "npm:^0.45.1"
     jest: "npm:^30.2.0"
     pg: "npm:^8.17.2"
@@ -11790,6 +11792,17 @@ __metadata:
   version: 3.0.2
   resolution: "before-after-hook@npm:3.0.2"
   checksum: 10c0/dea640f9e88a1085372c9bcc974b7bf379267490693da92ec102a7d8b515dd1e95f00ef575a146b83ca638104c57406c3427d37bdf082f602dde4b56d05bba14
+  languageName: node
+  linkType: hard
+
+"better-sqlite3@npm:^12.10.0":
+  version: 12.10.0
+  resolution: "better-sqlite3@npm:12.10.0"
+  dependencies:
+    bindings: "npm:^1.5.0"
+    node-gyp: "npm:latest"
+    prebuild-install: "npm:^7.1.1"
+  checksum: 10c0/b269792c1e456201b16fb9abd1e3fa9284d7710929f991899cebbb61e56dc3703673be29dadcb2f4a2d02961c49145f53d7d7b13b7b47298c033ec9de524f34f
   languageName: node
   linkType: hard
 

@@ -149,3 +149,47 @@ class UserRepository {
     }
 }
 ```
+
+## `better-sqlite3` (synchronous mode)
+
+Most Drizzle drivers — `libsql`, `node-postgres`, `postgres-js`, `mysql2` — expose `db.transaction(callback)` as an _asynchronous_ API that awaits the callback's returned promise. `better-sqlite3` is different: its `db.transaction(fn)` is **synchronous** and rejects any callback that returns a `Promise`. Passing an `async` callback to it throws `Transaction function cannot return a promise`.
+
+To opt into the synchronous transaction wrapper, set `transactionMode: 'sync'` on the adapter:
+
+```ts
+ClsModule.forRoot({
+    plugins: [
+        new ClsPluginTransactional({
+            imports: [DrizzleModule],
+            adapter: new TransactionalAdapterDrizzleOrm({
+                drizzleInstanceToken: DRIZZLE,
+                // highlight-next-line
+                transactionMode: 'sync',
+            }),
+        }),
+    ],
+});
+```
+
+In `'sync'` mode the inner transaction callback runs synchronously and the value it returns is wrapped in `Promise.resolve(...)` to satisfy the plugin's `wrapWithTransaction: Promise<T>` contract. The `@Transactional()`-decorated method **must itself be synchronous** — no `async`, no `await` inside — because `better-sqlite3` rejects any callback that returns a `Promise`.
+
+```ts title="user.service.ts (better-sqlite3)"
+@Injectable()
+class UserService {
+    constructor(private readonly userRepository: UserRepository) {}
+
+    // highlight-start
+    // no `async` here — the method body runs synchronously inside the tx
+    @Transactional()
+    runTransaction() {
+        const user = this.userRepository.createUser('John');
+        const foundUser = this.userRepository.getUserById(user.id);
+        assert(foundUser.id === user.id);
+    }
+    // highlight-end
+}
+```
+
+The decorator itself still returns a `Promise<T>` to the caller (so consumers can `await runTransaction()` as usual). The synchronous constraint only applies _inside_ the method body, where `better-sqlite3` is driving the transaction.
+
+`transactionMode` defaults to `'async'`, so existing setups using `libsql`, `node-postgres`, `postgres-js`, or `mysql2` keep working without any change.
