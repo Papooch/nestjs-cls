@@ -191,6 +191,12 @@ class UserService {
 
 The decorator itself still returns a `Promise<T>` to the caller, so consumers can `await runTransaction()` as usual. The synchronous constraint only applies _inside_ the method body, where the sync driver is driving the transaction.
 
+:::note TypeScript / ESLint caveat
+
+Because the method body is declared synchronous, TypeScript infers a non-`Promise` return type for `runTransaction()`. ESLint's `@typescript-eslint/await-thenable` rule may flag `await svc.runTransaction()` even though the decorator returns `Promise<T>` at runtime. There's no clean type-level fix — annotating the method as `Promise<void>` while keeping the body sync is a type error, and making the body `async` defeats the sync-driver contract. Either disable the rule for sync-mode call sites or assert at the call site, e.g. `await (svc.runTransaction() as unknown as Promise<void>)`.
+
+:::
+
 ### Overriding auto-detection
 
 If auto-detection ever picks the wrong mode (e.g. Drizzle renames the internal field, or a third-party driver opts into sync semantics without exposing `resultKind`), set `transactionMode` explicitly:
