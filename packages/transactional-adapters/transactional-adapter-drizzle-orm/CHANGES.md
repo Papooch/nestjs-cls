@@ -1,6 +1,24 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.2.4...@nestjs-cls/transactional-adapter-drizzle-orm@1.3.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2026-06-10)<a name="1.3.0"></a>
+
+### Features
+
+* **transactional-adapter-drizzle-orm**: support better-sqlite3 via transactionMode option
+
+Adds an opt-in `transactionMode?: 'async' | 'sync'` option to the
+adapter constructor. Defaults to `'async'` (no behavior change for
+existing libsql/node-postgres/postgres-js/mysql2 users). In `'sync'`
+mode the inner transaction callback runs synchronously and the result
+is wrapped in `Promise.resolve(...)` to satisfy the plugin's
+`wrapWithTransaction: Promise<T>` contract — required by
+`better-sqlite3`, which rejects async callbacks. ([9956a92](https://github.com/Papooch/nestjs-cls/commits/9956a92))
+* **transactional-adapter-drizzle-orm**: support better-sqlite3 via transactionMode option (#572) ([9956a92](https://github.com/Papooch/nestjs-cls/commits/9956a92))
+
+
+
 
 ## [1.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.1.20...@nestjs-cls/transactional-adapter-drizzle-orm@1.2.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2025-07-10)<a name="1.2.0"></a>
 
