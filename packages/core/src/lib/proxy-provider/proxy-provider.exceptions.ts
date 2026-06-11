@@ -96,3 +96,15 @@ export class ProxyProvidersResolutionTimeoutException extends ProxyProviderError
         return new this(message);
     }
 }
+
+export class ProxyProviderInvalidReturnTypeException extends ProxyProviderError {
+    static create(providerSymbol: symbol, value: unknown) {
+        const providerName = providerSymbol.description ?? 'unknown';
+        const type = value === null ? 'null' : typeof value;
+        const message =
+            `The factory for Proxy provider "${providerName}" returned a value of type "${type}", ` +
+            `but Proxy providers must return an object or a function. ` +
+            `Primitive values (string, number, boolean, etc.) and null/undefined are not supported.`;
+        return new this(message);
+    }
+}
