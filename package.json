@@ -50,5 +50,8 @@
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.0",
     "typescript": "5.9.3"
+  },
+  "bugs": {
+    "url": "https://github.com/Papooch/nestjs-cls/issues"
   }
 }
