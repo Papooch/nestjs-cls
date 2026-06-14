@@ -14,6 +14,9 @@
     "type": "git",
     "url": "git+https://github.com/Papooch/nestjs-cls.git"
   },
+  "bugs": {
+    "url": "https://github.com/Papooch/nestjs-cls/issues"
+  },
   "homepage": "https://papooch.github.io/nestjs-cls/",
   "keywords": [
     "nest",
