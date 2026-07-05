@@ -48,7 +48,7 @@
     },
     "peerDependencies": {
         "@nestjs-cls/transactional": "workspace:^3.2.0",
-        "drizzle-orm": "^0",
+        "drizzle-orm": "^0 || >=1.0.0-rc.1 <2.0.0",
         "nestjs-cls": "workspace:^6.2.0"
     },
     "devDependencies": {
