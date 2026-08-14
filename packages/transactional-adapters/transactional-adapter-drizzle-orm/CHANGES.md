@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.3.0...@nestjs-cls/transactional-adapter-drizzle-orm@1.4.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2026-08-14)<a name="1.4.0"></a>
+
+### Features
+
+* **transactional-adapter-drizzle-orm**: accept drizzle-orm v1 in the peer range (#604) ([5417f21](https://github.com/Papooch/nestjs-cls/commits/5417f21))
+
+
+
+
 ## [1.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.2.4...@nestjs-cls/transactional-adapter-drizzle-orm@1.3.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2026-06-10)<a name="1.3.0"></a>
 
 ### Features

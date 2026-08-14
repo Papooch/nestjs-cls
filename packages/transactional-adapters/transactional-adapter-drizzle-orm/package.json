@@ -1,6 +1,6 @@
 {
     "name": "@nestjs-cls/transactional-adapter-drizzle-orm",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "A Drizzle ORM adapter for @nestjs-cls/transactional",
     "author": "papooch",
     "license": "MIT",
