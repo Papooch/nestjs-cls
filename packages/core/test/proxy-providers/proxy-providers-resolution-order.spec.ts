@@ -13,6 +13,7 @@ import {
     CLS_REQ,
     ClsModule,
     ClsModuleProxyProviderOptions,
+    ClsService,
     InjectableProxy,
 } from '../../src';
 
@@ -20,16 +21,28 @@ abstract class ValueProvider {
     abstract value: string;
 }
 
+interface GetTestAppOptions {
+    resolveProxyProviders?: boolean;
+    selectiveProvider?: Type;
+}
+
 async function getTestApp(
     providers: ClsModuleProxyProviderOptions[] = [],
     finalValueProviderClass: Type,
+    { resolveProxyProviders = true, selectiveProvider }: GetTestAppOptions = {},
 ) {
     @Controller()
     class TestController {
-        constructor(private readonly valueProvider: ValueProvider) {}
+        constructor(
+            private readonly valueProvider: ValueProvider,
+            private readonly cls: ClsService,
+        ) {}
 
         @Post('hello')
-        get() {
+        async get() {
+            if (selectiveProvider) {
+                await this.cls.proxy.resolve([selectiveProvider]);
+            }
             return {
                 value: this.valueProvider.value,
             };
@@ -44,7 +57,7 @@ async function getTestApp(
                     mount: true,
                     saveReq: true,
                     saveRes: true,
-                    resolveProxyProviders: true,
+                    resolveProxyProviders,
                 },
             }),
             ...providers.map((p) =>
@@ -206,5 +219,28 @@ describe('Injecting Proxy providers into each other', () => {
                     value: 'ThirdOrderProxy: SecondOrderProxy: FirstOrderProxy: value for mixed test',
                 });
         });
+    });
+
+    describe('Selective resolution with transitive dependencies', () => {
+        it.each([
+            ['Class Proxy Providers', classProxiesOptions],
+            ['Factory Proxy Providers', factoryProxiesOptions],
+        ])(
+            'resolves all transitive dependencies when selectively resolving the leaf (%s)',
+            async (_, providers) => {
+                app = await getTestApp([...providers], providers[2].provide, {
+                    resolveProxyProviders: false,
+                    selectiveProvider: ThirdOrderProxy,
+                });
+
+                await request(app.getHttpServer())
+                    .post('/hello')
+                    .send({ value: 'selective test' })
+                    .expect(201)
+                    .expect({
+                        value: 'ThirdOrderProxy: SecondOrderProxy: FirstOrderProxy: selective test',
+                    });
+            },
+        );
     });
 });

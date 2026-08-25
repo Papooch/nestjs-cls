@@ -43,3 +43,9 @@ export class CronController {
 Special care must be taken in case you're using [Proxy Providers](../03_features-and-use-cases/06_proxy-providers.md#outside-web-request).
 
 :::
+
+:::warning
+
+If you are using Proxy Providers in a background worker (e.g. BullMQ), make sure the worker does not start consuming jobs before `app.init()` / `app.listen()` resolves, as the Proxy Provider resolver may not yet be initialized. See the [relevant caveat](./06_proxy-providers.md#proxy-providers-require-full-application-bootstrap) in the Proxy Providers documentation.
+
+:::
