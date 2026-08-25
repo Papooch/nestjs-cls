@@ -149,21 +149,23 @@ export class ProxyProvidersResolver {
      */
     private getAllNeededProviderSymbols(providerSymbols: symbol[]) {
         const resolvedSet = this.getOrCreateCurrentResolvedSet();
-        return new Set<symbol>(
-            providerSymbols
-                .filter(
-                    (providerSymbol) =>
-                        !resolvedSet.has(providerSymbol) &&
-                        !this.cls.has(providerSymbol),
-                )
-                .map((providerSymbol) => {
-                    const deps =
-                        this.proxyProviderDependenciesMap.get(providerSymbol) ??
-                        [];
-                    return [providerSymbol, ...deps];
-                })
-                .flat(),
+        const result = new Set<symbol>();
+        const queue = providerSymbols.filter(
+            (s) => !resolvedSet.has(s) && !this.cls.has(s),
         );
+        while (queue.length > 0) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const current = queue.pop()!;
+            if (result.has(current)) continue;
+            result.add(current);
+            const deps = this.proxyProviderDependenciesMap.get(current) ?? [];
+            for (const dep of deps) {
+                if (!result.has(dep) && !resolvedSet.has(dep)) {
+                    queue.push(dep);
+                }
+            }
+        }
+        return result;
     }
 
     private async resolveProxyProvider(
