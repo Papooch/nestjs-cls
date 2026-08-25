@@ -2,6 +2,35 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [6.2.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.2.1...nestjs-cls@6.2.2) "nestjs-cls" (2026-08-25)<a name="6.2.2"></a>
+
+### Bug Fixes
+
+* **core**: support OptionalFactoryDependency in proxy provider inject arrays
+
+Accepts `{ token: T, optional: true }` in the `inject` array of
+`ClsModule.forFeatureAsync` factory providers and in `ClsPluginBase.registerHooks`.
+
+The `extractInjectionToken` helper correctly extracts the bare token from an
+`OptionalFactoryDependency` when building the proxy-to-proxy dependency graph,
+so resolution ordering is preserved even for optional cross-proxy deps.
+
+`@Optional()` on class proxy provider constructor params already worked via
+`moduleRef.create()` — integration tests verify both class and factory cases. ([70b172a](https://github.com/Papooch/nestjs-cls/commits/70b172a))
+* **core**: improve ProxyProvider error messages for undefined/primitive returns
+
+- Track resolved providers in a Set (CLS_PROXY_PROVIDER_RESOLVED_SET) to
+  distinguish 'not resolved yet' from 'resolved to undefined/null'
+- Throw ProxyProviderInvalidReturnTypeException when factory returns a
+  primitive (string, number, boolean, null, undefined)
+- Handle OptionalFactoryDependency entries in the dependencies array
+- Add tests covering all new error paths and resolution tracking ([70b172a](https://github.com/Papooch/nestjs-cls/commits/70b172a))
+* resolve transitive proxy provider dependencies in selective resolution (#624) ([70b172a](https://github.com/Papooch/nestjs-cls/commits/70b172a))
+* **core**: proxy provider improvements - optional deps, better error messages, docs caveats (#579) ([70b172a](https://github.com/Papooch/nestjs-cls/commits/70b172a))
+
+
+
+
 ## [6.2.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.2.0...nestjs-cls@6.2.1) "nestjs-cls" (2026-05-25)<a name="6.2.1"></a>
 
 ### Bug Fixes
