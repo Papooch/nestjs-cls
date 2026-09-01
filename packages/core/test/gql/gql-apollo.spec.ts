@@ -2,9 +2,14 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { INestApplication, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Test, TestingModule } from '@nestjs/testing';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { ClsModule } from '../../src';
 import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
 import { ItemModule } from './item/item.module';
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let app: INestApplication;
 describe('GQL Apollo App - Auto bound Middleware', () => {

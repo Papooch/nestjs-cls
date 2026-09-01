@@ -1,4 +1,3 @@
-import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import {
     detectHttpAdapterTypeAndVersion,
     ExpressVersion,
@@ -6,60 +5,34 @@ import {
     HttpAdapterType,
 } from './feature-detection.utils';
 
-function useNest10() {
-    jest.mock('@nestjs/testing', () => jest.requireActual('@nestjs/testing10'));
-    jest.mock('@nestjs/common', () => jest.requireActual('@nestjs/common10'));
-    jest.mock('@nestjs/core', () => jest.requireActual('@nestjs/core10'));
-    jest.mock('@nestjs/platform-express', () =>
-        jest.requireActual('@nestjs/platform-express10'),
-    );
-    jest.mock('@nestjs/platform-fastify', () =>
-        jest.requireActual('@nestjs/platform-fastify10'),
-    );
-}
-
-function useNest11() {
-    jest.unmock('@nestjs/testing');
-    jest.unmock('@nestjs/common');
-    jest.unmock('@nestjs/core');
-    jest.unmock('@nestjs/platform-express');
-    jest.unmock('@nestjs/platform-fastify');
+// Helper to build a minimal mock HttpServer compatible with detectHttpAdapterTypeAndVersion.
+// `adapterName` controls whether it looks like Express or Fastify.
+// `instance` is the raw platform instance returned by getInstance().
+function makeAdapter(adapterName: string, instance: object) {
+    // eslint-disable-next-line @typescript-eslint/no-extraneous-class
+    const Cls = { [adapterName]: class {} }[adapterName]!;
+    const adapter = new Cls() as any;
+    adapter.getInstance = () => instance;
+    return adapter;
 }
 
 describe('FeatureDetectionUtils', () => {
     describe('When using Express adapter', () => {
-        async function getExpressApp() {
-            const { Module } = await import('@nestjs/common');
-            const { Test } = await import('@nestjs/testing');
-
-            @Module({})
-            class TestModule {}
-
-            const module = await Test.createTestingModule({
-                imports: [TestModule],
-            }).compile();
-            return module.createNestApplication();
-        }
-
-        it('should detect Express version 4 on Nest 10', async () => {
-            useNest10();
-
-            const app = await getExpressApp();
-            const features = detectHttpAdapterTypeAndVersion(
-                app.getHttpAdapter(),
-            );
-            expect(features).toEqual({
+        it('should detect Express version 4 (has app.del)', () => {
+            // Express 4.x has the deprecated `del` method
+            const expressV4Instance = { del: () => {} };
+            const adapter = makeAdapter('ExpressAdapter', expressV4Instance);
+            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
                 adapterType: HttpAdapterType.EXPRESS,
                 version: ExpressVersion.V4,
             });
         });
-        it('should detect Express version 5 on Nest 11', async () => {
-            useNest11();
-            const app = await getExpressApp();
-            const features = detectHttpAdapterTypeAndVersion(
-                app.getHttpAdapter(),
-            );
-            expect(features).toEqual({
+
+        it('should detect Express version 5 (no app.del)', () => {
+            // Express 5.x removes `del`
+            const expressV5Instance = {};
+            const adapter = makeAdapter('ExpressAdapter', expressV5Instance);
+            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
                 adapterType: HttpAdapterType.EXPRESS,
                 version: ExpressVersion.V5,
             });
@@ -67,41 +40,24 @@ describe('FeatureDetectionUtils', () => {
     });
 
     describe('When using Fastify adapter', () => {
-        async function getFastifyApp() {
-            const { Module } = await import('@nestjs/common');
-            const { Test } = await import('@nestjs/testing');
-            const { FastifyAdapter } = await import('@nestjs/platform-fastify');
-
-            @Module({})
-            class TestModule {}
-
-            const module = await Test.createTestingModule({
-                imports: [TestModule],
-            }).compile();
-            return module.createNestApplication<NestFastifyApplication>(
-                new FastifyAdapter(),
-            );
-        }
-
-        it('should detect Fastify version 4 on Nest 10', async () => {
-            useNest10();
-
-            const app = await getFastifyApp();
-            const features = detectHttpAdapterTypeAndVersion(
-                app.getHttpAdapter(),
-            );
-            expect(features).toEqual({
+        it('should detect Fastify version 4 (has getDefaultRoute/setDefaultRoute)', () => {
+            // Fastify 4.x has getDefaultRoute and setDefaultRoute
+            const fastifyV4Instance = {
+                getDefaultRoute: () => {},
+                setDefaultRoute: () => {},
+            };
+            const adapter = makeAdapter('FastifyAdapter', fastifyV4Instance);
+            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
                 adapterType: HttpAdapterType.FASTIFY,
                 version: FastifyVersion.V4,
             });
         });
-        it('should detect Fastify version 5 on Nest 11', async () => {
-            useNest11();
-            const app = await getFastifyApp();
-            const features = detectHttpAdapterTypeAndVersion(
-                app.getHttpAdapter(),
-            );
-            expect(features).toEqual({
+
+        it('should detect Fastify version 5 (no getDefaultRoute/setDefaultRoute)', () => {
+            // Fastify 5.x removes those methods
+            const fastifyV5Instance = {};
+            const adapter = makeAdapter('FastifyAdapter', fastifyV5Instance);
+            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
                 adapterType: HttpAdapterType.FASTIFY,
                 version: FastifyVersion.V5,
             });

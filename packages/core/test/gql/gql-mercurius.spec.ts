@@ -1,14 +1,19 @@
 import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { MercuriusDriver } from '@nestjs/mercurius/dist/drivers/mercurius.driver';
+import { MercuriusDriver } from '@nestjs/mercurius';
 import {
     FastifyAdapter,
     NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { ClsModule } from '../../src';
 import { expectErrorIdsGql, expectOkIdsGql } from './expect-ids-gql';
 import { ItemModule } from './item/item.module';
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let app: NestFastifyApplication;
 describe('GQL Mercurius App - Auto bound Middleware', () => {

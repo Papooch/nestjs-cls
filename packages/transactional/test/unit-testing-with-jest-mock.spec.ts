@@ -1,13 +1,19 @@
+import { jest } from '@jest/globals';
 import { Injectable } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Transactional, TransactionHost } from '../src';
+import { TransactionHost } from '../src';
 import { TransactionAdapterMock } from './transaction-adapter-mock';
 
-jest.mock('../src', () => ({
-    ...jest.requireActual('@nestjs-cls/transactional'),
-    // Override the Transactional decorator with a no-op
-    Transactional: () => jest.fn(),
-}));
+/**
+ * A no-op method decorator that can be used in place of @Transactional()
+ * to skip transaction management in unit tests.
+ *
+ * This demonstrates one ESM-compatible approach to unit-testing services
+ * that use @Transactional() without any CLS/transaction infrastructure.
+ */
+function NoOpTransactional(): MethodDecorator {
+    return (_target, _key, descriptor) => descriptor;
+}
 
 @Injectable()
 class UnitTestableRepository {
@@ -24,7 +30,7 @@ class UnitTestableRepository {
 class UnitTestableService {
     constructor(private readonly repo: UnitTestableRepository) {}
 
-    @Transactional()
+    @NoOpTransactional()
     async decoratedServiceMethod() {
         const result = await this.repo.repositoryMethod();
         return result;
@@ -36,7 +42,7 @@ describe('Transactional unit testing with jest.mock', () => {
 
     // Create a mock for the TransactionHost
     const transactionalHostMock = {
-        tx: { query: jest.fn() },
+        tx: { query: jest.fn<any>() },
     };
 
     beforeAll(async () => {
