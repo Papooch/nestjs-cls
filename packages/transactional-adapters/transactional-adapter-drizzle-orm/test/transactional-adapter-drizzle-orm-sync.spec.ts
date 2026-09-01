@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import {
     ClsPluginTransactional,
     InjectTransaction,
@@ -226,7 +227,7 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
 
         expect(result).toBe('ok');
         // sync mode passes a non-async callback to driver.transaction
-        const passedFn = (syncClient.transaction as jest.Mock).mock.calls[0][0];
+        const passedFn = (syncClient.transaction as jest.Mock).mock.calls[0][0] as any;
         expect(passedFn.constructor.name).toBe('Function'); // not AsyncFunction
     });
 
@@ -247,7 +248,7 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
 
         // async mode passes an AsyncFunction to driver.transaction
         const passedFn = (asyncClient.transaction as jest.Mock).mock
-            .calls[0][0];
+            .calls[0][0] as any;
         expect(passedFn.constructor.name).toBe('AsyncFunction');
     });
 
@@ -264,7 +265,7 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
         const { wrapWithTransaction } = adapter.optionsFactory(client);
         await wrapWithTransaction({} as any, (() => 'ok') as any, () => {});
 
-        const passedFn = (client.transaction as jest.Mock).mock.calls[0][0];
+        const passedFn = (client.transaction as jest.Mock).mock.calls[0][0] as any;
         expect(passedFn.constructor.name).toBe('Function');
     });
 
@@ -285,7 +286,7 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
             () => {},
         );
 
-        const passedFn = (client.transaction as jest.Mock).mock.calls[0][0];
+        const passedFn = (client.transaction as jest.Mock).mock.calls[0][0] as any;
         expect(passedFn.constructor.name).toBe('AsyncFunction');
     });
 });
