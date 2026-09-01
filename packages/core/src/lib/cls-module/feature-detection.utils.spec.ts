@@ -1,3 +1,6 @@
+import { HttpServer } from '@nestjs/common';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
 import {
     detectHttpAdapterTypeAndVersion,
     ExpressVersion,
@@ -5,34 +8,32 @@ import {
     HttpAdapterType,
 } from './feature-detection.utils';
 
-// Helper to build a minimal mock HttpServer compatible with detectHttpAdapterTypeAndVersion.
-// `adapterName` controls whether it looks like Express or Fastify.
-// `instance` is the raw platform instance returned by getInstance().
-function makeAdapter(adapterName: string, instance: object) {
-    // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-    const Cls = { [adapterName]: class {} }[adapterName]!;
-    const adapter = new Cls() as any;
-    adapter.getInstance = () => instance;
-    return adapter;
-}
-
+// The CJS v10 platform adapters internally require('@nestjs/common'), which
+// is ESM in NestJS 12.  Jest's experimental VM module runtime cannot bridge
+// CJS→ESM require, so loading @nestjs/platform-express10 in this test suite
+// is not possible.  Instead every case uses the real v12 adapter (and thus
+// a real express / fastify instance under the hood); the v4 detection path
+// is exercised by injecting the v4-specific API surface that was removed in
+// v5 — the same property the detection function actually checks.
 describe('FeatureDetectionUtils', () => {
     describe('When using Express adapter', () => {
-        it('should detect Express version 4 (has app.del)', () => {
-            // Express 4.x has the deprecated `del` method
-            const expressV4Instance = { del: () => {} };
-            const adapter = makeAdapter('ExpressAdapter', expressV4Instance);
-            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
+        it('should detect Express version 4 (app.del present)', () => {
+            const adapter = new ExpressAdapter();
+            // Simulate express 4: the `del` method was removed in express 5
+            (adapter.getInstance() as Record<string, unknown>).del = () => {};
+            expect(
+                detectHttpAdapterTypeAndVersion(adapter as unknown as HttpServer),
+            ).toEqual({
                 adapterType: HttpAdapterType.EXPRESS,
                 version: ExpressVersion.V4,
             });
         });
 
-        it('should detect Express version 5 (no app.del)', () => {
-            // Express 5.x removes `del`
-            const expressV5Instance = {};
-            const adapter = makeAdapter('ExpressAdapter', expressV5Instance);
-            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
+        it('should detect Express version 5 (app.del absent — real express 5 instance)', () => {
+            const adapter = new ExpressAdapter();
+            expect(
+                detectHttpAdapterTypeAndVersion(adapter as unknown as HttpServer),
+            ).toEqual({
                 adapterType: HttpAdapterType.EXPRESS,
                 version: ExpressVersion.V5,
             });
@@ -40,24 +41,25 @@ describe('FeatureDetectionUtils', () => {
     });
 
     describe('When using Fastify adapter', () => {
-        it('should detect Fastify version 4 (has getDefaultRoute/setDefaultRoute)', () => {
-            // Fastify 4.x has getDefaultRoute and setDefaultRoute
-            const fastifyV4Instance = {
-                getDefaultRoute: () => {},
-                setDefaultRoute: () => {},
-            };
-            const adapter = makeAdapter('FastifyAdapter', fastifyV4Instance);
-            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
+        it('should detect Fastify version 4 (getDefaultRoute/setDefaultRoute present)', () => {
+            const adapter = new FastifyAdapter();
+            // Simulate fastify 4: those methods were removed in fastify 5
+            const inst = adapter.getInstance() as Record<string, unknown>;
+            inst.getDefaultRoute = () => {};
+            inst.setDefaultRoute = () => {};
+            expect(
+                detectHttpAdapterTypeAndVersion(adapter as unknown as HttpServer),
+            ).toEqual({
                 adapterType: HttpAdapterType.FASTIFY,
                 version: FastifyVersion.V4,
             });
         });
 
-        it('should detect Fastify version 5 (no getDefaultRoute/setDefaultRoute)', () => {
-            // Fastify 5.x removes those methods
-            const fastifyV5Instance = {};
-            const adapter = makeAdapter('FastifyAdapter', fastifyV5Instance);
-            expect(detectHttpAdapterTypeAndVersion(adapter)).toEqual({
+        it('should detect Fastify version 5 (getDefaultRoute/setDefaultRoute absent — real fastify 5 instance)', () => {
+            const adapter = new FastifyAdapter();
+            expect(
+                detectHttpAdapterTypeAndVersion(adapter as unknown as HttpServer),
+            ).toEqual({
                 adapterType: HttpAdapterType.FASTIFY,
                 version: FastifyVersion.V5,
             });

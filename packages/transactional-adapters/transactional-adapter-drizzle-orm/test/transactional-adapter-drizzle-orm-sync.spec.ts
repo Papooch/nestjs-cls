@@ -216,40 +216,44 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
         const adapter = new TransactionalAdapterDrizzleOrm<DrizzleClient>({
             drizzleInstanceToken: DRIZZLE,
         });
+        const transactionMock = jest.fn((cb: (tx: DrizzleClient) => unknown) =>
+            cb(drizzleClient),
+        );
         const syncClient = {
             resultKind: 'sync',
-            transaction: jest.fn((cb: any) => cb({})),
+            transaction: transactionMock,
         } as unknown as DrizzleClient;
 
         const { wrapWithTransaction } = adapter.optionsFactory(syncClient);
-        const callback = jest.fn(() => 'ok') as any;
-        const result = await wrapWithTransaction({} as any, callback, () => {});
+        const result = await wrapWithTransaction(
+            {} as any,
+            async () => 'ok',
+            () => {},
+        );
 
         expect(result).toBe('ok');
         // sync mode passes a non-async callback to driver.transaction
-        const passedFn = (syncClient.transaction as jest.Mock).mock.calls[0][0] as any;
-        expect(passedFn.constructor.name).toBe('Function'); // not AsyncFunction
+        const passedFn = transactionMock.mock.calls[0][0];
+        expect((passedFn as Function).constructor.name).toBe('Function'); // not AsyncFunction
     });
 
     it('auto-detects async mode when resultKind is "async" or absent', async () => {
         const adapter = new TransactionalAdapterDrizzleOrm<DrizzleClient>({
             drizzleInstanceToken: DRIZZLE,
         });
+        const transactionMock = jest.fn(
+            async (cb: (tx: DrizzleClient) => unknown) => cb(drizzleClient),
+        );
         const asyncClient = {
-            transaction: jest.fn(async (cb: any) => cb({})),
+            transaction: transactionMock,
         } as unknown as DrizzleClient;
 
         const { wrapWithTransaction } = adapter.optionsFactory(asyncClient);
-        await wrapWithTransaction(
-            {} as any,
-            async () => 'ok',
-            () => {},
-        );
+        await wrapWithTransaction({} as any, async () => 'ok', () => {});
 
         // async mode passes an AsyncFunction to driver.transaction
-        const passedFn = (asyncClient.transaction as jest.Mock).mock
-            .calls[0][0] as any;
-        expect(passedFn.constructor.name).toBe('AsyncFunction');
+        const passedFn = transactionMock.mock.calls[0][0];
+        expect((passedFn as Function).constructor.name).toBe('AsyncFunction');
     });
 
     it('respects explicit transactionMode: "sync" override on an async client', async () => {
@@ -257,16 +261,19 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
             drizzleInstanceToken: DRIZZLE,
             transactionMode: 'sync',
         });
+        const transactionMock = jest.fn((cb: (tx: DrizzleClient) => unknown) =>
+            cb(drizzleClient),
+        );
         const client = {
             // no resultKind — would auto-detect to async, but we override
-            transaction: jest.fn((cb: any) => cb({})),
+            transaction: transactionMock,
         } as unknown as DrizzleClient;
 
         const { wrapWithTransaction } = adapter.optionsFactory(client);
-        await wrapWithTransaction({} as any, (() => 'ok') as any, () => {});
+        await wrapWithTransaction({} as any, async () => 'ok', () => {});
 
-        const passedFn = (client.transaction as jest.Mock).mock.calls[0][0] as any;
-        expect(passedFn.constructor.name).toBe('Function');
+        const passedFn = transactionMock.mock.calls[0][0];
+        expect((passedFn as Function).constructor.name).toBe('Function');
     });
 
     it('respects explicit transactionMode: "async" override on a sync client', async () => {
@@ -274,19 +281,18 @@ describe('TransactionalAdapterDrizzleOrm transactionMode resolution', () => {
             drizzleInstanceToken: DRIZZLE,
             transactionMode: 'async',
         });
+        const transactionMock = jest.fn(
+            async (cb: (tx: DrizzleClient) => unknown) => cb(drizzleClient),
+        );
         const client = {
             resultKind: 'sync',
-            transaction: jest.fn(async (cb: any) => cb({})),
+            transaction: transactionMock,
         } as unknown as DrizzleClient;
 
         const { wrapWithTransaction } = adapter.optionsFactory(client);
-        await wrapWithTransaction(
-            {} as any,
-            async () => 'ok',
-            () => {},
-        );
+        await wrapWithTransaction({} as any, async () => 'ok', () => {});
 
-        const passedFn = (client.transaction as jest.Mock).mock.calls[0][0] as any;
-        expect(passedFn.constructor.name).toBe('AsyncFunction');
+        const passedFn = transactionMock.mock.calls[0][0];
+        expect((passedFn as Function).constructor.name).toBe('AsyncFunction');
     });
 });

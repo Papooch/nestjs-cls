@@ -1,73 +1,73 @@
 {
-  "name": "@nestjs-cls/transactional-adapter-mongodb",
-  "version": "1.1.29",
-  "description": "A mongodb adapter for @nestjs-cls/transactional",
-  "author": "papooch",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Papooch/nestjs-cls.git"
-  },
-  "homepage": "https://papooch.github.io/nestjs-cls/",
-  "keywords": [
-    "nest",
-    "nestjs",
-    "cls",
-    "continuation-local-storage",
-    "als",
-    "AsyncLocalStorage",
-    "async_hooks",
-    "request context",
-    "async context",
-    "transaction",
-    "transactional",
-    "transactional decorator",
-    "aop",
-    "mongodb"
-  ],
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "files": [
-    "dist/src/**/!(*.spec).d.ts",
-    "dist/src/**/!(*.spec).js"
-  ],
-  "scripts": {
-    "prepack": "cp ../../../LICENSE ./LICENSE",
-    "prebuild": "rimraf dist",
-    "build": "tsc",
-    "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
-  },
-  "peerDependencies": {
-    "@nestjs-cls/transactional": "workspace:^3.2.0",
-    "mongodb": ">= 6",
-    "nestjs-cls": "workspace:^6.2.0"
-  },
-  "devDependencies": {
-    "@nestjs/cli": "^12.0.0",
-    "@nestjs/common": "^12.0.0",
-    "@nestjs/core": "^12.0.0",
-    "@nestjs/testing": "^12.0.0",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^22.19.7",
-    "jest": "^30.2.0",
-    "mongodb": "^7.0.0",
-    "mongodb-memory-server": "^11.0.1",
-    "reflect-metadata": "^0.2.2",
-    "rimraf": "^6.1.2",
-    "rxjs": "^7.8.2",
-    "sqlite3": "^5.1.7",
-    "ts-jest": "^29.4.6",
-    "ts-loader": "^9.5.4",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "5.9.3"
-  }
+    "name": "@nestjs-cls/transactional-adapter-mongodb",
+    "version": "1.1.29",
+    "description": "A mongodb adapter for @nestjs-cls/transactional",
+    "author": "papooch",
+    "license": "MIT",
+    "engines": {
+        "node": ">=18"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Papooch/nestjs-cls.git"
+    },
+    "homepage": "https://papooch.github.io/nestjs-cls/",
+    "keywords": [
+        "nest",
+        "nestjs",
+        "cls",
+        "continuation-local-storage",
+        "als",
+        "AsyncLocalStorage",
+        "async_hooks",
+        "request context",
+        "async context",
+        "transaction",
+        "transactional",
+        "transactional decorator",
+        "aop",
+        "mongodb"
+    ],
+    "main": "dist/src/index.js",
+    "types": "dist/src/index.d.ts",
+    "files": [
+        "dist/src/**/!(*.spec).d.ts",
+        "dist/src/**/!(*.spec).js"
+    ],
+    "scripts": {
+        "prepack": "cp ../../../LICENSE ./LICENSE",
+        "prebuild": "rimraf dist",
+        "build": "tsc",
+        "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
+        "test:watch": "jest --watch",
+        "test:cov": "jest --coverage"
+    },
+    "peerDependencies": {
+        "@nestjs-cls/transactional": "workspace:^3.2.0",
+        "mongodb": ">= 6",
+        "nestjs-cls": "workspace:^6.2.0"
+    },
+    "devDependencies": {
+        "@nestjs/cli": "^12.0.0",
+        "@nestjs/common": "^12.0.0",
+        "@nestjs/core": "^12.0.0",
+        "@nestjs/testing": "^12.0.0",
+        "@types/jest": "^30.0.0",
+        "@types/node": "^22.19.7",
+        "jest": "^30.2.0",
+        "mongodb": "^7.0.0",
+        "mongodb-memory-server": "^11.0.1",
+        "reflect-metadata": "^0.2.2",
+        "rimraf": "^6.1.2",
+        "rxjs": "^7.8.2",
+        "sqlite3": "^5.1.7",
+        "ts-jest": "^29.4.6",
+        "ts-loader": "^9.5.4",
+        "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "5.9.3"
+    }
 }
