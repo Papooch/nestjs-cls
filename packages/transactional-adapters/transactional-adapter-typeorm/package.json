@@ -2,7 +2,7 @@
   "name": "@nestjs-cls/transactional-adapter-typeorm",
   "version": "1.3.6",
   "description": "A typeorm adapter for @nestjs-cls/transactional",
-  "author": "Giosu\u00e8 Delgado S.Z. - Relybytes Srl <info@relybytes.com>",
+  "author": "Giosuè Delgado S.Z. - Relybytes Srl <info@relybytes.com>",
   "license": "MIT",
   "engines": {
     "node": ">=18"
