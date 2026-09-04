@@ -4,27 +4,27 @@
 
 This table lists the compatibility of major versions of `nestjs-cls` with versions of NestJS and other related packages.
 
-|        `nestjs-cls`        | `<= 4.x` | `>= 5.0 <= 5.1` | `>= 5.2` |
-| :------------------------: | :------: | :-------------: | :------: |
-|   `@nestjs/core,common`    | `<= 10`  |     `>= 11`     | `>= 10`  |
-| `@nestjs/platform-express` | `<= 10`  |     `>= 11`     | `>= 10`  |
-| `@nestjs/platform-fastify` | `<= 10`  |     `>= 11`     | `>= 10`  |
-|     `@nestjs/graphql`      | `<= 12`  |     `>= 13`     | `>= 12`  |
-|         `graphql`          | `<= 16`  |     `>= 16`     | `>= 16`  |
-|      `@nestjs/apollo`      | `<= 12`  |     `>= 13`     | `<= 12`  |
-|      `@apollo/server`      |  `<= 4`  |     `>= 4`      |  `>= 4`  |
-|    `@nestjs/mercurius`     | `<= 12`  |     `>= 13`     | `>= 12`  |
-|        `mercurius`         | `<= 13`  |     `>= 16`     | `>= 10`  |
-|    `@nestjs/websockets`    | `<= 10`  |     `>= 11`     | `>= 10`  |
-|   `@nestjs/platform-ws`    | `<= 10`  |     `>= 11`     | `>= 10`  |
+|        `nestjs-cls`        | `<= 4.x` | `>= 5.0 <= 5.1` | `>= 5.2 <= 6.2` |   `>= 6.3`    |
+| :------------------------: | :------: | :-------------: | :-------------: | :-----------: |
+|   `@nestjs/core,common`    | `<= 10`  |     `>= 11`     |  `>= 10 <= 11`  | `>= 10 <= 12` |
+| `@nestjs/platform-express` | `<= 10`  |     `>= 11`     |  `>= 10 <= 11`  | `>= 10 <= 12` |
+| `@nestjs/platform-fastify` | `<= 10`  |     `>= 11`     |  `>= 10 <= 11`  | `>= 10 <= 12` |
+|     `@nestjs/graphql`      | `<= 12`  |     `>= 13`     |  `>= 12 <= 13`  | `>= 12 <= 14` |
+|         `graphql`          | `<= 16`  |     `>= 16`     |     `>= 16`     |    `>= 16`    |
+|      `@nestjs/apollo`      | `<= 12`  |     `>= 13`     |  `>= 12 <= 13`  | `>= 12 <= 14` |
+|      `@apollo/server`      |  `<= 4`  |     `>= 4`      |     `>= 4`      |    `>= 4`     |
+|    `@nestjs/mercurius`     | `<= 12`  |     `>= 13`     |  `>= 12 <= 13`  | `>= 12 <= 14` |
+|        `mercurius`         | `<= 13`  |     `>= 16`     |     `>= 10`     |    `>= 10`    |
+|    `@nestjs/websockets`    | `<= 10`  |     `>= 11`     |  `>= 10 <= 11`  | `>= 10 <= 12` |
+|   `@nestjs/platform-ws`    | `<= 10`  |     `>= 11`     |  `>= 10 <= 11`  | `>= 10 <= 12` |
 
 The table below outlines the compatibility of different ways of initializing the CLS context with various transports:
 
 |                                                                                                | REST | GQL | WS[\*](#websockets) | Microservices |
 | :--------------------------------------------------------------------------------------------: | :--: | :-: | :-----------------: | :-----------: |
-|                                       **ClsMiddleware**                                        |  ✔  | ✔  |         ✖          |      ✖       |
-|                              **ClsGuard** <br/>(uses `enterWith`)                              |  ✔  | ✔  |         ✔          |      ✔       |
-| **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_ and<br/> in _Exception Filters_) |  ✔  | ✔  |         ✔          |      ✔       |
+|                                       **ClsMiddleware**                                        |  ✔   |  ✔  |          ✖          |       ✖       |
+|                              **ClsGuard** <br/>(uses `enterWith`)                              |  ✔   |  ✔  |          ✔          |       ✔       |
+| **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_ and<br/> in _Exception Filters_) |  ✔   |  ✔  |          ✔          |       ✔       |
 
 ## REST
 

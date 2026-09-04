@@ -516,6 +516,30 @@ jest.mock('@nestjs-cls/transactional', () => ({
 
 This will replace the `@Transactional` decorator with a no-op, any method decorated with it will be treated as a normal method, and the `TransactionHost` won't be needed.
 
+:::note
+
+If your test suite runs as ESM (which is required as of NestJS 12, since it is published as an ES module), `jest.mock` and `jest.requireActual` are not available. Use `jest.unstable_mockModule` instead, and import the module under test _after_ the mock is registered:
+
+```ts
+import { jest } from '@jest/globals';
+// `jest.requireActual` only works for CommonJS, so load the real module up
+// front to keep the rest of its exports.
+const actual = await import('@nestjs-cls/transactional');
+
+jest.unstable_mockModule('@nestjs-cls/transactional', () => ({
+    // Keep everything else from the original module
+    ...actual,
+    // But override the Transactional decorator with a no-op
+    Transactional: () => jest.fn(),
+}));
+
+// The service under test has to be imported dynamically, after the mock
+// has been registered.
+const { ServiceUnderTest } = await import('./service-under-test');
+```
+
+:::
+
 If you also need the `TransactionHost` in your tests, mock it like a regular provider:
 
 ```ts
