@@ -39,7 +39,7 @@
   "scripts": {
     "prepack": "cp ../../LICENSE ./LICENSE",
     "prebuild": "rimraf dist",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
