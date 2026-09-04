@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
@@ -34,7 +35,7 @@ class UnitTestableService {
 describe('Transactional unit testing with no-op adapter', () => {
     // Create a mock for the TransactionHost
     const clientMock = {
-        query: jest.fn(),
+        query: jest.fn<() => Promise<string>>(),
     };
     clientMock.query.mockResolvedValue('MOCKED QUERY');
 

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
-import { MercuriusDriver } from '@nestjs/mercurius/dist/drivers/mercurius.driver';
+import { MercuriusDriver } from '@nestjs/mercurius';
 import {
     FastifyAdapter,
     NestFastifyApplication,
@@ -21,7 +21,7 @@ describe('GQL Mercurius App - Auto bound Middleware', () => {
             ItemModule,
             GraphQLModule.forRoot({
                 driver: MercuriusDriver,
-                autoSchemaFile: __dirname + 'schema.gql',
+                autoSchemaFile: import.meta.dirname + 'schema.gql',
             }),
         ],
     })
@@ -61,7 +61,7 @@ describe('GQL Mercurius App - Auto bound Guard', () => {
             ItemModule,
             GraphQLModule.forRoot({
                 driver: MercuriusDriver,
-                autoSchemaFile: __dirname + 'schema.gql',
+                autoSchemaFile: import.meta.dirname + 'schema.gql',
             }),
         ],
     })
@@ -102,7 +102,7 @@ describe('GQL Mercurius App - Auto bound Interceptor', () => {
             ItemModule,
             GraphQLModule.forRoot({
                 driver: MercuriusDriver,
-                autoSchemaFile: __dirname + 'schema.gql',
+                autoSchemaFile: import.meta.dirname + 'schema.gql',
             }),
         ],
     })
