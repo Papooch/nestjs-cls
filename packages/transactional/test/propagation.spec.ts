@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';

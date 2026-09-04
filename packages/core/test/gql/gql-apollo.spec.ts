@@ -17,7 +17,7 @@ describe('GQL Apollo App - Auto bound Middleware', () => {
             ItemModule,
             GraphQLModule.forRoot({
                 driver: ApolloDriver,
-                autoSchemaFile: __dirname + 'schema.gql',
+                autoSchemaFile: import.meta.dirname + 'schema.gql',
             }),
         ],
     })
@@ -55,7 +55,7 @@ describe('GQL Apollo App - Auto bound Guard', () => {
             ItemModule,
             GraphQLModule.forRoot({
                 driver: ApolloDriver,
-                autoSchemaFile: __dirname + 'schema.gql',
+                autoSchemaFile: import.meta.dirname + 'schema.gql',
             }),
         ],
     })
@@ -94,7 +94,7 @@ describe('GQL Apollo App - Auto bound Interceptor', () => {
             ItemModule,
             GraphQLModule.forRoot({
                 driver: ApolloDriver,
-                autoSchemaFile: __dirname + 'schema.gql',
+                autoSchemaFile: import.meta.dirname + 'schema.gql',
             }),
         ],
     })

@@ -1,42 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Transactional, TransactionHost } from '../src';
-import { TransactionAdapterMock } from './transaction-adapter-mock';
 
-jest.mock('../src', () => ({
-    ...jest.requireActual('@nestjs-cls/transactional'),
-    // Override the Transactional decorator with a no-op
+// Load the real module first — `jest.requireActual` only works for CommonJS,
+// so this is how a partial mock keeps the rest of the module's exports.
+const actual = await import('@nestjs-cls/transactional');
+
+jest.unstable_mockModule('@nestjs-cls/transactional', () => ({
+    // Keep everything else from the original module
+    ...actual,
+    // But override the Transactional decorator with a no-op
     Transactional: () => jest.fn(),
 }));
 
-@Injectable()
-class UnitTestableRepository {
-    constructor(
-        private readonly txHost: TransactionHost<TransactionAdapterMock>,
-    ) {}
-
-    async repositoryMethod() {
-        return this.txHost.tx.query('CREATE ENTITY');
-    }
-}
-
-@Injectable()
-class UnitTestableService {
-    constructor(private readonly repo: UnitTestableRepository) {}
-
-    @Transactional()
-    async decoratedServiceMethod() {
-        const result = await this.repo.repositoryMethod();
-        return result;
-    }
-}
+const { TransactionHost } = actual;
+// The module under test has to be imported *after* the mock is registered.
+const { UnitTestableRepository, UnitTestableService } =
+    await import('./unit-testable/unit-testable.service');
 
 describe('Transactional unit testing with jest.mock', () => {
-    let service: UnitTestableService;
+    let service: InstanceType<typeof UnitTestableService>;
 
     // Create a mock for the TransactionHost
     const transactionalHostMock = {
-        tx: { query: jest.fn() },
+        tx: { query: jest.fn<(sql: string) => Promise<string>>() },
     };
 
     beforeAll(async () => {
