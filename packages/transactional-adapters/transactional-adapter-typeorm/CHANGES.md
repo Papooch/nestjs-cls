@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.3.6...@nestjs-cls/transactional-adapter-typeorm@1.4.0) "@nestjs-cls/transactional-adapter-typeorm" (2026-09-04)<a name="1.4.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
+
 ## [1.3.4](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-typeorm@1.3.3...@nestjs-cls/transactional-adapter-typeorm@1.3.4) "@nestjs-cls/transactional-adapter-typeorm" (2026-05-25)<a name="1.3.4"></a>
 
 ### Bug Fixes

@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [1.5.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.4.7...@nestjs-cls/transactional-adapter-pg-promise@1.5.0) "@nestjs-cls/transactional-adapter-pg-promise" (2026-09-04)<a name="1.5.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
+
 ## [1.4.4](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-pg-promise@1.4.3...@nestjs-cls/transactional-adapter-pg-promise@1.4.4) "@nestjs-cls/transactional-adapter-pg-promise" (2026-01-17)<a name="1.4.4"></a>
 
 ### Bug Fixes

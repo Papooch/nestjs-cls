@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [6.3.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.2.2...nestjs-cls@6.3.0) "nestjs-cls" (2026-09-04)<a name="6.3.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
+
 ## [6.2.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.2.1...nestjs-cls@6.2.2) "nestjs-cls" (2026-08-25)<a name="6.2.2"></a>
 
 ### Bug Fixes

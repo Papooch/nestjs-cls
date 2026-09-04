@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [3.3.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.2.2...@nestjs-cls/transactional@3.3.0) "@nestjs-cls/transactional" (2026-09-04)<a name="3.3.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
+
 ## [3.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional@3.1.2...@nestjs-cls/transactional@3.2.0) "@nestjs-cls/transactional" (2026-01-26)<a name="3.2.0"></a>
 
 ### Features

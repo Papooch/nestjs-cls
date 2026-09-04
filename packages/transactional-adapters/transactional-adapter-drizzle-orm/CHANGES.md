@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [1.5.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.4.1...@nestjs-cls/transactional-adapter-drizzle-orm@1.5.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2026-09-04)<a name="1.5.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
+
 ## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-drizzle-orm@1.3.0...@nestjs-cls/transactional-adapter-drizzle-orm@1.4.0) "@nestjs-cls/transactional-adapter-drizzle-orm" (2026-08-14)<a name="1.4.0"></a>
 
 ### Features

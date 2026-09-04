@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [1.5.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.4.5...@nestjs-cls/transactional-adapter-kysely@1.5.0) "@nestjs-cls/transactional-adapter-kysely" (2026-09-04)<a name="1.5.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
 
 ## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.3.3...@nestjs-cls/transactional-adapter-kysely@1.4.0) "@nestjs-cls/transactional-adapter-kysely" (2025-07-10)<a name="1.4.0"></a>
 

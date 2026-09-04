@@ -1,6 +1,15 @@
 # Changelog
 
-<!-- MONODEPLOY:BELOW -->
+<!-- MONOWEAVE:BELOW -->
+
+## [1.2.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongoose@1.1.29...@nestjs-cls/transactional-adapter-mongoose@1.2.0) "@nestjs-cls/transactional-adapter-mongoose" (2026-09-04)<a name="1.2.0"></a>
+
+### Features
+
+* support NestJS 12 ([7c92d8e](https://github.com/Papooch/nestjs-cls/commits/7c92d8e))
+
+
+
 
 ## [1.1.24](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongoose@1.1.23...@nestjs-cls/transactional-adapter-mongoose@1.1.24) "@nestjs-cls/transactional-adapter-mongoose" (2025-11-04)<a name="1.1.24"></a>
 

@@ -7099,9 +7099,9 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
     drizzle-orm: ^0 || >=1.0.0-rc.1 <2.0.0
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
   languageName: unknown
   linkType: soft
 
@@ -7127,9 +7127,9 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
     knex: ^3
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
   languageName: unknown
   linkType: soft
 
@@ -7157,9 +7157,9 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
     kysely: ^0.28
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
   languageName: unknown
   linkType: soft
 
@@ -7186,9 +7186,9 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
     mongodb: ">= 6"
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
   languageName: unknown
   linkType: soft
 
@@ -7215,9 +7215,9 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
     mongoose: ">= 8"
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
   languageName: unknown
   linkType: soft
 
@@ -7242,8 +7242,8 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
-    nestjs-cls: "workspace:^6.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
+    nestjs-cls: "workspace:^6.3.0"
     pg-promise: ">= 11"
   languageName: unknown
   linkType: soft
@@ -7271,9 +7271,9 @@ __metadata:
     tsconfig-paths: "npm:^4.2.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
     "@prisma/client": "> 4 < 8"
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
     prisma: "> 4 < 8"
   languageName: unknown
   linkType: soft
@@ -7299,8 +7299,8 @@ __metadata:
     typeorm: "npm:1.0.0"
     typescript: "npm:5.9.3"
   peerDependencies:
-    "@nestjs-cls/transactional": "workspace:^3.2.0"
-    nestjs-cls: "workspace:^6.2.0"
+    "@nestjs-cls/transactional": "workspace:^3.3.0"
+    nestjs-cls: "workspace:^6.3.0"
     typeorm: ^0.3.2 || ^1.0.0
   languageName: unknown
   linkType: soft
@@ -7328,7 +7328,7 @@ __metadata:
   peerDependencies:
     "@nestjs/common": ">= 10 < 13"
     "@nestjs/core": ">= 10 < 13"
-    nestjs-cls: "workspace:^6.2.0"
+    nestjs-cls: "workspace:^6.3.0"
     reflect-metadata: "*"
     rxjs: ">= 7"
   languageName: unknown
