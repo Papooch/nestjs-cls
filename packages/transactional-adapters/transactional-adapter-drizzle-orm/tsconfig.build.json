@@ -4,7 +4,7 @@
         "module": "commonjs",
         "moduleResolution": "node10",
         "outDir": "dist",
-        "rootDir": ".",
+        "rootDir": "src",
         "noEmit": false
     },
     "include": ["src/**/*.ts"],
