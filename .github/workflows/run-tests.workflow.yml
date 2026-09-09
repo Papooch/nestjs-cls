@@ -33,3 +33,4 @@ jobs:
       - run: yarn format:check
       - run: yarn lint:check
       - run: yarn test
+      - run: yarn workspace nestjs-cls run test:dual-build

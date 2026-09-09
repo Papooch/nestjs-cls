@@ -3,7 +3,7 @@ export * from './lib/transactional.decorator';
 export * from './lib/plugin-transactional';
 export * from './lib/propagation';
 export * from './lib/inject-transaction.decorator';
-export {
+export type {
     TransactionalAdapterOptions,
     TransactionalOptionsAdapterFactory,
     TransactionalAdapter,

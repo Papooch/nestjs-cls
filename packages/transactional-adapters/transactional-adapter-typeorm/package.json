@@ -27,16 +27,22 @@
     "async context",
     "typeorm"
   ],
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "files": [
-    "dist/src/**/!(*.spec).d.ts",
-    "dist/src/**/!(*.spec).js"
+    "dist"
   ],
   "scripts": {
     "prepack": "cp ../../../LICENSE ./LICENSE",
-    "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsup",
     "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
     "test:watch": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --watch",
     "test:cov": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --coverage"
@@ -61,6 +67,7 @@
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsup": "^8.5.1",
     "typeorm": "1.1.0",
     "typescript": "5.9.3"
   }

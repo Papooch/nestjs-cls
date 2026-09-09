@@ -14,5 +14,5 @@ export * from './lib/plugin/cls-plugin-base';
 export * from './lib/proxy-provider/injectable-proxy.decorator';
 export * from './lib/proxy-provider/proxy-provider.exceptions';
 export * from './lib/proxy-provider/proxy-provider.interfaces';
-export { Terminal } from './types/terminal.type';
+export type { Terminal } from './types/terminal.type';
 export * from './utils/copy-method-metadata';
