@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-pg-promise';
+export * from './lib/transactional-adapter-pg-promise.js';

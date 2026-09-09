@@ -8,8 +8,8 @@ import {
     OnModuleInit,
 } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
-import { ClsPluginsHooksHost } from './cls-plugin-hooks-host';
-import { ClsPlugin } from './cls-plugin.interface';
+import { ClsPluginsHooksHost } from './cls-plugin-hooks-host.js';
+import { ClsPlugin } from './cls-plugin.interface.js';
 
 @Global()
 export class ClsPluginsModule {

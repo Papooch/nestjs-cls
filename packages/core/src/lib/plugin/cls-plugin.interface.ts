@@ -1,5 +1,5 @@
 import { ExecutionContext, Provider } from '@nestjs/common';
-import { ClsService } from '../cls.service';
+import { ClsService } from '../cls.service.js';
 
 export interface ClsMiddlewareInitContext<TRequest = any, TResponse = any> {
     kind: 'middleware';

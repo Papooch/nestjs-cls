@@ -1,6 +1,6 @@
-import { globalClsService } from './cls-service.globals';
-import { ClsStore } from './cls.options';
-import { ClsService } from './cls.service';
+import { globalClsService } from './cls-service.globals.js';
+import { ClsStore } from './cls.options.js';
+import { ClsService } from './cls.service.js';
 
 export class ClsServiceManager {
     private static clsService = globalClsService;

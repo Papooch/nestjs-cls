@@ -17,27 +17,27 @@ import {
     HttpAdapterHost,
     ModuleRef,
 } from '@nestjs/core';
-import { isNonNullable } from '../../utils/is-non-nullable';
-import { ClsGuard } from '../cls-initializers/cls.guard';
-import { ClsInterceptor } from '../cls-initializers/cls.interceptor';
-import { ClsMiddleware } from '../cls-initializers/cls.middleware';
+import { isNonNullable } from '../../utils/is-non-nullable.js';
+import { ClsGuard } from '../cls-initializers/cls.guard.js';
+import { ClsInterceptor } from '../cls-initializers/cls.interceptor.js';
+import { ClsMiddleware } from '../cls-initializers/cls.middleware.js';
 import {
     CLS_GUARD_OPTIONS,
     CLS_INTERCEPTOR_OPTIONS,
     CLS_MIDDLEWARE_OPTIONS,
     CLS_MODULE_OPTIONS,
-} from '../cls.internal-constants';
+} from '../cls.internal-constants.js';
 import {
     ClsGuardOptions,
     ClsInterceptorOptions,
     ClsMiddlewareOptions,
     ClsModuleAsyncOptions,
     ClsModuleOptions,
-} from '../cls.options';
-import { ClsPluginsModule } from '../plugin/cls-plugins.module';
-import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
-import { ClsCommonModule } from './cls-common.module';
-import { getMiddlewareMountPoint } from './middleware.utils';
+} from '../cls.options.js';
+import { ClsPluginsModule } from '../plugin/cls-plugins.module.js';
+import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager.js';
+import { ClsCommonModule } from './cls-common.module.js';
+import { getMiddlewareMountPoint } from './middleware.utils.js';
 
 /**
  * This module contains logic for configuring the CLS module in the root.

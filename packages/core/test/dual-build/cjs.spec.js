@@ -4,7 +4,7 @@ const {
     ClsModule,
     ClsService,
     InjectableProxy,
-} = require('../../dist/index.js');
+} = require('../../dist/cjs/index.js');
 
 describe('nestjs-cls CJS build', () => {
     it('is requireable and exposes the public API', () => {
@@ -14,7 +14,7 @@ describe('nestjs-cls CJS build', () => {
     });
 
     it('constructs a working ClsService bound to a fresh store', () => {
-        const { ClsServiceManager } = require('../../dist/index.js');
+        const { ClsServiceManager } = require('../../dist/cjs/index.js');
         const cls = ClsServiceManager.getClsService();
         expect(
             cls.run(() => {

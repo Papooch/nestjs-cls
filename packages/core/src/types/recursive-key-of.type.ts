@@ -1,4 +1,4 @@
-import { BrandedTerminal } from './terminal.type';
+import { BrandedTerminal } from './terminal.type.js';
 
 type TerminalType =
     | string

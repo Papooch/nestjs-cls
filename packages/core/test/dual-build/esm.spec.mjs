@@ -6,7 +6,7 @@ import {
     ClsService,
     ClsServiceManager,
     InjectableProxy,
-} from '../../dist/index.mjs';
+} from '../../dist/esm/index.js';
 
 describe('nestjs-cls ESM build', () => {
     it('is importable and exposes the public API', () => {

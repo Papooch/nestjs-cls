@@ -1,8 +1,8 @@
 /**
- * Verifies that the published `dist/index.js` (CJS) and `dist/index.mjs`
- * (ESM) builds are both consumable as-is (no `moduleNameMapper` redirect to
- * `src`), unlike the main `jest.config.mjs` used for the unit/e2e suites.
- * Requires `yarn build` to have run first.
+ * Verifies that the published `dist/cjs/index.js` (CJS) and
+ * `dist/esm/index.js` (ESM) builds are both consumable as-is (no
+ * `moduleNameMapper` redirect to `src`), unlike the main `jest.config.mjs`
+ * used for the unit/e2e suites. Requires `yarn build` to have run first.
  */
 export default {
     rootDir: '.',

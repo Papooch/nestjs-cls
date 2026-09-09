@@ -1,12 +1,12 @@
 import { DynamicModule, Module, Type } from '@nestjs/common';
-import { ClsModuleAsyncOptions, ClsModuleOptions } from '../cls.options';
+import { ClsModuleAsyncOptions, ClsModuleOptions } from '../cls.options.js';
 
-import { ClsPlugin } from '../plugin/cls-plugin.interface';
-import { ClsPluginsModule } from '../plugin/cls-plugins.module';
-import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
-import { ClsModuleProxyProviderOptions } from '../proxy-provider/proxy-provider.interfaces';
-import { ClsCommonModule } from './cls-common.module';
-import { ClsRootModule } from './cls-root.module';
+import { ClsPlugin } from '../plugin/cls-plugin.interface.js';
+import { ClsPluginsModule } from '../plugin/cls-plugins.module.js';
+import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager.js';
+import { ClsModuleProxyProviderOptions } from '../proxy-provider/proxy-provider.interfaces.js';
+import { ClsCommonModule } from './cls-common.module.js';
+import { ClsRootModule } from './cls-root.module.js';
 
 /**
  * ClsModule is the main entry point for configuring the CLS module.
