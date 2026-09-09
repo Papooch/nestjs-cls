@@ -34,19 +34,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    }
+    },
+    "./package.json": "./package.json",
+    "./*": "./*"
   },
   "files": [
-    "dist/index.js",
-    "dist/index.js.map",
-    "dist/index.mjs",
-    "dist/index.mjs.map",
-    "dist/index.d.ts",
-    "dist/index.d.mts"
+    "dist"
   ],
   "scripts": {
     "prepack": "cp ../../LICENSE ./LICENSE && cp ../../README.md ./README.md",
-    "build": "tsup",
+    "build": "tsup && tsc -p tsconfig.build.json --emitDeclarationOnly",
     "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
     "test:dual-build": "yarn build && NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest -c jest.dual-build.config.mjs",
     "test:watch": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --watch",
