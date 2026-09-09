@@ -43,7 +43,12 @@
     }
   },
   "files": [
-    "dist"
+    "dist/index.js",
+    "dist/index.js.map",
+    "dist/index.mjs",
+    "dist/index.mjs.map",
+    "dist/index.d.ts",
+    "dist/index.d.mts"
   ],
   "scripts": {
     "prepack": "cp ../../../LICENSE ./LICENSE",
