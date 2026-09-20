@@ -5,7 +5,7 @@
   "author": "Giosuè Delgado S.Z. - Relybytes Srl <info@relybytes.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "publishConfig": {
     "access": "public"
