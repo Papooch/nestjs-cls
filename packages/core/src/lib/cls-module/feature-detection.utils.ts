@@ -26,8 +26,7 @@ type HttpFastifyAdapterResponse = {
 };
 
 type HttpAdapterTypeAndVersion =
-    | HttpExpresAdapterResponse
-    | HttpFastifyAdapterResponse;
+    HttpExpresAdapterResponse | HttpFastifyAdapterResponse;
 
 export function detectHttpAdapterTypeAndVersion(
     httpAdapter: HttpServer,

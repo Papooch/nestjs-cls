@@ -88,8 +88,7 @@ export interface ClsModuleProxyFactoryProviderOptions extends ClsModuleProxyProv
 export type ClsProxyFactoryReturnType = 'object' | 'function';
 
 export type ClsModuleProxyProviderOptions =
-    | ClsModuleProxyClassProviderOptions
-    | ClsModuleProxyFactoryProviderOptions;
+    ClsModuleProxyClassProviderOptions | ClsModuleProxyFactoryProviderOptions;
 
 export interface ProxyClassProviderDefinition {
     provide?: InjectionToken;
@@ -108,5 +107,4 @@ export interface ProxyFactoryProviderDefinition {
 }
 
 export type ProxyProviderDefinition =
-    | ProxyClassProviderDefinition
-    | ProxyFactoryProviderDefinition;
+    ProxyClassProviderDefinition | ProxyFactoryProviderDefinition;
