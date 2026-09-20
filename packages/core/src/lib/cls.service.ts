@@ -2,16 +2,19 @@ import { AsyncLocalStorage } from 'async_hooks';
 import {
     DeepPropertyType,
     RecursiveKeyOf,
-} from '../types/recursive-key-of.type';
+} from '../types/recursive-key-of.type.js';
 import {
     AnyIfNever,
     StringIfNever,
     TypeIfUndefined,
-} from '../types/type-if-type.type';
-import { getValueFromPath, setValueFromPath } from '../utils/value-from-path';
-import { CLS_ID } from './cls.constants';
-import { ClsContextOptions, ClsStore } from './cls.options';
-import { getProxyProviderSymbol } from './proxy-provider/get-proxy-provider-symbol';
+} from '../types/type-if-type.type.js';
+import {
+    getValueFromPath,
+    setValueFromPath,
+} from '../utils/value-from-path.js';
+import { CLS_ID } from './cls.constants.js';
+import { ClsContextOptions, ClsStore } from './cls.options.js';
+import { getProxyProviderSymbol } from './proxy-provider/get-proxy-provider-symbol.js';
 
 export class ClsService<S extends ClsStore = ClsStore> {
     constructor(private readonly als: AsyncLocalStorage<any>) {
@@ -237,7 +240,7 @@ class ClsProxyAccessors {
         // Workaround for a circular dep
         // TODO: This should be untangled and cleaned up
         const { ProxyProviderManager } =
-            await import('./proxy-provider/proxy-provider-manager');
+            await import('./proxy-provider/proxy-provider-manager.js');
         const proxySymbols = proxyTokens
             ? proxyTokens.map(getProxyProviderSymbol)
             : [];

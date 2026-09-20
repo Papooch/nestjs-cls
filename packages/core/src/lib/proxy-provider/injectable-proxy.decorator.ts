@@ -1,5 +1,5 @@
 import { Injectable, SetMetadata } from '@nestjs/common';
-import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
+import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants.js';
 
 export type InjectableProxyMetadata = {
     /**

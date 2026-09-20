@@ -1,9 +1,9 @@
 import { Module, ValueProvider } from '@nestjs/common';
-import { ClsServiceManager } from '../cls-service-manager';
-import { ClsService } from '../cls.service';
+import { ClsServiceManager } from '../cls-service-manager.js';
+import { ClsService } from '../cls.service.js';
 
-import { defaultProxyProviderTokens } from '../proxy-provider';
-import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager';
+import { defaultProxyProviderTokens } from '../proxy-provider/index.js';
+import { ProxyProviderManager } from '../proxy-provider/proxy-provider-manager.js';
 
 const clsServiceProvider: ValueProvider<ClsService> = {
     provide: ClsService,

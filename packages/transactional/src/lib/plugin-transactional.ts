@@ -1,17 +1,20 @@
 import { Provider } from '@nestjs/common';
 import { ClsPluginBase } from 'nestjs-cls';
-import { getTransactionToken } from './inject-transaction.decorator';
+import { getTransactionToken } from './inject-transaction.decorator.js';
 import {
     MergedTransactionalAdapterOptions,
     OptionalLifecycleHooks,
     TransactionalAdapter,
     TransactionalPluginOptions,
-} from './interfaces';
+} from './interfaces.js';
 import {
     TRANSACTION_CONNECTION,
     TRANSACTIONAL_ADAPTER_OPTIONS,
-} from './symbols';
-import { getTransactionHostToken, TransactionHost } from './transaction-host';
+} from './symbols.js';
+import {
+    getTransactionHostToken,
+    TransactionHost,
+} from './transaction-host.js';
 
 export class ClsPluginTransactional extends ClsPluginBase {
     providers: Provider[];

@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-mongoose';
+export * from './lib/transactional-adapter-mongoose.js';

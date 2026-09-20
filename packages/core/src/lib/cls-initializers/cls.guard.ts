@@ -4,13 +4,13 @@ import {
     Inject,
     Injectable,
 } from '@nestjs/common';
-import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_CTX, CLS_ID } from '../cls.constants';
-import { CLS_GUARD_OPTIONS } from '../cls.internal-constants';
-import { ClsGuardOptions } from '../cls.options';
-import { ClsEnhancerInitContext } from '../plugin/cls-plugin.interface';
-import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host';
-import { ContextClsStoreMap } from './utils/context-cls-store-map';
+import { ClsServiceManager } from '../cls-service-manager.js';
+import { CLS_CTX, CLS_ID } from '../cls.constants.js';
+import { CLS_GUARD_OPTIONS } from '../cls.internal-constants.js';
+import { ClsGuardOptions } from '../cls.options.js';
+import { ClsEnhancerInitContext } from '../plugin/cls-plugin.interface.js';
+import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host.js';
+import { ContextClsStoreMap } from './utils/context-cls-store-map.js';
 
 @Injectable()
 export class ClsGuard implements CanActivate {

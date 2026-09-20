@@ -1,24 +1,24 @@
 import { InjectionToken, OptionalFactoryDependency } from '@nestjs/common';
 import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
-import { ClsService } from '../cls.service';
-import { isProxyClassProvider } from './proxy-provider.functions';
+import { ClsService } from '../cls.service.js';
+import { isProxyClassProvider } from './proxy-provider.functions.js';
 import {
     ProxyClassProviderDefinition,
     ProxyFactoryProviderDefinition,
     ProxyProviderDefinition,
-} from './proxy-provider.interfaces';
+} from './proxy-provider.interfaces.js';
 import {
     ProxyProviderInvalidReturnTypeException,
     ProxyProviderNotRegisteredException,
     ProxyProvidersResolutionTimeoutException,
     UnknownProxyDependenciesException,
-} from './proxy-provider.exceptions';
-import { defaultProxyProviderTokens } from './proxy-provider.constants';
-import { getProxyProviderSymbol } from './get-proxy-provider-symbol';
+} from './proxy-provider.exceptions.js';
+import { defaultProxyProviderTokens } from './proxy-provider.constants.js';
+import { getProxyProviderSymbol } from './get-proxy-provider-symbol.js';
 import {
     Promise_withResolvers,
     PromiseWithResolvers,
-} from '../../utils/promise-with-resolvers.polyfill';
+} from '../../utils/promise-with-resolvers.polyfill.js';
 
 /**
  * see {@link ProxyProvidersResolver.getOrCreateCurrentProxyPromisesMap}

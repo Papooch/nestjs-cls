@@ -1,18 +1,21 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClsServiceManager } from 'nestjs-cls';
-import { getTransactionToken } from './inject-transaction.decorator';
-import {
+import { getTransactionToken } from './inject-transaction.decorator.js';
+import type {
     TOptionsFromAdapter,
     MergedTransactionalAdapterOptions,
     TTxFromAdapter,
-} from './interfaces';
+} from './interfaces.js';
 import {
     Propagation,
     TransactionAlreadyActiveError,
     TransactionNotActiveError,
     TransactionPropagationError,
-} from './propagation';
-import { getTransactionClsKey, TRANSACTIONAL_ADAPTER_OPTIONS } from './symbols';
+} from './propagation.js';
+import {
+    getTransactionClsKey,
+    TRANSACTIONAL_ADAPTER_OPTIONS,
+} from './symbols.js';
 
 @Injectable()
 export class TransactionHost<TAdapter = never> {

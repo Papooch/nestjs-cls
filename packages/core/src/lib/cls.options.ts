@@ -1,6 +1,6 @@
 import { ExecutionContext, ModuleMetadata, Type } from '@nestjs/common';
-import type { ClsService } from './cls.service';
-import { ClsPlugin } from './plugin/cls-plugin.interface';
+import type { ClsService } from './cls.service.js';
+import { ClsPlugin } from './plugin/cls-plugin.interface.js';
 
 const getRandomString = () => Math.random().toString(36).slice(-8);
 

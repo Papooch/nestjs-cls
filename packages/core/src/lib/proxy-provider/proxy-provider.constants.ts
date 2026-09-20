@@ -1,4 +1,4 @@
-import { CLS_CTX, CLS_REQ, CLS_RES } from '../cls.constants';
+import { CLS_CTX, CLS_REQ, CLS_RES } from '../cls.constants.js';
 
 export const CLS_PROXY_METADATA_KEY = '__cls_proxy__';
 

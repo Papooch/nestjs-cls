@@ -5,16 +5,16 @@ import {
     ValueProvider,
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { globalClsService } from '../cls-service.globals';
-import { getProxyProviderSymbol } from './get-proxy-provider-symbol';
-import { InjectableProxyMetadata } from './injectable-proxy.decorator';
-import { ProxyProvidersResolver } from './proxy-provider-resolver';
-import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants';
+import { globalClsService } from '../cls-service.globals.js';
+import { getProxyProviderSymbol } from './get-proxy-provider-symbol.js';
+import { InjectableProxyMetadata } from './injectable-proxy.decorator.js';
+import { ProxyProvidersResolver } from './proxy-provider-resolver.js';
+import { CLS_PROXY_METADATA_KEY } from './proxy-provider.constants.js';
 import {
     ProxyProviderNotDecoratedException,
     ProxyProviderNotResolvedException,
-} from './proxy-provider.exceptions';
-import { isProxyClassProviderOptions } from './proxy-provider.functions';
+} from './proxy-provider.exceptions.js';
+import { isProxyClassProviderOptions } from './proxy-provider.functions.js';
 import {
     ClsModuleProxyClassProviderOptions,
     ClsModuleProxyFactoryProviderOptions,
@@ -23,8 +23,8 @@ import {
     ProxyClassProviderDefinition,
     ProxyFactoryProviderDefinition,
     ProxyProviderDefinition,
-} from './proxy-provider.interfaces';
-import { reflectAllClassDependencies } from './proxy-provider.utils';
+} from './proxy-provider.interfaces.js';
+import { reflectAllClassDependencies } from './proxy-provider.utils.js';
 
 type ProxyOptions = {
     type?: ClsProxyFactoryReturnType;

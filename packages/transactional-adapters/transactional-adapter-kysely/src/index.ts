@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-kysely';
+export * from './lib/transactional-adapter-kysely.js';

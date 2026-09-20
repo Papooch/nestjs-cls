@@ -4,7 +4,7 @@ import {
     ExpressVersion,
     FastifyVersion,
     HttpAdapterType,
-} from './feature-detection.utils';
+} from './feature-detection.utils.js';
 
 const MOUNT_POINT_EXPRESS_5 = '/';
 const MOUNT_POINT_EXPRESS_4 = '*';

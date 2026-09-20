@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { copyMethodMetadata } from 'nestjs-cls';
-import { TOptionsFromAdapter } from './interfaces';
-import { Propagation } from './propagation';
-import { TransactionHost } from './transaction-host';
+import { TOptionsFromAdapter } from './interfaces.js';
+import { Propagation } from './propagation.js';
+import { TransactionHost } from './transaction-host.js';
 
 /**
  * Run the decorated method in a transaction.

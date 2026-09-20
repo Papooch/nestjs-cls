@@ -6,13 +6,13 @@ import {
     NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_CTX, CLS_ID } from '../cls.constants';
-import { CLS_INTERCEPTOR_OPTIONS } from '../cls.internal-constants';
-import { ClsInterceptorOptions } from '../cls.options';
-import { ClsEnhancerInitContext } from '../plugin/cls-plugin.interface';
-import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host';
-import { ContextClsStoreMap } from './utils/context-cls-store-map';
+import { ClsServiceManager } from '../cls-service-manager.js';
+import { CLS_CTX, CLS_ID } from '../cls.constants.js';
+import { CLS_INTERCEPTOR_OPTIONS } from '../cls.internal-constants.js';
+import { ClsInterceptorOptions } from '../cls.options.js';
+import { ClsEnhancerInitContext } from '../plugin/cls-plugin.interface.js';
+import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host.js';
+import { ContextClsStoreMap } from './utils/context-cls-store-map.js';
 
 @Injectable()
 export class ClsInterceptor implements NestInterceptor {

@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import { copyMethodMetadata } from '../../utils/copy-method-metadata';
-import { ClsServiceManager } from '../cls-service-manager';
-import { CLS_ID } from '../cls.constants';
-import { ClsDecoratorOptions } from '../cls.options';
-import { ClsDecoratorInitContext } from '../plugin/cls-plugin.interface';
-import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host';
+import { copyMethodMetadata } from '../../utils/copy-method-metadata.js';
+import { ClsServiceManager } from '../cls-service-manager.js';
+import { CLS_ID } from '../cls.constants.js';
+import { ClsDecoratorOptions } from '../cls.options.js';
+import { ClsDecoratorInitContext } from '../plugin/cls-plugin.interface.js';
+import { ClsPluginsHooksHost } from '../plugin/cls-plugin-hooks-host.js';
 
 /**
  * Wraps the decorated method in a CLS context.

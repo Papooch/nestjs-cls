@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-prisma';
+export * from './lib/transactional-adapter-prisma.js';
