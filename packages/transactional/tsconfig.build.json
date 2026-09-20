@@ -1,4 +1,6 @@
 {
+    // CommonJS build, also emits the (single) set of type declarations
+    // shared by both builds - see `tsconfig.build.esm.json`.
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "module": "commonjs",

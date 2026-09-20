@@ -34,6 +34,8 @@ Alternatively, you can `cd` into the package's directory and run `yarn <command>
 
 If you make a change in a package that other packages depend on, you need to run `yarn build` in the root directory (or in the changed package's directory) to build the packages before you can test your changes.
 
+`yarn build` only emits the CommonJS build (along with the type declarations), which is all that is needed during development. The published packages also contain an ESM build. To build both, run `yarn build:release`, and then `yarn workspace nestjs-cls run test:dual-build` to verify that both builds work.
+
 ## How too contribute
 
 1. Fork the repository

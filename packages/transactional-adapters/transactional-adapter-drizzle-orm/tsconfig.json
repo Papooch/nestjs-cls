@@ -1,7 +1,8 @@
 {
     // The dev/editor/test project: it covers the specs too, and compiles as ESM
     // because the suites run through Jest's ESM runtime (NestJS 12 is ESM only).
-    // The published build is CJS and is emitted by `tsconfig.build.json`.
+    // The published CJS and ESM builds are emitted by `tsconfig.build.json` and
+    // `tsconfig.build.esm.json`.
     "extends": "../../../tsconfig.json",
     "compilerOptions": {
         "module": "ESNext",
