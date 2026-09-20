@@ -6845,7 +6845,7 @@ __metadata:
     "@types/node": "npm:^22.19.7"
     "@types/pg": "npm:^8.16.0"
     jest: "npm:^30.2.0"
-    kysely: "npm:^0.29.5"
+    kysely: "npm:^0.30.0-beta.2"
     pg: "npm:^8.17.2"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.1.2"
@@ -6857,7 +6857,7 @@ __metadata:
     typescript: "npm:5.9.3"
   peerDependencies:
     "@nestjs-cls/transactional": "workspace:^3.3.0"
-    kysely: ^0.28
+    kysely: ^0.28 || ^0.29 || ^0.30
     nestjs-cls: "workspace:^6.3.0"
   languageName: unknown
   linkType: soft
@@ -19074,10 +19074,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:^0.29.5":
-  version: 0.29.5
-  resolution: "kysely@npm:0.29.5"
-  checksum: 10c0/b2a64d06e568ff9cd5a738fd371c834252517625e4e844e29332654080647a824c2573f60ed1d52945205e2aa19707538c17b581347650dad2899f37455945f0
+"kysely@npm:^0.30.0-beta.2":
+  version: 0.30.0-beta.2
+  resolution: "kysely@npm:0.30.0-beta.2"
+  checksum: 10c0/acb2c5f8a81eb412038e6d8cc4b68aa39caf7f977b887d39697c65325eae713442c4477aa56f0ebba1443e81dc71495be71d7bfd22ed447a19e458ca53ef2729
   languageName: node
   linkType: hard
 
