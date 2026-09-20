@@ -3,8 +3,8 @@
     "compilerOptions": {
         "module": "commonjs",
         "moduleResolution": "node10",
-        "outDir": "dist",
-        "rootDir": ".",
+        "outDir": "dist/cjs",
+        "rootDir": "src",
         "noEmit": false
     },
     "include": ["src/**/*.ts"],

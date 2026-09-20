@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-mongodb';
+export * from './lib/transactional-adapter-mongodb.js';

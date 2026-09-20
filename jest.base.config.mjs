@@ -38,6 +38,12 @@ export function createJestConfig(packageUrl, overrides = {}) {
             '^nestjs-cls/(.*)$': `${coreSrc}/$1`,
             '^@nestjs-cls/transactional$': `${transactionalSrc}/index.ts`,
             '^@nestjs-cls/transactional/(.*)$': `${transactionalSrc}/$1`,
+            // The source now imports its own relative modules with an
+            // explicit `.js` extension (the TypeScript "nodenext" convention
+            // required for the dual ESM/CJS build to resolve correctly at
+            // runtime). Jest/ts-jest compiles straight from `.ts` sources, so
+            // that extension is stripped back off before resolution.
+            '^(\\.{1,2}/.*)\\.js$': '$1',
         },
         collectCoverageFrom: ['src/**/*.ts'],
         coverageDirectory: '../coverage',

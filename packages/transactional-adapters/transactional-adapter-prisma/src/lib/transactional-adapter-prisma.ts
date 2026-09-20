@@ -1,6 +1,6 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { PrismaClient } from '@prisma/client';
-import { getSavepointStatements, SQLFlavor } from './savepoint-syntax';
+import { getSavepointStatements, SQLFlavor } from './savepoint-syntax.js';
 import { randomUUID } from 'crypto';
 
 interface AnyTransactionClient {

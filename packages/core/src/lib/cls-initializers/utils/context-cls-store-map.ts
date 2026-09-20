@@ -1,5 +1,5 @@
 import { ContextType, ExecutionContext } from '@nestjs/common';
-import { ClsStore } from '../../cls.options';
+import { ClsStore } from '../../cls.options.js';
 
 /**
  * This static class can be used to save the CLS store in a WeakMap based on the ExecutionContext

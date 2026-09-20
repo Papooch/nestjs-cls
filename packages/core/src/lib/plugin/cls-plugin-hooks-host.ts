@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
-import { isNonNullable } from '../../utils/is-non-nullable';
-import { ClsServiceManager } from '../cls-service-manager';
-import { ClsPluginHooks, ClsInitContext } from './cls-plugin.interface';
-import { isPluginHooksToken } from './cls-plugin-base';
+import { isNonNullable } from '../../utils/is-non-nullable.js';
+import { ClsServiceManager } from '../cls-service-manager.js';
+import { ClsPluginHooks, ClsInitContext } from './cls-plugin.interface.js';
+import { isPluginHooksToken } from './cls-plugin-base.js';
 
 /**
  * This class gathers all the plugin hooks registered in the DI

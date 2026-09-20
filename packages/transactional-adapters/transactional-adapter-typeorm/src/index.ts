@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-typeorm';
+export * from './lib/transactional-adapter-typeorm.js';

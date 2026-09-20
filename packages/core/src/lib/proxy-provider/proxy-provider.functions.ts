@@ -3,7 +3,7 @@ import {
     ClsModuleProxyProviderOptions,
     ProxyClassProviderDefinition,
     ProxyProviderDefinition,
-} from './proxy-provider.interfaces';
+} from './proxy-provider.interfaces.js';
 
 export const isProxyClassProviderOptions = (
     provider: ClsModuleProxyProviderOptions,

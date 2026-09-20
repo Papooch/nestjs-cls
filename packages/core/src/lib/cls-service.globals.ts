@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import { ClsService } from './cls.service';
+import { ClsService } from './cls.service.js';
 
 const als = new AsyncLocalStorage();
 // Establish a root ALS context so that subsequent enterWith() calls in guards

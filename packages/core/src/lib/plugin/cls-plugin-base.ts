@@ -3,7 +3,7 @@ import {
     OptionalFactoryDependency,
     Provider,
 } from '@nestjs/common';
-import { ClsPlugin, ClsPluginHooks } from './cls-plugin.interface';
+import { ClsPlugin, ClsPluginHooks } from './cls-plugin.interface.js';
 
 /**
  * Extend this class to create a new ClsPlugin

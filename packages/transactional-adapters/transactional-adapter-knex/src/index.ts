@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-knex';
+export * from './lib/transactional-adapter-knex.js';

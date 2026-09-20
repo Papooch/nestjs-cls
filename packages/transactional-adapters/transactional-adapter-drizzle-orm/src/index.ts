@@ -1,1 +1,1 @@
-export * from './lib/transactional-adapter-drizzle-orm';
+export * from './lib/transactional-adapter-drizzle-orm.js';

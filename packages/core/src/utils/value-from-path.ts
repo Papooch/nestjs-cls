@@ -1,7 +1,7 @@
 import {
     RecursiveKeyOf,
     DeepPropertyType,
-} from '../types/recursive-key-of.type';
+} from '../types/recursive-key-of.type.js';
 
 export function getValueFromPath<T, TP extends RecursiveKeyOf<T> & string>(
     obj: T,

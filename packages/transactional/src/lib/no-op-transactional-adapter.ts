@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { TransactionalAdapter } from './interfaces';
+import { TransactionalAdapter } from './interfaces.js';
 
 export interface NoOpTransactionalAdapterOptions {
     /**
