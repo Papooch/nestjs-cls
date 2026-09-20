@@ -26,6 +26,28 @@ The table below outlines the compatibility of different ways of initializing the
 |                              **ClsGuard** <br/>(uses `enterWith`)                              |  ✔   |  ✔  |          ✔          |       ✔       |
 | **ClsInterceptor** <br/>(context inaccessible<br/>in _Guards_ and<br/> in _Exception Filters_) |  ✔   |  ✔  |          ✔          |       ✔       |
 
+## Module format (ESM and CommonJS)
+
+Since `nestjs-cls` v7 (and the corresponding major versions of the `@nestjs-cls/*` packages), each package ships both an ES module and a CommonJS build. Node picks the right one automatically through the `exports` field in `package.json`: `import` loads the ESM build and `require` loads the CommonJS one. Both builds share the same type declarations.
+
+This means the package works in ESM applications and test runners that cannot `require()` ES modules (like Jest's ESM mode with NestJS 12), as well as in CommonJS applications.
+
+:::warning
+
+The `exports` field only exposes the package root. Deep imports of internal files (e.g. `nestjs-cls/dist/src/...`) are no longer possible, import everything from the package root instead.
+
+:::
+
+### Mixing ESM and CommonJS
+
+Make sure that all code in one application loads these packages the same way, either all through `import`, or all through `require`.
+
+If one part of the application `import`s `nestjs-cls` and another part `require`s it (for example an ESM application using a CommonJS library that depends on `nestjs-cls`), Node loads **two separate copies** of the package. Each copy has its own `ClsService` class and its own CLS context storage (the so-called [dual package hazard](https://nodejs.org/docs/latest-v18.x/api/packages.html#dual-package-hazard)):
+
+- Injecting `ClsService` from the other copy fails loudly at startup with Nest's `can't resolve dependencies` error, because the class does not match the one registered by `ClsModule`.
+- `@Transactional()` from the other copy fails loudly when called, with the `TransactionHost not initialized` error.
+- Code that accesses the `ClsService` statically fails **silently**: `ClsServiceManager.getClsService()` from the other copy does not see the context set up by the `ClsModule`, so values read from the store are `undefined`. Similarly, `@UseCls()` from the other copy sets up a context that is invisible to the rest of the application.
+
 ## REST
 
 This package is compatible with Nest-supported REST controllers and the preferred way is to use the `ClsMiddleware` with the `mount` option set to `true`.

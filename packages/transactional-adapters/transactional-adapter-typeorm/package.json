@@ -28,14 +28,27 @@
     "typeorm"
   ],
   "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
   "types": "dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/cjs/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist/cjs/**/*.js",
-    "dist/cjs/**/*.d.ts"
+    "dist/cjs/**/*.d.ts",
+    "dist/esm/**/*.js",
+    "dist/esm/package.json"
   ],
   "scripts": {
     "prepack": "cp ../../../LICENSE ./LICENSE",
     "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build:esm": "tsc -p tsconfig.build.esm.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
+    "build:release": "yarn build && yarn build:esm",
     "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
     "test:watch": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --watch",
     "test:cov": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --coverage"

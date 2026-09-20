@@ -29,7 +29,8 @@ jobs:
           node-version: ${{ matrix.node }}.x
           cache: yarn
       - run: yarn
-      - run: yarn build
+      - run: yarn build:release
       - run: yarn format:check
       - run: yarn lint:check
       - run: yarn test
+      - run: yarn workspace nestjs-cls run test:dual-build
