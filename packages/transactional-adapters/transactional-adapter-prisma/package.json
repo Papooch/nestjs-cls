@@ -47,21 +47,21 @@
   },
   "peerDependencies": {
     "@nestjs-cls/transactional": "workspace:^3.3.0",
-    "@prisma/client": "> 4 < 8",
+    "@prisma/client": "> 4 < 9",
     "nestjs-cls": "workspace:^6.3.0",
-    "prisma": "> 4 < 8"
+    "prisma": "> 4 < 9"
   },
   "devDependencies": {
     "@nestjs/cli": "^12.0.0",
     "@nestjs/common": "^12.0.0",
     "@nestjs/core": "^12.0.0",
     "@nestjs/testing": "^12.0.0",
-    "@prisma/adapter-pg": "^7.5.0",
-    "@prisma/client": "^7.5.0",
+    "@prisma/adapter-pg": "8.1.0-dev.7",
+    "@prisma/client": "8.1.0-dev.7",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.19.7",
     "jest": "^30.2.0",
-    "prisma": "^7.5.0",
+    "prisma": "8.1.0-dev.7",
     "reflect-metadata": "^0.2.2",
     "rimraf": "^6.1.2",
     "rxjs": "^7.8.2",

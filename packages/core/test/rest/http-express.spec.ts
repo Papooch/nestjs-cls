@@ -265,11 +265,7 @@ describe('Http Express App - Auto bound Interceptor', () => {
     });
 
     it('does not leak context', () => {
-        return Promise.all(
-            Array(10)
-                .fill(app)
-                .map(() => expectOkIdsRest('/hello')),
-        );
+        return Promise.all(Array(10).fill(app).map(expectOkIdsRest('/hello')));
     });
 });
 
