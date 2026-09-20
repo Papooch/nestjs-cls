@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [6.3.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.3.0...nestjs-cls@6.3.1) "nestjs-cls" (2026-09-20)<a name="6.3.1"></a>
+
+### Dependencies
+
+* Bump top-level deps to resolve dependabot PRs (#630) ([01bad9e](https://github.com/Papooch/nestjs-cls/commits/01bad9e))
+
+
+
+
 ## [6.3.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.2.2...nestjs-cls@6.3.0) "nestjs-cls" (2026-09-04)<a name="6.3.0"></a>
 
 ### Features

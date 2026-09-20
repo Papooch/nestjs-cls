@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-cls/transactional-adapter-pg-promise",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "A pg-promise adapter for @nestjs-cls/transactional",
   "author": "Sam Artuso <samuele.a@gmail.com>",
   "license": "MIT",

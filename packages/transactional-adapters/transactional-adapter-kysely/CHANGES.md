@@ -2,6 +2,19 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [1.5.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.5.0...@nestjs-cls/transactional-adapter-kysely@1.5.1) "@nestjs-cls/transactional-adapter-kysely" (2026-09-20)<a name="1.5.1"></a>
+
+### Bug Fixes
+
+* **transactional-adapter-kysely**: update kysely peer dependency to 0.30 ([fabca8f](https://github.com/Papooch/nestjs-cls/commits/fabca8f))
+
+### Dependencies
+
+* Bump top-level deps to resolve dependabot PRs (#630) ([01bad9e](https://github.com/Papooch/nestjs-cls/commits/01bad9e))
+
+
+
+
 ## [1.5.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-kysely@1.4.5...@nestjs-cls/transactional-adapter-kysely@1.5.0) "@nestjs-cls/transactional-adapter-kysely" (2026-09-04)<a name="1.5.0"></a>
 
 ### Features

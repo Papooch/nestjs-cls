@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [1.4.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.4.0...@nestjs-cls/transactional-adapter-prisma@1.4.1) "@nestjs-cls/transactional-adapter-prisma" (2026-09-20)<a name="1.4.1"></a>
+
+### Bug Fixes
+
+* **transactional-adapter-prisma**: update Prisma peer dependency to v8 (#637) ([0dd17c5](https://github.com/Papooch/nestjs-cls/commits/0dd17c5))
+
+
+
+
 ## [1.4.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-prisma@1.3.6...@nestjs-cls/transactional-adapter-prisma@1.4.0) "@nestjs-cls/transactional-adapter-prisma" (2026-09-04)<a name="1.4.0"></a>
 
 ### Features
