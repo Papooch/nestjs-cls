@@ -51,7 +51,7 @@
     "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
     "test:watch": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --watch",
     "test:cov": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --coverage",
-    "test:dual-build": "node test/dual-build/cjs.smoke.cjs && NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest -c jest.dual-build.config.mjs"
+    "test:dual-build": "node test/dual-build/cjs.smoke.cjs && node test/dual-build/shared-context.smoke.mjs && NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest -c jest.dual-build.config.mjs"
   },
   "peerDependencies": {
     "@nestjs/common": ">= 10 < 13",

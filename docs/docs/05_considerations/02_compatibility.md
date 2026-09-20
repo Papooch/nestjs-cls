@@ -42,11 +42,14 @@ The `exports` field only exposes the package root. Deep imports of internal file
 
 Make sure that all code in one application loads these packages the same way, either all through `import`, or all through `require`.
 
-If one part of the application `import`s `nestjs-cls` and another part `require`s it (for example an ESM application using a CommonJS library that depends on `nestjs-cls`), Node loads **two separate copies** of the package. Each copy has its own `ClsService` class and its own CLS context storage (the so-called [dual package hazard](https://nodejs.org/docs/latest-v18.x/api/packages.html#dual-package-hazard)):
+If one part of the application `import`s `nestjs-cls` and another part `require`s it (for example an ESM application using a CommonJS library that depends on `nestjs-cls`), Node loads **two separate copies** of the package, each with its own classes (the so-called [dual package hazard](https://nodejs.org/docs/latest-v18.x/api/packages.html#dual-package-hazard)).
 
-- Injecting `ClsService` from the other copy fails loudly at startup with Nest's `can't resolve dependencies` error, because the class does not match the one registered by `ClsModule`.
-- `@Transactional()` from the other copy fails loudly when called, with the `TransactionHost not initialized` error.
-- Code that accesses the `ClsService` statically fails **silently**: `ClsServiceManager.getClsService()` from the other copy does not see the context set up by the `ClsModule`, so values read from the store are `undefined`. Similarly, `@UseCls()` from the other copy sets up a context that is invisible to the rest of the application.
+The CLS context itself is shared between the copies, so code that accesses it statically works from either copy: `ClsServiceManager.getClsService()`, `@UseCls()`, and the `CLS_ID`, `CLS_REQ`, `CLS_RES` and `CLS_CTX` keys.
+
+Anything that depends on class identity does not work across the copies, but it fails loudly:
+
+- Injecting `ClsService` from the other copy fails at startup with Nest's `can't resolve dependencies` error, because the class does not match the one registered by `ClsModule`.
+- `@Transactional()` from the other copy of `@nestjs-cls/transactional` fails when called, with the `TransactionHost not initialized` error.
 
 ## REST
 
