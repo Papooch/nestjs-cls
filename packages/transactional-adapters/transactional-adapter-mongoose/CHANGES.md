@@ -2,6 +2,25 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [2.0.0](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongoose@1.2.1...@nestjs-cls/transactional-adapter-mongoose@2.0.0) "@nestjs-cls/transactional-adapter-mongoose" (2026-09-20)<a name="2.0.0"></a>
+
+### Breaking Changes
+
+* The packages now define an `exports` map exposing only the
+package root, and the build output moved from `dist/src` to `dist/cjs` and
+`dist/esm`. Deep imports of internal files (e.g. `nestjs-cls/dist/src/...`)
+are no longer possible. Additionally, an application that loads the same
+package both via `import` and `require` gets two separate copies of it.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com> ([cdfab2e](https://github.com/Papooch/nestjs-cls/commits/cdfab2e))
+
+### Features
+
+* ship an ESM build alongside the CommonJS one ([cdfab2e](https://github.com/Papooch/nestjs-cls/commits/cdfab2e))
+
+
+
+
 ## [1.2.1](https://github.com/Papooch/nestjs-cls/compare/@nestjs-cls/transactional-adapter-mongoose@1.2.0...@nestjs-cls/transactional-adapter-mongoose@1.2.1) "@nestjs-cls/transactional-adapter-mongoose" (2026-09-20)<a name="1.2.1"></a>
 
 ### Dependencies

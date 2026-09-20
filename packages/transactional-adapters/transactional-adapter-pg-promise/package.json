@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-cls/transactional-adapter-pg-promise",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "A pg-promise adapter for @nestjs-cls/transactional",
   "author": "Sam Artuso <samuele.a@gmail.com>",
   "license": "MIT",
@@ -53,8 +53,8 @@
     "test:cov": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --coverage"
   },
   "peerDependencies": {
-    "@nestjs-cls/transactional": "workspace:^3.3.0",
-    "nestjs-cls": "workspace:^6.3.0",
+    "@nestjs-cls/transactional": "workspace:^4.0.0",
+    "nestjs-cls": "workspace:^7.0.0",
     "pg-promise": ">= 11"
   },
   "devDependencies": {
