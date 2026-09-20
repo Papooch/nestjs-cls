@@ -71,7 +71,7 @@
     "@types/node": "^22.20.4",
     "@types/supertest": "^6.0.3",
     "@types/ws": "^8.18.1",
-    "graphql": "^16.14.2",
+    "graphql": "^17.0.2",
     "jest": "^30.2.0",
     "mercurius": "^16.10.0",
     "reflect-metadata": "^0.2.2",
