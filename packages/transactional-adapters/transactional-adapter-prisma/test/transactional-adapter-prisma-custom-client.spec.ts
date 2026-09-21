@@ -13,7 +13,7 @@ import { TransactionalAdapterPrisma } from '../src';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 process.env.DATA_SOURCE_URL =
-    'postgres://postgres:postgres@localhost:5449/postgres';
+    'postgres://postgres:postgres@localhost:5444/prisma_custom';
 
 const prisma = new PrismaClient({
     adapter: new PrismaPg({
@@ -99,14 +99,6 @@ describe('Transactional', () => {
     let txHost: TransactionHost<TransactionalAdapterPrisma<CustomPrismaClient>>;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose-custom-client.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
-
         execSync('yarn prisma migrate reset --force', { env: process.env });
     });
 

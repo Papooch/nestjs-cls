@@ -8,7 +8,6 @@ import {
 } from '@nestjs-cls/transactional';
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { execSync } from 'child_process';
 import { Generated, Kysely, PostgresDialect } from 'kysely';
 import { ClsModule } from 'nestjs-cls';
 import { Pool } from 'pg';
@@ -159,7 +158,8 @@ class UserService {
 const kyselyDb = new Kysely<Database>({
     dialect: new PostgresDialect({
         pool: new Pool({
-            connectionString: 'postgres://postgres:postgres@localhost:5445',
+            connectionString:
+                'postgres://postgres:postgres@localhost:5444/kysely',
             max: 2,
         }),
     }),
@@ -200,13 +200,6 @@ describe('Transactional', () => {
     let callingService: UserService;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
         await kyselyDb.schema.dropTable('user').ifExists().execute();
         await kyselyDb.schema
             .createTable('user')
@@ -214,7 +207,7 @@ describe('Transactional', () => {
             .addColumn('name', 'varchar', (column) => column.notNull())
             .addColumn('email', 'varchar', (column) => column.notNull())
             .execute();
-    }, 60_000);
+    });
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
@@ -226,11 +219,7 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         await kyselyDb.destroy();
-        execSync('docker compose -f test/docker-compose.yml down', {
-            stdio: 'inherit',
-            cwd: process.cwd(),
-        });
-    }, 60_000);
+    });
 
     describe('TransactionalAdapterKysely', () => {
         it('should work without an active transaction', async () => {

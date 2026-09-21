@@ -28,7 +28,9 @@
   ],
   "packageManager": "yarn@4.12.0",
   "scripts": {
-    "test": "yarn workspaces foreach --all --topological-dev run test",
+    "test": "node test/with-test-dbs.mjs yarn workspaces foreach --all --parallel --jobs 4 --exclude nestjs-cls-root run test --maxWorkers=4",
+    "test:db:up": "docker compose -f test/docker-compose.yml up -d --wait",
+    "test:db:down": "docker compose -f test/docker-compose.yml down",
     "build": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build",
     "build:release": "yarn workspaces foreach --all --topological-dev --exclude nestjs-cls-docs run build:release",
     "format": "prettier --write \"packages/**/*.ts\"",

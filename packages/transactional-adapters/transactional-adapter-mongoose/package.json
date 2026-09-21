@@ -1,85 +1,84 @@
 {
-  "name": "@nestjs-cls/transactional-adapter-mongoose",
-  "version": "2.0.0",
-  "description": "A mongoose adapter for @nestjs-cls/transactional",
-  "author": "papooch",
-  "license": "MIT",
-  "engines": {
-    "node": ">=22"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Papooch/nestjs-cls.git"
-  },
-  "homepage": "https://papooch.github.io/nestjs-cls/",
-  "keywords": [
-    "nest",
-    "nestjs",
-    "cls",
-    "continuation-local-storage",
-    "als",
-    "AsyncLocalStorage",
-    "async_hooks",
-    "request context",
-    "async context",
-    "transaction",
-    "transactional",
-    "transactional decorator",
-    "aop",
-    "mongoose"
-  ],
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/cjs/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/cjs/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+    "name": "@nestjs-cls/transactional-adapter-mongoose",
+    "version": "2.0.0",
+    "description": "A mongoose adapter for @nestjs-cls/transactional",
+    "author": "papooch",
+    "license": "MIT",
+    "engines": {
+        "node": ">=22"
     },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist/cjs/**/*.js",
-    "dist/cjs/**/*.d.ts",
-    "dist/esm/**/*.js",
-    "dist/esm/package.json"
-  ],
-  "scripts": {
-    "prepack": "cp ../../../LICENSE ./LICENSE",
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
-    "build:esm": "tsc -p tsconfig.build.esm.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
-    "build:release": "yarn build && yarn build:esm",
-    "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
-    "test:watch": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --watch",
-    "test:cov": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --coverage"
-  },
-  "peerDependencies": {
-    "@nestjs-cls/transactional": "workspace:^4.0.0",
-    "mongoose": ">= 8",
-    "nestjs-cls": "workspace:^7.0.0"
-  },
-  "devDependencies": {
-    "@nestjs/cli": "^12.0.3",
-    "@nestjs/common": "^12.0.3",
-    "@nestjs/core": "^12.0.3",
-    "@nestjs/testing": "^12.0.3",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^22.20.4",
-    "jest": "~30.4.2",
-    "mongodb-memory-server": "^11.2.0",
-    "mongoose": "^9.10.1",
-    "reflect-metadata": "^0.2.2",
-    "rimraf": "^6.1.3",
-    "rxjs": "^7.8.2",
-    "sqlite3": "^6.0.1",
-    "ts-jest": "^29.4.12",
-    "ts-loader": "^9.6.2",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "5.9.3"
-  }
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Papooch/nestjs-cls.git"
+    },
+    "homepage": "https://papooch.github.io/nestjs-cls/",
+    "keywords": [
+        "nest",
+        "nestjs",
+        "cls",
+        "continuation-local-storage",
+        "als",
+        "AsyncLocalStorage",
+        "async_hooks",
+        "request context",
+        "async context",
+        "transaction",
+        "transactional",
+        "transactional decorator",
+        "aop",
+        "mongoose"
+    ],
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "types": "dist/cjs/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/cjs/index.d.ts",
+            "import": "./dist/esm/index.js",
+            "require": "./dist/cjs/index.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "dist/cjs/**/*.js",
+        "dist/cjs/**/*.d.ts",
+        "dist/esm/**/*.js",
+        "dist/esm/package.json"
+    ],
+    "scripts": {
+        "prepack": "cp ../../../LICENSE ./LICENSE",
+        "build": "rimraf dist && tsc -p tsconfig.build.json",
+        "build:esm": "tsc -p tsconfig.build.esm.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
+        "build:release": "yarn build && yarn build:esm",
+        "test": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest",
+        "test:watch": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --watch",
+        "test:cov": "NODE_OPTIONS=\"${NODE_OPTIONS:-} --experimental-vm-modules\" jest --coverage"
+    },
+    "peerDependencies": {
+        "@nestjs-cls/transactional": "workspace:^4.0.0",
+        "mongoose": ">= 8",
+        "nestjs-cls": "workspace:^7.0.0"
+    },
+    "devDependencies": {
+        "@nestjs/cli": "^12.0.3",
+        "@nestjs/common": "^12.0.3",
+        "@nestjs/core": "^12.0.3",
+        "@nestjs/testing": "^12.0.3",
+        "@types/jest": "^30.0.0",
+        "@types/node": "^22.20.4",
+        "jest": "~30.4.2",
+        "mongoose": "^9.10.1",
+        "reflect-metadata": "^0.2.2",
+        "rimraf": "^6.1.3",
+        "rxjs": "^7.8.2",
+        "sqlite3": "^6.0.1",
+        "ts-jest": "^29.4.12",
+        "ts-loader": "^9.6.2",
+        "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "5.9.3"
+    }
 }

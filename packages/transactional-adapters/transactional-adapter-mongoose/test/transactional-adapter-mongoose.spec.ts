@@ -7,7 +7,6 @@ import {
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ObjectId, WriteConcern } from 'mongodb';
-import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose, { Connection, Schema } from 'mongoose';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterMongoose } from '../src';
@@ -91,16 +90,14 @@ class UserService {
     }
 }
 
-const replSet = new MongoMemoryReplSet({
-    replSet: { count: 2, dbName: 'default' },
-});
+const MONGO_URI = 'mongodb://localhost:27044/mongoose_adapter?replicaSet=rs0';
 
 @Module({
     providers: [
         {
             provide: MONGOOSE_CONNECTION,
             useFactory: async () => {
-                const mongo = await mongoose.connect(replSet.getUri());
+                const mongo = await mongoose.connect(MONGO_URI);
                 return mongo.connection;
             },
         },
@@ -132,10 +129,6 @@ describe('Transactional', () => {
     let module: TestingModule;
     let callingService: UserService;
 
-    beforeAll(async () => {
-        await replSet.start();
-    }, 30_000);
-
     beforeEach(async () => {
         module = await Test.createTestingModule({
             imports: [AppModule],
@@ -151,7 +144,6 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         await mongo.destroy();
-        await replSet.stop({ force: true });
     });
 
     describe('TransactionalAdapterMongoose', () => {

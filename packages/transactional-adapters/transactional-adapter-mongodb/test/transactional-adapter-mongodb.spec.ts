@@ -7,7 +7,6 @@ import {
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MongoClient, ObjectId, WriteConcern } from 'mongodb';
-import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterMongoDB } from '../src';
 
@@ -23,14 +22,14 @@ class UserRepository {
 
     async getUserById(id: ObjectId) {
         return this.mongo
-            .db('default')
+            .db(DB_NAME)
             .collection('user')
             .findOne({ _id: id }, { session: this.txHost.tx });
     }
 
     async createUser(name: string) {
         const created = await this.mongo
-            .db('default')
+            .db(DB_NAME)
             .collection('user')
             .insertOne(
                 { name: name, email: `${name}@email.com` },
@@ -71,7 +70,7 @@ class UserService {
     async transactionWithDecoratorWithOptions() {
         const r1 = await this.userRepository.createUser('James');
         const r2 = await this.mongo
-            .db('default')
+            .db(DB_NAME)
             .collection('user')
             .findOne({ _id: r1!._id });
         const r3 = await this.userRepository.getUserById(r1!._id);
@@ -86,7 +85,7 @@ class UserService {
             async () => {
                 const r1 = await this.userRepository.createUser('Joe');
                 const r2 = await this.mongo
-                    .db('default')
+                    .db(DB_NAME)
                     .collection('user')
                     .findOne({ _id: r1!._id });
                 const r3 = await this.userRepository.getUserById(r1!._id);
@@ -102,16 +101,15 @@ class UserService {
     }
 }
 
-const replSet = new MongoMemoryReplSet({
-    replSet: { count: 2, dbName: 'default' },
-});
+const MONGO_URI = 'mongodb://localhost:27044/mongodb_adapter?replicaSet=rs0';
+const DB_NAME = 'mongodb_adapter';
 
 @Module({
     providers: [
         {
             provide: MONGO_CLIENT,
             useFactory: async () => {
-                const mongo = new MongoClient(replSet.getUri());
+                const mongo = new MongoClient(MONGO_URI);
                 await mongo.connect();
                 return mongo;
             },
@@ -144,10 +142,6 @@ describe('Transactional', () => {
     let module: TestingModule;
     let callingService: UserService;
 
-    beforeAll(async () => {
-        await replSet.start();
-    }, 30_000);
-
     beforeEach(async () => {
         module = await Test.createTestingModule({
             imports: [AppModule],
@@ -156,16 +150,12 @@ describe('Transactional', () => {
         callingService = module.get(UserService);
         mongo = module.get(MONGO_CLIENT);
 
-        await mongo.db('default').createCollection('user');
+        await mongo.db(DB_NAME).createCollection('user');
     });
 
     afterEach(async () => {
-        await mongo.db('default').dropCollection('user');
+        await mongo.db(DB_NAME).dropCollection('user');
         await mongo?.close();
-    });
-
-    afterAll(async () => {
-        await replSet.stop({ force: true });
     });
 
     describe('TransactionalAdapterMongodb', () => {
@@ -173,7 +163,7 @@ describe('Transactional', () => {
             const { r1, r2 } = await callingService.withoutTransaction();
             expect(r1).toEqual(r2);
             const users = await mongo
-                .db('default')
+                .db(DB_NAME)
                 .collection('user')
                 .find()
                 .toArray();
@@ -184,7 +174,7 @@ describe('Transactional', () => {
             const { r1, r2 } = await callingService.transactionWithDecorator();
             expect(r1).toEqual(r2);
             const users = await mongo
-                .db('default')
+                .db(DB_NAME)
                 .collection('user')
                 .find()
                 .toArray();
@@ -197,7 +187,7 @@ describe('Transactional', () => {
             expect(r1).toEqual(r3);
             expect(r2).toBeNull();
             const users = await mongo
-                .db('default')
+                .db(DB_NAME)
                 .collection('user')
                 .find()
                 .toArray();
@@ -209,7 +199,7 @@ describe('Transactional', () => {
             expect(r1).toEqual(r3);
             expect(r2).toBeNull();
             const users = await mongo
-                .db('default')
+                .db(DB_NAME)
                 .collection('user')
                 .find()
                 .toArray();
@@ -221,7 +211,7 @@ describe('Transactional', () => {
                 callingService.transactionWithDecoratorError(),
             ).rejects.toThrow(new Error('Rollback'));
             const users = await mongo
-                .db('default')
+                .db(DB_NAME)
                 .collection('user')
                 .find()
                 .toArray();
