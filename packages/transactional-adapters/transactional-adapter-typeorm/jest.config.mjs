@@ -1,3 +1,6 @@
 import { createJestConfig } from '../../../jest.base.config.mjs';
 
-export default createJestConfig(import.meta.url);
+export default createJestConfig(import.meta.url, {
+    services: ['postgres'],
+    postgresDatabases: ['typeorm'],
+});

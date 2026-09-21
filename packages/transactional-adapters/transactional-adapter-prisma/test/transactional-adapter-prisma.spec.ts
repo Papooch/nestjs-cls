@@ -15,7 +15,7 @@ import { ClsModule } from 'nestjs-cls';
 import { TransactionalAdapterPrisma } from '../src';
 
 process.env.DATA_SOURCE_URL =
-    'postgres://postgres:postgres@localhost:5448/postgres';
+    'postgres://postgres:postgres@localhost:5444/prisma';
 
 @Injectable()
 class UserRepository {
@@ -152,14 +152,6 @@ describe('Transactional', () => {
     let prisma: PrismaClient;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
-
         execSync('yarn prisma migrate reset --force', { env: process.env });
     });
 

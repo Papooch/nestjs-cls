@@ -16,12 +16,22 @@ const transactionalSrc = resolve(repoRoot, 'packages/transactional/src');
  * which ts-jest compiles as ESM. The paths are absolute so they work from any
  * nesting depth.
  *
+ * Suites that need a database declare the services they use. They are shared
+ * across the whole monorepo — one Postgres and one Mongo container defined in
+ * `test/docker-compose.yml` — and brought up on demand by the global setup.
+ * Each spec file that talks to Postgres gets its own database, since Jest runs
+ * the spec files of a package in parallel workers.
+ *
  * @param {string} packageUrl the calling config's `import.meta.url`
- * @param {import('jest').Config} [overrides]
+ * @param {import('jest').Config & {
+ *     services?: ('postgres' | 'mongo')[],
+ *     postgresDatabases?: string[],
+ * }} [overrides]
  * @returns {import('jest').Config}
  */
 export function createJestConfig(packageUrl, overrides = {}) {
     const packageDir = dirname(fileURLToPath(packageUrl));
+    const { services = [], postgresDatabases = [], ...rest } = overrides;
     return {
         moduleFileExtensions: ['js', 'json', 'ts'],
         rootDir: '.',
@@ -30,7 +40,10 @@ export function createJestConfig(packageUrl, overrides = {}) {
         transform: {
             '^.+\\.m?tsx?$': [
                 'ts-jest',
-                { useESM: true, tsconfig: resolve(packageDir, 'tsconfig.json') },
+                {
+                    useESM: true,
+                    tsconfig: resolve(packageDir, 'tsconfig.json'),
+                },
             ],
         },
         moduleNameMapper: {
@@ -48,6 +61,16 @@ export function createJestConfig(packageUrl, overrides = {}) {
         collectCoverageFrom: ['src/**/*.ts'],
         coverageDirectory: '../coverage',
         testEnvironment: 'node',
-        ...overrides,
+        ...(services.length
+            ? {
+                  globalSetup: resolve(repoRoot, 'test/global-setup.mjs'),
+                  globalTeardown: resolve(repoRoot, 'test/global-teardown.mjs'),
+                  globals: {
+                      testDbServices: services,
+                      testPostgresDatabases: postgresDatabases,
+                  },
+              }
+            : {}),
+        ...rest,
     };
 }

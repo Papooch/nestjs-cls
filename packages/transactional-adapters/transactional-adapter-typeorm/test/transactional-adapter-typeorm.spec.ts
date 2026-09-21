@@ -9,7 +9,6 @@ import {
 import { Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
-import { execSync } from 'node:child_process';
 import { Column, DataSource, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TransactionalAdapterTypeOrm } from '../src';
 
@@ -28,10 +27,10 @@ class User {
 const dataSource = new DataSource({
     type: 'postgres',
     host: 'localhost',
-    port: 5446,
+    port: 5444,
     username: 'postgres',
     password: 'postgres',
-    database: 'postgres',
+    database: 'typeorm',
     entities: [User],
     synchronize: true,
 });
@@ -169,18 +168,11 @@ describe('Transactional', () => {
     let callingService: UserService;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
         await dataSource.initialize();
 
         await dataSource.query('DROP TABLE IF EXISTS "User"');
         await dataSource.synchronize();
-    }, 60_000);
+    });
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
@@ -192,10 +184,7 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         await dataSource.destroy();
-        execSync('docker compose -f test/docker-compose.yml down', {
-            stdio: 'inherit',
-        });
-    }, 60_000);
+    });
 
     describe('TransactionalAdapterTypeOrmPromise', () => {
         it('should work without an active transaction', async () => {

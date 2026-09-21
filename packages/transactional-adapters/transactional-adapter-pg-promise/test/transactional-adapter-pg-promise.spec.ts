@@ -9,7 +9,6 @@ import {
 import { Inject, Injectable, Module } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsModule } from 'nestjs-cls';
-import { execSync } from 'node:child_process';
 import pgPromise from 'pg-promise';
 import { Database, TransactionalAdapterPgPromise } from '../src';
 
@@ -23,7 +22,7 @@ const db = pgp({
     port: 5444,
     user: 'postgres',
     password: 'postgres',
-    database: 'postgres',
+    database: 'pg_promise',
 });
 
 const { TransactionMode, isolationLevel } = pgp.txMode;
@@ -163,13 +162,6 @@ describe('Transactional', () => {
     let callingService: UserService;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
         await db.query('DROP TABLE IF EXISTS public.user');
         await db.query(`CREATE TABLE public.user (
           id serial NOT NULL,
@@ -177,7 +169,7 @@ describe('Transactional', () => {
           email varchar NOT NULL,
           CONSTRAINT user_pk PRIMARY KEY (id)
         );`);
-    }, 60_000);
+    });
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
@@ -189,10 +181,7 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         pgp.end();
-        execSync('docker compose -f test/docker-compose.yml down', {
-            stdio: 'inherit',
-        });
-    }, 60_000);
+    });
 
     describe('TransactionalAdapterPgPromise', () => {
         it('should work without an active transaction', async () => {

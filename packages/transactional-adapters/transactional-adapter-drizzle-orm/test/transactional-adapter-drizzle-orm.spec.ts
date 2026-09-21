@@ -13,7 +13,6 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { ClsModule } from 'nestjs-cls';
 import { Pool } from 'pg';
 
-import { execSync } from 'child_process';
 import { eq } from 'drizzle-orm';
 import { pgTable, serial, text } from 'drizzle-orm/pg-core';
 import { TransactionalAdapterDrizzleOrm } from '../src';
@@ -28,7 +27,7 @@ const DRIZZLE = 'DRIZZLE';
 
 const drizzleClient = drizzle(
     new Pool({
-        connectionString: 'postgres://postgres:postgres@localhost:5447',
+        connectionString: 'postgres://postgres:postgres@localhost:5444/drizzle',
         max: 2,
     }),
     {
@@ -187,14 +186,6 @@ describe('Transactional', () => {
     let callingService: UserService;
 
     beforeAll(async () => {
-        execSync(
-            'docker compose -f test/docker-compose.yml up -d --quiet-pull --wait',
-            {
-                stdio: 'inherit',
-                cwd: process.cwd(),
-            },
-        );
-
         await drizzleClient.$client.query('DROP TABLE IF EXISTS users');
         await drizzleClient.$client.query(`
             CREATE TABLE users (
@@ -203,7 +194,7 @@ describe('Transactional', () => {
                 email TEXT NOT NULL
             )
         `);
-    }, 60_000);
+    });
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
@@ -215,11 +206,7 @@ describe('Transactional', () => {
 
     afterAll(async () => {
         await drizzleClient.$client.end();
-        execSync('docker compose -f test/docker-compose.yml down', {
-            stdio: 'inherit',
-            cwd: process.cwd(),
-        });
-    }, 60_000);
+    });
 
     describe('TransactionalAdapterDrizzleOrm', () => {
         it('should work without an active transaction', async () => {

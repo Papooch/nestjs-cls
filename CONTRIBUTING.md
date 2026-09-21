@@ -36,6 +36,25 @@ If you make a change in a package that other packages depend on, you need to run
 
 `yarn build` only emits the CommonJS build (along with the type declarations), which is all that is needed during development. The published packages also contain an ESM build. To build both, run `yarn build:release`, and then `yarn workspace nestjs-cls run test:dual-build` to verify that both builds work.
 
+## Running tests
+
+Run `yarn test` in the root directory to run every suite, or `yarn workspace <package-name> test` to run just one.
+
+The adapter suites for Postgres and Mongo run against shared containers defined in `test/docker-compose.yml`, so Docker has to be available. You don't need to start them yourself — a Jest global setup brings up the services a package declares in its `jest.config.mjs` and stops them again afterwards:
+
+```js
+export default createJestConfig(import.meta.url, {
+    services: ['postgres'],
+    postgresDatabases: ['kysely'],
+});
+```
+
+Each spec file that talks to Postgres gets a database of its own, because Jest runs the spec files of a package in parallel workers. The databases are created on demand by the global setup; Mongo creates its own on first write.
+
+A root `yarn test` runs the workspaces in parallel and wraps the whole run in `test/with-test-dbs.mjs`, which starts the containers once up front and stops them after the last suite, so suites that overlap don't pull the databases out from under each other. Suites that need no database (the core package, `knex`, and the synchronous `drizzle-orm` suite, which use SQLite) never touch Docker at all.
+
+If a run is interrupted and leaves containers behind, `yarn test:db:down` removes them. `yarn test:db:up` starts them by hand.
+
 ## How too contribute
 
 1. Fork the repository
