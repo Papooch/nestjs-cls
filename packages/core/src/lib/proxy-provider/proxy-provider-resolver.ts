@@ -1,5 +1,5 @@
 import { InjectionToken, OptionalFactoryDependency } from '@nestjs/common';
-import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
+import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception.js';
 import { ClsService } from '../cls.service.js';
 import { isProxyClassProvider } from './proxy-provider.functions.js';
 import {

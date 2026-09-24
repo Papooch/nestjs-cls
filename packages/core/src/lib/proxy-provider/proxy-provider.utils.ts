@@ -1,5 +1,5 @@
 import { Type } from '@nestjs/common';
-import { Injector } from '@nestjs/core/injector/injector';
+import { Injector } from '@nestjs/core/injector/injector.js';
 
 const injector = new Injector();
 
