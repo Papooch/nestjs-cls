@@ -7075,7 +7075,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/better-sqlite3": "npm:^9.6.0"
     "@types/jest": "npm:^30.0.0"
@@ -7106,7 +7106,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7134,7 +7134,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/better-sqlite3": "npm:^9.6.0"
     "@types/jest": "npm:^30.0.0"
@@ -7164,7 +7164,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7193,7 +7193,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7222,7 +7222,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7249,7 +7249,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@prisma/adapter-pg": "npm:8.1.0-dev.7"
     "@prisma/client": "npm:8.1.0-dev.7"
@@ -7279,7 +7279,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7306,7 +7306,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/schematics": "npm:^12.0.3"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
@@ -7481,9 +7481,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:^12.0.3":
-  version: 12.0.3
-  resolution: "@nestjs/core@npm:12.0.3"
+"@nestjs/core@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@nestjs/core@npm:12.1.0"
   dependencies:
     fast-safe-stringify: "npm:2.1.1"
     iterare: "npm:1.2.1"
@@ -7504,7 +7504,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/a9179ccf2ab54189a9531124ef7f42f4b5cdcdd19955400adeb16f0866cc707dcf37c243e6ad4c2f5bf68cffee23bbb7313790f1f55b4b07e749b9e3b1135d59
+  checksum: 10c0/5ef9c17d9ac6ac629c85df5dbe1b8b2990a94672199739f7b596ae86b53a4a65208f74b7da19c3371588d81afcc6cb9eb9b3abae33d06f5ffdfc379a5424471c
   languageName: node
   linkType: hard
 
@@ -21613,7 +21613,7 @@ __metadata:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
     "@nestjs/common10": "npm:@nestjs/common@10.4.15"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.1.0"
     "@nestjs/core10": "npm:@nestjs/core@10.4.15"
     "@nestjs/graphql": "npm:^14.0.1"
     "@nestjs/mercurius": "npm:^14.0.1"
