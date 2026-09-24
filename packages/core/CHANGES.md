@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [7.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@7.0.0...nestjs-cls@7.0.1) "nestjs-cls" (2026-09-24)<a name="7.0.1"></a>
+
+### Bug Fixes
+
+* **core**: add missing file extensions to deep nestjs imports ([6f5d576](https://github.com/Papooch/nestjs-cls/commits/6f5d576))
+
+
+
+
 ## [7.0.0](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@6.3.1...nestjs-cls@7.0.0) "nestjs-cls" (2026-09-20)<a name="7.0.0"></a>
 
 ### Breaking Changes

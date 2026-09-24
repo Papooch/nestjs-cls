@@ -1,6 +1,6 @@
 {
   "name": "@nestjs-cls/transactional-adapter-mongoose",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A mongoose adapter for @nestjs-cls/transactional",
   "author": "papooch",
   "license": "MIT",
