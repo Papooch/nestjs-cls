@@ -7645,30 +7645,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/platform-fastify@npm:^12.0.3":
-  version: 12.0.3
-  resolution: "@nestjs/platform-fastify@npm:12.0.3"
+"@nestjs/platform-fastify@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@nestjs/platform-fastify@npm:12.1.0"
   dependencies:
     "@fastify/cors": "npm:11.3.0"
     "@fastify/formbody": "npm:9.0.0"
     "@fastify/middie": "npm:9.3.4"
     fast-querystring: "npm:1.1.2"
-    fastify: "npm:5.12.4"
+    fastify: "npm:5.12.5"
     find-my-way: "npm:9.9.0"
     light-my-request: "npm:6.6.0"
     path-to-regexp: "npm:8.4.2"
     tslib: "npm:2.8.1"
   peerDependencies:
+    "@fastify/multipart": ^10.1.0
     "@fastify/static": ^10.1.2
     "@fastify/view": ^10.0.0 || ^11.0.0 || ^12.0.0
     "@nestjs/common": ^12.0.0
     "@nestjs/core": ^12.0.0
   peerDependenciesMeta:
+    "@fastify/multipart":
+      optional: true
     "@fastify/static":
       optional: true
     "@fastify/view":
       optional: true
-  checksum: 10c0/fbcec756e478ab12ae8581df019e9bee74503bac1aa0d3825274997efda0d2097f245aa5bf30f591ee812ed7002db22d0e7d2bca2c5ca5c8fee723e30250c9cc
+  checksum: 10c0/45b436214216704d236dc63e9b9e24603c21f743fabd4680ea4fa3960687ee4823abb102e09ab7ac71c53a5d9c5f8c315d339295dbd5944ddcc2513da77b322f
   languageName: node
   linkType: hard
 
@@ -16069,9 +16072,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:5.12.4":
-  version: 5.12.4
-  resolution: "fastify@npm:5.12.4"
+"fastify@npm:5.12.5":
+  version: 5.12.5
+  resolution: "fastify@npm:5.12.5"
   dependencies:
     "@fastify/ajv-compiler": "npm:^4.0.5"
     "@fastify/error": "npm:^4.0.0"
@@ -16088,7 +16091,7 @@ __metadata:
     secure-json-parse: "npm:^4.0.0"
     semver: "npm:^7.6.0"
     toad-cache: "npm:^3.7.0"
-  checksum: 10c0/1796f17e046272f8fea413f862877b95be4f46bfc1eea64fc577b06c9b6cfff3f177404b7735862f7a2b9ddb0993da4e5afe7a067e9d82c99ac5a28450cbb19d
+  checksum: 10c0/ed18ec344f8a007fb6aea1ad25924076334fab53f2403178d1db56e1f80a5da0f3db4c3a309ef1ae834fc3f20be2444dcc746ce3944093f95e827f66b1e2fbd5
   languageName: node
   linkType: hard
 
@@ -21619,7 +21622,7 @@ __metadata:
     "@nestjs/mercurius": "npm:^14.0.1"
     "@nestjs/platform-express": "npm:^12.0.3"
     "@nestjs/platform-express10": "npm:@nestjs/platform-express@10.4.15"
-    "@nestjs/platform-fastify": "npm:^12.0.3"
+    "@nestjs/platform-fastify": "npm:^12.1.0"
     "@nestjs/platform-fastify10": "npm:@nestjs/platform-fastify@10.4.15"
     "@nestjs/platform-ws": "npm:^12.0.3"
     "@nestjs/schematics": "npm:^12.0.3"
