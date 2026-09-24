@@ -1,5 +1,5 @@
 import { Type } from '@nestjs/common';
-import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception';
+import { UnknownDependenciesException } from '@nestjs/core/errors/exceptions/unknown-dependencies.exception.js';
 import { defaultProxyProviderTokens } from './proxy-provider.constants.js';
 import { reflectClassConstructorParams } from './proxy-provider.utils.js';
 
