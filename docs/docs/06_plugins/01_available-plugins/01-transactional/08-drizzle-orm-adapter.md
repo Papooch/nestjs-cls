@@ -67,7 +67,7 @@ const drizzleClient = drizzle('<connection string>'{
 Then create a custom adapter type based on the client type:
 
 ```ts
-type MyDrizzleAdapter = TransactionAdapterDrizzleOrm<typeof drizzleClient>;
+type MyDrizzleAdapter = TransactionalAdapterDrizzleOrm<typeof drizzleClient>;
 ```
 
 And use it as a type parameter for `TransactionHost` when injecting it:
@@ -102,7 +102,7 @@ const drizzleClient = drizzle(
 );
 
 type DrizzleClient = typeof drizzleClient;
-type MyDrizzleAdapter = TransactionAdapterDrizzleOrm<DrizzleClient>;
+type MyDrizzleAdapter = TransactionalAdapterDrizzleOrm<DrizzleClient>;
 ```
 
 ```ts title="user.service.ts"
