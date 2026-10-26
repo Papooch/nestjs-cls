@@ -1,4 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+    Injectable,
+    OnApplicationShutdown,
+    OnModuleInit,
+} from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
 import { isNonNullable } from '../../utils/is-non-nullable.js';
 import { ClsServiceManager } from '../cls-service-manager.js';
@@ -11,12 +15,14 @@ import { isPluginHooksToken } from './cls-plugin-base.js';
  * via a singleton instance.
  */
 @Injectable()
-export class ClsPluginsHooksHost implements OnModuleInit {
+export class ClsPluginsHooksHost
+    implements OnModuleInit, OnApplicationShutdown
+{
     private beforeSetupHooks!: Required<ClsPluginHooks>['beforeSetup'][];
     private afterSetupHooks!: Required<ClsPluginHooks>['afterSetup'][];
     private readonly cls = ClsServiceManager.getClsService();
 
-    private static _instance: ClsPluginsHooksHost;
+    private static _instance: ClsPluginsHooksHost | undefined;
     static getInstance(): ClsPluginsHooksHost {
         if (!this._instance) {
             throw new Error(
@@ -42,6 +48,17 @@ export class ClsPluginsHooksHost implements OnModuleInit {
         this.afterSetupHooks = hooks
             .map((hook) => hook.afterSetup)
             .filter(isNonNullable);
+    }
+
+    /**
+     * Release the singleton so a closed app (and its DI tree) can be garbage collected.
+     * Only clear it if it still points to this instance, so closing an older app
+     * does not affect a newer one.
+     */
+    onApplicationShutdown() {
+        if (ClsPluginsHooksHost._instance === this) {
+            ClsPluginsHooksHost._instance = undefined;
+        }
     }
 
     async beforeSetup(context: ClsInitContext) {
