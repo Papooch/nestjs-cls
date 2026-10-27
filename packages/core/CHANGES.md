@@ -2,6 +2,15 @@
 
 <!-- MONOWEAVE:BELOW -->
 
+## [7.0.2](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@7.0.1...nestjs-cls@7.0.2) "nestjs-cls" (2026-10-27)<a name="7.0.2"></a>
+
+### Bug Fixes
+
+* **core**: release ClsPluginsHooksHost instance on application shutdown ([9d72a7a](https://github.com/Papooch/nestjs-cls/commits/9d72a7a))
+
+
+
+
 ## [7.0.1](https://github.com/Papooch/nestjs-cls/compare/nestjs-cls@7.0.0...nestjs-cls@7.0.1) "nestjs-cls" (2026-09-24)<a name="7.0.1"></a>
 
 ### Bug Fixes
