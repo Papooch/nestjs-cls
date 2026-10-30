@@ -1,6 +1,7 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { DataSource, EntityManager } from 'typeorm';
 import type { IsolationLevel } from 'typeorm/driver/types/IsolationLevel.js';
+import type { ReplicationMode } from 'typeorm/driver/types/ReplicationMode.js';
 
 export interface TypeOrmTransactionalAdapterOptions {
     /**
@@ -17,6 +18,21 @@ export interface TypeOrmTransactionalAdapterOptions {
 
 export interface TypeOrmTransactionOptions {
     isolationLevel: IsolationLevel;
+
+    /**
+     * Which replica to run the transaction against, using TypeORM's
+     * {@link ReplicationMode}. Only has an effect when the `DataSource` is
+     * configured with replication. Defaults to `'master'`.
+     *
+     * - `'master'` runs on the primary/write connection.
+     * - `'slave'` runs on a read replica. Unlike TypeORM's default behaviour -
+     *   which only routes plain `find`-style reads to a replica - this forces
+     *   the whole transaction (including custom query-builder reads) onto the
+     *   replica.
+     *
+     * Note: nested transactions are not supported in `'slave'` mode.
+     */
+    mode?: ReplicationMode;
 }
 
 export class TransactionalAdapterTypeOrm implements TransactionalAdapter<
@@ -39,6 +55,14 @@ export class TransactionalAdapterTypeOrm implements TransactionalAdapter<
             fn: (...args: any[]) => Promise<any>,
             setClient: (client?: EntityManager) => void,
         ) => {
+            if (options?.mode === 'slave') {
+                return this.wrapWithReplicaTransaction(
+                    dataSource,
+                    options,
+                    fn,
+                    setClient,
+                );
+            }
             return dataSource.transaction(options?.isolationLevel, (trx) => {
                 setClient(trx);
                 return fn();
@@ -51,6 +75,11 @@ export class TransactionalAdapterTypeOrm implements TransactionalAdapter<
             setClient: (client?: EntityManager) => void,
             client: EntityManager,
         ) => {
+            if (options?.mode === 'slave') {
+                throw new Error(
+                    'Nested transactions are not supported in slave mode',
+                );
+            }
             return client.transaction(options?.isolationLevel, (trx) => {
                 setClient(trx);
                 return fn();
@@ -58,4 +87,31 @@ export class TransactionalAdapterTypeOrm implements TransactionalAdapter<
         },
         getFallbackInstance: () => dataSource.manager,
     });
+
+    /**
+     * Runs a transaction on a replica (read) query runner so that every read in
+     * the callback - including custom query-builder reads, which TypeORM would
+     * otherwise send to the master - is routed to the replica.
+     */
+    private async wrapWithReplicaTransaction(
+        dataSource: DataSource,
+        options: TypeOrmTransactionOptions,
+        fn: (...args: any[]) => Promise<any>,
+        setClient: (client?: EntityManager) => void,
+    ) {
+        const queryRunner = dataSource.createQueryRunner('slave');
+        await queryRunner.connect();
+        await queryRunner.startTransaction(options?.isolationLevel);
+        setClient(queryRunner.manager);
+        try {
+            const result = await fn();
+            await queryRunner.commitTransaction();
+            return result;
+        } catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        } finally {
+            await queryRunner.release();
+        }
+    }
 }
