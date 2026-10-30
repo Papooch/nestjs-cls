@@ -75,6 +75,40 @@ new TransactionalAdapterTypeOrm({
 
 The `tx` property on the `TransactionHost<TransactionalAdapterTypeOrm>` is typed as [`EntityManager`](https://typeorm.io/working-with-entity-manager).
 
+## Running on a read replica
+
+When the `DataSource` is configured with [replication](https://typeorm.io/data-source-options#replication), you can route a whole transaction to a read replica by passing `mode: 'slave'` in the transaction options.
+
+This is stronger than TypeORM's default behaviour: TypeORM only sends plain `find`-style reads to a replica, whereas `mode: 'slave'` runs the transaction on a replica query runner so that **every** read in the callback - including custom query-builder reads - goes to the replica.
+
+```ts
+@Injectable()
+class UserService {
+    constructor(private readonly userRepository: UserRepository) {}
+
+    // highlight-next-line
+    @Transactional<TransactionalAdapterTypeOrm>({ mode: 'slave' })
+    async getReportData() {
+        // every read here runs against a read replica
+        return await this.userRepository.getActiveUsers();
+    }
+}
+```
+
+The same option works with the function wrapper:
+
+```ts
+await this.txHost.withTransaction({ mode: 'slave' }, async () => {
+    // ...
+});
+```
+
+:::note
+
+`mode` defaults to `'master'`. Nested transactions are not supported in `'slave'` mode - propagating a nested transaction with `mode: 'slave'` throws an error.
+
+:::
+
 ## Example
 
 ```ts title="user.service.ts"

@@ -1,8 +1,9 @@
+import { jest } from '@jest/globals';
 import {
     ClsPluginTransactional,
     InjectTransaction,
     Propagation,
-    Transaction,
+    type Transaction,
     Transactional,
     TransactionHost,
 } from '@nestjs-cls/transactional';
@@ -25,13 +26,23 @@ class User {
     email?: string;
 }
 
-const dataSource = new DataSource({
-    type: 'postgres',
+const connectionOptions = {
     host: 'localhost',
     port: 5446,
     username: 'postgres',
     password: 'postgres',
     database: 'postgres',
+};
+
+const dataSource = new DataSource({
+    type: 'postgres',
+    // Configured with replication so the `slave` transaction mode has a replica
+    // to route to. Both master and replicas point at the same database (there
+    // is a single test instance), which is enough to exercise the routing.
+    replication: {
+        master: connectionOptions,
+        slaves: [connectionOptions],
+    },
     entities: [User],
     synchronize: true,
 });
@@ -110,6 +121,48 @@ class UserService {
     async transactionWithDecoratorError() {
         await this.userRepository.createUser('Nobody');
         throw new Error('Rollback');
+    }
+
+    @Transactional<TransactionalAdapterTypeOrm>({
+        mode: 'slave',
+        isolationLevel: 'SERIALIZABLE',
+    })
+    async readInSlaveModeWithIsolationLevel(id: number) {
+        return await this.userRepository.getUserById(id);
+    }
+
+    @Transactional<TransactionalAdapterTypeOrm>({ mode: 'slave' })
+    async readInSlaveMode(id: number) {
+        return await this.dataSource
+            .getRepository(User)
+            .createQueryBuilder('user')
+            .where('user.id = :id', { id })
+            .getOne();
+    }
+
+    async readInSlaveModeWithFunctionWrapper(id: number) {
+        return this.transactionHost.withTransaction(
+            { mode: 'slave' },
+            async () => this.userRepository.getUserById(id),
+        );
+    }
+
+    @Transactional<TransactionalAdapterTypeOrm>({ mode: 'slave' })
+    async slaveModeError() {
+        await this.userRepository.getUserById(1);
+        throw new Error('Rollback');
+    }
+
+    @Transactional<TransactionalAdapterTypeOrm>({ mode: 'slave' })
+    async slaveModeHasNested() {
+        await this.nestedSlaveTransaction();
+    }
+
+    @Transactional<TransactionalAdapterTypeOrm>(Propagation.Nested, {
+        mode: 'slave',
+    })
+    async nestedSlaveTransaction() {
+        await this.userRepository.getUserById(1);
     }
 
     @Transactional()
@@ -250,6 +303,86 @@ describe('Transactional', () => {
             const users = await dataSource.manager.find(User);
             expect(users).toEqual(
                 expect.not.arrayContaining([{ name: 'Nobody' }]),
+            );
+        });
+    });
+
+    describe('Slave mode', () => {
+        let createQueryRunnerSpy: ReturnType<typeof jest.spyOn>;
+        let startTransactionSpy: ReturnType<typeof jest.spyOn>;
+
+        beforeEach(() => {
+            const original = dataSource.createQueryRunner.bind(dataSource);
+            createQueryRunnerSpy = jest
+                .spyOn(dataSource, 'createQueryRunner')
+                .mockImplementation((mode) => {
+                    const queryRunner = original(mode);
+                    startTransactionSpy = jest.spyOn(
+                        queryRunner,
+                        'startTransaction',
+                    );
+                    return queryRunner;
+                });
+        });
+
+        afterEach(() => {
+            startTransactionSpy?.mockRestore();
+            createQueryRunnerSpy.mockRestore();
+        });
+
+        it('should route the transaction to a replica query runner', async () => {
+            const user = await callingService.withoutTransaction();
+
+            const found = await callingService.readInSlaveMode(user.r1.id);
+
+            expect(found).toEqual(user.r1);
+            expect(createQueryRunnerSpy).toHaveBeenCalledWith('slave');
+        });
+
+        it('should route to a replica with the function wrapper', async () => {
+            const user = await callingService.withoutTransaction();
+
+            const found =
+                await callingService.readInSlaveModeWithFunctionWrapper(
+                    user.r1.id,
+                );
+
+            expect(found).toEqual(user.r1);
+            expect(createQueryRunnerSpy).toHaveBeenCalledWith('slave');
+        });
+
+        it('should start the replica transaction with the given isolation level', async () => {
+            const user = await callingService.withoutTransaction();
+
+            const found =
+                await callingService.readInSlaveModeWithIsolationLevel(
+                    user.r1.id,
+                );
+
+            expect(found).toEqual(user.r1);
+            expect(createQueryRunnerSpy).toHaveBeenCalledWith('slave');
+
+            const queryRunner = createQueryRunnerSpy.mock.results[0]
+                .value as ReturnType<DataSource['createQueryRunner']>;
+            expect(startTransactionSpy).toHaveBeenCalledWith('SERIALIZABLE');
+            expect(queryRunner.isReleased).toBe(true);
+        });
+
+        it('should release the query runner on error', async () => {
+            await expect(callingService.slaveModeError()).rejects.toThrow(
+                new Error('Rollback'),
+            );
+
+            const queryRunner = createQueryRunnerSpy.mock.results[0]
+                .value as ReturnType<DataSource['createQueryRunner']>;
+            expect(queryRunner.isReleased).toBe(true);
+        });
+
+        it('should not support nested transactions', async () => {
+            await expect(callingService.slaveModeHasNested()).rejects.toThrow(
+                new Error(
+                    'Nested transactions are not supported in slave mode',
+                ),
             );
         });
     });
