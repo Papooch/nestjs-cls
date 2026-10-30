@@ -77,9 +77,9 @@ The `tx` property on the `TransactionHost<TransactionalAdapterTypeOrm>` is typed
 
 ## Running on a read replica
 
-When the `DataSource` is configured with [replication](https://typeorm.io/data-source-options#replication), you can route a whole transaction to a read replica by passing `mode: 'slave'` in the transaction options.
+When the `DataSource` is configured with [replication](https://typeorm.io/docs/data-source/multiple-data-sources/#replication), you can route a whole transaction to a read replica by passing `mode: 'slave'` in the transaction options.
 
-This is stronger than TypeORM's default behaviour: TypeORM only sends plain `find`-style reads to a replica, whereas `mode: 'slave'` runs the transaction on a replica query runner so that **every** read in the callback - including custom query-builder reads - goes to the replica.
+This is needed because TypeORM only routes reads to a replica when they run on a query runner that was not already bound to the master. Inside a transaction every read is bound to the transaction's query runner, which TypeORM opens on the master by default - so reads in a `@Transactional()` method would otherwise all hit the master. Passing `mode: 'slave'` opens the transaction's query runner on a replica instead, so **every** read in the callback goes to the replica.
 
 ```ts
 @Injectable()
