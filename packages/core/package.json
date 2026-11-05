@@ -83,7 +83,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^22.20.4",
     "@types/supertest": "^7.2.1",
-    "@types/ws": "^8.18.1",
+    "@types/ws": "^8.18.2",
     "graphql": "^17.0.2",
     "jest": "~30.4.2",
     "mercurius": "^16.10.0",
@@ -97,6 +97,6 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.3",
-    "ws": "^8.21.3"
+    "ws": "^8.22.1"
   }
 }
