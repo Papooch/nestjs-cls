@@ -1,4 +1,7 @@
-import { TransactionalAdapter } from '@nestjs-cls/transactional';
+import {
+    TransactionalAdapter,
+    TransactionalAdapterOptions,
+} from '@nestjs-cls/transactional';
 import { PrismaClient } from '@prisma/client';
 import { getSavepointStatements, SQLFlavor } from './savepoint-syntax.js';
 import { randomUUID } from 'crypto';
@@ -11,9 +14,12 @@ export type PrismaTransactionalClient<
     TClient extends AnyTransactionClient = PrismaClient,
 > = Parameters<Parameters<TClient['$transaction']>[0]>[0];
 
+// The options of `$transaction()` are optional, so drop the `undefined`: under
+// `exactOptionalPropertyTypes` it stops the adapter from matching
+// `TransactionalAdapter`, which types `TransactionHost#tx` as `never`.
 export type PrismaTransactionOptions<
     TClient extends AnyTransactionClient = PrismaClient,
-> = Parameters<TClient['$transaction']>[1];
+> = NonNullable<Parameters<TClient['$transaction']>[1]>;
 
 export interface PrismaTransactionalAdapterOptions<
     TClient extends AnyTransactionClient = PrismaClient,
@@ -59,7 +65,15 @@ export class TransactionalAdapterPrisma<
         this.sqlFlavor = options.sqlFlavor;
     }
 
-    optionsFactory = (prisma: TClient) => ({
+    // The return type is spelled out so that the emitted declaration matches
+    // `TransactionalAdapter`, which an inferred `wrapWithNestedTransaction`
+    // of type `... | undefined` does not under `exactOptionalPropertyTypes`.
+    optionsFactory = (
+        prisma: TClient,
+    ): TransactionalAdapterOptions<
+        PrismaTransactionalClient<TClient>,
+        PrismaTransactionOptions<TClient>
+    > => ({
         wrapWithTransaction: async (
             options: PrismaTransactionOptions,
             fn: (...args: any[]) => Promise<any>,
