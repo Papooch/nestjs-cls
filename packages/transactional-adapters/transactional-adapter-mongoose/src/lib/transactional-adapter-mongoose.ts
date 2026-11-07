@@ -1,7 +1,12 @@
 import { TransactionalAdapter } from '@nestjs-cls/transactional';
 import { ClientSession, Connection } from 'mongoose';
 
-type MongooseTransactionOptions = Parameters<Connection['transaction']>[1];
+// The options of `transaction()` are optional, so drop the `undefined`: under
+// `exactOptionalPropertyTypes` it stops the adapter from matching
+// `TransactionalAdapter`, which types `TransactionHost#tx` as `never`.
+type MongooseTransactionOptions = NonNullable<
+    Parameters<Connection['transaction']>[1]
+>;
 
 export interface MongoDBTransactionalAdapterOptions {
     /**
