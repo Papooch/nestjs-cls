@@ -4,8 +4,11 @@ type AnyDrizzleClient = {
     transaction: (fn: (tx: AnyDrizzleClient) => any, options?: any) => any;
 };
 
+// The options of `transaction()` are optional, so drop the `undefined`: under
+// `exactOptionalPropertyTypes` it stops the adapter from matching
+// `TransactionalAdapter`, which types `TransactionHost#tx` as `never`.
 type DrizzleTransactionOptions<T> = T extends AnyDrizzleClient
-    ? Parameters<T['transaction']>[1]
+    ? NonNullable<Parameters<T['transaction']>[1]>
     : never;
 
 export interface DrizzleOrmTransactionalAdapterOptions<
