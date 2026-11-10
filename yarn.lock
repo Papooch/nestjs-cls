@@ -7075,7 +7075,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/better-sqlite3": "npm:^9.6.0"
     "@types/jest": "npm:^30.0.0"
@@ -7106,7 +7106,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7134,7 +7134,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/better-sqlite3": "npm:^9.6.0"
     "@types/jest": "npm:^30.0.0"
@@ -7164,7 +7164,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7193,7 +7193,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7222,7 +7222,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7249,7 +7249,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@prisma/adapter-pg": "npm:8.1.0-dev.7"
     "@prisma/client": "npm:8.1.0-dev.7"
@@ -7279,7 +7279,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.20.4"
@@ -7306,7 +7306,7 @@ __metadata:
   dependencies:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/schematics": "npm:^12.0.3"
     "@nestjs/testing": "npm:^12.0.3"
     "@types/jest": "npm:^30.0.0"
@@ -7481,14 +7481,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:^12.0.3":
-  version: 12.0.3
-  resolution: "@nestjs/core@npm:12.0.3"
+"@nestjs/core@npm:^12.4.2":
+  version: 12.4.2
+  resolution: "@nestjs/core@npm:12.4.2"
   dependencies:
     fast-safe-stringify: "npm:2.1.1"
     iterare: "npm:1.2.1"
     path-to-regexp: "npm:8.4.2"
-    tslib: "npm:2.8.1"
+    tslib: "npm:2.9.1"
     uid: "npm:2.0.2"
   peerDependencies:
     "@nestjs/common": ^12.0.0
@@ -7504,7 +7504,7 @@ __metadata:
       optional: true
     "@nestjs/websockets":
       optional: true
-  checksum: 10c0/a9179ccf2ab54189a9531124ef7f42f4b5cdcdd19955400adeb16f0866cc707dcf37c243e6ad4c2f5bf68cffee23bbb7313790f1f55b4b07e749b9e3b1135d59
+  checksum: 10c0/987228cd97e93061df447d5747a4982719964020f17f6697e90567a1e9718551027673b4a59fbc1124532226c9865ff40f33e244daee74613b05a3dbfcc41bae
   languageName: node
   linkType: hard
 
@@ -21613,7 +21613,7 @@ __metadata:
     "@nestjs/cli": "npm:^12.0.3"
     "@nestjs/common": "npm:^12.0.3"
     "@nestjs/common10": "npm:@nestjs/common@10.4.15"
-    "@nestjs/core": "npm:^12.0.3"
+    "@nestjs/core": "npm:^12.4.2"
     "@nestjs/core10": "npm:@nestjs/core@10.4.15"
     "@nestjs/graphql": "npm:^14.0.1"
     "@nestjs/mercurius": "npm:^14.0.1"
@@ -27215,6 +27215,13 @@ __metadata:
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
+  languageName: node
+  linkType: hard
+
+"tslib@npm:2.9.1":
+  version: 2.9.1
+  resolution: "tslib@npm:2.9.1"
+  checksum: 10c0/8ff46e7a4d19fa62c23483c89cf5ccc3906e742ef6e6d60bd3826b686143b300b4f6f04161cc1cf31a6b11fe70e1058ae4d4e4a108b5c68326d469684736a83c
   languageName: node
   linkType: hard
 
